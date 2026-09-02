@@ -49,13 +49,13 @@ void OverlapIndexInsertPos(OverlapIndex_p index, Clause_p clause,
 void OverlapIndexDeletePos(OverlapIndex_p index, Clause_p clause,
                            CompactPos pos, Term_p iterm);
 
-void OverlapIndexDeleteClauseOcc(OverlapIndex_p index,
-                                 Clause_p clause, Term_p term);
+void OverlapIndexDeleteClauseOcc(OverlapIndex_p index, Clause_p clause,
+                                 Term_p term);
 
-long ClauseCollectIntoTerms(Clause_p clause, PTree_p *terms);
+long ClauseCollectIntoTerms(Clause_p clause, PTree_p* terms);
 long ClauseCollectIntoTermsPos(Clause_p clause, PStack_p terms);
 
-long ClauseCollectFromTerms(Clause_p clause, PTree_p *terms);
+long ClauseCollectFromTerms(Clause_p clause, PTree_p* terms);
 long ClauseCollectFromTermsPos(Clause_p clause, PStack_p terms);
 
 
@@ -67,17 +67,14 @@ void OverlapIndexDeleteFromClause(OverlapIndex_p index, Clause_p clause);
 
 void OverlapIndexFPLeafPrint(FILE* out, PStack_p stack, FPTree_p leaf);
 
-long ClauseCollectIntoTerms2(Clause_p clause, PTree_p *terms, PTree_p *natoms);
+long ClauseCollectIntoTerms2(Clause_p clause, PTree_p* terms, PTree_p* natoms);
 
-long ClauseCollectIntoTermsPos2(Clause_p clause,
-                                PStack_p terms,
+long ClauseCollectIntoTermsPos2(Clause_p clause, PStack_p terms,
                                 PStack_p natoms);
 void OverlapIndexInsertIntoClause2(OverlapIndex_p tindex,
-                                   OverlapIndex_p naindex,
-                                   Clause_p clause);
+                                   OverlapIndex_p naindex, Clause_p clause);
 void OverlapIndexDeleteIntoClause2(OverlapIndex_p tindex,
-                                   OverlapIndex_p naindex,
-                                   Clause_p clause);
+                                   OverlapIndex_p naindex, Clause_p clause);
 
 
 
@@ -86,8 +83,6 @@ void OverlapIndexDeleteIntoClause2(OverlapIndex_p tindex,
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

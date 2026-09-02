@@ -26,49 +26,29 @@
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-char* FPIndexNames[] =
-{
-   "FP0",
-   "FPfp",
-   "FP1",
-   "FP2",
-   "FP3D",
-   "FP3W",
-   "FP4D",
-   "FP4W",
-   "FP4M",
-   "FP5M",
-   "FP6M",
-   "FP7",
-   "FP7M",
-   "FP4X2_2",
-   "FP3DFlex",
-   "NPDT",
-   "NoIndex",
-   NULL
-};
+char* FPIndexNames[] = { "FP0",  "FPfp",    "FP1",  "FP2",     "FP3D",
+                         "FP3W", "FP4D",    "FP4W", "FP4M",    "FP5M",
+                         "FP6M", "FP7",     "FP7M", "FP4X2_2", "FP3DFlex",
+                         "NPDT", "NoIndex", NULL };
 
-static FPIndexFunction fp_index_funs[] =
-{
-   IndexFP0Create,
-   IndexFPfpCreate,
-   IndexFP1Create,
-   IndexFP2Create,
-   IndexFP3DCreate,
-   IndexFP3WCreate,
-   IndexFP4DCreate,
-   IndexFP4WCreate,
-   IndexFP4MCreate,
-   IndexFP5MCreate,
-   IndexFP6MCreate,
-   IndexFP7Create,
-   IndexFP7MCreate,
-   IndexFP4X2_2Create,
-   IndexFP3DFlexCreate,
-   IndexDTCreate,
-   NULL,
-   NULL
-};
+static FPIndexFunction fp_index_funs[] = { IndexFP0Create,
+                                           IndexFPfpCreate,
+                                           IndexFP1Create,
+                                           IndexFP2Create,
+                                           IndexFP3DCreate,
+                                           IndexFP3WCreate,
+                                           IndexFP4DCreate,
+                                           IndexFP4WCreate,
+                                           IndexFP4MCreate,
+                                           IndexFP5MCreate,
+                                           IndexFP6MCreate,
+                                           IndexFP7Create,
+                                           IndexFP7MCreate,
+                                           IndexFP4X2_2Create,
+                                           IndexFP3DFlexCreate,
+                                           IndexDTCreate,
+                                           NULL,
+                                           NULL };
 
 
 
@@ -108,7 +88,7 @@ static void push_fcodes(PStack_p stack, Term_p t)
          PStackPushInt(stack, t->f_code);
       }
 
-      for(i=0; i<t->arity; i++)
+      for(i = 0; i < t->arity; i++)
       {
          push_fcodes(stack, t->args[i]);
       }
@@ -134,30 +114,30 @@ static void push_fcodes(PStack_p stack, Term_p t)
 
 FunCode TermFPSampleFO(Term_p term, va_list ap)
 {
-  int pos = 0;
-  FunCode res = 0;
+   int pos = 0;
+   FunCode res = 0;
 
-  for(pos = va_arg(ap, int); pos != -1;  pos = va_arg(ap, int))
-  {
-     if(TermIsFreeVar(term))
-     {
-        res = BELOW_VAR;
-        break;
-     }
-     if(pos >= term->arity)
-     {
-        res = NOT_IN_TERM;
-        break;
-     }
-     term = term->args[pos];
-  }
-  if(pos == -1)
-  {
-     res = TermIsFreeVar(term)?ANY_VAR:term->f_code;
-  }
-  va_end(ap);
+   for(pos = va_arg(ap, int); pos != -1; pos = va_arg(ap, int))
+   {
+      if(TermIsFreeVar(term))
+      {
+         res = BELOW_VAR;
+         break;
+      }
+      if(pos >= term->arity)
+      {
+         res = NOT_IN_TERM;
+         break;
+      }
+      term = term->args[pos];
+   }
+   if(pos == -1)
+   {
+      res = TermIsFreeVar(term) ? ANY_VAR : term->f_code;
+   }
+   va_end(ap);
 
-  return res;
+   return res;
 }
 
 #ifdef ENABLE_LFHO
@@ -178,47 +158,47 @@ FunCode TermFPSampleFO(Term_p term, va_list ap)
 /----------------------------------------------------------------------*/
 FunCode TermFPSampleHO(Term_p term, va_list ap)
 {
-  int pos = 0;
-  FunCode res = 0;
+   int pos = 0;
+   FunCode res = 0;
 
-  for(pos = va_arg(ap, int); pos != -1;  pos = va_arg(ap, int))
-  {
-    while(TermIsLambda(term))
-    {
-      term = term->args[1];
-    }
+   for(pos = va_arg(ap, int); pos != -1; pos = va_arg(ap, int))
+   {
+      while(TermIsLambda(term))
+      {
+         term = term->args[1];
+      }
 
-    if(TermIsTopLevelFreeVar(term))
-    {
-      res = BELOW_VAR;
-      break;
-    }
+      if(TermIsTopLevelFreeVar(term))
+      {
+         res = BELOW_VAR;
+         break;
+      }
 
-    if(pos < term->arity)
-    {
-      term = term->args[pos];
-    }
-    else if(pos < term->arity + TypeGetMaxArity(term->type))
-    {
-      res = SIG_DB_LAMBDA_CODE;
-      break;
-    }
-    else
-    {
-      res = NOT_IN_TERM;
-      break;
-    }
-  }
+      if(pos < term->arity)
+      {
+         term = term->args[pos];
+      }
+      else if(pos < term->arity + TypeGetMaxArity(term->type))
+      {
+         res = SIG_DB_LAMBDA_CODE;
+         break;
+      }
+      else
+      {
+         res = NOT_IN_TERM;
+         break;
+      }
+   }
 
-  if(pos == -1)
-  {
-     res = TermIsTopLevelFreeVar(term) ? ANY_VAR:
-            (TermIsTopLevelAnyVar(term) ? SIG_DB_LAMBDA_CODE :
-            term->f_code);
-  }
-  va_end(ap);
+   if(pos == -1)
+   {
+      res = TermIsTopLevelFreeVar(term)
+         ? ANY_VAR
+         : (TermIsTopLevelAnyVar(term) ? SIG_DB_LAMBDA_CODE : term->f_code);
+   }
+   va_end(ap);
 
-  return res;
+   return res;
 }
 #endif
 
@@ -233,7 +213,7 @@ FunCode TermFPSampleHO(Term_p term, va_list ap)
 // Side Effects    :
 //
 /----------------------------------------------------------------------*/
-FunCode  TermFPSample(Term_p term, ...)
+FunCode TermFPSample(Term_p term, ...)
 {
    va_list args;
    va_start(args, term);
@@ -273,41 +253,41 @@ FunCode  TermFPSample(Term_p term, ...)
 //
 /----------------------------------------------------------------------*/
 
-FunCode TermFPFlexSampleFO(Term_p term, IntOrP* *seq)
+FunCode TermFPFlexSampleFO(Term_p term, IntOrP** seq)
 {
-  FunCode res = 0;
-  long pos;
+   FunCode res = 0;
+   long pos;
 
-  while((pos=(*seq)->i_val)!=-1)
-  {
-     if(TermIsFreeVar(term))
-     {
-        res = BELOW_VAR;
-        break;
-     }
-     if(pos >= term->arity)
-     {
-        res = NOT_IN_TERM;
-        break;
-     }
-     term = term->args[pos];
-     (*seq)++;
-  }
-  if(pos == -1)
-  {
-     res = TermIsFreeVar(term)?ANY_VAR:term->f_code;
-  }
-  else
-  {
-     /* Find the end of the position */
-     while((pos=(*seq)->i_val)!=-1)
-     {
-        (*seq)++;
-     }
-  }
-  /* We want to point beyond the end */
-  (*seq)++;
-  return res;
+   while((pos = (*seq)->i_val) != -1)
+   {
+      if(TermIsFreeVar(term))
+      {
+         res = BELOW_VAR;
+         break;
+      }
+      if(pos >= term->arity)
+      {
+         res = NOT_IN_TERM;
+         break;
+      }
+      term = term->args[pos];
+      (*seq)++;
+   }
+   if(pos == -1)
+   {
+      res = TermIsFreeVar(term) ? ANY_VAR : term->f_code;
+   }
+   else
+   {
+      /* Find the end of the position */
+      while((pos = (*seq)->i_val) != -1)
+      {
+         (*seq)++;
+      }
+   }
+   /* We want to point beyond the end */
+   (*seq)++;
+   return res;
 }
 
 #ifdef ENABLE_LFHO
@@ -322,57 +302,57 @@ FunCode TermFPFlexSampleFO(Term_p term, IntOrP* *seq)
 // Side Effects    :
 //
 /----------------------------------------------------------------------*/
-FunCode TermFPFlexSampleHO(Term_p term, IntOrP* *seq)
+FunCode TermFPFlexSampleHO(Term_p term, IntOrP** seq)
 {
-  FunCode res = 0;
-  long pos;
+   FunCode res = 0;
+   long pos;
 
-  while((pos=(*seq)->i_val)!=-1)
-  {
-    while(TermIsLambda(term))
-    {
-      term = term->args[1];
-    }
+   while((pos = (*seq)->i_val) != -1)
+   {
+      while(TermIsLambda(term))
+      {
+         term = term->args[1];
+      }
 
-    if(TermIsTopLevelFreeVar(term))
-    {
-      res = BELOW_VAR;
-      break;
-    }
-    if(pos < term->arity)
-    {
-      term = term->args[pos];
-    }
-    else if(pos < term->arity + TypeGetMaxArity(term->type))
-    {
-      res = SIG_DB_LAMBDA_CODE;
-      break;
-    }
-    else
-    {
-      res = NOT_IN_TERM;
-      break;
-    }
-    (*seq)++;
-  }
-  
-  if(pos == -1)
-  {
-     res = TermIsTopLevelFreeVar(term) ? ANY_VAR:
-            (TermIsTopLevelAnyVar(term) ? SIG_DB_LAMBDA_CODE :
-            term->f_code);
-  }
-  else
-  {
-     /* Find the end of the position */
-     while((pos=(*seq)->i_val)!=-1)
-     {
-        (*seq)++;
-     }
-  }
-  /* We want to point beyond the end */
-  (*seq)++;
-  return res;
+      if(TermIsTopLevelFreeVar(term))
+      {
+         res = BELOW_VAR;
+         break;
+      }
+      if(pos < term->arity)
+      {
+         term = term->args[pos];
+      }
+      else if(pos < term->arity + TypeGetMaxArity(term->type))
+      {
+         res = SIG_DB_LAMBDA_CODE;
+         break;
+      }
+      else
+      {
+         res = NOT_IN_TERM;
+         break;
+      }
+      (*seq)++;
+   }
+
+   if(pos == -1)
+   {
+      res = TermIsTopLevelFreeVar(term)
+         ? ANY_VAR
+         : (TermIsTopLevelAnyVar(term) ? SIG_DB_LAMBDA_CODE : term->f_code);
+   }
+   else
+   {
+      /* Find the end of the position */
+      while((pos = (*seq)->i_val) != -1)
+      {
+         (*seq)++;
+      }
+   }
+   /* We want to point beyond the end */
+   (*seq)++;
+   return res;
 }
 
 /*-----------------------------------------------------------------------
@@ -386,7 +366,7 @@ FunCode TermFPFlexSampleHO(Term_p term, IntOrP* *seq)
 // Side Effects    :
 //
 /----------------------------------------------------------------------*/
-inline FunCode TermFPFlexSample(Term_p term, IntOrP* *seq)
+inline FunCode TermFPFlexSample(Term_p term, IntOrP** seq)
 {
    if(problemType == PROBLEM_HO)
    {
@@ -414,7 +394,7 @@ inline FunCode TermFPFlexSample(Term_p term, IntOrP* *seq)
 
 IndexFP_p IndexFP0Create(Term_p t)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*1);
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * 1);
 
    res[0] = 1;
 
@@ -436,7 +416,7 @@ IndexFP_p IndexFP0Create(Term_p t)
 
 IndexFP_p IndexFPfpCreate(Term_p t)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*2);
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * 2);
    static FunCode f_rep = 0, p_rep = 0;
 
    res[0] = 2;
@@ -478,7 +458,7 @@ IndexFP_p IndexFPfpCreate(Term_p t)
 
 IndexFP_p IndexFP1Create(Term_p t)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*2);
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * 2);
 
    res[0] = 2;
    res[1] = TermFPSample(t, -1);
@@ -502,7 +482,7 @@ IndexFP_p IndexFP1Create(Term_p t)
 
 IndexFP_p IndexFP2Create(Term_p t)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*3);
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * 3);
 
    res[0] = 3;
    res[1] = TermFPSample(t, -1);
@@ -527,7 +507,7 @@ IndexFP_p IndexFP2Create(Term_p t)
 
 IndexFP_p IndexFP3DCreate(Term_p t)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*4);
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * 4);
 
    res[0] = 4;
    res[1] = TermFPSample(t, -1);
@@ -554,7 +534,7 @@ IndexFP_p IndexFP3DCreate(Term_p t)
 
 IndexFP_p IndexFP3WCreate(Term_p t)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*4);
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * 4);
 
    res[0] = 4;
    res[1] = TermFPSample(t, -1);
@@ -580,13 +560,13 @@ IndexFP_p IndexFP3WCreate(Term_p t)
 
 IndexFP_p IndexFP4DCreate(Term_p t)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*5);
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * 5);
 
    res[0] = 5;
    res[1] = TermFPSample(t, -1);
    res[2] = TermFPSample(t, 0, -1);
    res[3] = TermFPSample(t, 0, 0, -1);
-   res[4] = TermFPSample(t, 0, 0,0, -1);
+   res[4] = TermFPSample(t, 0, 0, 0, -1);
 
    return res;
 }
@@ -607,7 +587,7 @@ IndexFP_p IndexFP4DCreate(Term_p t)
 
 IndexFP_p IndexFP4WCreate(Term_p t)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*5);
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * 5);
 
    res[0] = 5;
    res[1] = TermFPSample(t, -1);
@@ -635,7 +615,7 @@ IndexFP_p IndexFP4WCreate(Term_p t)
 
 IndexFP_p IndexFP4MCreate(Term_p t)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*5);
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * 5);
 
    res[0] = 5;
    res[1] = TermFPSample(t, -1);
@@ -662,7 +642,7 @@ IndexFP_p IndexFP4MCreate(Term_p t)
 
 IndexFP_p IndexFP5MCreate(Term_p t)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*6);
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * 6);
 
    res[0] = 6;
    res[1] = TermFPSample(t, -1);
@@ -690,7 +670,7 @@ IndexFP_p IndexFP5MCreate(Term_p t)
 
 IndexFP_p IndexFP6MCreate(Term_p t)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*7);
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * 7);
 
    res[0] = 7;
    res[1] = TermFPSample(t, -1);
@@ -718,7 +698,7 @@ IndexFP_p IndexFP6MCreate(Term_p t)
 
 IndexFP_p IndexFP7Create(Term_p t)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*8);
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * 8);
 
    res[0] = 8;
    res[1] = TermFPSample(t, -1);
@@ -748,7 +728,7 @@ IndexFP_p IndexFP7Create(Term_p t)
 
 IndexFP_p IndexFP7MCreate(Term_p t)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*8);
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * 8);
 
    res[0] = 8;
    res[1] = TermFPSample(t, -1);
@@ -778,18 +758,18 @@ IndexFP_p IndexFP7MCreate(Term_p t)
 
 IndexFP_p IndexFP4X2_2Create(Term_p t)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*17);
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * 17);
 
-   res[ 0] = 17;
-   res[ 1] = TermFPSample(t, -1);
-   res[ 2] = TermFPSample(t, 0, -1);
-   res[ 3] = TermFPSample(t, 1, -1);
-   res[ 4] = TermFPSample(t, 2, -1);
-   res[ 5] = TermFPSample(t, 3, -1);
+   res[0] = 17;
+   res[1] = TermFPSample(t, -1);
+   res[2] = TermFPSample(t, 0, -1);
+   res[3] = TermFPSample(t, 1, -1);
+   res[4] = TermFPSample(t, 2, -1);
+   res[5] = TermFPSample(t, 3, -1);
 
-   res[ 6] = TermFPSample(t, 0, 0, -1);
-   res[ 7] = TermFPSample(t, 0, 1, -1);
-   res[ 8] = TermFPSample(t, 0, 2, -1);
+   res[6] = TermFPSample(t, 0, 0, -1);
+   res[7] = TermFPSample(t, 0, 1, -1);
+   res[8] = TermFPSample(t, 0, 2, -1);
 
    res[9] = TermFPSample(t, 1, 0, -1);
    res[10] = TermFPSample(t, 1, 1, -1);
@@ -820,13 +800,13 @@ IndexFP_p IndexFP4X2_2Create(Term_p t)
 
 IndexFP_p IndexFPFlexCreate(Term_p t, PStack_p pos, int len)
 {
-   IndexFP_p res = SizeMalloc(sizeof(FunCode)*(len+1));
-   IntOrP *p = PStackBaseAddress(pos);
-   int     i;
+   IndexFP_p res = SizeMalloc(sizeof(FunCode) * (len + 1));
+   IntOrP* p = PStackBaseAddress(pos);
+   int i;
 
-   res[0] = (len+1);
+   res[0] = (len + 1);
 
-   i=1;
+   i = 1;
    while((*p).i_val != -2)
    {
       res[i] = TermFPFlexSample(t, &p);
@@ -898,9 +878,9 @@ IndexFP_p IndexDTCreate(Term_p t)
    push_fcodes(stack, t);
 
    len = PStackGetSP(stack);
-   res = SizeMalloc(sizeof(FunCode)*(len+1));
-   res[0] = len+1;
-   for(sp = 0, i=1; sp<len; sp++, i++)
+   res = SizeMalloc(sizeof(FunCode) * (len + 1));
+   res[0] = len + 1;
+   for(sp = 0, i = 1; sp < len; sp++, i++)
    {
       res[i] = PStackElementInt(stack, sp);
    }
@@ -923,10 +903,7 @@ IndexFP_p IndexDTCreate(Term_p t)
 //
 /----------------------------------------------------------------------*/
 
-void IndexFPFree(IndexFP_p junk)
-{
-   SizeFree(junk, sizeof(FunCode)*junk[0]);
-}
+void IndexFPFree(IndexFP_p junk) { SizeFree(junk, sizeof(FunCode) * junk[0]); }
 
 
 /*-----------------------------------------------------------------------
@@ -945,9 +922,9 @@ FPIndexFunction GetFPIndexFunction(char* name)
 {
    int i;
 
-   for(i=0; FPIndexNames[i]; i++)
+   for(i = 0; FPIndexNames[i]; i++)
    {
-      if(strcmp(FPIndexNames[i], name)==0)
+      if(strcmp(FPIndexNames[i], name) == 0)
       {
          return fp_index_funs[i];
       }
@@ -971,12 +948,12 @@ FPIndexFunction GetFPIndexFunction(char* name)
 
 void IndexFPPrint(FILE* out, IndexFP_p fp)
 {
-   int i, limit=fp[0];
+   int i, limit = fp[0];
 
-   if(limit>=2)
+   if(limit >= 2)
    {
       fprintf(out, "<%ld", fp[1]);
-      for(i=2; i<limit; i++)
+      for(i = 2; i < limit; i++)
       {
          fprintf(out, ",%ld", fp[i]);
       }

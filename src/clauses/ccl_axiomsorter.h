@@ -38,7 +38,7 @@ typedef enum
    NoAxiom,
    ClauseAxiom,
    FormulaAxiom
-}AxiomType;
+} AxiomType;
 
 
 /* Structure for representing an axiom with weight. */
@@ -46,20 +46,20 @@ typedef enum
 typedef struct w_axiom_cell
 {
    AxiomType type;
-   double    weight;
+   double weight;
    union
    {
       WFormula_p form;
-      Clause_p   clause;
-   }ax;
-}WAxiomCell, *WAxiom_p;
+      Clause_p clause;
+   } ax;
+} WAxiomCell, *WAxiom_p;
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define WAxiomCellAlloc()    (WAxiomCell*)SizeMalloc(sizeof(WAxiomCell))
+#define WAxiomCellAlloc() (WAxiomCell*)SizeMalloc(sizeof(WAxiomCell))
 #define WAxiomCellFree(junk) SizeFree(junk, sizeof(WAxiomCell))
 
 WAxiom_p WAxiomAlloc(void* axiom, AxiomType type);
@@ -76,8 +76,6 @@ int WAxiomCmpWrapper(const void* s1, const void* s2);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

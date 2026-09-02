@@ -42,7 +42,7 @@ typedef enum
    IMSingle,
    IMArray,
    IMTree
-}IntMapType;
+} IntMapType;
 
 #define MAX_TREE_DENSITY 8
 #define MIN_TREE_DENSITY 4
@@ -71,29 +71,29 @@ typedef struct intmap_cell
                             * from an array. */
    union
    {
-      void*        value;   /* For IMSingle */
-      PDRangeArr_p array;   /* For IMArray  */
-      NumTree_p    tree;    /* For IMTree   */
-   }values;
-}IntMapCell, *IntMap_p;
+      void* value;        /* For IMSingle */
+      PDRangeArr_p array; /* For IMArray  */
+      NumTree_p tree;     /* For IMTree   */
+   } values;
+} IntMapCell, *IntMap_p;
 
 
 
 typedef struct intmap_iter_cell
 {
    IntMap_p map;
-   long     lower_key;
-   long     upper_key;
+   long lower_key;
+   long upper_key;
    union
    {
-      bool      seen;      /* For IMSingle */
-      long      current;   /* For IMArray  */
-      PStack_p  tree_iter; /* For IMTree */
-   }admin_data;
-}IntMapIterCell, *IntMapIter_p;
+      bool seen;          /* For IMSingle */
+      long current;       /* For IMArray  */
+      PStack_p tree_iter; /* For IMTree */
+   } admin_data;
+} IntMapIterCell, *IntMapIter_p;
 
 
-typedef long (*IntMapFreeFunc)(void *junk_node);
+typedef long (*IntMapFreeFunc)(void* junk_node);
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
@@ -103,15 +103,16 @@ typedef long (*IntMapFreeFunc)(void *junk_node);
 #define IntMapCellFree(junk) SizeFree(junk, sizeof(IntMapCell))
 
 IntMap_p IntMapAlloc(void);
-void     IntMapFree(IntMap_p map);
+void IntMapFree(IntMap_p map);
 
-void*    IntMapGetVal(IntMap_p map, long key);
-void**   IntMapGetRef(IntMap_p map, long key);
-void     IntMapAssign(IntMap_p map, long key, void* value);
-void*    IntMapDelKey(IntMap_p map, long key);
+void* IntMapGetVal(IntMap_p map, long key);
+void** IntMapGetRef(IntMap_p map, long key);
+void IntMapAssign(IntMap_p map, long key, void* value);
+void* IntMapDelKey(IntMap_p map, long key);
 
 
-#define IntMapIterCellAlloc() (IntMapIterCell*)SizeMalloc(sizeof(IntMapIterCell))
+#define IntMapIterCellAlloc()                                                  \
+   (IntMapIterCell*)SizeMalloc(sizeof(IntMapIterCell))
 #define IntMapIterCellFree(junk) SizeFree(junk, sizeof(IntMapIterCell))
 
 #ifdef CONSTANT_MEM_ESTIMATE
@@ -120,19 +121,18 @@ void*    IntMapDelKey(IntMap_p map, long key);
 #define INTMAPCELL_MEM MEMSIZE(IntMapCell)
 #endif
 
-#define IntMapDStorage(map) (((map)->type == IMArray)?\
-                             PDArrayStorage((map)->values.array):\
-                             (((map)->type == IMTree)?\
-                              ((map)->entry_no*NUMTREECELL_MEM):0))
+#define IntMapDStorage(map)                                                    \
+   (((map)->type == IMArray)                                                   \
+       ? PDArrayStorage((map)->values.array)                                   \
+       : (((map)->type == IMTree) ? ((map)->entry_no * NUMTREECELL_MEM) : 0))
 
-#define IntMapStorage(map) (INTMAPCELL_MEM+IntMapDStorage(map))
+#define IntMapStorage(map) (INTMAPCELL_MEM + IntMapDStorage(map))
 
 IntMapIter_p IntMapIterAlloc(IntMap_p map, long lower_key, long upper_key);
-void         IntMapIterFree(IntMapIter_p junk);
-static inline void* IntMapIterNext(IntMapIter_p iter, long *key);
+void IntMapIterFree(IntMapIter_p junk);
+static inline void* IntMapIterNext(IntMapIter_p iter, long* key);
 
-void     IntMapDebugPrint(FILE* out, IntMap_p map);
-
+void IntMapDebugPrint(FILE* out, IntMap_p map);
 
 
 
@@ -155,10 +155,10 @@ void     IntMapDebugPrint(FILE* out, IntMap_p map);
 //
 /----------------------------------------------------------------------*/
 
-static inline void* IntMapIterNext(IntMapIter_p iter, long *key)
+static inline void* IntMapIterNext(IntMapIter_p iter, long* key)
 {
    void* res = NULL;
-   long  i;
+   long i;
    NumTree_p handle;
 
    assert(iter);
@@ -172,9 +172,9 @@ static inline void* IntMapIterNext(IntMapIter_p iter, long *key)
    //printf("IntMapIterNext()...\n");
    switch(iter->map->type)
    {
-   case IMEmpty:
+      case IMEmpty:
          break;
-   case IMSingle:
+      case IMSingle:
          //printf("Case IMSingle\n");
          if(!iter->admin_data.seen)
          {
@@ -183,9 +183,9 @@ static inline void* IntMapIterNext(IntMapIter_p iter, long *key)
             res = iter->map->values.value;
          }
          break;
-   case IMArray:
+      case IMArray:
          // printf("Case IMArray %ld\n", iter->admin_data.current);
-         for(i=iter->admin_data.current; i<= iter->upper_key; i++)
+         for(i = iter->admin_data.current; i <= iter->upper_key; i++)
          {
             res = PDRangeArrElementP(iter->map->values.array, i);
             if(res)
@@ -194,9 +194,9 @@ static inline void* IntMapIterNext(IntMapIter_p iter, long *key)
                break;
             }
          }
-         iter->admin_data.current = i+1;
+         iter->admin_data.current = i + 1;
          break;
-   case IMTree:
+      case IMTree:
          // printf("Case IMTree\n");
          while((handle = NumTreeTraverseNext(iter->admin_data.tree_iter)))
          {
@@ -217,7 +217,7 @@ static inline void* IntMapIterNext(IntMapIter_p iter, long *key)
             }
          }
          break;
-   default:
+      default:
          assert(false && "Unknown IntMap type.");
          break;
    }
@@ -231,8 +231,6 @@ static inline void* IntMapIterNext(IntMapIter_p iter, long *key)
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

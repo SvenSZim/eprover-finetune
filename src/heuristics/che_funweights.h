@@ -40,24 +40,24 @@ Changes
 typedef struct funweightparamcell
 {
    /* Generic stuff, see Refinedweight() */
-   OCB_p        ocb;
-   ClauseSet_p  axioms;
+   OCB_p ocb;
+   ClauseSet_p axioms;
    ProofState_p proofstate;
 
    double max_term_multiplier;
    double max_literal_multiplier;
    double pos_multiplier;
-   long   vweight;
+   long vweight;
 
    /* Weights for non-conjecture symbols (by type) */
-   long   fweight;
-   long   cweight;
-   long   pweight;
+   long fweight;
+   long cweight;
+   long pweight;
 
    /* Weights for conjecture-symbols (by type) */
-   long   conj_fweight;
-   long   conj_cweight;
-   long   conj_pweight;
+   long conj_fweight;
+   long conj_cweight;
+   long conj_pweight;
 
    /* Extra values for relevancy-based heuristics */
    long default_level_penalty; /* Effective level of irrelevant
@@ -67,7 +67,7 @@ typedef struct funweightparamcell
    double level_poly_square; /* Weight of a symbol is
                               * base*lpc+lpl*l+lps*l*l,
                               * where l is the effective level */
-   void   (*init_fun)(struct funweightparamcell*);
+   void (*init_fun)(struct funweightparamcell*);
 
    double app_var_mult;
 
@@ -75,17 +75,17 @@ typedef struct funweightparamcell
    PStack_p weight_stack;
 
    /* Actual encoding for the weights */
-   long   flimit;
-   long   *fweights;
+   long flimit;
+   long* fweights;
 
    /* array storing frequencies of types for certain symbols */
-   long   *type_freqs;
+   long* type_freqs;
 
    /* Temporary store for function symbol counts, put here to avoid
     * multiple  (expensive for large signatures) initializations. */
    PDArray_p f_occur;
 
-}FunWeightParamCell, *FunWeightParam_p;
+} FunWeightParamCell, *FunWeightParam_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -93,53 +93,33 @@ typedef struct funweightparamcell
 /*---------------------------------------------------------------------*/
 
 
-#define FunWeightParamCellAlloc() (FunWeightParamCell*) \
-        SizeMalloc(sizeof(FunWeightParamCell))
-#define FunWeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(FunWeightParamCell))
+#define FunWeightParamCellAlloc()                                              \
+   (FunWeightParamCell*)SizeMalloc(sizeof(FunWeightParamCell))
+#define FunWeightParamCellFree(junk) SizeFree(junk, sizeof(FunWeightParamCell))
 
 FunWeightParam_p FunWeightParamAlloc(void);
-void             FunWeightParamFree(FunWeightParam_p junk);
+void FunWeightParamFree(FunWeightParam_p junk);
 
 
-WFCB_p ConjectureSymbolWeightInit(ClausePrioFun prio_fun,
-                                  OCB_p ocb,
-                                  ClauseSet_p axioms,
-                                  double max_term_multiplier,
-                                  double max_literal_multiplier,
-                                  double pos_multiplier,
-                                  long   vweight,
-                                  long   fweight,
-                                  long   cweight,
-                                  long   pweight,
-                                  long   conj_fweight,
-                                  long   conj_cweight,
-                                  long   conj_pweight,
-                                  double app_var_mult,
-                                  void   (*init_fun)(struct funweightparamcell*));
+WFCB_p ConjectureSymbolWeightInit(
+   ClausePrioFun prio_fun, OCB_p ocb, ClauseSet_p axioms,
+   double max_term_multiplier, double max_literal_multiplier,
+   double pos_multiplier, long vweight, long fweight, long cweight,
+   long pweight, long conj_fweight, long conj_cweight, long conj_pweight,
+   double app_var_mult, void (*init_fun)(struct funweightparamcell*));
 
-WFCB_p FunWeightInit(ClausePrioFun prio_fun,
-                     OCB_p ocb,
-                     double max_term_multiplier,
-                     double max_literal_multiplier,
-                     double pos_multiplier,
-                     long vweight,
-                     long fweight,
-                     PStack_p fweights,
-                     double app_var_mult);
+WFCB_p FunWeightInit(ClausePrioFun prio_fun, OCB_p ocb,
+                     double max_term_multiplier, double max_literal_multiplier,
+                     double pos_multiplier, long vweight, long fweight,
+                     PStack_p fweights, double app_var_mult);
 
-WFCB_p SymOffsetWeightInit(ClausePrioFun prio_fun,
-                           OCB_p ocb,
+WFCB_p SymOffsetWeightInit(ClausePrioFun prio_fun, OCB_p ocb,
                            double max_term_multiplier,
-                           double max_literal_multiplier,
-                           double pos_multiplier,
-                           long vweight,
-                           long fweight,
-                           PStack_p fweights,
+                           double max_literal_multiplier, double pos_multiplier,
+                           long vweight, long fweight, PStack_p fweights,
                            double app_var_mult);
 
-WFCB_p ConjectureSymbolWeightParse(Scanner_p in, OCB_p ocb, ProofState_p
-                                   state);
+WFCB_p ConjectureSymbolWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 WFCB_p ConjectureSimplifiedSymbolWeightParse(Scanner_p in, OCB_p ocb,
                                              ProofState_p state);
 
@@ -149,29 +129,23 @@ WFCB_p ConjectureRelativeSymbolWeightParse(Scanner_p in, OCB_p ocb,
 WFCB_p ConjectureRelativeSymbolTypeWeightParse(Scanner_p in, OCB_p ocb,
                                                ProofState_p state);
 
-WFCB_p RelevanceLevelWeightParse(Scanner_p in, OCB_p ocb,
-                                 ProofState_p state);
+WFCB_p RelevanceLevelWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
-WFCB_p RelevanceLevelWeightParse2(Scanner_p in, OCB_p ocb,
-                                  ProofState_p state);
+WFCB_p RelevanceLevelWeightParse2(Scanner_p in, OCB_p ocb, ProofState_p state);
 
-WFCB_p FunWeightParse(Scanner_p in, OCB_p ocb,
-                      ProofState_p state);
+WFCB_p FunWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
-WFCB_p SymOffsetWeightParse(Scanner_p in, OCB_p ocb,
-                            ProofState_p state);
+WFCB_p SymOffsetWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double GenericFunWeightCompute(void* data, Clause_p clause);
 
 double SymOffsetWeightCompute(void* data, Clause_p clause);
 
-WFCB_p ConjectureTypeBasedWeightParse(Scanner_p in, OCB_p ocb, ProofState_p
-                                      state);
+WFCB_p ConjectureTypeBasedWeightParse(Scanner_p in, OCB_p ocb,
+                                      ProofState_p state);
 
 
-void   GenericFunWeightExit(void* data);
-
-
+void GenericFunWeightExit(void* data);
 
 
 
@@ -180,8 +154,6 @@ void   GenericFunWeightExit(void* data);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

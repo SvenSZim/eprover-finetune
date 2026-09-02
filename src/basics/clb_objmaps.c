@@ -27,8 +27,8 @@ Changes
 
 struct objmap_node
 {
-   struct objmap_node *lson;
-   struct objmap_node *rson;
+   struct objmap_node* lson;
+   struct objmap_node* rson;
    void* key;
    void* value;
 };
@@ -67,11 +67,11 @@ typedef struct objmap_node PObjMap;
 static PObjMap_p splay_tree(PObjMap_p tree, void* key,
                             ComparisonFunctionType cmpfun)
 {
-   PObjMap_p   left, right, tmp;
+   PObjMap_p left, right, tmp;
    PObjMap newnode;
-   int       cmpres;
+   int cmpres;
 
-   if (!tree)
+   if(!tree)
    {
       return tree;
    }
@@ -81,10 +81,10 @@ static PObjMap_p splay_tree(PObjMap_p tree, void* key,
    left = &newnode;
    right = &newnode;
 
-   for (;;)
+   for(;;)
    {
       cmpres = cmpfun(key, tree->key);
-      if (cmpres < 0)
+      if(cmpres < 0)
       {
          if(!tree->lson)
          {
@@ -96,7 +96,7 @@ static PObjMap_p splay_tree(PObjMap_p tree, void* key,
             tree->lson = tmp->rson;
             tmp->rson = tree;
             tree = tmp;
-            if (!tree->lson)
+            if(!tree->lson)
             {
                break;
             }
@@ -107,7 +107,7 @@ static PObjMap_p splay_tree(PObjMap_p tree, void* key,
       }
       else if(cmpres > 0)
       {
-         if (!tree->rson)
+         if(!tree->rson)
          {
             break;
          }
@@ -117,7 +117,7 @@ static PObjMap_p splay_tree(PObjMap_p tree, void* key,
             tree->rson = tmp->lson;
             tmp->lson = tree;
             tree = tmp;
-            if (!tree->rson)
+            if(!tree->rson)
             {
                break;
             }
@@ -154,19 +154,19 @@ static PObjMap_p splay_tree(PObjMap_p tree, void* key,
 //
 /----------------------------------------------------------------------*/
 
-PObjMap_p do_extract_entry(PObjMap_p *root, void* key,
+PObjMap_p do_extract_entry(PObjMap_p* root, void* key,
                            ComparisonFunctionType cmpfun)
 {
    PObjMap_p x, cell;
 
-   if (!(*root))
+   if(!(*root))
    {
       return NULL;
    }
    *root = splay_tree(*root, key, cmpfun);
-   if(cmpfun(key, (*root)->key)==0)
+   if(cmpfun(key, (*root)->key) == 0)
    {
-      if (!(*root)->lson)
+      if(!(*root)->lson)
       {
          x = (*root)->rson;
       }
@@ -204,11 +204,11 @@ PObjMap_p do_extract_entry(PObjMap_p *root, void* key,
 //
 /----------------------------------------------------------------------*/
 
-PObjMap_p PObjMapInsert(PObjMap_p *root, PObjMap_p newnode,
+PObjMap_p PObjMapInsert(PObjMap_p* root, PObjMap_p newnode,
                         ComparisonFunctionType cmpfun)
 {
    int cmpres;
-   if (!*root)
+   if(!*root)
    {
       newnode->lson = newnode->rson = NULL;
       *root = newnode;
@@ -218,7 +218,7 @@ PObjMap_p PObjMapInsert(PObjMap_p *root, PObjMap_p newnode,
 
    cmpres = cmpfun(newnode->key, (*root)->key);
 
-   if (cmpres < 0)
+   if(cmpres < 0)
    {
       newnode->lson = (*root)->lson;
       newnode->rson = *root;
@@ -253,7 +253,7 @@ PObjMap_p PObjMapInsert(PObjMap_p *root, PObjMap_p newnode,
 //
 /----------------------------------------------------------------------*/
 
-void* PObjMapStore(PObjMap_p *root, void* key, void* value,
+void* PObjMapStore(PObjMap_p* root, void* key, void* value,
                    ComparisonFunctionType cmpfun)
 {
    bool node_created;
@@ -279,8 +279,8 @@ void* PObjMapStore(PObjMap_p *root, void* key, void* value,
 //
 /----------------------------------------------------------------------*/
 
-void** PObjMapGetRef(PObjMap_p *root, void* key, ComparisonFunctionType cmpfun, 
-                    bool* updated_map)
+void** PObjMapGetRef(PObjMap_p* root, void* key, ComparisonFunctionType cmpfun,
+                     bool* updated_map)
 {
    PObjMap_p handle, newnode;
 
@@ -308,7 +308,6 @@ void** PObjMapGetRef(PObjMap_p *root, void* key, ComparisonFunctionType cmpfun,
       }
       return &handle->value;
    }
-
 }
 
 /*-----------------------------------------------------------------------
@@ -324,12 +323,12 @@ void** PObjMapGetRef(PObjMap_p *root, void* key, ComparisonFunctionType cmpfun,
 //
 /----------------------------------------------------------------------*/
 
-void* PObjMapFind(PObjMap_p *root, void* key, ComparisonFunctionType cmpfun)
+void* PObjMapFind(PObjMap_p* root, void* key, ComparisonFunctionType cmpfun)
 {
    if(*root)
    {
       *root = splay_tree(*root, key, cmpfun);
-      if(cmpfun((*root)->key, key)==0)
+      if(cmpfun((*root)->key, key) == 0)
       {
          return (*root)->value;
       }
@@ -350,11 +349,10 @@ void* PObjMapFind(PObjMap_p *root, void* key, ComparisonFunctionType cmpfun)
 //
 /----------------------------------------------------------------------*/
 
-void* PObjMapExtract(PObjMap_p *root, void* key,
-                     ComparisonFunctionType cmpfun)
+void* PObjMapExtract(PObjMap_p* root, void* key, ComparisonFunctionType cmpfun)
 {
    PObjMap_p handle;
-   void*   res = NULL;
+   void* res = NULL;
 
    handle = do_extract_entry(root, key, cmpfun);
    if(handle)
@@ -405,10 +403,7 @@ void PObjMapFreeWDeleter(PObjMap_p root, KeyValDelFun del_fun)
 
 void dummy(void* a, void* b) {}
 
-void PObjMapFree(PObjMap_p root)
-{
-   PObjMapFreeWDeleter(root, dummy);
-}
+void PObjMapFree(PObjMap_p root) { PObjMapFreeWDeleter(root, dummy); }
 
 /*-----------------------------------------------------------------------
 //
@@ -481,10 +476,7 @@ void* PObjMapTraverseNext(PStack_p state, void** key)
 // Side Effects    : Changes the tree.
 //
 /----------------------------------------------------------------------*/
-inline size_t SizeOfPObjNode()
-{
-   return sizeof(PObjMap);
-}
+inline size_t SizeOfPObjNode() { return sizeof(PObjMap); }
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */

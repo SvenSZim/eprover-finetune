@@ -38,47 +38,46 @@ typedef long DStackPointer;
 
 typedef struct dstackcell
 {
-   long          size;    /* ...of allocated memory */
+   long size;             /* ...of allocated memory */
    DStackPointer current; /* First unused address, 0 for empty stack */
-   double        *stack;  /* Stack area */
-}DStackCell, *DStack_p;
+   double* stack;         /* Stack area */
+} DStackCell, *DStack_p;
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define DSTACK_DEFAULT_SIZE 32 /* Stacks grow exponentially (and never
+#define DSTACK_DEFAULT_SIZE                                                    \
+   32 /* Stacks grow exponentially (and never
               shrink unless explicitly freed) -
               take care */
 
 
 #define DStackCellAlloc() (DStackCell*)SizeMalloc(sizeof(DStackCell))
-#define DStackCellFree(junk)         SizeFree(junk, sizeof(DStackCell))
+#define DStackCellFree(junk) SizeFree(junk, sizeof(DStackCell))
 
 DStack_p DStackAlloc(void);
-void     DStackFree(DStack_p junk);
-#define  DStackEmpty(stack) ((stack)->current == 0)
-void     DStackReset(DStack_p stack);
+void DStackFree(DStack_p junk);
+#define DStackEmpty(stack) ((stack)->current == 0)
+void DStackReset(DStack_p stack);
 
-void     DStackPush(DStack_p stack, double val);
+void DStackPush(DStack_p stack, double val);
 
-#define  DStackGetSP(stack) ((stack)->current)
+#define DStackGetSP(stack) ((stack)->current)
 
-double   DStackPop(DStack_p stack);
+double DStackPop(DStack_p stack);
 
-double   DStackTop(DStack_p stack);
-double   DStackBelowTop(DStack_p stack);
+double DStackTop(DStack_p stack);
+double DStackBelowTop(DStack_p stack);
 
-double   DStackElement(DStack_p stack, DStackPointer pos);
+double DStackElement(DStack_p stack, DStackPointer pos);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

@@ -61,7 +61,7 @@ NormSubst_p NormSubstAlloc(void)
 {
    NormSubst_p handle = NormSubstCellAlloc();
 
-   handle->used_ids  = NULL;
+   handle->used_ids = NULL;
    handle->norm_funs = NULL;
    handle->norm_vars = NULL;
 

@@ -34,24 +34,21 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-long ComputeAllEqnResolvents(TB_p bank, Clause_p clause, ClauseSet_p
-              store, VarBank_p freshvars);
+long ComputeAllEqnResolvents(TB_p bank, Clause_p clause, ClauseSet_p store,
+                             VarBank_p freshvars);
 
-long ClauseERNormalizeVar(TB_p bank, Clause_p clause, ClauseSet_p
-           store, VarBank_p freshvars, bool strong);
+long ClauseERNormalizeVar(TB_p bank, Clause_p clause, ClauseSet_p store,
+                          VarBank_p freshvars, bool strong);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

@@ -29,20 +29,20 @@
 /*                  Data types                                         */
 /*---------------------------------------------------------------------*/
 
-#define NAME    "ekb_create"
+#define NAME "ekb_create"
 
 typedef enum
 {
-   OPT_NOOPT=0,
+   OPT_NOOPT = 0,
    OPT_HELP,
    OPT_VERSION,
    OPT_VERBOSE,
    OPT_NEG_NO,
    OPT_NEG_PROP,
    OPT_SELECT_EVAL
-}OptionCodes;
+} OptionCodes;
 
-ProblemType problemType  = PROBLEM_NOT_INIT;
+ProblemType problemType = PROBLEM_NOT_INIT;
 
 
 
@@ -50,44 +50,30 @@ ProblemType problemType  = PROBLEM_NOT_INIT;
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-OptCell opts[] =
-{
-   {OPT_HELP,
-    'h', "help",
-    NoArg, NULL,
-    "Print a short description of program usage and options."},
+OptCell opts[] = {
+   { OPT_HELP, 'h', "help", NoArg, NULL,
+     "Print a short description of program usage and options." },
 
-   {OPT_VERSION,
-    'V', "version",
-    NoArg, NULL,
-    "Print the version number of the program."},
+   { OPT_VERSION, 'V', "version", NoArg, NULL,
+     "Print the version number of the program." },
 
-   {OPT_VERBOSE,
-    'v', "verbose",
-    OptArg, "1",
-    "Verbose comments on the progress of the program."},
+   { OPT_VERBOSE, 'v', "verbose", OptArg, "1",
+     "Verbose comments on the progress of the program." },
 
-   {OPT_NEG_NO,
-    'n', "negative-example-number",
-    ReqArg, NULL,
-    "Set the (maximum) number of negative examples to pick if the "
-    "proof listing does not describe a successful proof."},
+   { OPT_NEG_NO, 'n', "negative-example-number", ReqArg, NULL,
+     "Set the (maximum) number of negative examples to pick if the "
+     "proof listing does not describe a successful proof." },
 
-   {OPT_NEG_PROP,
-    'p', "negative-example-proportion",
-    ReqArg, NULL,
-    "Set the maximum number of negative examples (expressed as a "
-    "proportion of the positive examples) to pick if the proof "
-    "listing does describe a successful proof"},
+   { OPT_NEG_PROP, 'p', "negative-example-proportion", ReqArg, NULL,
+     "Set the maximum number of negative examples (expressed as a "
+     "proportion of the positive examples) to pick if the proof "
+     "listing does describe a successful proof" },
 
-   {OPT_NOOPT,
-    '\0', NULL,
-    NoArg, NULL,
-    NULL}
+   { OPT_NOOPT, '\0', NULL, NoArg, NULL, NULL }
 };
 
 double neg_proportion = 1.0;
-long   neg_examples   =   0;
+long neg_examples = 0;
 
 /*---------------------------------------------------------------------*/
 /*                      Forward Declarations                           */
@@ -103,11 +89,11 @@ void print_help(FILE* out);
 
 int main(int argc, char* argv[])
 {
-   CLState_p       state;
-   KBDesc_p        handle;
-   char            *basename = "E_KNOWLEDGE";
-   DStr_p          name;
-   FILE            *out;
+   CLState_p state;
+   KBDesc_p handle;
+   char* basename = "E_KNOWLEDGE";
+   DStr_p name;
+   FILE* out;
 
    assert(argv[0]);
 
@@ -118,7 +104,8 @@ int main(int argc, char* argv[])
    if(state->argc > 1)
    {
       Error("Only one non-option argument (name of the knowledge base)"
-       " expected", USAGE_ERROR);
+            " expected",
+            USAGE_ERROR);
    }
    if(state->argc == 1)
    {
@@ -131,18 +118,16 @@ int main(int argc, char* argv[])
 
    VERBOUT("Creating base directory...\n");
 
-   if(mkdir(basename,S_IRWXU|S_IRWXG))
+   if(mkdir(basename, S_IRWXU | S_IRWXG))
    {
       TmpErrno = errno;
-      SysError("Cannot create base directory '%s'",
-               SYNTAX_ERROR,
-               basename);
+      SysError("Cannot create base directory '%s'", SYNTAX_ERROR, basename);
    }
    VERBOUT("...successful.\nCreating files...\n");
 
    name = DStrAlloc();
 
-   handle = KBDescAlloc(KB_VERSION, neg_proportion,neg_examples);
+   handle = KBDescAlloc(KB_VERSION, neg_proportion, neg_examples);
 
    out = OutOpen(KBFileName(name, basename, "description"));
    KBDescPrint(out, handle);
@@ -151,27 +136,24 @@ int main(int argc, char* argv[])
 
    out = OutOpen(KBFileName(name, basename, "signature"));
    fprintf(out,
-           COMCHAR" Special function symbols that are not generalized.\n"
-           COMCHAR" You need to hand-hack this at the moment.\n");
+           COMCHAR
+           " Special function symbols that are not generalized.\n" COMCHAR
+           " You need to hand-hack this at the moment.\n");
    OutClose(out);
 
    out = OutOpen(KBFileName(name, basename, "problems"));
-   fprintf(out,
-           COMCHAR" Example names and features. \n");
+   fprintf(out, COMCHAR " Example names and features. \n");
    OutClose(out);
 
    out = OutOpen(KBFileName(name, basename, "clausepatterns"));
-   fprintf(out,
-           COMCHAR" Individual annotated patterns. \n");
+   fprintf(out, COMCHAR " Individual annotated patterns. \n");
    OutClose(out);
 
    VERBOUT("...done.\nCreating subdirectory FILES...\n");
 
-   if(mkdir(KBFileName(name, basename, "FILES"), S_IRWXU|S_IRWXG))
+   if(mkdir(KBFileName(name, basename, "FILES"), S_IRWXU | S_IRWXG))
    {
-      SysError("Cannot create base directory '%s'",
-               FILE_ERROR,
-               basename);
+      SysError("Cannot create base directory '%s'", FILE_ERROR, basename);
       TmpErrno = errno;
    }
    VERBOUT("...done.\nNew knowledge base complete.\n");
@@ -206,37 +188,38 @@ CLState_p process_options(int argc, char* argv[])
 {
    Opt_p handle;
    CLState_p state;
-   char*  arg;
+   char* arg;
 
-   state = CLStateAlloc(argc,argv);
+   state = CLStateAlloc(argc, argv);
 
    while((handle = CLStateGetOpt(state, &arg, opts)))
    {
       switch(handle->option_code)
       {
-      case OPT_VERBOSE:
-       Verbose = CLStateGetIntArg(handle, arg);
-       break;
-      case OPT_HELP:
-       print_help(stdout);
-       exit(NO_ERROR);
-      case OPT_VERSION:
-       printf(NAME " " VERSION "\n");
-       exit(NO_ERROR);
-      case OPT_NEG_NO:
-       neg_examples = CLStateGetIntArg(handle, arg);
-       break;
-      case OPT_NEG_PROP:
-       neg_proportion = CLStateGetFloatArg(handle, arg);
-       if(neg_proportion < 0)
-       {
-          Error("Option -p (--negative-example-proportion)"
-           "requires positive argument.}", USAGE_ERROR);
-       }
-       break;
-     default:
-    assert(false);
-    break;
+         case OPT_VERBOSE:
+            Verbose = CLStateGetIntArg(handle, arg);
+            break;
+         case OPT_HELP:
+            print_help(stdout);
+            exit(NO_ERROR);
+         case OPT_VERSION:
+            printf(NAME " " VERSION "\n");
+            exit(NO_ERROR);
+         case OPT_NEG_NO:
+            neg_examples = CLStateGetIntArg(handle, arg);
+            break;
+         case OPT_NEG_PROP:
+            neg_proportion = CLStateGetFloatArg(handle, arg);
+            if(neg_proportion < 0)
+            {
+               Error("Option -p (--negative-example-proportion)"
+                     "requires positive argument.}",
+                     USAGE_ERROR);
+            }
+            break;
+         default:
+            assert(false);
+            break;
       }
    }
    return state;
@@ -245,8 +228,7 @@ CLState_p process_options(int argc, char* argv[])
 void print_help(FILE* out)
 {
    fprintf(out, "\n\
-\n"
-NAME " " VERSION "\n\
+\n" NAME " " VERSION "\n\
 \n\
 Usage: " NAME " [options] [<name>]\n\
 \n\

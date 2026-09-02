@@ -35,23 +35,23 @@
 
 typedef struct fcode_feature_sort_cell
 {
-   int     key0;
-   int     key1;
-   int     key2;
-   int     key3;
-   int     freq;
-   int     conjfreq;
-   int     axiomfreq;
-   int     pos_rank;
+   int key0;
+   int key1;
+   int key2;
+   int key3;
+   int freq;
+   int conjfreq;
+   int axiomfreq;
+   int pos_rank;
    FunCode symbol;
-}FCodeFeatureSortCell, *FCodeFeatureSort_p;
+} FCodeFeatureSortCell, *FCodeFeatureSort_p;
 
 
 typedef struct fcode_feature_array_cell
 {
    long size;
    FCodeFeatureSort_p array;
-}FCodeFeatureArrayCell, *FCodeFeatureArray_p;
+} FCodeFeatureArrayCell, *FCodeFeatureArray_p;
 
 
 
@@ -60,15 +60,17 @@ typedef struct fcode_feature_array_cell
 /*---------------------------------------------------------------------*/
 
 
-#define FCodeFeatureArrayCellAlloc() \
-        (FCodeFeatureArrayCell*)SizeMalloc(sizeof(FCodeFeatureArrayCell))
-#define FCodeFeatureArrayCellFree(junk) \
-        SizeFree(junk, sizeof(FCodeFeatureArrayCell))
+#define FCodeFeatureArrayCellAlloc()                                           \
+   (FCodeFeatureArrayCell*)SizeMalloc(sizeof(FCodeFeatureArrayCell))
+#define FCodeFeatureArrayCellFree(junk)                                        \
+   SizeFree(junk, sizeof(FCodeFeatureArrayCell))
 
 FCodeFeatureArray_p FCodeFeatureArrayAlloc(Sig_p sig, ClauseSet_p axioms);
 
-void FCodeFeatureArrayUpdateOccKey(FCodeFeatureArray_p array, OrderParms_p oparms);
-void FCodeFeatureArrayUpdateSymbKey(FCodeFeatureArray_p array, Sig_p sig, OrderParms_p oparms);
+void FCodeFeatureArrayUpdateOccKey(FCodeFeatureArray_p array,
+                                   OrderParms_p oparms);
+void FCodeFeatureArrayUpdateSymbKey(FCodeFeatureArray_p array, Sig_p sig,
+                                    OrderParms_p oparms);
 void FCodeFeatureArrayFree(FCodeFeatureArray_p junk);
 void FCodeFeatureArraySort(FCodeFeatureArray_p array);
 

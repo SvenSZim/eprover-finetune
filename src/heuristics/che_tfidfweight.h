@@ -31,7 +31,7 @@
 
 typedef struct tfidfweightparamcell
 {
-   OCB_p        ocb;
+   OCB_p ocb;
    ProofState_p proofstate;
 
    VarNormStyle var_norm;
@@ -44,38 +44,30 @@ typedef struct tfidfweightparamcell
    double tf_fact;
 
    TermWeightExtension_p twe;
-   void   (*init_fun)(struct tfidfweightparamcell*);
-}TfIdfWeightParamCell, *TfIdfWeightParam_p;
+   void (*init_fun)(struct tfidfweightparamcell*);
+} TfIdfWeightParamCell, *TfIdfWeightParam_p;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define TfIdfWeightParamCellAlloc() (TfIdfWeightParamCell*) \
-        SizeMalloc(sizeof(TfIdfWeightParamCell))
-#define TfIdfWeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(TfIdfWeightParamCell))
+#define TfIdfWeightParamCellAlloc()                                            \
+   (TfIdfWeightParamCell*)SizeMalloc(sizeof(TfIdfWeightParamCell))
+#define TfIdfWeightParamCellFree(junk)                                         \
+   SizeFree(junk, sizeof(TfIdfWeightParamCell))
 
 TfIdfWeightParam_p TfIdfWeightParamAlloc(void);
-void              TfIdfWeightParamFree(TfIdfWeightParam_p junk);
+void TfIdfWeightParamFree(TfIdfWeightParam_p junk);
 
 
-WFCB_p ConjectureTermTfIdfWeightParse(
-   Scanner_p in, 
-   OCB_p ocb, 
-   ProofState_p state);
+WFCB_p ConjectureTermTfIdfWeightParse(Scanner_p in, OCB_p ocb,
+                                      ProofState_p state);
 
 WFCB_p ConjectureTermTfIdfWeightInit(
-   ClausePrioFun prio_fun, 
-   OCB_p ocb,
-   ProofState_p proofstate,
-   VarNormStyle var_norm,
-   RelatedTermSet rel_terms,
-   int update_docs,
-   double tf_fact,
-   TermWeightExtenstionStyle ext_style,
-   double max_term_multiplier,
-   double max_literal_multiplier,
+   ClausePrioFun prio_fun, OCB_p ocb, ProofState_p proofstate,
+   VarNormStyle var_norm, RelatedTermSet rel_terms, int update_docs,
+   double tf_fact, TermWeightExtenstionStyle ext_style,
+   double max_term_multiplier, double max_literal_multiplier,
    double pos_multiplier);
 
 double ConjectureTermTfIdfWeightCompute(void* data, Clause_p clause);

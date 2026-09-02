@@ -64,23 +64,17 @@
 /*                         Internal Functions                          */
 /*---------------------------------------------------------------------*/
 
-static void ted_insert_term(
-   PStack_p terms,
-   Term_p term, 
-   VarBank_p vars, 
-   VarNormStyle var_norm)
+static void ted_insert_term(PStack_p terms, Term_p term, VarBank_p vars,
+                            VarNormStyle var_norm)
 {
    Term_p norm;
-   
-   norm = TermCopyNormalizeVars(vars,term,var_norm);
-   PStackPushP(terms,norm);
+
+   norm = TermCopyNormalizeVars(vars, term, var_norm);
+   PStackPushP(terms, norm);
 }
 
-static void ted_insert_subterms(
-   PStack_p terms,
-   Term_p term, 
-   VarBank_p vars, 
-   VarNormStyle var_norm)
+static void ted_insert_subterms(PStack_p terms, Term_p term, VarBank_p vars,
+                                VarNormStyle var_norm)
 {
    int i;
    PStack_p stack;
@@ -89,15 +83,16 @@ static void ted_insert_subterms(
    stack = PStackAlloc();
 
    PStackPushP(stack, term);
-   while (!PStackEmpty(stack))
+   while(!PStackEmpty(stack))
    {
       subterm = PStackPopP(stack);
-      if(TermIsFreeVar(subterm)) {
+      if(TermIsFreeVar(subterm))
+      {
          continue;
       }
-      ted_insert_term(terms,subterm,vars,var_norm);
+      ted_insert_term(terms, subterm, vars, var_norm);
 
-      for(i=0; i<subterm->arity; i++)
+      for(i = 0; i < subterm->arity; i++)
       {
          PStackPushP(stack, subterm->args[i]);
       }
@@ -106,39 +101,34 @@ static void ted_insert_subterms(
    PStackFree(stack);
 }
 
-static void ted_insert_topgens(
-   PStack_p terms, 
-   Term_p term, 
-   VarBank_p vars,
-   Sig_p sig,
-   VarNormStyle var_norm)
+static void ted_insert_topgens(PStack_p terms, Term_p term, VarBank_p vars,
+                               Sig_p sig, VarNormStyle var_norm)
 {
    int i;
    PStack_p topgens;
    Term_p topgen;
 
-   topgens = ComputeTopGeneralizations(term,vars,sig);
-   for (i=0; i<topgens->current; i++) {
+   topgens = ComputeTopGeneralizations(term, vars, sig);
+   for(i = 0; i < topgens->current; i++)
+   {
       topgen = topgens->stack[i].p_val;
-      ted_insert_term(terms,topgen,vars,var_norm);
+      ted_insert_term(terms, topgen, vars, var_norm);
    }
    FreeGeneralizations(topgens);
 }
 
-static void ted_insert_subgens(
-   PStack_p terms, 
-   Term_p term, 
-   VarBank_p vars, 
-   VarNormStyle var_norm)
+static void ted_insert_subgens(PStack_p terms, Term_p term, VarBank_p vars,
+                               VarNormStyle var_norm)
 {
    int i;
    PStack_p subgens;
    Term_p genterm;
 
-   subgens = ComputeSubtermsGeneralizations(term,vars);
-   for (i=0; i<subgens->current; i++) {
+   subgens = ComputeSubtermsGeneralizations(term, vars);
+   for(i = 0; i < subgens->current; i++)
+   {
       genterm = subgens->stack[i].p_val;
-      ted_insert_term(terms,genterm,vars,var_norm);
+      ted_insert_term(terms, genterm, vars, var_norm);
    }
    FreeGeneralizations(subgens);
 }
@@ -149,141 +139,130 @@ static void ted_init(TreeWeightParam_p data)
    Clause_p anchor;
    Eqn_p lit;
 
-   if (data->terms) 
+   if(data->terms)
    {
       return;
    }
 
    data->terms = PStackAlloc();
    data->vars = VarBankAlloc(data->proofstate->signature->type_bank);
-   
+
    // for each axiom ...
    anchor = data->proofstate->axioms->anchor;
-   for (clause=anchor->succ; clause!=anchor; clause=clause->succ)
+   for(clause = anchor->succ; clause != anchor; clause = clause->succ)
    {
-      if(ClauseQueryTPTPType(clause)!=CPTypeNegConjecture) {
+      if(ClauseQueryTPTPType(clause) != CPTypeNegConjecture)
+      {
          continue;
       }
 
       // for each literal of a negated conjecture ...
-      for (lit=clause->literals; lit; lit=lit->next)
+      for(lit = clause->literals; lit; lit = lit->next)
       {
-         switch (data->rel_terms) {
-         case RTSConjectureTerms:
-            ted_insert_term(
-               data->terms,lit->lterm,data->vars,data->var_norm);
-            ted_insert_term(
-               data->terms,lit->rterm,data->vars,data->var_norm);
-            break;
-         case RTSConjectureSubterms:
-            ted_insert_subterms(
-               data->terms,lit->lterm,data->vars,data->var_norm);
-            ted_insert_subterms(
-               data->terms,lit->rterm,data->vars,data->var_norm);
-            break;
-         case RTSConjectureSubtermsTopGens:
-            ted_insert_subterms(
-               data->terms,lit->lterm,data->vars,data->var_norm);
-            ted_insert_subterms(
-               data->terms,lit->rterm,data->vars,data->var_norm);
-            ted_insert_topgens(data->terms,lit->lterm,data->vars,
-               data->ocb->sig,data->var_norm);
-            ted_insert_topgens(data->terms,lit->rterm,data->vars,
-               data->ocb->sig,data->var_norm);
-            break;
-         case RTSConjectureSubtermsAllGens:
-            ted_insert_subgens(
-               data->terms,lit->lterm,data->vars,data->var_norm);
-            ted_insert_subgens(
-               data->terms,lit->rterm,data->vars,data->var_norm);
-            break;
-         default:
-            Error("ConjectureTreeDistanceWeight parameters usage error (unsupported RelatedTermSet %d)", USAGE_ERROR, data->rel_terms);
-            break;
+         switch(data->rel_terms)
+         {
+            case RTSConjectureTerms:
+               ted_insert_term(data->terms, lit->lterm, data->vars,
+                               data->var_norm);
+               ted_insert_term(data->terms, lit->rterm, data->vars,
+                               data->var_norm);
+               break;
+            case RTSConjectureSubterms:
+               ted_insert_subterms(data->terms, lit->lterm, data->vars,
+                                   data->var_norm);
+               ted_insert_subterms(data->terms, lit->rterm, data->vars,
+                                   data->var_norm);
+               break;
+            case RTSConjectureSubtermsTopGens:
+               ted_insert_subterms(data->terms, lit->lterm, data->vars,
+                                   data->var_norm);
+               ted_insert_subterms(data->terms, lit->rterm, data->vars,
+                                   data->var_norm);
+               ted_insert_topgens(data->terms, lit->lterm, data->vars,
+                                  data->ocb->sig, data->var_norm);
+               ted_insert_topgens(data->terms, lit->rterm, data->vars,
+                                  data->ocb->sig, data->var_norm);
+               break;
+            case RTSConjectureSubtermsAllGens:
+               ted_insert_subgens(data->terms, lit->lterm, data->vars,
+                                  data->var_norm);
+               ted_insert_subgens(data->terms, lit->rterm, data->vars,
+                                  data->var_norm);
+               break;
+            default:
+               Error(
+                  "ConjectureTreeDistanceWeight parameters usage error (unsupported RelatedTermSet %d)",
+                  USAGE_ERROR, data->rel_terms);
+               break;
          }
       }
    }
 }
 
-static void ted_forest_distance(
-   long i, 
-   long j, 
-   long* l1, 
-   long* l2, 
-   FunCode* code1,
-   FunCode* code2,
-   int len2,
-   long td[][len2],
-   int ins_cost, 
-   int del_cost, 
-   int ch_cost)
+static void ted_forest_distance(long i, long j, long* l1, long* l2,
+                                FunCode* code1, FunCode* code2, int len2,
+                                long td[][len2], int ins_cost, int del_cost,
+                                int ch_cost)
 {
-   long fd[i+1][j+1];
+   long fd[i + 1][j + 1];
    long di, dj;
-   
-   for (di=0; di<=i; di++) 
+
+   for(di = 0; di <= i; di++)
    {
-      for (dj=0; dj<=j; dj++) 
+      for(dj = 0; dj <= j; dj++)
       {
          fd[di][dj] = 0L;
       }
    }
 
-   fd[l1[i]-1][l2[j]-1] = 0;
-   for (di=l1[i]; di<=i; di++) 
+   fd[l1[i] - 1][l2[j] - 1] = 0;
+   for(di = l1[i]; di <= i; di++)
    {
-      fd[di][l2[j]-1] = fd[di-1][l2[j]-1]+del_cost;
+      fd[di][l2[j] - 1] = fd[di - 1][l2[j] - 1] + del_cost;
    }
-   for (dj=l2[j]; dj<=j; dj++) 
+   for(dj = l2[j]; dj <= j; dj++)
    {
-      fd[l1[i]-1][dj] = fd[l1[i]-1][dj-1]+ins_cost;
+      fd[l1[i] - 1][dj] = fd[l1[i] - 1][dj - 1] + ins_cost;
    }
-   for (di=l1[i]; di<=i; di++)
+   for(di = l1[i]; di <= i; di++)
    {
-      for (dj=l2[j]; dj<=j; dj++)
+      for(dj = l2[j]; dj <= j; dj++)
       {
-         if ((l1[di]==l1[i]) && (l2[dj]==l2[j]))
+         if((l1[di] == l1[i]) && (l2[dj] == l2[j]))
          {
             fd[di][dj] = MIN3(
-               fd[di-1][dj]+del_cost,
-               fd[di][dj-1]+ins_cost,
-               fd[di-1][dj-1]+(code1[di]==code2[dj]?0:ch_cost));
+               fd[di - 1][dj] + del_cost, fd[di][dj - 1] + ins_cost,
+               fd[di - 1][dj - 1] + (code1[di] == code2[dj] ? 0 : ch_cost));
             td[di][dj] = fd[di][dj];
          }
          else
          {
-            fd[di][dj] = MIN3(
-               fd[di-1][dj]+del_cost,
-               fd[di][dj-1]+ins_cost,
-               fd[l1[di]-1][l2[dj]-1]+td[di][dj]);
+            fd[di][dj] =
+               MIN3(fd[di - 1][dj] + del_cost, fd[di][dj - 1] + ins_cost,
+                    fd[l1[di] - 1][l2[dj] - 1] + td[di][dj]);
          }
       }
    }
 }
 
-static long ted_lmld_kr(
-   Term_p term, 
-   long* l,
-   PStack_p kr,
-   FunCode* code,
-   long* fresh, 
-   bool isroot)
+static long ted_lmld_kr(Term_p term, long* l, PStack_p kr, FunCode* code,
+                        long* fresh, bool isroot)
 {
    int i;
    long idx, lidx;
 
-   if (TermIsFreeVar(term)||TermIsConst(term)) 
+   if(TermIsFreeVar(term) || TermIsConst(term))
    {
       idx = (*fresh)++;
       l[idx] = idx;
       lidx = idx;
    }
-   else 
+   else
    {
-      lidx = ted_lmld_kr(term->args[0],l,kr,code,fresh,false);
-      for (i=1; i<term->arity; i++)
+      lidx = ted_lmld_kr(term->args[0], l, kr, code, fresh, false);
+      for(i = 1; i < term->arity; i++)
       {
-         ted_lmld_kr(term->args[i],l,kr,code,fresh,true);
+         ted_lmld_kr(term->args[i], l, kr, code, fresh, true);
       }
 
       idx = (*fresh)++;
@@ -291,7 +270,7 @@ static long ted_lmld_kr(
    }
 
    code[idx] = term->f_code;
-   if (isroot) 
+   if(isroot)
    {
       PStackPushInt(kr, idx);
       //printf(">>> key-root %ld\n", idx);
@@ -303,52 +282,49 @@ static long ted_lmld_kr(
    return lidx;
 }
 
-static double ted_term_distance(
-   Term_p term1,
-   Term_p term2,
-   int ins_cost, 
-   int del_cost, 
-   int ch_cost)
+static double ted_term_distance(Term_p term1, Term_p term2, int ins_cost,
+                                int del_cost, int ch_cost)
 {
-   long len1 = TermWeight(term1,1,1);
-   long len2 = TermWeight(term2,1,1);
-   long l1[len1+1];
-   long l2[len2+1];
-   FunCode code1[len1+1];
-   FunCode code2[len2+1];
-   long td[len1+1][len2+1];
+   long len1 = TermWeight(term1, 1, 1);
+   long len2 = TermWeight(term2, 1, 1);
+   long l1[len1 + 1];
+   long l2[len2 + 1];
+   FunCode code1[len1 + 1];
+   FunCode code2[len2 + 1];
+   long td[len1 + 1][len2 + 1];
    PStack_p kr1, kr2;
    long fresh;
    long x, y;
 
-   for (x=0; x<=len1; x++) 
+   for(x = 0; x <= len1; x++)
    {
-      for (y=0; y<=len2; y++) 
+      for(y = 0; y <= len2; y++)
       {
          td[x][y] = 0L;
       }
    }
-   
+
    kr1 = PStackAlloc();
    kr2 = PStackAlloc();
-   
-   fresh=1; ted_lmld_kr(term1,l1,kr1,code1,&fresh,true);
-   fresh=1; ted_lmld_kr(term2,l2,kr2,code2,&fresh,true);
 
-   for (x=0; x<kr1->current; x++) 
+   fresh = 1;
+   ted_lmld_kr(term1, l1, kr1, code1, &fresh, true);
+   fresh = 1;
+   ted_lmld_kr(term2, l2, kr2, code2, &fresh, true);
+
+   for(x = 0; x < kr1->current; x++)
    {
-      for (y=0; y<kr2->current; y++)
+      for(y = 0; y < kr2->current; y++)
       {
-         ted_forest_distance( 
-            kr1->stack[x].i_val, kr2->stack[y].i_val,
-            l1, l2, code1, code2, len2+1, td,
-            ins_cost, del_cost, ch_cost);      
+         ted_forest_distance(kr1->stack[x].i_val, kr2->stack[y].i_val, l1, l2,
+                             code1, code2, len2 + 1, td, ins_cost, del_cost,
+                             ch_cost);
       }
    }
 
    PStackFree(kr1);
    PStackFree(kr2);
-   
+
    //printf("TED-DISTANCE    ");
    //TermPrint(GlobalOut,term1,SIG,DEREF_NEVER);
    //printf(" &&  ");
@@ -364,14 +340,15 @@ static double ted_term_weight(Term_p term, TreeWeightParam_p data)
    double min;
    Term_p conj, norm;
 
-   norm = TermCopyNormalizeVars(data->vars,term,data->var_norm);
+   norm = TermCopyNormalizeVars(data->vars, term, data->var_norm);
 
    min = DBL_MAX;
-   for (i=0; i<data->terms->current; i++) 
+   for(i = 0; i < data->terms->current; i++)
    {
       conj = data->terms->stack[i].p_val;
-      min = MIN(min,ted_term_distance(norm,conj,
-         data->ins_cost,data->del_cost,data->ch_cost));
+      min = MIN(min,
+                ted_term_distance(norm, conj, data->ins_cost, data->del_cost,
+                                  data->ch_cost));
    }
 
    TermFree(norm);
@@ -398,10 +375,10 @@ static double ted_term_weight(Term_p term, TreeWeightParam_p data)
 TreeWeightParam_p TreeWeightParamAlloc(void)
 {
    TreeWeightParam_p res = TreeWeightParamCellAlloc();
-   
+
    res->terms = NULL;
-   res->vars  = NULL;
-   
+   res->vars = NULL;
+
    return res;
 }
 
@@ -421,9 +398,9 @@ void TreeWeightParamFree(TreeWeightParam_p junk)
 {
    Term_p term;
 
-   if (junk->terms) 
+   if(junk->terms)
    {
-      while (!PStackEmpty(junk->terms)) 
+      while(!PStackEmpty(junk->terms))
       {
          term = PStackPopP(junk->terms);
          TermFree(term);
@@ -431,14 +408,14 @@ void TreeWeightParamFree(TreeWeightParam_p junk)
       PStackFree(junk->terms);
       junk->terms = NULL;
    }
-   if (junk->vars)
+   if(junk->vars)
    {
       VarBankFree(junk->vars);
       junk->vars = NULL;
    }
    TreeWeightParamCellFree(junk);
 }
- 
+
 /*-----------------------------------------------------------------------
 //
 // Function: ConjectureTreeDistanceWeightParse()
@@ -451,11 +428,9 @@ void TreeWeightParamFree(TreeWeightParam_p junk)
 //
 /----------------------------------------------------------------------*/
 
-WFCB_p ConjectureTreeDistanceWeightParse(
-   Scanner_p in,  
-   OCB_p ocb, 
-   ProofState_p state)
-{   
+WFCB_p ConjectureTreeDistanceWeightParse(Scanner_p in, OCB_p ocb,
+                                         ProofState_p state)
+{
    ClausePrioFun prio_fun;
    double pos_multiplier, max_term_multiplier, max_literal_multiplier;
    TermWeightExtenstionStyle ext_style;
@@ -478,7 +453,7 @@ WFCB_p ConjectureTreeDistanceWeightParse(
    AcceptInpTok(in, Comma);
    ch_cost = ParseInt(in);
    AcceptInpTok(in, Comma);
-   
+
    ext_style = (TermWeightExtenstionStyle)ParseInt(in);
    AcceptInpTok(in, Comma);
    max_term_multiplier = ParseFloat(in);
@@ -487,20 +462,10 @@ WFCB_p ConjectureTreeDistanceWeightParse(
    AcceptInpTok(in, Comma);
    pos_multiplier = ParseFloat(in);
    AcceptInpTok(in, CloseBracket);
-   
+
    return ConjectureTreeDistanceWeightInit(
-      prio_fun, 
-      ocb,
-      state,
-      var_norm,
-      rel_terms,
-      ins_cost,
-      del_cost,
-      ch_cost,
-      ext_style,
-      max_term_multiplier,
-      max_literal_multiplier,
-      pos_multiplier);
+      prio_fun, ocb, state, var_norm, rel_terms, ins_cost, del_cost, ch_cost,
+      ext_style, max_term_multiplier, max_literal_multiplier, pos_multiplier);
 }
 
 /*-----------------------------------------------------------------------
@@ -516,42 +481,27 @@ WFCB_p ConjectureTreeDistanceWeightParse(
 /----------------------------------------------------------------------*/
 
 WFCB_p ConjectureTreeDistanceWeightInit(
-   ClausePrioFun prio_fun, 
-   OCB_p ocb,
-   ProofState_p proofstate,
-   VarNormStyle var_norm,
-   RelatedTermSet rel_terms,
-   int ins_cost,
-   int del_cost, 
-   int ch_cost,
-   TermWeightExtenstionStyle ext_style,
-   double max_term_multiplier,
-   double max_literal_multiplier,
-   double pos_multiplier)
+   ClausePrioFun prio_fun, OCB_p ocb, ProofState_p proofstate,
+   VarNormStyle var_norm, RelatedTermSet rel_terms, int ins_cost, int del_cost,
+   int ch_cost, TermWeightExtenstionStyle ext_style, double max_term_multiplier,
+   double max_literal_multiplier, double pos_multiplier)
 {
    TreeWeightParam_p data = TreeWeightParamAlloc();
 
-   data->init_fun   = ted_init;
-   data->ocb        = ocb;
+   data->init_fun = ted_init;
+   data->ocb = ocb;
    data->proofstate = proofstate;
-   data->var_norm   = var_norm;
-   data->rel_terms  = rel_terms;
-   data->ins_cost   = ins_cost;
-   data->del_cost   = del_cost;
-   data->ch_cost    = ch_cost;
+   data->var_norm = var_norm;
+   data->rel_terms = rel_terms;
+   data->ins_cost = ins_cost;
+   data->del_cost = del_cost;
+   data->ch_cost = ch_cost;
    data->twe = TermWeightExtensionAlloc(
-      max_term_multiplier,
-      max_literal_multiplier,
-      pos_multiplier,
-      ext_style,
-      (TermWeightFun)ted_term_weight,
-      data);
-   
-   return WFCBAlloc(
-      ConjectureTreeDistanceWeightCompute, 
-      prio_fun,
-      ConjectureTreeDistanceWeightExit, 
-      data);
+      max_term_multiplier, max_literal_multiplier, pos_multiplier, ext_style,
+      (TermWeightFun)ted_term_weight, data);
+
+   return WFCBAlloc(ConjectureTreeDistanceWeightCompute, prio_fun,
+                    ConjectureTreeDistanceWeightExit, data);
 }
 
 /*-----------------------------------------------------------------------
@@ -569,7 +519,7 @@ WFCB_p ConjectureTreeDistanceWeightInit(
 double ConjectureTreeDistanceWeightCompute(void* data, Clause_p clause)
 {
    TreeWeightParam_p local;
-   
+
    local = data;
    local->init_fun(data);
 
@@ -592,7 +542,7 @@ double ConjectureTreeDistanceWeightCompute(void* data, Clause_p clause)
 void ConjectureTreeDistanceWeightExit(void* data)
 {
    TreeWeightParam_p junk = data;
-   
+
    TermWeightExtensionFree(junk->twe);
    TreeWeightParamFree(junk);
 }

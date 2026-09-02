@@ -34,25 +34,25 @@
 
 typedef enum
 {
-   IndexNoIndex  =   0,
-   IndexArity    =   1,
-   IndexSymbol   =   2,
-   IndexTop      =   4,
-   IndexAltTop   =   8,
-   IndexCSTop    =  16,
-   IndexESTop    =  32,
-   IndexIdentity =  64,
-   IndexEmpty    = 128
-}IndexType;
+   IndexNoIndex = 0,
+   IndexArity = 1,
+   IndexSymbol = 2,
+   IndexTop = 4,
+   IndexAltTop = 8,
+   IndexCSTop = 16,
+   IndexESTop = 32,
+   IndexIdentity = 64,
+   IndexEmpty = 128
+} IndexType;
 
 
 typedef struct indextermcell
 {
-   Term_p   term;         /* Usually has reference if malloced() */
-   PatternSubst_p subst;  /* Shared, necessary for object-tree
+   Term_p term;          /* Usually has reference if malloced() */
+   PatternSubst_p subst; /* Shared, necessary for object-tree
                              comparison */
-   long           key;    /* The returned index number */
-}IndexTermCell, *IndexTerm_p;
+   long key;             /* The returned index number */
+} IndexTermCell, *IndexTerm_p;
 
 
 /* Operations on index:
@@ -67,18 +67,18 @@ typedef struct indextermcell
 
 typedef struct tsmindexcell
 {
-   long           ident;
-   IndexType      type;
-   int            depth;
-   long           count;
-   TB_p           bank;       /* Shared, only here for convenience */
-   PatternSubst_p subst;      /* Ditto */
+   long ident;
+   IndexType type;
+   int depth;
+   long count;
+   TB_p bank;            /* Shared, only here for convenience */
+   PatternSubst_p subst; /* Ditto */
    union
    {
-      PTree_p     t_index;    /* Map IndexTerms onto index number */
-      NumTree_p   n_index;    /* Map f_codes onto number */
-   }              tree;
-}TSMIndexCell, *TSMIndex_p;
+      PTree_p t_index;   /* Map IndexTerms onto index number */
+      NumTree_p n_index; /* Map f_codes onto number */
+   } tree;
+} TSMIndexCell, *TSMIndex_p;
 
 #define IndexDynamicDepth 0
 
@@ -89,29 +89,27 @@ typedef struct tsmindexcell
 
 extern char* IndexFunNames[];
 
-#define IndexTermCellAlloc()    (IndexTermCell*)SizeMalloc(sizeof(IndexTermCell))
+#define IndexTermCellAlloc() (IndexTermCell*)SizeMalloc(sizeof(IndexTermCell))
 #define IndexTermCellFree(junk) SizeFree(junk, sizeof(IndexTermCell))
 
 int GetIndexType(char* name);
 
-IndexTerm_p IndexTermAlloc(Term_p term, PatternSubst_p subst, long
-                           key);
-void         IndexTermFree(IndexTerm_p junk, TB_p bank);
+IndexTerm_p IndexTermAlloc(Term_p term, PatternSubst_p subst, long key);
+void IndexTermFree(IndexTerm_p junk, TB_p bank);
 
-int          IndexTermCompareFun(const void* term1, const void* term2);
+int IndexTermCompareFun(const void* term1, const void* term2);
 
-#define TSMIndexCellAlloc()    (TSMIndexCell*)SizeMalloc(sizeof(TSMIndexCell))
+#define TSMIndexCellAlloc() (TSMIndexCell*)SizeMalloc(sizeof(TSMIndexCell))
 #define TSMIndexCellFree(junk) SizeFree(junk, sizeof(TSMIndexCell))
 
 TSMIndex_p TSMIndexAlloc(IndexType type, int depth, TB_p bank,
                          PatternSubst_p subst);
-void       TSMIndexFree(TSMIndex_p junk);
+void TSMIndexFree(TSMIndex_p junk);
 
-long       TSMIndexFind(TSMIndex_p index, Term_p term, PatternSubst_p
-                        subst);
-long       TSMIndexInsert(TSMIndex_p index, Term_p term);
+long TSMIndexFind(TSMIndex_p index, Term_p term, PatternSubst_p subst);
+long TSMIndexInsert(TSMIndex_p index, Term_p term);
 
-void       TSMIndexPrint(FILE* out, TSMIndex_p index, int depth);
+void TSMIndexPrint(FILE* out, TSMIndex_p index, int depth);
 
 #endif
 

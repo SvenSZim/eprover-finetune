@@ -56,17 +56,17 @@ Changes
 
 static void push(DStack_p stack, double val)
 {
-   double *tmp;
-   long   old_size;
+   double* tmp;
+   long old_size;
 
    if(stack->current == stack->size)
    {
       /* Emulate Realloc-Functionality for use of SizeMalloc() */
 
       old_size = stack->size;
-      stack->size = stack->size*2;
+      stack->size = stack->size * 2;
       tmp = SizeMalloc(stack->size * sizeof(double));
-      memcpy(tmp, stack->stack, old_size*sizeof(double));
+      memcpy(tmp, stack->stack, old_size * sizeof(double));
       SizeFree(stack->stack, old_size * sizeof(double));
       stack->stack = tmp;
    }
@@ -138,10 +138,7 @@ void DStackFree(DStack_p junk)
 //
 /----------------------------------------------------------------------*/
 
-void DStackReset(DStack_p stack)
-{
-   stack->current = 0;
-}
+void DStackReset(DStack_p stack) { stack->current = 0; }
 
 /*-----------------------------------------------------------------------
 //
@@ -155,10 +152,7 @@ void DStackReset(DStack_p stack)
 //
 /----------------------------------------------------------------------*/
 
-void DStackPush(DStack_p stack, double val)
-{
-   push(stack, val);
-}
+void DStackPush(DStack_p stack, double val) { push(stack, val); }
 
 /*-----------------------------------------------------------------------
 //
@@ -197,7 +191,7 @@ double DStackTop(DStack_p stack)
 {
    assert(stack->current);
 
-   return stack->stack[stack->current-1];
+   return stack->stack[stack->current - 1];
 }
 
 
@@ -216,9 +210,9 @@ double DStackTop(DStack_p stack)
 
 double DStackBelowTop(DStack_p stack)
 {
-   assert(stack->current>=2);
+   assert(stack->current >= 2);
 
-   return stack->stack[stack->current-2];
+   return stack->stack[stack->current - 2];
 }
 
 
@@ -236,8 +230,8 @@ double DStackBelowTop(DStack_p stack)
 
 double DStackElement(DStack_p stack, DStackPointer pos)
 {
-   assert(pos<stack->current);
-   assert(pos>=0);
+   assert(pos < stack->current);
+   assert(pos >= 0);
 
    return stack->stack[pos];
 }

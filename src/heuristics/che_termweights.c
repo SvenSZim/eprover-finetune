@@ -33,15 +33,16 @@
 /*                         Internal Functions                          */
 /*---------------------------------------------------------------------*/
 
-static PStack_p get_subterm_generalizing_vars(
-   Term_p term, VarBank_p vars, NumTree_p* term_vars, long* fresh_var_code)
+static PStack_p get_subterm_generalizing_vars(Term_p term, VarBank_p vars,
+                                              NumTree_p* term_vars,
+                                              long* fresh_var_code)
 {
    PStack_p gen_vars;
    NumTree_p entry;
    Term_p fresh_var;
 
    entry = NumTreeFind(term_vars, term->entry_no);
-   if (!entry) 
+   if(!entry)
    {
       entry = NumTreeCellAllocEmpty();
       entry->key = term->entry_no;
@@ -50,7 +51,8 @@ static PStack_p get_subterm_generalizing_vars(
    }
 
    gen_vars = entry->val1.p_val;
-   fresh_var = VarBankVarAssertAlloc(vars, *fresh_var_code, vars->sort_table->i_type);
+   fresh_var =
+      VarBankVarAssertAlloc(vars, *fresh_var_code, vars->sort_table->i_type);
    (*fresh_var_code) -= 2;
    PStackPushP(gen_vars, fresh_var);
 
@@ -58,9 +60,7 @@ static PStack_p get_subterm_generalizing_vars(
 }
 
 static PStack_p compute_subterms_generalizations(
-   Term_p term, 
-   VarBank_p vars,
-   PStack_p all,
+   Term_p term, VarBank_p vars, PStack_p all,
    NumTree_p* term_vars, // Term_p.entry_no -> PStack_p
    long* fresh_var_code)
 {
@@ -76,65 +76,65 @@ static PStack_p compute_subterms_generalizations(
 
    gens = PStackAlloc();
 
-   gen_vars = get_subterm_generalizing_vars(
-      term,vars,term_vars,fresh_var_code);
+   gen_vars =
+      get_subterm_generalizing_vars(term, vars, term_vars, fresh_var_code);
    PStackPushStack(gens, gen_vars);
 
-   if (TermIsAnyVar(term)) 
+   if(TermIsAnyVar(term))
    {
       return gens;
    }
- 
-   if (TermIsConst(term)) 
+
+   if(TermIsConst(term))
    {
-      copy = TermTopAlloc(term->f_code,0);
+      copy = TermTopAlloc(term->f_code, 0);
       TermSetBank(copy, TermGetBank(term));
-      PStackPushP(gens,copy);
-      PStackPushP(all,copy);
+      PStackPushP(gens, copy);
+      PStackPushP(all, copy);
       copy->properties = term->properties;
       copy->type = term->type;
       return gens;
    }
 
    assert(term->arity > 0);
-      
+
    cur = FixedDArrayAlloc(term->arity);
    max = FixedDArrayAlloc(term->arity);
-   sgens = PDArrayAlloc(term->arity,1);
+   sgens = PDArrayAlloc(term->arity, 1);
 
-   for (i=0; i<term->arity; i++)
+   for(i = 0; i < term->arity; i++)
    {
-      sgen = compute_subterms_generalizations(
-         term->args[i],vars,all,term_vars,fresh_var_code);
+      sgen = compute_subterms_generalizations(term->args[i], vars, all,
+                                              term_vars, fresh_var_code);
       assert(sgen->current >= 1);
       max->array[i] = sgen->current - 1;
-      PDArrayAssignP(sgens,i,sgen);
+      PDArrayAssignP(sgens, i, sgen);
    }
 
    int iter_counter = 0;
-   for (is_max=TupleInit(cur); is_max; is_max=TupleNext(cur,max)) 
+   for(is_max = TupleInit(cur); is_max; is_max = TupleNext(cur, max))
    {
-      if (iter_counter > TERM_MAX_GENS) 
+      if(iter_counter > TERM_MAX_GENS)
       {
          break;
       }
-      copy = TermTopAlloc(term->f_code,term->arity);
+      copy = TermTopAlloc(term->f_code, term->arity);
       TermSetBank(copy, TermGetBank(term));
-      for (i=0; i<term->arity; i++)
+      for(i = 0; i < term->arity; i++)
       {
-         sgen = PDArrayElementP(sgens,i);
-         copy->args[i] = PStackElementP(sgen,cur->array[i]);
+         sgen = PDArrayElementP(sgens, i);
+         copy->args[i] = PStackElementP(sgen, cur->array[i]);
       }
       copy->properties = term->properties;
       copy->type = term->type;
-      PStackPushP(gens,copy);
-      PStackPushP(all,copy);
+      PStackPushP(gens, copy);
+      PStackPushP(all, copy);
       iter_counter++;
    }
 
-   for (i=0; i<term->arity; i++)
+   for(i = 0; i < term->arity; i++)
    {
-      sgen = PDArrayElementP(sgens,i);
+      sgen = PDArrayElementP(sgens, i);
       PStackFree(sgen);
    }
    FixedDArrayFree(max);
@@ -175,17 +175,17 @@ PStack_p ComputeSubtermsGeneralizations(Term_p term, VarBank_p vars)
    term_vars = NULL;
    fresh_var_code = -2;
 
-   gens = compute_subterms_generalizations(
-      term,vars,all,&term_vars,&fresh_var_code);
+   gens = compute_subterms_generalizations(term, vars, all, &term_vars,
+                                           &fresh_var_code);
 
    PStackFree(gens);
    stack = NumTreeTraverseInit(term_vars);
-   while ((item=NumTreeTraverseNext(stack)))
+   while((item = NumTreeTraverseNext(stack)))
    {
       PStackFree(item->val1.p_val);
    }
    NumTreeTraverseExit(stack);
-   NumTreeFree(term_vars); 
+   NumTreeFree(term_vars);
 
    return all;
 }
@@ -211,25 +211,25 @@ PStack_p ComputeTopGeneralizations(Term_p term, VarBank_p vars, Sig_p sig)
    PStack_p stack, topgens;
    Term_p subterm, topgen;
 
-   occurs = FixedDArrayAlloc(sig->f_count+1);
-   for (code=1; code<=sig->f_count; code++)
+   occurs = FixedDArrayAlloc(sig->f_count + 1);
+   for(code = 1; code <= sig->f_count; code++)
    {
       occurs->array[code] = 0;
    }
-   
+
    stack = PStackAlloc();
    PStackPushP(stack, term);
-   while (!PStackEmpty(stack))
+   while(!PStackEmpty(stack))
    {
       subterm = PStackPopP(stack);
-      if (TermIsFreeVar(subterm) || TermIsConst(subterm))
+      if(TermIsFreeVar(subterm) || TermIsConst(subterm))
       {
          continue;
       }
-      
+
       occurs->array[subterm->f_code] = 1;
-      
-      for(i=1; i<subterm->arity; i++)
+
+      for(i = 1; i < subterm->arity; i++)
       {
          PStackPushP(stack, subterm->args[i]);
       }
@@ -237,20 +237,21 @@ PStack_p ComputeTopGeneralizations(Term_p term, VarBank_p vars, Sig_p sig)
    PStackFree(stack);
 
    topgens = PStackAlloc();
-   for (code=1; code<=sig->f_count; code++)
+   for(code = 1; code <= sig->f_count; code++)
    {
-      if (!occurs->array[code]) 
+      if(!occurs->array[code])
       {
          continue;
       }
-      
+
       topgen = TermTopAlloc(code, sig->f_info[code].arity);
       TermSetBank(topgen, TermGetBank(term));
-      for (i=0; i<sig->f_info[code].arity; i++)
+      for(i = 0; i < sig->f_info[code].arity; i++)
       {
-         topgen->args[i] = VarBankVarAssertAlloc(vars, -2*(i+1), vars->sort_table->i_type); 
+         topgen->args[i] =
+            VarBankVarAssertAlloc(vars, -2 * (i + 1), vars->sort_table->i_type);
       }
-      if (SigIsPredicate(sig,code)) 
+      if(SigIsPredicate(sig, code))
       {
          TermCellSetProp(topgen, TPPredPos);
          topgen->type = vars->sort_table->bool_type;
@@ -282,7 +283,7 @@ void FreeGeneralizations(PStack_p gens)
 {
    Term_p gen;
 
-   while (!PStackEmpty(gens))
+   while(!PStackEmpty(gens))
    {
       gen = PStackPopP(gens);
       TermTopFree(gen);
@@ -307,7 +308,7 @@ int TupleInit(FixedDArray_p cur)
 {
    int i;
 
-   for (i=0; i<cur->size; i++) 
+   for(i = 0; i < cur->size; i++)
    {
       cur->array[i] = 0;
    }
@@ -333,21 +334,22 @@ int TupleNext(FixedDArray_p cur, FixedDArray_p max)
 {
    int i;
 
-   for (i=cur->size-1; i>=0; i--) 
+   for(i = cur->size - 1; i >= 0; i--)
    {
-      if (cur->array[i] < max->array[i])
+      if(cur->array[i] < max->array[i])
       {
          break;
       }
    }
 
-   if (i == -1)
+   if(i == -1)
    {
       return 0; // cur is maximal value
    }
 
    cur->array[i]++;
-   for (i=i+1; i<cur->size; i++) {
+   for(i = i + 1; i < cur->size; i++)
+   {
       cur->array[i] = 0;
    }
 
@@ -370,7 +372,7 @@ void TuplePrint(FixedDArray_p t)
 {
    int i;
    fprintf(GlobalOut, "(");
-   for (i=0; i<t->size; i++) 
+   for(i = 0; i < t->size; i++)
    {
       fprintf(GlobalOut, "%ld,", t->array[i]);
    }
@@ -400,28 +402,28 @@ void TBIncSubtermsFreqs(Term_p term, NumTree_p* freqs)
    stack = PStackAlloc();
 
    PStackPushP(stack, term);
-   while (!PStackEmpty(stack))
+   while(!PStackEmpty(stack))
    {
       subterm = PStackPopP(stack);
-      if (TermIsFreeVar(subterm))
+      if(TermIsFreeVar(subterm))
       {
          continue;
       }
-         
+
       //subterm->freq++;
       cell = NumTreeFind(freqs, subterm->entry_no);
-      if (cell)
+      if(cell)
       {
          cell->val1.i_val++;
       }
-      else 
+      else
       {
          IntOrP val1;
          val1.i_val = 1;
          NumTreeStore(freqs, subterm->entry_no, val1, val1);
       }
-      
-      for(i=0; i<subterm->arity; i++)
+
+      for(i = 0; i < subterm->arity; i++)
       {
          PStackPushP(stack, subterm->args[i]);
       }
@@ -451,13 +453,13 @@ NumTree_p TBCountTermFreqs(TB_p bank)
    int i;
    NumTree_p freqs = NULL;
 
-   for(i=0; i<TERM_STORE_HASH_SIZE; i++)
-   {      
+   for(i = 0; i < TERM_STORE_HASH_SIZE; i++)
+   {
       PStackPushP(stack, bank->term_store.store[i]);
       while(!PStackEmpty(stack))
       {
          term = PStackPopP(stack);
-         if ((!term) || (!TermCellQueryProp(term,TPTopPos)))
+         if((!term) || (!TermCellQueryProp(term, TPTopPos)))
          {
             continue;
          }

@@ -151,7 +151,8 @@ int SubstBacktrack(Subst_p subst)
 //
 /----------------------------------------------------------------------*/
 
-PStackPointer SubstNormTerm(Term_p term, Subst_p subst, VarBank_p vars, Sig_p sig)
+PStackPointer SubstNormTerm(Term_p term, Subst_p subst, VarBank_p vars,
+                            Sig_p sig)
 {
    PStackPointer ret = PStackGetSP(subst);
    PLocalStackInit(stack);
@@ -237,13 +238,12 @@ long SubstPrint(FILE* out, Subst_p subst, Sig_p sig, DerefType deref)
    fprintf(out, "{");
    if(limit)
    {
-      SubstBindingPrint(out,  PStackElementP(subst,0), sig, deref);
+      SubstBindingPrint(out, PStackElementP(subst, 0), sig, deref);
       {
-         for(i=1; i<limit;i++)
+         for(i = 1; i < limit; i++)
          {
             fprintf(out, ", ");
-            SubstBindingPrint(out,  PStackElementP(subst,i), sig,
-                              deref);
+            SubstBindingPrint(out, PStackElementP(subst, i), sig, deref);
          }
       }
    }
@@ -271,8 +271,8 @@ long SubstPrint(FILE* out, Subst_p subst, Sig_p sig, DerefType deref)
 bool SubstIsRenaming(Subst_p subst)
 {
    PStackPointer i, size;
-   Term_p        var, inst;
-   DerefType     deref;
+   Term_p var, inst;
+   DerefType deref;
 
    assert(subst);
    size = PStackGetSP(subst);
@@ -280,12 +280,12 @@ bool SubstIsRenaming(Subst_p subst)
    /* Check that variables are instantiated with variables, reset
       TPOpFlag of all terms concerned */
 
-   for(i=0; i< size; i++)
+   for(i = 0; i < size; i++)
    {
-      var = PStackElementP(subst,i);
+      var = PStackElementP(subst, i);
       assert(TermIsFreeVar(var));
       assert(var->binding);
-      deref=DEREF_ONCE;
+      deref = DEREF_ONCE;
       inst = TermDeref(var, &deref);
 
       if(!TermIsFreeVar(inst))
@@ -298,10 +298,10 @@ bool SubstIsRenaming(Subst_p subst)
    /* For each unchecked variable, check wether another variable was
       already mapped to its instantiation */
 
-   for(i=0; i< size; i++)
+   for(i = 0; i < size; i++)
    {
-      var = PStackElementP(subst,i);
-      deref=DEREF_ONCE;
+      var = PStackElementP(subst, i);
+      deref = DEREF_ONCE;
       inst = TermDeref(var, &deref);
 
       if(TermCellQueryProp(inst, TPOpFlag))
@@ -364,13 +364,12 @@ void SubstSkolemizeTerm(Term_p term, Subst_p subst, Sig_p sig)
       if(!(term->binding))
       {
          PStackPushP(subst, term);
-         term->binding =
-            TermConstCellAlloc(SigGetNewSkolemCode(sig,0));
+         term->binding = TermConstCellAlloc(SigGetNewSkolemCode(sig, 0));
       }
    }
    else
    {
-      for(i=0;i<term->arity;i++)
+      for(i = 0; i < term->arity; i++)
       {
          SubstSkolemizeTerm(term->args[i], subst, sig);
       }
@@ -392,8 +391,7 @@ void SubstSkolemizeTerm(Term_p term, Subst_p subst, Sig_p sig)
 //
 /----------------------------------------------------------------------*/
 
-void SubstCompleteInstance(Subst_p subst, Term_p term,
-                           Term_p default_binding)
+void SubstCompleteInstance(Subst_p subst, Term_p term, Term_p default_binding)
 {
    int i;
 
@@ -406,7 +404,7 @@ void SubstCompleteInstance(Subst_p subst, Term_p term,
    }
    else
    {
-      for(i=0;i<term->arity;i++)
+      for(i = 0; i < term->arity; i++)
       {
          SubstCompleteInstance(subst, term->args[i], default_binding);
       }
@@ -429,7 +427,8 @@ void SubstCompleteInstance(Subst_p subst, Term_p term,
 //
 /----------------------------------------------------------------------*/
 
-PStackPointer SubstBindAppVar(Subst_p subst, Term_p var, Term_p to_bind, int up_to, TB_p bank)
+PStackPointer SubstBindAppVar(Subst_p subst, Term_p var, Term_p to_bind,
+                              int up_to, TB_p bank)
 {
    PStackPointer ret = PStackGetSP(subst);
    assert(var);
@@ -444,8 +443,9 @@ PStackPointer SubstBindAppVar(Subst_p subst, Term_p var, Term_p to_bind, int up_
    to_bind_pref->type = var->type;
 
    // if term is not shared it is prefix
-   var->binding = TermIsShared(to_bind_pref) ?
-                     to_bind_pref : TBTermTopInsert(bank, to_bind_pref);
+   var->binding = TermIsShared(to_bind_pref)
+      ? to_bind_pref
+      : TBTermTopInsert(bank, to_bind_pref);
    PStackPushP(subst, var);
 
    return ret;
@@ -469,7 +469,7 @@ bool SubstHasHOBinding(Subst_p subst)
    bool ans = false;
    if(problemType == PROBLEM_HO)
    {
-      for(PStackPointer i = 0; !ans && i<PStackGetSP(subst); i++)
+      for(PStackPointer i = 0; !ans && i < PStackGetSP(subst); i++)
       {
          Term_p var = PStackElementP(subst, i);
          ans = TypeIsArrow(var->type);

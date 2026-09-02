@@ -87,7 +87,7 @@ void VarHashFree(VarHash_p junk)
 {
    int i;
 
-   for(i=0; i<VAR_HASH_SIZE; i++)
+   for(i = 0; i < VAR_HASH_SIZE; i++)
    {
       VarHashEntryListFree(junk->hash[i]);
    }
@@ -132,7 +132,7 @@ VarHashEntry_p VarHashListFind(VarHashEntry_p list, Term_p var)
    {
       if(list->key == var)
       {
-    break;
+         break;
       }
       list = list->next;
    }
@@ -156,12 +156,12 @@ VarHashEntry_p VarHashListFind(VarHashEntry_p list, Term_p var)
 
 long VarHashAddValue(VarHash_p hash, Term_p var, long value)
 {
-   int index            = VarHashFunction(var);
+   int index = VarHashFunction(var);
    VarHashEntry_p entry = VarHashListFind(hash->hash[index], var);
 
    if(entry)
    {
-      entry->val+=value;
+      entry->val += value;
    }
    else
    {
@@ -187,12 +187,12 @@ long VarHashAddValue(VarHash_p hash, Term_p var, long value)
 //
 /----------------------------------------------------------------------*/
 
-void VarHashAddVarDistrib(VarHash_p hash, Term_p term, DerefType
-           deref, long add)
+void VarHashAddVarDistrib(VarHash_p hash, Term_p term, DerefType deref,
+                          long add)
 {
    assert(problemType != PROBLEM_HO);
    PStack_p stack = PStackAlloc();
-   int      i;
+   int i;
 
    PStackPushP(stack, term);
    PStackPushInt(stack, deref);
@@ -205,15 +205,15 @@ void VarHashAddVarDistrib(VarHash_p hash, Term_p term, DerefType
 
       if(TermIsFreeVar(term))
       {
-    VarHashAddValue(hash, term, add);
+         VarHashAddValue(hash, term, add);
       }
       else
       {
-    for(i=0; i<term->arity; i++)
-    {
-       PStackPushP(stack, term->args[i]);
-       PStackPushInt(stack, deref);
-    }
+         for(i = 0; i < term->arity; i++)
+         {
+            PStackPushP(stack, term->args[i]);
+            PStackPushInt(stack, deref);
+         }
       }
    }
    PStackFree(stack);
@@ -233,13 +233,13 @@ void VarHashAddVarDistrib(VarHash_p hash, Term_p term, DerefType
 //
 /----------------------------------------------------------------------*/
 
-void PDArrayAddVarDistrib(PDArray_p array, Term_p term, DerefType
-           deref, long add)
+void PDArrayAddVarDistrib(PDArray_p array, Term_p term, DerefType deref,
+                          long add)
 {
    assert(problemType != PROBLEM_HO);
    PStack_p stack = PStackAlloc();
-   int      i;
-   long     tmp;
+   int i;
+   long tmp;
 
    PStackPushP(stack, term);
    PStackPushInt(stack, deref);
@@ -252,16 +252,16 @@ void PDArrayAddVarDistrib(PDArray_p array, Term_p term, DerefType
 
       if(TermIsFreeVar(term))
       {
-    tmp = PDArrayElementInt(array, (-(term->f_code)));
-    PDArrayAssignInt(array, (-(term->f_code)), tmp+add);
+         tmp = PDArrayElementInt(array, (-(term->f_code)));
+         PDArrayAssignInt(array, (-(term->f_code)), tmp + add);
       }
       else
       {
-    for(i=0; i<term->arity; i++)
-    {
-       PStackPushP(stack, term->args[i]);
-       PStackPushInt(stack, deref);
-    }
+         for(i = 0; i < term->arity; i++)
+         {
+            PStackPushP(stack, term->args[i]);
+            PStackPushInt(stack, deref);
+         }
       }
    }
    PStackFree(stack);
@@ -271,7 +271,6 @@ void PDArrayAddVarDistrib(PDArray_p array, Term_p term, DerefType
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
 
 
 

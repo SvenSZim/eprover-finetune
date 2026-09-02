@@ -35,17 +35,14 @@
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
 
 
-long ClauseSetGDTransform(TB_p terms,
-                          ClauseSet_p clauses,
-                          bool add_goal_defs_pos,
-                          bool add_goal_defs_neg,
+long ClauseSetGDTransform(TB_p terms, ClauseSet_p clauses,
+                          bool add_goal_defs_pos, bool add_goal_defs_neg,
                           bool add_goal_defs_subterms);
 
 

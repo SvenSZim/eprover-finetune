@@ -58,13 +58,12 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-KBDesc_p KBDescAlloc(char* version, double neg_prop, long
-           neg_examples)
+KBDesc_p KBDescAlloc(char* version, double neg_prop, long neg_examples)
 {
    KBDesc_p handle = KBDescCellAlloc();
 
-   handle->version           = SecureStrdup(version);
-   handle->neg_proportion    = neg_prop;
+   handle->version = SecureStrdup(version);
+   handle->neg_proportion = neg_prop;
    handle->fail_neg_examples = neg_examples;
    return handle;
 }
@@ -103,15 +102,13 @@ void KBDescFree(KBDesc_p desc)
 void KBDescPrint(FILE* out, KBDesc_p desc)
 {
    fprintf(out,
-      COMCHAR" E theorem prover knowledge base description\n"
-      "Version     : \"%s\"\n"
-      "NegProp     : %8f  "COMCHAR" "
-      "Negative example proportion (successful proof search)\n"
-      "FailExamples: %8ld  "COMCHAR" "
-      "Number of clauses from a failed proof search\n",
-      desc->version,
-      desc->neg_proportion,
-      desc->fail_neg_examples);
+           COMCHAR " E theorem prover knowledge base description\n"
+                   "Version     : \"%s\"\n"
+                   "NegProp     : %8f  " COMCHAR " "
+                   "Negative example proportion (successful proof search)\n"
+                   "FailExamples: %8ld  " COMCHAR " "
+                   "Number of clauses from a failed proof search\n",
+           desc->version, desc->neg_proportion, desc->fail_neg_examples);
 }
 
 /*-----------------------------------------------------------------------
@@ -138,7 +135,8 @@ KBDesc_p KBDescParse(Scanner_p in)
    if(strcmp(handle->version, KB_VERSION) > 0)
    {
       Error("Knowledge base is younger than your tool set. Please"
-       " update from" E_URL, USAGE_ERROR);
+            " update from" E_URL,
+            USAGE_ERROR);
    }
    NextToken(in);
    AcceptInpId(in, "NegProp");
@@ -165,7 +163,7 @@ KBDesc_p KBDescParse(Scanner_p in)
 //
 /----------------------------------------------------------------------*/
 
-char* KBFileName(DStr_p name, char *basename, char* file)
+char* KBFileName(DStr_p name, char* basename, char* file)
 {
    DStrReset(name);
    DStrAppendStr(name, basename);

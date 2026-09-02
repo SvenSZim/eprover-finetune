@@ -27,7 +27,7 @@
 #include <che_hcb.h>
 
 void PredicateElimination(ClauseSet_p passive, ClauseSet_p archive,
-                          const HeuristicParms_p parms,  TB_p bank,
+                          const HeuristicParms_p parms, TB_p bank,
                           TB_p tmp_bank, VarBank_p fresh_vars);
 
 #endif

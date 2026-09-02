@@ -46,28 +46,28 @@ typedef struct fvindex_parms_cell
    bool eliminate_uninformative;
    long max_symbols;
    long symbol_slack;
-}FVIndexParmsCell, *FVIndexParms_p;
+} FVIndexParmsCell, *FVIndexParms_p;
 
 
 
 typedef struct fv_index_cell
 {
-   bool     final;
-   long     clause_count;
+   bool final;
+   long clause_count;
    union
    {
       IntMap_p successors;
-      PTree_p  clauses;
-   }u1;
-}FVIndexCell, *FVIndex_p;
+      PTree_p clauses;
+   } u1;
+} FVIndexCell, *FVIndex_p;
 
 typedef struct fvi_anchor_cell
 {
-   FVCollect_p  cspec;
+   FVCollect_p cspec;
    PermVector_p perm_vector;
-   FVIndex_p    index;
-   long         storage;
-}FVIAnchorCell, *FVIAnchor_p;
+   FVIndex_p index;
+   long storage;
+} FVIAnchorCell, *FVIAnchor_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -76,24 +76,25 @@ typedef struct fvi_anchor_cell
 
 /* extern FVIndexParmsCell FVIDefaultParameters; */
 
-#define FVIndexParmsCellAlloc() (FVIndexParmsCell*)SizeMalloc(sizeof(FVIndexParmsCell))
+#define FVIndexParmsCellAlloc()                                                \
+   (FVIndexParmsCell*)SizeMalloc(sizeof(FVIndexParmsCell))
 #define FVIndexParmsCellFree(junk) SizeFree(junk, sizeof(FVIndexParmsCell))
 
-void           FVIndexParmsInit(FVIndexParms_p parms);
+void FVIndexParmsInit(FVIndexParms_p parms);
 FVIndexParms_p FVIndexParmsAlloc(void);
 #define FVIndexParmsFree(junk) FVIndexParmsCellFree(junk)
 
-#define FVIndexCellAlloc()    (FVIndexCell*)SizeMalloc(sizeof(FVIndexCell))
+#define FVIndexCellAlloc() (FVIndexCell*)SizeMalloc(sizeof(FVIndexCell))
 #define FVIndexCellFree(junk) SizeFree(junk, sizeof(FVIndexCell))
 
 FVIndex_p FVIndexAlloc(void);
-void      FVIndexFree(FVIndex_p junk);
+void FVIndexFree(FVIndex_p junk);
 
-#define FVIAnchorCellAlloc()    (FVIAnchorCell*)SizeMalloc(sizeof(FVIAnchorCell))
+#define FVIAnchorCellAlloc() (FVIAnchorCell*)SizeMalloc(sizeof(FVIAnchorCell))
 #define FVIAnchorCellFree(junk) SizeFree(junk, sizeof(FVIAnchorCell))
 
 FVIAnchor_p FVIAnchorAlloc(FVCollect_p cspec, PermVector_p perm);
-void        FVIAnchorFree(FVIAnchor_p junk);
+void FVIAnchorFree(FVIAnchor_p junk);
 
 #ifdef CONSTANT_MEM_ESTIMATE
 #define FVINDEX_MEM 16
@@ -101,18 +102,18 @@ void        FVIAnchorFree(FVIAnchor_p junk);
 #define FVINDEX_MEM MEMSIZE(FVIndexCell)
 #endif
 
-#define FVIndexStorage(index) ((index)?(index)->storage:0)
+#define FVIndexStorage(index) ((index) ? (index)->storage : 0)
 
-FVIndex_p   FVIndexGetNextNonEmptyNode(FVIndex_p node, long key);
-void        FVIndexInsert(FVIAnchor_p index, FreqVector_p vec_clause);
+FVIndex_p FVIndexGetNextNonEmptyNode(FVIndex_p node, long key);
+void FVIndexInsert(FVIAnchor_p index, FreqVector_p vec_clause);
 
-bool        FVIndexDelete(FVIAnchor_p index, Clause_p clause);
+bool FVIndexDelete(FVIAnchor_p index, Clause_p clause);
 
-long        FVIndexCountNodes(FVIndex_p index, bool leaves, bool empty);
+long FVIndexCountNodes(FVIndex_p index, bool leaves, bool empty);
 
 FVPackedClause_p FVIndexPackClause(Clause_p clause, FVIAnchor_p anchor);
 
-void        FVIndexPrint(FILE* out, FVIndex_p index, bool fullterms);
+void FVIndexPrint(FILE* out, FVIndex_p index, bool fullterms);
 #endif
 
 /*---------------------------------------------------------------------*/

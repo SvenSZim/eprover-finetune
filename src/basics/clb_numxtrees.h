@@ -35,7 +35,6 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
@@ -52,28 +51,28 @@ Changes
 
 typedef struct numxtreecell
 {
-   long                key;
-   IntOrP              vals[NUMXTREEVALUES];
-   struct numxtreecell *lson;
-   struct numxtreecell *rson;
-}NumXTreeCell, *NumXTree_p;
+   long key;
+   IntOrP vals[NUMXTREEVALUES];
+   struct numxtreecell* lson;
+   struct numxtreecell* rson;
+} NumXTreeCell, *NumXTree_p;
 
 
 #define NumXTreeCellAlloc() (NumXTreeCell*)SizeMalloc(sizeof(NumXTreeCell))
-#define NumXTreeCellFree(junk)        SizeFree(junk, sizeof(NumXTreeCell))
+#define NumXTreeCellFree(junk) SizeFree(junk, sizeof(NumXTreeCell))
 
 
 NumXTree_p NumXTreeCellAllocEmpty(void);
-void      NumXTreeFree(NumXTree_p junk);
-NumXTree_p NumXTreeInsert(NumXTree_p *root, NumXTree_p newnode);
-bool       NumXTreeStore(NumXTree_p *root, long key, IntOrP val1, IntOrP val2);
-NumXTree_p NumXTreeFind(NumXTree_p *root, long key);
-NumXTree_p NumXTreeExtractEntry(NumXTree_p *root, long key);
-NumXTree_p NumXTreeExtractRoot(NumXTree_p *root);
-bool      NumXTreeDeleteEntry(NumXTree_p *root, long key);
-long      NumXTreeNodes(NumXTree_p root);
+void NumXTreeFree(NumXTree_p junk);
+NumXTree_p NumXTreeInsert(NumXTree_p* root, NumXTree_p newnode);
+bool NumXTreeStore(NumXTree_p* root, long key, IntOrP val1, IntOrP val2);
+NumXTree_p NumXTreeFind(NumXTree_p* root, long key);
+NumXTree_p NumXTreeExtractEntry(NumXTree_p* root, long key);
+NumXTree_p NumXTreeExtractRoot(NumXTree_p* root);
+bool NumXTreeDeleteEntry(NumXTree_p* root, long key);
+long NumXTreeNodes(NumXTree_p root);
 NumXTree_p NumXTreeMaxNode(NumXTree_p root);
-#define   NumXTreeMaxKey(tree) (NumXTreeMaxNode(tree)->key)
+#define NumXTreeMaxKey(tree) (NumXTreeMaxNode(tree)->key)
 
 PStack_p NumXTreeLimitedTraverseInit(NumXTree_p root, long limit);
 
@@ -86,8 +85,6 @@ AVL_TRAVERSE_DECLARATION(NumXTree, NumXTree_p)
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

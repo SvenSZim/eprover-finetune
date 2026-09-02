@@ -32,11 +32,11 @@ Changes
 
 typedef enum
 {
-   OPT_NOOPT=0,
+   OPT_NOOPT = 0,
    OPT_HELP,
    OPT_INT_EXAMPLE,
    OPT_FLOAT_EXAMPLE
-}OptionCodes;
+} OptionCodes;
 
 
 
@@ -44,33 +44,23 @@ typedef enum
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-OptCell opts[] =
-{
-   {OPT_HELP,
-    'h', "help",
-    NoArg, NULL,
-    "Print a short description of program usage and options."},
-   {OPT_INT_EXAMPLE,
-    'i', "int_example",
-    ReqArg, "1",
-    "Print the value given with the option.."},
-   {OPT_FLOAT_EXAMPLE,
-    'f', "float_example",
-    OptArg, "3.1415",
-    "Print the given argument or a default value."},
-   {OPT_NOOPT,
-    '\0', NULL,
-    NoArg, NULL,
-    NULL}
+OptCell opts[] = {
+   { OPT_HELP, 'h', "help", NoArg, NULL,
+     "Print a short description of program usage and options." },
+   { OPT_INT_EXAMPLE, 'i', "int_example", ReqArg, "1",
+     "Print the value given with the option.." },
+   { OPT_FLOAT_EXAMPLE, 'f', "float_example", OptArg, "3.1415",
+     "Print the given argument or a default value." },
+   { OPT_NOOPT, '\0', NULL, NoArg, NULL, NULL }
 };
 
-ProblemType problemType  = PROBLEM_NOT_INIT;
+ProblemType problemType = PROBLEM_NOT_INIT;
 
 /*---------------------------------------------------------------------*/
 /*                      Forward Declarations                           */
 /*---------------------------------------------------------------------*/
 
-void      print_help(FILE* out);
+void print_help(FILE* out);
 CLState_p process_options(int argc, char* argv[]);
 
 /*---------------------------------------------------------------------*/
@@ -90,12 +80,12 @@ int main(int argc, char* argv[])
 
    /* Use - (=stdin) as the default argument if no non-option argument
       remains: */
-   if(state->argc ==  0)
+   if(state->argc == 0)
    {
       CLStateInsertArg(state, "-");
    }
 
-   for(i=0; state->argv[i]; i++)
+   for(i = 0; state->argv[i]; i++)
    {
       printf("File to process: %s\n", state->argv[i]);
    }
@@ -124,28 +114,28 @@ CLState_p process_options(int argc, char* argv[])
 {
    Opt_p handle;
    CLState_p state;
-   char*  arg;
+   char* arg;
 
-   state = CLStateAlloc(argc,argv);
+   state = CLStateAlloc(argc, argv);
 
    while((handle = CLStateGetOpt(state, &arg, opts)))
    {
       switch(handle->option_code)
       {
-      case OPT_HELP:
-    print_help(stdout);
-    exit(NO_ERROR);
-      case OPT_INT_EXAMPLE:
-    printf("Integer option has value %ld\n",
-      CLStateGetIntArg(handle, arg));
-    break;
-      case OPT_FLOAT_EXAMPLE:
-    printf("Float option has value %f\n",
-      CLStateGetFloatArg(handle, arg));
-    break;
-      default:
-    assert(false);
-    break;
+         case OPT_HELP:
+            print_help(stdout);
+            exit(NO_ERROR);
+         case OPT_INT_EXAMPLE:
+            printf("Integer option has value %ld\n",
+                   CLStateGetIntArg(handle, arg));
+            break;
+         case OPT_FLOAT_EXAMPLE:
+            printf("Float option has value %f\n",
+                   CLStateGetFloatArg(handle, arg));
+            break;
+         default:
+            assert(false);
+            break;
       }
    }
    return state;
@@ -155,7 +145,7 @@ void print_help(FILE* out)
 {
    fprintf(out, "\n\
 \n\
-ex_commandline.c "VERSION"\n\
+ex_commandline.c " VERSION "\n\
 \n\
 Usage: ex_commandline [options] [files]\n\
 \n\

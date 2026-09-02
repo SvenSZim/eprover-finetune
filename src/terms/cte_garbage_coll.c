@@ -58,7 +58,7 @@ GCAdmin_p GCAdminAlloc()
 {
    GCAdmin_p handle = GCAdminCellAlloc();
 
-   handle->clause_sets  = NULL;
+   handle->clause_sets = NULL;
    handle->formula_sets = NULL;
 
    return handle;

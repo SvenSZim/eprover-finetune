@@ -44,7 +44,7 @@ typedef enum
    BONone,
    BODesired,
    BORequired
-}BOOutputType;
+} BOOutputType;
 
 
 /* Describe a batch specification file as used in CASC-J5. Note that
@@ -53,23 +53,22 @@ typedef enum
 
 typedef struct batch_spec_cell
 {
-   char         *executable;
-   IOFormat     format;
-   char*        category;     /* Just a name */
-   char*        train_dir;
-   bool         ordered;
+   char* executable;
+   IOFormat format;
+   char* category; /* Just a name */
+   char* train_dir;
+   bool ordered;
    BOOutputType res_assurance;
    BOOutputType res_proof;
    BOOutputType res_model;
    BOOutputType res_answer;
    BOOutputType res_list_fof;
-   long         per_prob_limit;  /* Wall clock, in seconds */
-   long         total_wtc_limit; /* Wall clock, in seconds */
-   PStack_p     includes;        /* Names of include files (char*) */
-   PStack_p     source_files; /* Input files (char*) */
-   PStack_p     dest_files;   /* Output files (char*) */
-}BatchSpecCell, *BatchSpec_p;
-
+   long per_prob_limit;   /* Wall clock, in seconds */
+   long total_wtc_limit;  /* Wall clock, in seconds */
+   PStack_p includes;     /* Names of include files (char*) */
+   PStack_p source_files; /* Input files (char*) */
+   PStack_p dest_files;   /* Output files (char*) */
+} BatchSpecCell, *BatchSpec_p;
 
 
 
@@ -77,50 +76,35 @@ typedef struct batch_spec_cell
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define BatchSpecCellAlloc()    (BatchSpecCell*)SizeMalloc(sizeof(BatchSpecCell))
+#define BatchSpecCellAlloc() (BatchSpecCell*)SizeMalloc(sizeof(BatchSpecCell))
 #define BatchSpecCellFree(junk) SizeFree(junk, sizeof(BatchSpecCell))
 
 BatchSpec_p BatchSpecAlloc(char* executable, IOFormat format);
-void        BatchSpecFree(BatchSpec_p spec);
-void        BatchSpecPrint(FILE* out, BatchSpec_p spec);
+void BatchSpecFree(BatchSpec_p spec);
+void BatchSpecPrint(FILE* out, BatchSpec_p spec);
 
 
-long        BatchStructFOFSpecInit(BatchSpec_p spec,
-                                   StructFOFSpec_p ctrl,
-                                   char *default_dir);
+long BatchStructFOFSpecInit(BatchSpec_p spec, StructFOFSpec_p ctrl,
+                            char* default_dir);
 
-BatchSpec_p BatchSpecParse(Scanner_p in, char* executable,
-                           char* category, char* train_dir,
-                           IOFormat format);
+BatchSpec_p BatchSpecParse(Scanner_p in, char* executable, char* category,
+                           char* train_dir, IOFormat format);
 
 #define BatchSpecProblemNo(spec) PStackGetSP((spec)->source_files)
 
 
-bool BatchProcessProblem(BatchSpec_p spec,
-                         long wct_limit,
-                         StructFOFSpec_p ctrl,
-                         char* jobname,
-                         ClauseSet_p cset,
-                         FormulaSet_p fset,
-                         FILE* out,
-                         int sock_fd,
-                         bool interactive);
+bool BatchProcessProblem(BatchSpec_p spec, long wct_limit, StructFOFSpec_p ctrl,
+                         char* jobname, ClauseSet_p cset, FormulaSet_p fset,
+                         FILE* out, int sock_fd, bool interactive);
 
-bool BatchProcessFile(BatchSpec_p spec,
-                      long wct_limit,
-                      StructFOFSpec_p ctrl,
-                      char* default_dir,
-                      char* source, char* dest);
+bool BatchProcessFile(BatchSpec_p spec, long wct_limit, StructFOFSpec_p ctrl,
+                      char* default_dir, char* source, char* dest);
 
-long BatchProcessProblems(BatchSpec_p spec,
-                          StructFOFSpec_p ctrl,
-                          long total_wtc_limit,
-                          char* default_dir,
+long BatchProcessProblems(BatchSpec_p spec, StructFOFSpec_p ctrl,
+                          long total_wtc_limit, char* default_dir,
                           char* dest_dir);
 
-void BatchProcessInteractive(BatchSpec_p spec,
-                             StructFOFSpec_p ctrl,
-                             FILE* fp);
+void BatchProcessInteractive(BatchSpec_p spec, StructFOFSpec_p ctrl, FILE* fp);
 
 
 void BatchProcessVariants(BatchSpec_p spec, char* variants[], char* provers[],

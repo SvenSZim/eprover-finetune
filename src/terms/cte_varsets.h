@@ -39,10 +39,10 @@ Changes
 
 typedef struct var_set_cell
 {
-   Term_p  t;           /* Term or formula covered by this structure */
-   bool    valid;       /* Is it up-to-date? */
+   Term_p t;   /* Term or formula covered by this structure */
+   bool valid; /* Is it up-to-date? */
    PTree_p vars;
-}VarSetCell, *VarSet_p;
+} VarSetCell, *VarSet_p;
 
 
 typedef PObjTree_p VarSetStore_p;
@@ -52,12 +52,12 @@ typedef PObjTree_p VarSetStore_p;
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define VarSetCellAlloc()    (VarSetCell*)SizeMalloc(sizeof(VarSetCell))
+#define VarSetCellAlloc() (VarSetCell*)SizeMalloc(sizeof(VarSetCell))
 #define VarSetCellFree(junk) SizeFree(junk, sizeof(VarSetCell))
 
 VarSet_p VarSetAlloc(Term_p term);
-void     VarSetReset(VarSet_p set);
-void     VarSetFree(VarSet_p set);
+void VarSetReset(VarSet_p set);
+void VarSetFree(VarSet_p set);
 
 bool VarSetInsert(VarSet_p set, Term_p var);
 void VarSetInsertVarSet(VarSet_p set, VarSet_p vars);
@@ -67,9 +67,9 @@ void VarSetCollectVars(VarSet_p set);
 void VarSetUnion(VarSet_p set, VarSet_p set1, VarSet_p set2);
 void VarSetMerge(VarSet_p set, VarSet_p set1);
 
-void     VarSetStoreFree(VarSetStore_p store);
-VarSet_p VarSetStoreFindVarSet(VarSetStore_p *store, Term_p key);
-VarSet_p VarSetStoreGetVarSet(VarSetStore_p *store, Term_p key);
+void VarSetStoreFree(VarSetStore_p store);
+VarSet_p VarSetStoreFindVarSet(VarSetStore_p* store, Term_p key);
+VarSet_p VarSetStoreGetVarSet(VarSetStore_p* store, Term_p key);
 
 
 #endif
@@ -77,8 +77,6 @@ VarSet_p VarSetStoreGetVarSet(VarSetStore_p *store, Term_p key);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

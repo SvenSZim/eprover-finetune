@@ -29,14 +29,14 @@
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-bool   ClausesHaveLocalVariables = true; /* Reassign variable numbers
+bool ClausesHaveLocalVariables = true;     /* Reassign variable numbers
                                             for each clause. This
                                             optimizes sharing, but
                                             will also loose
                                             inter-clause relationships
                                             needed for the analysis
                                             program */
-bool   ClausesHaveDisjointVariables = false; /* Make certain that each
+bool ClausesHaveDisjointVariables = false; /* Make certain that each
                                                 newly parsed clause
                                                 has fresh variables */
 
@@ -82,10 +82,10 @@ static long clause_perm_ident_counter = 0; /* Used to generate new
 
 static bool foundEqLitLater(OCB_p ocb, Eqn_p lits1, Eqn_p lits2)
 {
-   while (lits2)
+   while(lits2)
    {
-      if ((!EqnHasEquiv(lits2)) &&
-          (LiteralCompare(ocb, lits1, lits2) == to_equal))
+      if((!EqnHasEquiv(lits2)) &&
+         (LiteralCompare(ocb, lits1, lits2) == to_equal))
       {
          EqnSetProp(lits1, EPHasEquiv);
          EqnSetProp(lits2, EPHasEquiv);
@@ -112,21 +112,21 @@ Clause_p clause_copy_meta(Clause_p clause)
 {
    Clause_p handle = ClauseCellAlloc();
 
-   handle->ident       = clause->ident;
-   handle->neg_lit_no  = clause->neg_lit_no;
-   handle->pos_lit_no  = clause->pos_lit_no;
+   handle->ident = clause->ident;
+   handle->neg_lit_no = clause->neg_lit_no;
+   handle->pos_lit_no = clause->pos_lit_no;
    handle->evaluations = NULL;
-   handle->set         = NULL;
-   handle->properties  = clause->properties;
-   handle->info        = NULL;
-   handle->derivation  = NULL;
+   handle->set = NULL;
+   handle->properties = clause->properties;
+   handle->info = NULL;
+   handle->derivation = NULL;
    handle->feature_vec = NULL;
    handle->create_date = clause->create_date;
-   handle->date        = clause->date;
+   handle->date = clause->date;
    handle->proof_depth = clause->proof_depth;
-   handle->proof_size  = clause->proof_size;
-   handle->pred        = NULL;
-   handle->succ        = NULL;
+   handle->proof_size = clause->proof_size;
+   handle->pred = NULL;
+   handle->succ = NULL;
 
    return handle;
 }
@@ -145,13 +145,12 @@ Clause_p clause_copy_meta(Clause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-static void clause_collect_posneg_vars(Clause_p clause,
-                                PTree_p *pos_vars,
-                                PTree_p *neg_vars)
+static void clause_collect_posneg_vars(Clause_p clause, PTree_p* pos_vars,
+                                       PTree_p* neg_vars)
 {
    Eqn_p handle;
 
-   for(handle=clause->literals; handle; handle = handle->next)
+   for(handle = clause->literals; handle; handle = handle->next)
    {
       if(EqnIsPositive(handle))
       {
@@ -190,7 +189,7 @@ void TSTPSkipSource(Scanner_p in)
    }
    else
    {
-      AcceptInpTok(in, Identifier|PosInt);
+      AcceptInpTok(in, Identifier | PosInt);
       if(TestInpTok(in, OpenBracket))
       {
          ParseSkipParenthesizedExpr(in);
@@ -212,7 +211,7 @@ void TSTPSkipSource(Scanner_p in)
 
 void ClauseSetTPTPType(Clause_p clause, FormulaProperties type)
 {
-   ClauseDelProp(clause,CPTypeMask);
+   ClauseDelProp(clause, CPTypeMask);
    ClauseSetProp(clause, type);
 }
 
@@ -237,16 +236,16 @@ FormulaProperties TPTPTypesCombine(FormulaProperties type1,
 
    switch(type1)
    {
-   case CPTypeNegConjecture:
-   case CPTypeConjecture:
-   case CPTypeQuestion:
+      case CPTypeNegConjecture:
+      case CPTypeConjecture:
+      case CPTypeQuestion:
          /* Conjecture-like types dominate */
          res = type1;
          break;
-   case CPTypeDefinition:
-   case CPTypeLemma:
+      case CPTypeDefinition:
+      case CPTypeLemma:
          /* Definition/Lemma are never inherited */
-         if((type2 == CPTypeDefinition)||(type2 == CPTypeLemma))
+         if((type2 == CPTypeDefinition) || (type2 == CPTypeLemma))
          {
             res = CPTypeAxiom; //plain
          }
@@ -255,7 +254,7 @@ FormulaProperties TPTPTypesCombine(FormulaProperties type1,
             res = type2;
          }
          break;
-   default:
+      default:
          /* If type1 is boring, type2 dominates */
          res = type2;
          break;
@@ -307,22 +306,22 @@ Clause_p EmptyClauseAlloc(void)
 {
    Clause_p handle = ClauseCellAlloc();
 
-   handle->literals    = NULL;
-   handle->neg_lit_no  = 0;
-   handle->pos_lit_no  = 0;
-   handle->weight      = 0;
+   handle->literals = NULL;
+   handle->neg_lit_no = 0;
+   handle->pos_lit_no = 0;
+   handle->weight = 0;
    handle->evaluations = NULL;
-   handle->properties  = CPIgnoreProps;
-   handle->info        = NULL;
-   handle->derivation  = NULL;
+   handle->properties = CPIgnoreProps;
+   handle->info = NULL;
+   handle->derivation = NULL;
    handle->create_date = 0;
-   handle->date        = SysDateCreationTime();
+   handle->date = SysDateCreationTime();
    handle->proof_depth = 0;
-   handle->proof_size  = 0;
+   handle->proof_size = 0;
    handle->feature_vec = NULL;
-   handle->set         = NULL;
-   handle->pred        = NULL;
-   handle->succ        = NULL;
+   handle->set = NULL;
+   handle->pred = NULL;
+   handle->succ = NULL;
 
    return handle;
 }
@@ -345,8 +344,8 @@ Clause_p EmptyClauseAlloc(void)
 Clause_p ClauseAlloc(Eqn_p literals)
 {
    Clause_p handle = EmptyClauseAlloc();
-   Eqn_p pos_lits=NULL, *pos_append = &pos_lits;
-   Eqn_p neg_lits=NULL, *neg_append = &neg_lits;
+   Eqn_p pos_lits = NULL, *pos_append = &pos_lits;
+   Eqn_p neg_lits = NULL, *neg_append = &neg_lits;
    Eqn_p next;
 
    handle->ident = ++global_clause_counter;
@@ -395,9 +394,7 @@ void ClauseRecomputeLitCounts(Clause_p clause)
    clause->pos_lit_no = 0;
    clause->neg_lit_no = 0;
 
-   for(handle=clause->literals;
-       handle;
-       handle=handle->next)
+   for(handle = clause->literals; handle; handle = handle->next)
    {
       if(EqnIsPositive(handle))
       {
@@ -462,9 +459,7 @@ bool ClauseHasMaxPosEqLit(Clause_p clause)
 
    while(handle)
    {
-      if(EqnIsMaximal(handle) &&
-         EqnIsEquLit(handle) &&
-         EqnIsPositive(handle))
+      if(EqnIsMaximal(handle) && EqnIsEquLit(handle) && EqnIsPositive(handle))
       {
          return true;
       }
@@ -490,17 +485,15 @@ Clause_p ClauseSortLiterals(Clause_p clause, ComparisonFunctionType cmp_fun)
 {
    int lit_no = ClauseLiteralNumber(clause);
 
-   if(lit_no >1)
+   if(lit_no > 1)
    {
-      int arr_size = lit_no*sizeof(Eqn_p), i;
-      Eqn_p *sort_array = SizeMalloc(arr_size);
+      int arr_size = lit_no * sizeof(Eqn_p), i;
+      Eqn_p* sort_array = SizeMalloc(arr_size);
       Eqn_p handle;
 
-      for(i=0, handle = clause->literals;
-          handle;
-          i++, handle = handle->next)
+      for(i = 0, handle = clause->literals; handle; i++, handle = handle->next)
       {
-         assert(i<lit_no);
+         assert(i < lit_no);
          handle->pos = i;
          sort_array[i] = handle;
       }
@@ -571,7 +564,7 @@ bool ClauseIsSorted(Clause_p clause, ComparisonFunctionType cmp_fun)
       {
          assert(handle);
          assert(handle->next);
-         if(cmp_fun(&(handle), &(handle->next))>0)
+         if(cmp_fun(&(handle), &(handle->next)) > 0)
          {
             return false;
          }
@@ -645,9 +638,8 @@ long ClauseStructWeightCompare(Clause_p c1, Clause_p c2)
    {
       return res;
    }
-   for(handle1=c1->literals, handle2=c2->literals;
-       handle1;
-       handle1=handle1->next,handle2=handle2->next)
+   for(handle1 = c1->literals, handle2 = c2->literals; handle1;
+       handle1 = handle1->next, handle2 = handle2->next)
    {
       assert(handle2);
 
@@ -680,9 +672,8 @@ long ClauseStructWeightLexCompare(Clause_p c1, Clause_p c2)
    {
       return res;
    }
-   for(handle1=c1->literals, handle2=c2->literals;
-       handle1;
-       handle1=handle1->next,handle2=handle2->next)
+   for(handle1 = c1->literals, handle2 = c2->literals; handle1;
+       handle1 = handle1->next, handle2 = handle2->next)
    {
       assert(handle2);
 
@@ -711,10 +702,10 @@ long ClauseStructWeightLexCompare(Clause_p c1, Clause_p c2)
 
 bool ClauseIsACRedundant(Clause_p clause)
 {
-   if(ClauseIsUnit(clause)&&ClauseIsPositive(clause))
+   if(ClauseIsUnit(clause) && ClauseIsPositive(clause))
    {
-      if(EqnStandardWeight(clause->literals)<=
-         (4*DEFAULT_FWEIGHT+6*DEFAULT_VWEIGHT))
+      if(EqnStandardWeight(clause->literals) <=
+         (4 * DEFAULT_FWEIGHT + 6 * DEFAULT_VWEIGHT))
       {
          return false;
       }
@@ -770,7 +761,7 @@ bool ClauseIsSemFalse(Clause_p clause)
 {
    Eqn_p handle;
 
-   for(handle=clause->literals; handle; handle = handle->next)
+   for(handle = clause->literals; handle; handle = handle->next)
    {
       if(!EqnQueryProp(handle, EPPseudoLit))
       {
@@ -797,7 +788,7 @@ bool ClauseIsSemEmpty(Clause_p clause)
 {
    Eqn_p handle;
 
-   for(handle=clause->literals; handle; handle = handle->next)
+   for(handle = clause->literals; handle; handle = handle->next)
    {
       if(!EqnIsSimpleAnswer(handle))
       {
@@ -827,7 +818,7 @@ bool ClauseIsSemEmpty(Clause_p clause)
 bool ClauseIsRangeRestricted(Clause_p clause)
 {
    PTree_p pos_vars = NULL, neg_vars = NULL;
-   bool    res;
+   bool res;
 
    //printf("RR: "); ClausePrintAxiom(stdout, clause, true);
    if(ClauseIsPositive(clause) || ClauseIsGround(clause))
@@ -869,7 +860,7 @@ bool ClauseIsRangeRestricted(Clause_p clause)
 bool ClauseIsAntiRangeRestricted(Clause_p clause)
 {
    PTree_p pos_vars = NULL, neg_vars = NULL;
-   bool    res;
+   bool res;
 
    if(ClauseIsNegative(clause) || ClauseIsGround(clause))
    {
@@ -972,7 +963,8 @@ EqnSide ClauseIsEqDefinition(Clause_p clause, int min_arity)
 //
 /----------------------------------------------------------------------*/
 
-void ClauseExtractHODefinition(Clause_p clause, EqnSide def_side, Term_p *lside, Term_p* rside)
+void ClauseExtractHODefinition(Clause_p clause, EqnSide def_side, Term_p* lside,
+                               Term_p* rside)
 {
    assert(clause);
    assert(def_side == LeftSide || def_side == RightSide);
@@ -980,7 +972,7 @@ void ClauseExtractHODefinition(Clause_p clause, EqnSide def_side, Term_p *lside,
    const Eqn_p lit = clause->literals;
    assert(lside != &(lit->lterm) && rside != &(lit->rterm));
    Term_p def_term = def_side == LeftSide ? lit->lterm : lit->rterm;
-   for(int i=0; i<def_term->arity; i++)
+   for(int i = 0; i < def_term->arity; i++)
    {
       assert(TermIsFreeVar(def_term->args[i]));
       PStackPushP(vars, def_term->args[i]);
@@ -1104,18 +1096,18 @@ Clause_p ClauseCopyDisjoint(Clause_p clause)
 
 Clause_p ClauseSkolemize(Clause_p clause, TB_p bank)
 {
-   Subst_p  subst = SubstAlloc();
-   Eqn_p    handle;
+   Subst_p subst = SubstAlloc();
+   Eqn_p handle;
    Clause_p res;
 
    assert(clause);
    assert(bank);
 
-   for(handle=clause->literals; handle; handle=handle->next)
+   for(handle = clause->literals; handle; handle = handle->next)
    {
       EqnSkolemSubst(handle, subst, bank->sig);
    }
-   res = ClauseCopy(clause,bank);
+   res = ClauseCopy(clause, bank);
    SubstDeleteSkolem(subst);
 
    return res;
@@ -1157,7 +1149,7 @@ void ClausePrintList(FILE* out, Clause_p clause, bool fullterms)
 void ClausePrintAxiom(FILE* out, Clause_p clause, bool fullterms)
 {
    Eqn_p handle;
-   int   i;
+   int i;
 
    i = 0;
    for(handle = clause->literals; handle; handle = handle->next)
@@ -1166,7 +1158,7 @@ void ClausePrintAxiom(FILE* out, Clause_p clause, bool fullterms)
       {
          EqnPrint(out, handle, false, fullterms);
          i++;
-         if(i<clause->pos_lit_no)
+         if(i < clause->pos_lit_no)
          {
             fprintf(out, "; ");
          }
@@ -1181,7 +1173,7 @@ void ClausePrintAxiom(FILE* out, Clause_p clause, bool fullterms)
       {
          EqnPrint(out, handle, true, fullterms);
          i++;
-         if(i<clause->neg_lit_no)
+         if(i < clause->neg_lit_no)
          {
             fprintf(out, ", ");
          }
@@ -1213,8 +1205,7 @@ void ClausePrintRule(FILE* out, Clause_p clause, bool fullterms)
       if(clause->literals->next)
       {
          fprintf(out, " <- ");
-         EqnListPrint(out, clause->literals->next, ", ", true,
-                      fullterms);
+         EqnListPrint(out, clause->literals->next, ", ", true, fullterms);
       }
    }
    else
@@ -1282,27 +1273,27 @@ void ClausePrintQuery(FILE* out, Clause_p clause, bool fullterms)
 void ClausePrintTPTPFormat(FILE* out, Clause_p clause)
 {
    char* typename;
-   int   source;
+   int source;
 
    switch(ClauseQueryTPTPType(clause))
    {
-   case CPTypeAxiom:
+      case CPTypeAxiom:
          typename = "axiom";
          break;
-   case CPTypeHypothesis:
+      case CPTypeHypothesis:
          typename = "hypothesis";
          break;
-   case CPTypeConjecture:
-   case CPTypeNegConjecture:
+      case CPTypeConjecture:
+      case CPTypeNegConjecture:
          typename = "conjecture";
          break;
-   case CPTypeLemma:
+      case CPTypeLemma:
          typename = "lemma";
          break;
-   case CPTypeWatchClause:
+      case CPTypeWatchClause:
          typename = "watchlist";
          break;
-   default:
+      default:
          typename = "unknown";
          break;
    }
@@ -1310,13 +1301,13 @@ void ClausePrintTPTPFormat(FILE* out, Clause_p clause)
 
    if(clause->ident >= 0)
    {
-      fprintf(out, "input_clause(c_%d_%ld,%s,[",
-              source, clause->ident, typename);
+      fprintf(out, "input_clause(c_%d_%ld,%s,[", source, clause->ident,
+              typename);
    }
    else
    {
-      fprintf(out, "input_clause(i_%d_%ld,%s,[",
-              source, clause->ident-LONG_MIN, typename);
+      fprintf(out, "input_clause(i_%d_%ld,%s,[", source,
+              clause->ident - LONG_MIN, typename);
    }
    EqnListPrint(out, clause->literals, ",", false, true);
    fprintf(out, "]).");
@@ -1336,8 +1327,8 @@ void ClausePrintTPTPFormat(FILE* out, Clause_p clause)
 
 void ClausePrintLOPFormat(FILE* out, Clause_p clause, bool fullterms)
 {
-   if(((ClauseQueryTPTPType(clause) == CPTypeConjecture)||
-       (ClauseQueryTPTPType(clause) == CPTypeNegConjecture) )&&
+   if(((ClauseQueryTPTPType(clause) == CPTypeConjecture) ||
+       (ClauseQueryTPTPType(clause) == CPTypeNegConjecture)) &&
       !ClauseIsEmpty(clause))
    {
       ClausePrintQuery(out, clause, fullterms);
@@ -1412,7 +1403,7 @@ void ClausePrint(FILE* out, Clause_p clause, bool fullterms)
 void ClausePrintDBG(FILE* out, Clause_p clause)
 {
    fprintf(out, "thf(cl%ld, plain, ",
-           clause->ident >= 0 ? clause->ident : clause->ident-LONG_MIN);
+           clause->ident >= 0 ? clause->ident : clause->ident - LONG_MIN);
    if(clause->literals)
    {
       EqnPrintDBG(out, clause->literals);
@@ -1455,14 +1446,13 @@ void ClausePCLPrint(FILE* out, Clause_p clause, bool fullterms)
 #ifdef PCLPRINTDEGBUG
    if(clause->literals)
    {
-      fprintf(out, "/* %d; %lu; %lu(%lu)=%lu(%lu)*/",
-              ClauseQueryProp(clause, CPLimitedRW),
-              clause->date,
-              clause->literals->lterm->entry_no,
-              clause->literals->lterm->rw_data.nf_date[RewriteAdr(FullRewrite)],
-              clause->literals->rterm->entry_no,
-              clause->literals->rterm->rw_data.nf_date[RewriteAdr(FullRewrite)]
-         );
+      fprintf(
+         out, "/* %d; %lu; %lu(%lu)=%lu(%lu)*/",
+         ClauseQueryProp(clause, CPLimitedRW), clause->date,
+         clause->literals->lterm->entry_no,
+         clause->literals->lterm->rw_data.nf_date[RewriteAdr(FullRewrite)],
+         clause->literals->rterm->entry_no,
+         clause->literals->rterm->rw_data.nf_date[RewriteAdr(FullRewrite)]);
    }
 #endif
    OutputFormat = TPTPFormat;
@@ -1516,7 +1506,7 @@ void ClauseTSTPCorePrint(FILE* out, Clause_p clause, bool fullterms)
 void ClauseTSTPPrint(FILE* out, Clause_p clause, bool fullterms, bool complete)
 {
    int source;
-   char *typename = "plain", *kind = "cnf";
+   char* typename = "plain", *kind = "cnf";
    bool is_untyped = ClauseIsUntyped(clause);
    TFormula_p form = NULL;
 
@@ -1532,47 +1522,41 @@ void ClauseTSTPPrint(FILE* out, Clause_p clause, bool fullterms, bool complete)
 
    switch(ClauseQueryTPTPType(clause))
    {
-   case CPTypeAxiom:
+      case CPTypeAxiom:
          if(ClauseQueryProp(clause, CPInputFormula))
          {
             typename = "axiom";
          }
          break;
-   case CPTypeDefinition:
+      case CPTypeDefinition:
          typename = "definition";
          break;
-   case CPTypeHypothesis:
+      case CPTypeHypothesis:
          typename = "hypothesis";
          break;
-   case CPTypeConjecture:
+      case CPTypeConjecture:
          typename = "conjecture";
          break;
-   case CPTypeLemma:
+      case CPTypeLemma:
          typename = "lemma";
          break;
-   case CPTypeWatchClause:
+      case CPTypeWatchClause:
          typename = "watchlist";
          break;
-   case CPTypeNegConjecture:
+      case CPTypeNegConjecture:
          typename = "negated_conjecture";
          break;
-   default:
+      default:
          break;
    }
    source = ClauseQueryCSSCPASource(clause);
    if(clause->ident >= 0)
    {
-      fprintf(out, "%s(c_%d_%ld, ",
-              kind,
-              source,
-              clause->ident);
+      fprintf(out, "%s(c_%d_%ld, ", kind, source, clause->ident);
    }
    else
    {
-      fprintf(out, "%s(i_%d_%ld, ",
-              kind,
-              source,
-              clause->ident-LONG_MIN);
+      fprintf(out, "%s(i_%d_%ld, ", kind, source, clause->ident - LONG_MIN);
    }
    fprintf(out, "%s, ", typename);
 
@@ -1615,13 +1599,13 @@ void ClauseTSTPPrint(FILE* out, Clause_p clause, bool fullterms, bool complete)
 
 bool ClauseStartsMaybe(Scanner_p in)
 {
-   if(TestInpTok(in, TermStartToken|TildeSign))
+   if(TestInpTok(in, TermStartToken | TildeSign))
    {
       return true;
    }
-   if(TestInpTok(in, LesserSign|QuestionMark))
+   if(TestInpTok(in, LesserSign | QuestionMark))
    {
-      if(!LookToken(in,1)->skipped && TestTok(LookToken(in, 1), Hyphen))
+      if(!LookToken(in, 1)->skipped && TestTok(LookToken(in, 1), Hyphen))
       {
          return true;
       }
@@ -1641,7 +1625,7 @@ bool ClauseStartsMaybe(Scanner_p in)
 //
 /----------------------------------------------------------------------*/
 
-FormulaProperties ClauseTypeParse(Scanner_p in, char *legal_types)
+FormulaProperties ClauseTypeParse(Scanner_p in, char* legal_types)
 {
    FormulaProperties res;
 
@@ -1707,8 +1691,8 @@ FormulaProperties ClauseTypeParse(Scanner_p in, char *legal_types)
 
 Clause_p ClauseParse(Scanner_p in, TB_p bank)
 {
-   Eqn_p    concl, precond;
-   bool     procedural = false;
+   Eqn_p concl, precond;
+   bool procedural = false;
    FormulaProperties type = CPTypeAxiom;
    FormulaProperties input = CPInputFormula;
    Clause_p handle;
@@ -1731,7 +1715,8 @@ Clause_p ClauseParse(Scanner_p in, TB_p bank)
       info->name = DStrCopy(AktToken(in)->literal);
       AcceptInpTok(in, Name);
       AcceptInpTok(in, Comma);
-      type = ClauseTypeParse(in, "axiom|hypothesis|conjecture|lemma|unknown|watchlist");
+      type = ClauseTypeParse(
+         in, "axiom|hypothesis|conjecture|lemma|unknown|watchlist");
       if(type == CPTypeConjecture)
       {
          type = CPTypeNegConjecture; /* Old TPTP syntax lies ;-) */
@@ -1747,7 +1732,7 @@ Clause_p ClauseParse(Scanner_p in, TB_p bank)
       AcceptInpId(in, "cnf");
       AcceptInpTok(in, OpenBracket);
       info->name = DStrCopy(AktToken(in)->literal);
-      AcceptInpTok(in, Name|PosInt|SQString);
+      AcceptInpTok(in, Name | PosInt | SQString);
       AcceptInpTok(in, Comma);
 
       /* This is hairy! E's internal types do not map very well to
@@ -1789,7 +1774,7 @@ Clause_p ClauseParse(Scanner_p in, TB_p bank)
       //printf("Parsed EqnList\n");
       if(TestInpTok(in, Colon))
       {
-         if(EqnListLength(concl)>1)
+         if(EqnListLength(concl) > 1)
          {
             AktTokenError(in,
                           "Procedural rule cannot have more than one "
@@ -1800,10 +1785,9 @@ Clause_p ClauseParse(Scanner_p in, TB_p bank)
       }
       else if(TestInpTok(in, QuestionMark))
       {
-         if(EqnListLength(concl)>0)
+         if(EqnListLength(concl) > 0)
          {
-            AktTokenError(in,
-                          "Query should consist only of tail literals",
+            AktTokenError(in, "Query should consist only of tail literals",
                           false);
          }
          type = CPTypeNegConjecture;
@@ -1811,7 +1795,7 @@ Clause_p ClauseParse(Scanner_p in, TB_p bank)
       }
       if(TestInpTok(in, Fullstop))
       {
-         if(EqnListLength(concl)>1)
+         if(EqnListLength(concl) > 1)
          {
             AktTokenError(in,
                           "Procedural fact cannot have more than one "
@@ -1827,7 +1811,7 @@ Clause_p ClauseParse(Scanner_p in, TB_p bank)
 
          precond = EqnListParse(in, bank, Comma);
 
-         if(procedural && EqnListLength(precond)==0)
+         if(procedural && EqnListLength(precond) == 0)
          {
             AktTokenError(in,
                           "Procedural rule or query needs at least one "
@@ -1842,7 +1826,7 @@ Clause_p ClauseParse(Scanner_p in, TB_p bank)
    AcceptInpTok(in, Fullstop);
    handle = ClauseAlloc(concl);
    ClauseSetTPTPType(handle, type);
-   ClauseSetProp(handle, CPInitial|input);
+   ClauseSetProp(handle, CPInitial | input);
    handle->info = info;
    return handle;
 }
@@ -1863,7 +1847,7 @@ Clause_p ClauseParse(Scanner_p in, TB_p bank)
 Clause_p ClausePCLParse(Scanner_p in, TB_p bank)
 {
    Clause_p handle;
-   Eqn_p    list;
+   Eqn_p list;
 
    assert(ScannerGetFormat(in) == TPTPFormat);
    assert(in);
@@ -1876,10 +1860,9 @@ Clause_p ClausePCLParse(Scanner_p in, TB_p bank)
    AcceptInpTok(in, OpenSquare);
    list = EqnListParse(in, bank, Comma);
    AcceptInpTok(in, CloseSquare);
-   handle=ClauseAlloc(list);
+   handle = ClauseAlloc(list);
    ClauseSetTPTPType(handle,
-                     handle->pos_lit_no?
-                     CPTypeAxiom:CPTypeConjecture);
+                     handle->pos_lit_no ? CPTypeAxiom : CPTypeConjecture);
    return handle;
 }
 
@@ -1964,7 +1947,7 @@ void ClauseMarkMaximalTerms(OCB_p ocb, Clause_p clause)
 /----------------------------------------------------------------------*/
 void ClauseAddEvalCell(Clause_p clause, Eval_p evaluation)
 {
-   evaluation->object  = clause;
+   evaluation->object = clause;
    clause->evaluations = evaluation;
 }
 
@@ -2001,18 +1984,18 @@ void ClauseRemoveEvaluations(Clause_p clause)
 /----------------------------------------------------------------------*/
 
 double ClauseWeight(Clause_p clause, double max_term_multiplier,
-                    double max_literal_multiplier, double
-                    pos_multiplier, long vweight, long fweight,
-                    double app_var_mult, bool count_eq_encoding)
+                    double max_literal_multiplier, double pos_multiplier,
+                    long vweight, long fweight, double app_var_mult,
+                    bool count_eq_encoding)
 {
-   Eqn_p  handle;
+   Eqn_p handle;
    double res = 0;
 
    for(handle = clause->literals; handle; handle = handle->next)
    {
-      res += LiteralWeight(handle, max_term_multiplier,
-                           max_literal_multiplier, pos_multiplier,
-                           vweight, fweight, app_var_mult, count_eq_encoding);
+      res += LiteralWeight(handle, max_term_multiplier, max_literal_multiplier,
+                           pos_multiplier, vweight, fweight, app_var_mult,
+                           count_eq_encoding);
    }
    return res;
 }
@@ -2032,21 +2015,19 @@ double ClauseWeight(Clause_p clause, double max_term_multiplier,
 /----------------------------------------------------------------------*/
 
 double ClauseFunWeight(Clause_p clause, double max_term_multiplier,
-                       double max_literal_multiplier, double
-                       pos_multiplier, long vweight, long flimit,
-                       long *fweights, long default_fweight, double app_var_mult,
-                       long *typefreqs)
+                       double max_literal_multiplier, double pos_multiplier,
+                       long vweight, long flimit, long* fweights,
+                       long default_fweight, double app_var_mult,
+                       long* typefreqs)
 {
-   Eqn_p  handle;
+   Eqn_p handle;
    double res = 0;
 
    for(handle = clause->literals; handle; handle = handle->next)
    {
-      res += LiteralFunWeight(handle, max_term_multiplier,
-                              max_literal_multiplier, pos_multiplier,
-                              vweight, flimit, fweights,
-                              default_fweight, app_var_mult,
-                              typefreqs);
+      res += LiteralFunWeight(
+         handle, max_term_multiplier, max_literal_multiplier, pos_multiplier,
+         vweight, flimit, fweights, default_fweight, app_var_mult, typefreqs);
    }
    return res;
 }
@@ -2068,16 +2049,15 @@ double ClauseFunWeight(Clause_p clause, double max_term_multiplier,
 
 double ClauseTermExtWeight(Clause_p clause, TermWeightExtension_p twe)
 {
-   Eqn_p  lit;
+   Eqn_p lit;
    double res = 0;
 
-   for (lit = clause->literals; lit; lit = lit->next)
+   for(lit = clause->literals; lit; lit = lit->next)
    {
       res += LiteralTermExtWeight(lit, twe);
    }
    return res;
 }
-
 
 
 
@@ -2095,21 +2075,19 @@ double ClauseTermExtWeight(Clause_p clause, TermWeightExtension_p twe)
 /----------------------------------------------------------------------*/
 
 double ClauseNonLinearWeight(Clause_p clause, double max_term_multiplier,
-                             double max_literal_multiplier, double
-                             pos_multiplier, long vlweight, long
-                             vweight, long fweight, double app_var_mult, bool
-                             count_eq_encoding)
+                             double max_literal_multiplier,
+                             double pos_multiplier, long vlweight, long vweight,
+                             long fweight, double app_var_mult,
+                             bool count_eq_encoding)
 {
-   Eqn_p  handle;
+   Eqn_p handle;
    double res = 0;
 
    for(handle = clause->literals; handle; handle = handle->next)
    {
-      res += LiteralNonLinearWeight(handle, max_term_multiplier,
-                                    max_literal_multiplier, pos_multiplier,
-                                    vlweight, vweight, fweight, app_var_mult,
-                                    count_eq_encoding);
-
+      res += LiteralNonLinearWeight(
+         handle, max_term_multiplier, max_literal_multiplier, pos_multiplier,
+         vlweight, vweight, fweight, app_var_mult, count_eq_encoding);
    }
    return res;
 }
@@ -2129,22 +2107,19 @@ double ClauseNonLinearWeight(Clause_p clause, double max_term_multiplier,
 //
 /----------------------------------------------------------------------*/
 
-double ClauseSymTypeWeight(Clause_p clause, double
-                           max_term_multiplier, double
-                           max_literal_multiplier, double
-                           pos_multiplier, long vweight, long
-                           fweight, long cweight, long pweight,
-                           double app_var_mult)
+double ClauseSymTypeWeight(Clause_p clause, double max_term_multiplier,
+                           double max_literal_multiplier, double pos_multiplier,
+                           long vweight, long fweight, long cweight,
+                           long pweight, double app_var_mult)
 {
-   Eqn_p  handle;
+   Eqn_p handle;
    double res = 0;
 
    for(handle = clause->literals; handle; handle = handle->next)
    {
-      res += LiteralSymTypeWeight(handle, max_term_multiplier,
-                                  max_literal_multiplier, pos_multiplier,
-                                  vweight, fweight, cweight, pweight,
-                                  app_var_mult);
+      res += LiteralSymTypeWeight(
+         handle, max_term_multiplier, max_literal_multiplier, pos_multiplier,
+         vweight, fweight, cweight, pweight, app_var_mult);
    }
    return res;
 }
@@ -2165,7 +2140,7 @@ double ClauseSymTypeWeight(Clause_p clause, double
 
 double ClauseStandardWeight(Clause_p clause)
 {
-   Eqn_p  handle;
+   Eqn_p handle;
    double res = 0;
 
    for(handle = clause->literals; handle; handle = handle->next)
@@ -2188,31 +2163,26 @@ double ClauseStandardWeight(Clause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-double ClauseOrientWeight(Clause_p clause, double
-                          unorientable_literal_multiplier,
-                          double max_literal_multiplier, double
-                          pos_multiplier, long vweight, long fweight,
-                          double app_var_mult, bool
-                          count_eq_encoding)
+double ClauseOrientWeight(Clause_p clause,
+                          double unorientable_literal_multiplier,
+                          double max_literal_multiplier, double pos_multiplier,
+                          long vweight, long fweight, double app_var_mult,
+                          bool count_eq_encoding)
 {
-   Eqn_p  handle;
-   double res = 0 ,tmp;
+   Eqn_p handle;
+   double res = 0, tmp;
 
    for(handle = clause->literals; handle; handle = handle->next)
    {
-      tmp = LiteralWeight(handle, 1, max_literal_multiplier,
-                          pos_multiplier, vweight, fweight,
-                          app_var_mult,
-                          count_eq_encoding);
+      tmp = LiteralWeight(handle, 1, max_literal_multiplier, pos_multiplier,
+                          vweight, fweight, app_var_mult, count_eq_encoding);
       if(!EqnIsOriented(handle))
       {
-         tmp = tmp*unorientable_literal_multiplier;
+         tmp = tmp * unorientable_literal_multiplier;
       }
       res += tmp;
    }
    return res;
-
-
 }
 
 
@@ -2235,50 +2205,48 @@ double ClauseOrientWeight(Clause_p clause, double
 //
 /----------------------------------------------------------------------*/
 
-bool ClauseNotGreaterEqual(OCB_p ocb,
-                           Clause_p clause1, Clause_p clause2)
+bool ClauseNotGreaterEqual(OCB_p ocb, Clause_p clause1, Clause_p clause2)
 {
    Eqn_p cl1lits = clause1->literals;
-   Eqn_p cl2lits = clause2->literals,cl2litseqs;
+   Eqn_p cl2lits = clause2->literals, cl2litseqs;
    bool foundeq, foundeqlater, foundgtr;
 
    EqnListDelProp(cl1lits, EPHasEquiv | EPDominates);
 
-   while (cl2lits)
+   while(cl2lits)
    {
       EqnDelProp(cl2lits, EPHasEquiv | EPIsDominated);
       foundeq = foundgtr = false;
 
-      while (cl1lits && !EqnHasEquiv(cl2lits))
+      while(cl1lits && !EqnHasEquiv(cl2lits))
       {
-         if (!EqnHasEquiv(cl1lits))
+         if(!EqnHasEquiv(cl1lits))
          {
-            switch (LiteralCompare(ocb, cl1lits, cl2lits))
+            switch(LiteralCompare(ocb, cl1lits, cl2lits))
             {
-            case to_greater:
+               case to_greater:
                   foundeqlater = false;
-                  if (!EqnDominates(cl1lits))
+                  if(!EqnDominates(cl1lits))
                   {
                      cl2litseqs = cl2lits->next;
-                     foundeqlater =
-                        foundEqLitLater(ocb, cl1lits, cl2litseqs);
+                     foundeqlater = foundEqLitLater(ocb, cl1lits, cl2litseqs);
                   }
-                  if (!foundeqlater)
+                  if(!foundeqlater)
                   {
                      EqnSetProp(cl1lits, EPDominates);
                      EqnSetProp(cl2lits, EPIsDominated);
                      foundgtr = true;
                   }
                   break;
-            case to_equal:
+               case to_equal:
                   EqnSetProp(cl1lits, EPHasEquiv);
                   EqnSetProp(cl2lits, EPHasEquiv);
                   foundeq = true;
                   break;
-            case to_lesser:
-            case to_uncomparable:
+               case to_lesser:
+               case to_uncomparable:
                   break;
-            default:
+               default:
                   assert(false);
                   break;
             }
@@ -2288,7 +2256,7 @@ bool ClauseNotGreaterEqual(OCB_p ocb,
 
       /* early abortion if there is neither a greater nor an equal
          element in clause1 */
-      if ((!foundeq) && (!foundgtr))
+      if((!foundeq) && (!foundgtr))
       {
          /* printf("True\n"); */
          return true;
@@ -2315,10 +2283,10 @@ bool ClauseNotGreaterEqual(OCB_p ocb,
 //
 /----------------------------------------------------------------------*/
 
-int ClauseCompareFun(const void *c1, const void* c2)
+int ClauseCompareFun(const void* c1, const void* c2)
 {
-   const Clause_p clause1 = (const Clause_p) c1;
-   const Clause_p clause2 = (const Clause_p) c2;
+   const Clause_p clause1 = (const Clause_p)c1;
+   const Clause_p clause2 = (const Clause_p)c2;
    int res;
    Eqn_p handle1, handle2;
 
@@ -2361,8 +2329,8 @@ int ClauseCompareFun(const void *c1, const void* c2)
 
 int ClauseCmpById(const void* clause1, const void* clause2)
 {
-   const Clause_p *c1 = (const Clause_p*) clause1;
-   const Clause_p *c2 = (const Clause_p*) clause2;
+   const Clause_p* c1 = (const Clause_p*)clause1;
+   const Clause_p* c2 = (const Clause_p*)clause2;
 
    if((*c1)->ident < (*c2)->ident)
    {
@@ -2391,8 +2359,8 @@ int ClauseCmpById(const void* clause1, const void* clause2)
 
 int ClauseCmpByPermId(const void* clause1, const void* clause2)
 {
-   const Clause_p *c1 = (const Clause_p*) clause1;
-   const Clause_p *c2 = (const Clause_p*) clause2;
+   const Clause_p* c1 = (const Clause_p*)clause1;
+   const Clause_p* c2 = (const Clause_p*)clause2;
 
    if((*c1)->perm_ident < (*c2)->perm_ident)
    {
@@ -2419,8 +2387,8 @@ int ClauseCmpByPermId(const void* clause1, const void* clause2)
 
 int ClauseCmpByPermIdR(const void* clause1, const void* clause2)
 {
-   const Clause_p *c1 = (const Clause_p*) clause1;
-   const Clause_p *c2 = (const Clause_p*) clause2;
+   const Clause_p* c1 = (const Clause_p*)clause1;
+   const Clause_p* c2 = (const Clause_p*)clause2;
 
    if((*c1)->perm_ident < (*c2)->perm_ident)
    {
@@ -2436,7 +2404,6 @@ int ClauseCmpByPermIdR(const void* clause1, const void* clause2)
 
 
 
-
 /*-----------------------------------------------------------------------
 //
 // Function: ClauseCmpByStructWeight()
@@ -2448,8 +2415,8 @@ int ClauseCmpByPermIdR(const void* clause1, const void* clause2)
 /----------------------------------------------------------------------*/
 int ClauseCmpByStructWeight(const void* clause1, const void* clause2)
 {
-   const Clause_p *c1 = (const Clause_p*) clause1;
-   const Clause_p *c2 = (const Clause_p*) clause2;
+   const Clause_p* c1 = (const Clause_p*)clause1;
+   const Clause_p* c2 = (const Clause_p*)clause2;
 
    return CMP(ClauseStructWeightLexCompare(*c1, *c2), 0);
 }
@@ -2469,8 +2436,8 @@ int ClauseCmpByStructWeight(const void* clause1, const void* clause2)
 
 int ClauseCmpByPtr(const void* clause1, const void* clause2)
 {
-   const Clause_p *c1 = (const Clause_p*) clause1;
-   const Clause_p *c2 = (const Clause_p*) clause2;
+   const Clause_p* c1 = (const Clause_p*)clause1;
+   const Clause_p* c2 = (const Clause_p*)clause2;
 
    return PCmp(*c1, *c2);
 }
@@ -2493,7 +2460,7 @@ Clause_p ClauseNormalizeVars(Clause_p clause, VarBank_p fresh_vars)
    Eqn_p tmplist;
    Subst_p subst;
 
-   assert(!ClauseQueryProp(clause,CPIsDIndexed));
+   assert(!ClauseQueryProp(clause, CPIsDIndexed));
 
    if(!ClauseIsEmpty(clause))
    {
@@ -2537,7 +2504,7 @@ long ClauseCollectSubterms(Clause_p clause, PStack_p collector)
    start = PStackGetSP(collector);
    res = EqnListCollectSubterms(clause->literals, collector);
 
-   for(i=start; i<PStackGetSP(collector); i++)
+   for(i = start; i < PStackGetSP(collector); i++)
    {
       t = PStackElementP(collector, i);
       TermCellDelProp(t, TPOpFlag);
@@ -2584,9 +2551,9 @@ long ClauseReturnFCodes(Clause_p clause, PStack_p f_codes)
    ClauseCollectSubterms(clause, stack);
 
    start = PStackGetSP(f_codes);
-   for(i=0; i<PStackGetSP(stack);i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
-      t = PStackElementP(stack,i);
+      t = PStackElementP(stack, i);
       if(!TermIsAnyVar(t))
       {
          if(!SigQueryFuncProp(sig, t->f_code, FPOpFlag))
@@ -2600,9 +2567,9 @@ long ClauseReturnFCodes(Clause_p clause, PStack_p f_codes)
    PStackFree(stack);
 
    /* Reset FPOpFlags */
-   for(i=start; i<PStackGetSP(f_codes);i++)
+   for(i = start; i < PStackGetSP(f_codes); i++)
    {
-      f =  PStackElementInt(f_codes, i);
+      f = PStackElementInt(f_codes, i);
       SigDelFuncProp(sig, f, FPOpFlag);
    }
    return res;
@@ -2625,9 +2592,9 @@ bool ClauseIsUntyped(Clause_p clause)
 {
    Eqn_p lits = clause->literals;
 
-   while (lits)
+   while(lits)
    {
-      if (!EqnIsUntyped(lits))
+      if(!EqnIsUntyped(lits))
       {
          return false;
       }
@@ -2675,7 +2642,9 @@ bool ClauseQueryLiteral(Clause_p clause, bool (*query_fun)(Eqn_p))
 //
 /----------------------------------------------------------------------*/
 
-#define FAIL_ON(cond) if (cond) return false
+#define FAIL_ON(cond)                                                          \
+   if(cond)                                                                    \
+   return false
 
 bool ClauseRecognizeChoice(IntMap_p choice_symbols_map, Clause_p cl)
 {
@@ -2743,12 +2712,10 @@ bool ClauseRecognizeChoice(IntMap_p choice_symbols_map, Clause_p cl)
 //
 /----------------------------------------------------------------------*/
 
-long ClauseCollectGroundTerms(Clause_p clause, PTree_p *res,
-                              bool pos_lits, bool neg_lits,
-                              bool all_subterms)
+long ClauseCollectGroundTerms(Clause_p clause, PTree_p* res, bool pos_lits,
+                              bool neg_lits, bool all_subterms)
 {
-   return EqnListCollectGroundTerms(clause->literals, res,
-                                    pos_lits, neg_lits,
+   return EqnListCollectGroundTerms(clause->literals, res, pos_lits, neg_lits,
                                     all_subterms);
 }
 

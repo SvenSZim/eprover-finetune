@@ -36,7 +36,6 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
@@ -45,7 +44,9 @@ Changes
 #define SetProp(obj, prop) ((obj)->properties = (obj)->properties | (prop))
 #define DelProp(obj, prop) ((obj)->properties = (obj)->properties & ~(prop))
 #define FlipProp(obj, prop) ((obj)->properties = (obj)->properties ^ (prop))
-#define AssignProp(obj, sel, prop) DelProp((obj),(sel));SetProp((obj),(sel)&(prop))
+#define AssignProp(obj, sel, prop)                                             \
+   DelProp((obj), (sel));                                                      \
+   SetProp((obj), (sel) & (prop))
 
 /* Are _all_ properties in prop set in obj? */
 #define QueryProp(obj, prop) (((obj)->properties & (prop)) == (prop))
@@ -55,20 +56,18 @@ Changes
 
 /* Return the properties of object...yes, this is the same code as
    above, but implements a different concept */
-#define GiveProps(obj,prop) ((obj)->properties & (prop))
+#define GiveProps(obj, prop) ((obj)->properties & (prop))
 
 /* Are two property sets equivalent? */
 
-#define PropsAreEquiv(obj1, obj2, props)\
-        (((obj1->properties)&(props))==((obj2->properties)&(props)))
+#define PropsAreEquiv(obj1, obj2, props)                                       \
+   (((obj1->properties) & (props)) == ((obj2->properties) & (props)))
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

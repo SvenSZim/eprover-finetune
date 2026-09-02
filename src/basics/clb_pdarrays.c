@@ -66,10 +66,10 @@ PDArray_p PDArrayAlloc(long init_size, long grow)
    assert(grow >= 0);
 
    handle->integer = false;
-   handle->size  = init_size;
-   handle->grow  = grow;
-   handle->array = SizeMalloc(handle->size*sizeof(IntOrP));
-   for(i=0; i<handle->size; i++)
+   handle->size = init_size;
+   handle->grow = grow;
+   handle->array = SizeMalloc(handle->size * sizeof(IntOrP));
+   for(i = 0; i < handle->size; i++)
    {
       handle->array[i].p_val = NULL;
    }
@@ -98,10 +98,10 @@ PDArray_p PDIntArrayAlloc(long init_size, long grow)
    assert(grow >= 0);
 
    handle->integer = true;
-   handle->size  = init_size;
-   handle->grow  = grow;
-   handle->array = SizeMalloc(handle->size*sizeof(IntOrP));
-   for(i=0; i<handle->size; i++)
+   handle->size = init_size;
+   handle->grow = grow;
+   handle->array = SizeMalloc(handle->size * sizeof(IntOrP));
+   for(i = 0; i < handle->size; i++)
    {
       handle->array[i].i_val = 0;
    }
@@ -127,7 +127,7 @@ void PDArrayFree(PDArray_p junk)
    assert(junk->size > 0);
    assert(junk->array);
 
-   SizeFree(junk->array, junk->size*sizeof(IntOrP));
+   SizeFree(junk->array, junk->size * sizeof(IntOrP));
    PDArrayCellFree(junk);
 }
 
@@ -145,26 +145,26 @@ void PDArrayFree(PDArray_p junk)
 
 void PDArrayEnlarge(PDArray_p array, long idx)
 {
-   IntOrP *tmp;
-   long   old_size, i;
+   IntOrP* tmp;
+   long old_size, i;
 
    old_size = array->size;
-   tmp      = array->array;
+   tmp = array->array;
    if(array->grow)
    {
-      array->size = ((idx/array->grow)+1)*array->grow;
+      array->size = ((idx / array->grow) + 1) * array->grow;
    }
    else
    {
       while(array->size <= idx)
       {
-         array->size = array->size*2;
+         array->size = array->size * 2;
       }
    }
    array->array = SizeMalloc(array->size * sizeof(IntOrP));
-   memcpy(array->array, tmp, old_size*sizeof(IntOrP));
+   memcpy(array->array, tmp, old_size * sizeof(IntOrP));
    SizeFree(tmp, old_size * sizeof(IntOrP));
-   for(i=old_size; i<array->size; i++)
+   for(i = old_size; i < array->size; i++)
    {
       if(array->integer)
       {
@@ -196,7 +196,7 @@ PDArray_p PDArrayCopy(PDArray_p array)
    PDArray_p handle = PDArrayAlloc(array->size, array->grow);
    long i;
 
-   for(i=0; i<array->size; i++)
+   for(i = 0; i < array->size; i++)
    {
       handle->array[i] = array->array[i];
    }
@@ -261,11 +261,11 @@ void PDArrayElementDeleteInt(PDArray_p array, long idx)
 
 long PDArrayMembers(PDArray_p array)
 {
-   long i, res =0;
+   long i, res = 0;
 
    assert(array);
 
-   for(i=0; i<array->size; i++)
+   for(i = 0; i < array->size; i++)
    {
       if(PDArrayElementP(array, i))
       {
@@ -295,9 +295,9 @@ long PDArrayFirstUnused(PDArray_p array)
 
    assert(array);
 
-   for(i=array->size; i; i--)
+   for(i = array->size; i; i--)
    {
-      if(PDArrayElementP(array, i-1))
+      if(PDArrayElementP(array, i - 1))
       {
          break;
       }
@@ -395,11 +395,11 @@ void PDArrayAdd(PDArray_p collect, PDArray_p data, long limit)
 {
    long i, old, new;
 
-   for(i=0; i<limit; i++)
+   for(i = 0; i < limit; i++)
    {
       old = PDArrayElementInt(collect, i);
       new = PDArrayElementInt(data, i);
-      PDArrayAssignInt(collect, i, old+new);
+      PDArrayAssignInt(collect, i, old + new);
    }
 }
 
@@ -418,7 +418,7 @@ void PDArrayAdd(PDArray_p collect, PDArray_p data, long limit)
 
 long PDArrayElementIncInt(PDArray_p array, long idx, long value)
 {
-   IntOrP *ref = PDArrayElementRef(array, idx);
+   IntOrP* ref = PDArrayElementRef(array, idx);
 
    ref->i_val += value;
 

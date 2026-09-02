@@ -61,7 +61,7 @@ Term_p drop_args(TB_p bank, Term_p t, long args_to_drop)
    Term_p res = NULL;
    assert(args_to_drop >= 0);
    assert(args_to_drop <= t->arity);
-   assert(!TermIsPhonyApp(t) || args_to_drop <= t->arity -1);
+   assert(!TermIsPhonyApp(t) || args_to_drop <= t->arity - 1);
    if(args_to_drop == 0)
    {
       res = t;
@@ -73,17 +73,16 @@ Term_p drop_args(TB_p bank, Term_p t, long args_to_drop)
    else
    {
       Type_p ty_args[args_to_drop]; // VLA
-      for(long i=t->arity - args_to_drop; i < t->arity; i++)
+      for(long i = t->arity - args_to_drop; i < t->arity; i++)
       {
-         ty_args[i-t->arity + args_to_drop] = t->args[i]->type;
+         ty_args[i - t->arity + args_to_drop] = t->args[i]->type;
       }
 
       res = TermTopAlloc(t->f_code, t->arity - args_to_drop);
-      res->type = TypeBankInsertTypeShared(bank->sig->type_bank,
-                                           ArrowTypeFlattened(ty_args,
-                                                              args_to_drop,
-                                                              t->type));
-      for(long i=0; i < t->arity - args_to_drop; i++)
+      res->type = TypeBankInsertTypeShared(
+         bank->sig->type_bank,
+         ArrowTypeFlattened(ty_args, args_to_drop, t->type));
+      for(long i = 0; i < t->arity - args_to_drop; i++)
       {
          res->args[i] = t->args[i];
       }
@@ -105,19 +104,19 @@ Term_p drop_args(TB_p bank, Term_p t, long args_to_drop)
 /----------------------------------------------------------------------*/
 
 Term_p FlattenApps(TB_p bank, Term_p hd, Term_p* args, long num_args,
-                    Type_p res_type)
+                   Type_p res_type)
 {
    Term_p res = TermTopAlloc(hd->f_code, hd->arity + num_args);
 #ifdef NDEBUG
    res->type = res_type;
 #endif
-   for(long i=0; i < hd->arity; i++)
+   for(long i = 0; i < hd->arity; i++)
    {
       res->args[i] = hd->args[i];
    }
-   for(long i=0; i < num_args; i++)
+   for(long i = 0; i < num_args; i++)
    {
-      res->args[hd->arity+i] = args[i];
+      res->args[hd->arity + i] = args[i];
    }
 
    res = TBTermTopInsert(bank, res);
@@ -148,7 +147,7 @@ Term_p flatten_and_make_shared(TB_p bank, Term_p t)
       !(TermIsAnyVar(t->args[0]) || TermIsLambda(t->args[0])))
    {
       Term_p junk = t;
-      t = FlattenApps(bank, t->args[0], t->args+1, t->arity-1, t->type);
+      t = FlattenApps(bank, t->args[0], t->args + 1, t->arity - 1, t->type);
       TermTopFree(junk);
    }
    else
@@ -185,13 +184,13 @@ Term_p do_shift_db(TB_p bank, Term_p t, int shift_val, int depth)
          res = t;
       }
    }
-   else if (TermIsLambda(t))
+   else if(TermIsLambda(t))
    {
       assert(t->f_code == SIG_DB_LAMBDA_CODE);
       assert(t->arity == 2);
 
       Term_p matrix = t->args[1];
-      Term_p shifted = do_shift_db(bank, matrix, shift_val, depth+1);
+      Term_p shifted = do_shift_db(bank, matrix, shift_val, depth + 1);
       if(matrix == shifted)
       {
          res = t;
@@ -201,7 +200,7 @@ Term_p do_shift_db(TB_p bank, Term_p t, int shift_val, int depth)
          res = CloseWithDBVar(bank, t->args[0]->type, shifted);
       }
    }
-   else if (t->arity == 0 || !TermHasDBSubterm(t))
+   else if(t->arity == 0 || !TermHasDBSubterm(t))
    {
       res = t; // optimization
    }
@@ -210,7 +209,7 @@ Term_p do_shift_db(TB_p bank, Term_p t, int shift_val, int depth)
       res = TermTopCopyWithoutArgs(t);
       bool changed = false;
 
-      for(long i=0; i<res->arity; i++)
+      for(long i = 0; i < res->arity; i++)
       {
          res->args[i] = do_shift_db(bank, t->args[i], shift_val, depth);
          changed = changed || res->args[i] != t->args[i];
@@ -277,7 +276,8 @@ Term_p replace_bound_vars(TB_p bank, Term_p t, int total_bound, int depth)
       assert(TermIsDBVar(t->args[0]));
 
       Term_p matrix = t->args[1];
-      Term_p new_matrix = replace_bound_vars(bank, matrix, total_bound, depth+1);
+      Term_p new_matrix =
+         replace_bound_vars(bank, matrix, total_bound, depth + 1);
       if(matrix == new_matrix)
       {
          res = t;
@@ -287,7 +287,7 @@ Term_p replace_bound_vars(TB_p bank, Term_p t, int total_bound, int depth)
          res = CloseWithDBVar(bank, t->args[0]->type, new_matrix);
       }
    }
-   else if (t->arity == 0 || !TermHasDBSubterm(t))
+   else if(t->arity == 0 || !TermHasDBSubterm(t))
    {
       res = t; //optimization
    }
@@ -296,14 +296,15 @@ Term_p replace_bound_vars(TB_p bank, Term_p t, int total_bound, int depth)
       res = TermTopCopyWithoutArgs(t);
       bool changed = false;
 
-      for(long i=0; i < res->arity; i++)
+      for(long i = 0; i < res->arity; i++)
       {
-         res->args[i] = replace_bound_vars(bank, t->args[i], total_bound, depth);
+         res->args[i] =
+            replace_bound_vars(bank, t->args[i], total_bound, depth);
          changed = changed || res->args[i] != t->args[i];
       }
 
-      res = changed ? flatten_and_make_shared(bank, res) :
-                      (TermTopFree(res), t);
+      res =
+         changed ? flatten_and_make_shared(bank, res) : (TermTopFree(res), t);
    }
    return res;
 }
@@ -331,13 +332,13 @@ long find_min_db(Term_p t, long depth)
          res = t->f_code - depth;
       }
    }
-   else if (TermIsLambda(t))
+   else if(TermIsLambda(t))
    {
-      res = find_min_db(t->args[1], depth+1);
+      res = find_min_db(t->args[1], depth + 1);
    }
-   else if (TermHasDBSubterm(t))
+   else if(TermHasDBSubterm(t))
    {
-      for(long i=0; i<t->arity; i++)
+      for(long i = 0; i < t->arity; i++)
       {
          long min_db = find_min_db(t->args[i], depth);
          if(min_db != DB_NOT_FOUND)
@@ -374,31 +375,29 @@ Term_p reduce_eta_top_level(TB_p bank, Term_p t)
    Term_p matrix = UnfoldLambda(t, bound_vars);
    Term_p res = t;
 
-   if(TermIsLambda(t) &&
-      matrix->arity > 0 &&
-      TermIsDBVar(matrix->args[matrix->arity-1]) &&
-      matrix->args[matrix->arity-1]->f_code == 0)
-   {  // term is of the shape %x... . ... @ x
+   if(TermIsLambda(t) && matrix->arity > 0 &&
+      TermIsDBVar(matrix->args[matrix->arity - 1]) &&
+      matrix->args[matrix->arity - 1]->f_code == 0)
+   { // term is of the shape %x... . ... @ x
       long last_db = matrix->arity - 1;
-      long left_limit =
-         MAX(matrix->arity - PStackGetSP(bound_vars),
-             TermIsPhonyApp(matrix) ? 1 : 0);
+      long left_limit = MAX(matrix->arity - PStackGetSP(bound_vars),
+                            TermIsPhonyApp(matrix) ? 1 : 0);
       for(; last_db >= left_limit; last_db--)
       {
-         long expected_db = matrix->arity-1 - last_db;
-         if(! (TermIsDBVar(matrix->args[last_db]) &&
-               matrix->args[last_db]->f_code == expected_db))
+         long expected_db = matrix->arity - 1 - last_db;
+         if(!(TermIsDBVar(matrix->args[last_db]) &&
+              matrix->args[last_db]->f_code == expected_db))
          {
             break;
          }
       }
       last_db++; // last loop execution failed
 
-      assert(last_db >=0);
+      assert(last_db >= 0);
       assert(last_db < matrix->arity);
 
       long min_db = DB_NOT_FOUND;
-      for(long i=0; i<last_db; i++)
+      for(long i = 0; i < last_db; i++)
       {
          long min_db_i = find_min_db(matrix->args[i], 0);
          if(min_db_i != DB_NOT_FOUND)
@@ -416,8 +415,9 @@ Term_p reduce_eta_top_level(TB_p bank, Term_p t)
 
       if(min_db != 0)
       {
-         long to_drop = min_db == DB_NOT_FOUND ? matrix->args[last_db]->f_code + 1
-                                               : MIN(min_db, matrix->args[last_db]->f_code + 1);
+         long to_drop = min_db == DB_NOT_FOUND
+            ? matrix->args[last_db]->f_code + 1
+            : MIN(min_db, matrix->args[last_db]->f_code + 1);
 
          res = ShiftDB(bank, drop_args(bank, matrix, to_drop), -to_drop);
 
@@ -429,7 +429,8 @@ Term_p reduce_eta_top_level(TB_p bank, Term_p t)
 
          while(!PStackEmpty(bound_vars))
          {
-            res = CloseWithDBVar(bank, ((Term_p)PStackPopP(bound_vars))->type, res);
+            res = CloseWithDBVar(bank, ((Term_p)PStackPopP(bound_vars))->type,
+                                 res);
          }
       }
    }
@@ -481,7 +482,7 @@ Term_p do_eta_expand_db(TB_p bank, Term_p t)
          res->args[0] = t->args[0];
       }
       bool changed = false;
-      for(long i=TermIsPhonyApp(t)?1:0; i < res->arity; i++)
+      for(long i = TermIsPhonyApp(t) ? 1 : 0; i < res->arity; i++)
       {
          res->args[i] = do_eta_expand_db(bank, t->args[i]);
          changed = changed || res->args[i] != t->args[i];
@@ -522,7 +523,7 @@ Term_p do_eta_reduce_db(TB_p bank, Term_p t)
    {
       res = t; // optimization
    }
-   else if (TermIsLambda(t))
+   else if(TermIsLambda(t))
    {
       PStack_p bvars = PStackAlloc();
       Term_p matrix = UnfoldLambda(t, bvars);
@@ -547,20 +548,19 @@ Term_p do_eta_reduce_db(TB_p bank, Term_p t)
    {
       res = TermTopCopyWithoutArgs(t);
       bool changed = false;
-      for(long i=0; i<t->arity; i++)
+      for(long i = 0; i < t->arity; i++)
       {
          res->args[i] = do_eta_reduce_db(bank, t->args[i]);
          changed = changed || res->args[i] != t->args[i];
       }
 
-      res = changed ? flatten_and_make_shared(bank, res) :
-                      (TermTopFree(res), t);
+      res =
+         changed ? flatten_and_make_shared(bank, res) : (TermTopFree(res), t);
    }
 
-   if((res->f_code == bank->sig->qall_code
-         || res->f_code == bank->sig->qex_code)
-      && res->arity == 1
-      && !TermIsLambda(res->args[0]))
+   if((res->f_code == bank->sig->qall_code ||
+       res->f_code == bank->sig->qex_code) &&
+      res->arity == 1 && !TermIsLambda(res->args[0]))
    {
       Term_p copy = TermTopCopyWithoutArgs(res);
       copy->args[0] = LambdaEtaExpandDBTopLevel(bank, res->args[0]);
@@ -597,12 +597,12 @@ Term_p do_beta_normalize_db(TB_p bank, Term_p t)
          DBGTermCheckUnownedSubterm(stdout, res, "UnownedBN2");
       }
    }
-   else if (t->arity == 0 || !TermIsBetaReducible(t))
+   else if(t->arity == 0 || !TermIsBetaReducible(t))
    {
       res = t; // optimization
       DBGTermCheckUnownedSubterm(stdout, res, "UnownedBN2.5");
    }
-   else if (TermIsLambda(t))
+   else if(TermIsLambda(t))
    {
       assert(t->f_code == SIG_DB_LAMBDA_CODE);
       assert(TermIsDBVar(t->args[0]));
@@ -625,7 +625,7 @@ Term_p do_beta_normalize_db(TB_p bank, Term_p t)
    {
       res = TermTopCopyWithoutArgs(t);
       bool changed = false;
-      for(long i=0; i < res->arity; i++)
+      for(long i = 0; i < res->arity; i++)
       {
          res->args[i] = do_beta_normalize_db(bank, t->args[i]);
          changed = changed || res->args[i] != t->args[i];
@@ -677,7 +677,7 @@ Term_p do_named_to_db(TB_p bank, Term_p t, long depth)
       PStack_p previous_bindings = PStackAlloc();
 
       Term_p body = UnfoldLambda(t, vars);
-      for(PStackPointer i=0; i < PStackGetSP(vars); i++)
+      for(PStackPointer i = 0; i < PStackGetSP(vars); i++)
       {
          Term_p var = (Term_p)PStackElementP(vars, i);
          PStackPushP(previous_bindings, var->binding);
@@ -703,8 +703,7 @@ Term_p do_named_to_db(TB_p bank, Term_p t, long depth)
       if(t->binding && TermIsDBVar(t->binding))
       {
          assert(t->binding->type == t->type);
-         res = TBRequestDBVar(bank, t->type,
-                              depth - t->binding->f_code - 1);
+         res = TBRequestDBVar(bank, t->type, depth - t->binding->f_code - 1);
       }
       else
       {
@@ -721,7 +720,7 @@ Term_p do_named_to_db(TB_p bank, Term_p t, long depth)
          changed = changed || res->args[i] != t->args[i];
       }
 
-      if (changed)
+      if(changed)
       {
          res = TBTermTopInsert(bank, res);
       }
@@ -759,15 +758,14 @@ Term_p do_post_cnf_encode(TB_p bank, Term_p t, long depth)
       if(t->binding && TermIsDBVar(t->binding))
       {
          assert(t->binding->type == t->type);
-         res = TBRequestDBVar(bank, t->type,
-                              depth - t->binding->f_code - 1);
+         res = TBRequestDBVar(bank, t->type, depth - t->binding->f_code - 1);
       }
       else
       {
          res = t;
       }
    }
-   else if (!TermHasBoolSubterm(t) && TermIsGround(t))
+   else if(!TermHasBoolSubterm(t) && TermIsGround(t))
    {
       res = t; // optimization
    }
@@ -776,7 +774,7 @@ Term_p do_post_cnf_encode(TB_p bank, Term_p t, long depth)
       assert(t->f_code == SIG_DB_LAMBDA_CODE);
       assert(t->arity == 2);
       assert(TermIsDBVar(t->args[0]));
-      Term_p new_matrix = do_post_cnf_encode(bank, t->args[1], depth+1);
+      Term_p new_matrix = do_post_cnf_encode(bank, t->args[1], depth + 1);
       if(new_matrix != t->args[1])
       {
          res = CloseWithDBVar(bank, t->args[0]->type, new_matrix);
@@ -786,7 +784,8 @@ Term_p do_post_cnf_encode(TB_p bank, Term_p t, long depth)
          res = t;
       }
    }
-   else if((t->f_code == bank->sig->qall_code || t->f_code == bank->sig->qex_code) &&
+   else if((t->f_code == bank->sig->qall_code ||
+            t->f_code == bank->sig->qex_code) &&
            t->arity == 2)
    {
       FunCode quant = t->f_code;
@@ -803,9 +802,8 @@ Term_p do_post_cnf_encode(TB_p bank, Term_p t, long depth)
          matrix = matrix->args[1];
       }
 
-      matrix =
-         do_post_cnf_encode(bank,
-            ShiftDB(bank, matrix, PStackGetSP(prefix) / 2), depth);
+      matrix = do_post_cnf_encode(
+         bank, ShiftDB(bank, matrix, PStackGetSP(prefix) / 2), depth);
 
       while(!PStackEmpty(prefix))
       {
@@ -824,8 +822,8 @@ Term_p do_post_cnf_encode(TB_p bank, Term_p t, long depth)
       PStackFree(prefix);
       res = matrix;
    }
-   else if (t->f_code == bank->sig->eqn_code && t->arity == 2
-            && t->args[1] == bank->true_term)
+   else if(t->f_code == bank->sig->eqn_code && t->arity == 2 &&
+           t->args[1] == bank->true_term)
    {
       res = do_post_cnf_encode(bank, t->args[0], depth);
    }
@@ -839,7 +837,7 @@ Term_p do_post_cnf_encode(TB_p bank, Term_p t, long depth)
          changed = changed || res->args[i] != t->args[i];
       }
 
-      if (changed)
+      if(changed)
       {
          res = TBTermTopInsert(bank, res);
       }
@@ -866,7 +864,7 @@ Term_p do_post_cnf_encode(TB_p bank, Term_p t, long depth)
 //
 /----------------------------------------------------------------------*/
 
-Term_p replace_fvars (TB_p bank, Term_p t, long depth)
+Term_p replace_fvars(TB_p bank, Term_p t, long depth)
 {
    if(TermIsGround(t))
    {
@@ -876,8 +874,9 @@ Term_p replace_fvars (TB_p bank, Term_p t, long depth)
    {
       if(t->binding)
       {
-         return depth==0 ? t->binding :
-                 TBRequestDBVar(bank, t->type, t->binding->f_code+depth);
+         return depth == 0
+            ? t->binding
+            : TBRequestDBVar(bank, t->type, t->binding->f_code + depth);
       }
       else
       {
@@ -886,7 +885,7 @@ Term_p replace_fvars (TB_p bank, Term_p t, long depth)
    }
    else if(TermIsLambda(t))
    {
-      Term_p new_matrix = replace_fvars(bank, t->args[1], depth+1);
+      Term_p new_matrix = replace_fvars(bank, t->args[1], depth + 1);
       if(new_matrix != t->args[1])
       {
          return CloseWithDBVar(bank, t->args[0]->type, new_matrix);
@@ -900,7 +899,7 @@ Term_p replace_fvars (TB_p bank, Term_p t, long depth)
    {
       Term_p copy = TermTopCopyWithoutArgs(t);
       bool changed = false;
-      for(long i=0; i<t->arity; i++)
+      for(long i = 0; i < t->arity; i++)
       {
          copy->args[i] = replace_fvars(bank, t->args[i], depth);
          changed = changed || copy->args[i] != t->args[i];
@@ -941,9 +940,8 @@ Term_p CloseWithDBVar(TB_p bank, Type_p ty, Term_p body)
    Term_p res = TermTopAlloc(SIG_DB_LAMBDA_CODE, 2);
    res->args[0] = TBRequestDBVar(bank, ty, 0);
    res->args[1] = body;
-   res->type =
-      TypeBankInsertTypeShared(bank->sig->type_bank,
-                               ArrowTypeFlattened(&ty, 1, body->type));
+   res->type = TypeBankInsertTypeShared(bank->sig->type_bank,
+                                        ArrowTypeFlattened(&ty, 1, body->type));
    return TBTermTopInsert(bank, res);
 }
 
@@ -963,7 +961,7 @@ Term_p CloseWithDBVar(TB_p bank, Type_p ty, Term_p body)
 Term_p CloseWithTypePrefix(TB_p bank, Type_p* tys, long size, Term_p matrix)
 {
    Term_p res = matrix;
-   for(long i = size-1; i>=0; i--)
+   for(long i = size - 1; i >= 0; i--)
    {
       res = CloseWithDBVar(bank, tys[i], res);
    }
@@ -982,10 +980,7 @@ Term_p CloseWithTypePrefix(TB_p bank, Type_p* tys, long size, Term_p matrix)
 //
 /----------------------------------------------------------------------*/
 
-inline void SetEtaNormalizer(TermNormalizer norm)
-{
-   eta_norm = norm;
-}
+inline void SetEtaNormalizer(TermNormalizer norm) { eta_norm = norm; }
 
 /*-----------------------------------------------------------------------
 //
@@ -999,10 +994,7 @@ inline void SetEtaNormalizer(TermNormalizer norm)
 //
 /----------------------------------------------------------------------*/
 
-inline TermNormalizer GetEtaNormalizer()
-{
-   return eta_norm;
-}
+inline TermNormalizer GetEtaNormalizer() { return eta_norm; }
 
 /*-----------------------------------------------------------------------
 //
@@ -1019,9 +1011,9 @@ inline TermNormalizer GetEtaNormalizer()
 
 Term_p NamedToDB(TB_p bank, Term_p lambda)
 {
-   Term_p res = BetaNormalizeDB(bank,
-                                TermHasLambdaSubterm(lambda) ?
-                                do_named_to_db(bank, lambda, 0) : lambda);
+   Term_p res = BetaNormalizeDB(
+      bank,
+      TermHasLambdaSubterm(lambda) ? do_named_to_db(bank, lambda, 0) : lambda);
    DBGTermCheckUnownedSubterm(stdout, res, "NamedToDBX");
    return res;
 }
@@ -1041,7 +1033,7 @@ Term_p NamedToDB(TB_p bank, Term_p lambda)
 Term_p ShiftDB(TB_p bank, Term_p term, int shift_val)
 {
    Term_p res;
-   if (shift_val == 0)
+   if(shift_val == 0)
    {
       res = term;
    }
@@ -1071,18 +1063,19 @@ Term_p AbstractVars(TB_p terms, Term_p matrix, PStack_p var_prefix)
 {
    assert(TermIsDBClosed(matrix));
    Subst_p subst = SubstAlloc();
-   for(long i=PStackGetSP(var_prefix)-1; i>=0; i--)
+   for(long i = PStackGetSP(var_prefix) - 1; i >= 0; i--)
    {
       Term_p v = PStackElementP(var_prefix, i);
       assert(v->binding == NULL);
-      SubstAddBinding(subst, v,
-         TBRequestDBVar(terms, v->type, PStackGetSP(var_prefix)-i-1));
+      SubstAddBinding(
+         subst, v,
+         TBRequestDBVar(terms, v->type, PStackGetSP(var_prefix) - i - 1));
    }
    matrix = replace_fvars(terms, matrix, 0);
-   for(long i=PStackGetSP(var_prefix)-1; i>=0; i--)
+   for(long i = PStackGetSP(var_prefix) - 1; i >= 0; i--)
    {
-      matrix =
-         CloseWithDBVar(terms, ((Term_p)PStackElementP(var_prefix,i))->type, matrix);
+      matrix = CloseWithDBVar(
+         terms, ((Term_p)PStackElementP(var_prefix, i))->type, matrix);
    }
    SubstDelete(subst);
    assert(TermIsDBClosed(matrix));
@@ -1103,10 +1096,10 @@ Term_p AbstractVars(TB_p terms, Term_p matrix, PStack_p var_prefix)
 
 Term_p whnf_step_uncached(TB_p bank, Term_p t)
 {
-   Term_p  res = NULL;
-   long    num_remaining = t->arity - 1;
+   Term_p res = NULL;
+   long num_remaining = t->arity - 1;
    Term_p* remaining_args = t->args + 1;
-   Term_p  matrix = t->args[0];
+   Term_p matrix = t->args[0];
 
    assert(num_remaining);
 
@@ -1125,7 +1118,7 @@ Term_p whnf_step_uncached(TB_p bank, Term_p t)
    long total_bound = PStackGetSP(to_bind_stack);
    assert(total_bound);
 
-   for(PStackPointer i=0; i < PStackGetSP(to_bind_stack); i++)
+   for(PStackPointer i = 0; i < PStackGetSP(to_bind_stack); i++)
    {
       Term_p target = PStackElementP(to_bind_stack, i);
       Term_p db_var = TBRequestDBVar(bank, target->type, total_bound - i - 1);
@@ -1135,7 +1128,7 @@ Term_p whnf_step_uncached(TB_p bank, Term_p t)
    }
 
    Term_p new_matrix = replace_bound_vars(bank, matrix, total_bound, 0);
-   if (num_remaining)
+   if(num_remaining)
    {
       PStack_p rest = PStackAlloc();
       for(long i = 0; i < num_remaining; i++)
@@ -1211,7 +1204,7 @@ Term_p WHNF_deref(Term_p t)
    {
       res = WHNF_deref(WHNF_step(TermGetBank(t), t));
    }
-   else if (TermIsLambda(t))
+   else if(TermIsLambda(t))
    {
       PStack_p dbvars = PStackAlloc();
       Term_p matrix = UnfoldLambda(t, dbvars);
@@ -1225,7 +1218,8 @@ Term_p WHNF_deref(Term_p t)
          res = new_matrix;
          while(!PStackEmpty(dbvars))
          {
-            res = CloseWithDBVar(TermGetBank(t), ((Term_p)PStackPopP(dbvars))->type, res);
+            res = CloseWithDBVar(TermGetBank(t),
+                                 ((Term_p)PStackPopP(dbvars))->type, res);
          }
       }
       PStackFree(dbvars);
@@ -1259,10 +1253,8 @@ Term_p BetaNormalizeDB(TB_p bank, Term_p term)
    {
       res = do_beta_normalize_db(bank, term);
       DBGTermCheckUnownedSubterm(stdout, res, "UnownedBNDB1");
-      if(res->f_code == bank->sig->eqn_code &&
-         res->arity==2 &&
-         res->args[1] == bank->true_term &&
-         res->args[0] != bank->true_term &&
+      if(res->f_code == bank->sig->eqn_code && res->arity == 2 &&
+         res->args[1] == bank->true_term && res->args[0] != bank->true_term &&
          res->args[0]->f_code > 0 &&
          SigIsLogicalSymbol(bank->sig, res->args[0]->f_code))
       {
@@ -1317,21 +1309,22 @@ Term_p DecodeFormulasForCNF(TB_p bank, Term_p t)
    //TermPrintDbg(stdout, t, bank->sig, DEREF_NEVER);
    //printf("\n");
 
-   if((t->f_code == sig->qall_code || t->f_code == sig->qex_code) && t->arity == 1)
+   if((t->f_code == sig->qall_code || t->f_code == sig->qex_code) &&
+      t->arity == 1)
    {
       assert(TypeIsArrow(t->args[0]->type));
       assert(t->args[0]->type->arity == 2);
       assert(TypeIsPredicate(t->args[0]->type));
       Term_p fresh_var =
          VarBankGetFreshVar(bank->vars, t->args[0]->type->args[0]);
-      Term_p new_matrix =
-         WHNF_step(bank,
-            TBTermTopInsert(bank,
-               TermApplyArg(bank->sig->type_bank, t->args[0], fresh_var)));
+      Term_p new_matrix = WHNF_step(
+         bank,
+         TBTermTopInsert(
+            bank, TermApplyArg(bank->sig->type_bank, t->args[0], fresh_var)));
       res = TFormulaQuantorAlloc(bank, t->f_code, fresh_var,
                                  DecodeFormulasForCNF(bank, new_matrix));
    }
-   else if (TermIsAnyVar(t) || t->arity == 0)
+   else if(TermIsAnyVar(t) || t->arity == 0)
    {
       res = t;
    }
@@ -1357,7 +1350,7 @@ Term_p DecodeFormulasForCNF(TB_p bank, Term_p t)
          changed = changed || res->args[i] != t->args[i];
       }
 
-      if (changed)
+      if(changed)
       {
          res = TBTermTopInsert(bank, res);
       }
@@ -1392,12 +1385,14 @@ Term_p LambdaEtaExpandDBTopLevel(TB_p bank, Term_p t)
    {
       long num_args = TypeGetMaxArity(t->type);
       PStack_p db_args = PStackAlloc();
-      for(long i=0; i<num_args; i++)
+      for(long i = 0; i < num_args; i++)
       {
-         Term_p fresh_db = TBRequestDBVar(bank, t->type->args[i], num_args-i-1);
+         Term_p fresh_db =
+            TBRequestDBVar(bank, t->type->args[i], num_args - i - 1);
          PStackPushP(db_args,
-                     TypeIsArrow(fresh_db->type) ?
-                        do_eta_expand_db(bank, fresh_db) : fresh_db);
+                     TypeIsArrow(fresh_db->type)
+                        ? do_eta_expand_db(bank, fresh_db)
+                        : fresh_db);
       }
 
       t = ApplyTerms(bank, ShiftDB(bank, t, num_args), db_args);

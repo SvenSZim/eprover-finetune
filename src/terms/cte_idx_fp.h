@@ -41,7 +41,7 @@ Changes
  * first element containing the lenghts (inclusive), the others the
  * results of the sampling */
 
-typedef FunCode *IndexFP_p;
+typedef FunCode* IndexFP_p;
 
 typedef IndexFP_p (*FPIndexFunction)(Term_p t);
 
@@ -54,19 +54,19 @@ extern char* FPIndexNames[];
 
 #define MAX_PM_INDEX_NAME_LEN 20
 
-#define   BELOW_VAR     -2
-#define   ANY_VAR       -1
-#define   NOT_IN_TERM    0
+#define BELOW_VAR -2
+#define ANY_VAR -1
+#define NOT_IN_TERM 0
 
-FunCode   TermFPSampleFO(Term_p term, va_list ap);
-FunCode   TermFPFlexSampleFO(Term_p term, IntOrP* *seq);
-FunCode   TermFPSample(Term_p term, ...);
+FunCode TermFPSampleFO(Term_p term, va_list ap);
+FunCode TermFPFlexSampleFO(Term_p term, IntOrP** seq);
+FunCode TermFPSample(Term_p term, ...);
 #ifdef ENABLE_LFHO
-FunCode   TermFPSampleHO(Term_p term, va_list ap);
-FunCode   TermFPFlexSampleHO(Term_p term, IntOrP* *seq);
-FunCode   TermFPFlexSample(Term_p term, IntOrP* *seq);
-#else 
-#define   TermFPFlexSample(term, seq)    (TermFPFlexSampleFO(term, seq))
+FunCode TermFPSampleHO(Term_p term, va_list ap);
+FunCode TermFPFlexSampleHO(Term_p term, IntOrP** seq);
+FunCode TermFPFlexSample(Term_p term, IntOrP** seq);
+#else
+#define TermFPFlexSample(term, seq) (TermFPFlexSampleFO(term, seq))
 #endif
 
 IndexFP_p IndexFP0Create(Term_p t);
@@ -88,11 +88,11 @@ IndexFP_p IndexFP3DFlexCreate(Term_p t);
 
 IndexFP_p IndexDTCreate(Term_p t);
 
-void      IndexFPFree(IndexFP_p junk);
+void IndexFPFree(IndexFP_p junk);
 
 FPIndexFunction GetFPIndexFunction(char* name);
 
-void      IndexFPPrint(FILE* out, IndexFP_p fp);
+void IndexFPPrint(FILE* out, IndexFP_p fp);
 
 
 #endif
@@ -100,8 +100,6 @@ void      IndexFPPrint(FILE* out, IndexFP_p fp);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

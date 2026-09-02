@@ -37,13 +37,13 @@ Changes
 
 typedef struct schedule_cell
 {
-   char*        heu_name;
+   char* heu_name;
    TermOrdering ordering;
-   char*        sine;
-   float        time_fraction;
-   rlim_t       time_absolute;
-   int          cores;
-}ScheduleCell, *Schedule_p;
+   char* sine;
+   float time_fraction;
+   rlim_t time_absolute;
+   int cores;
+} ScheduleCell, *Schedule_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -65,12 +65,9 @@ void InitializePlaceholderSearchSchedule(Schedule_p search_sched,
                                          Schedule_p preproc_sched,
                                          bool force_preproc);
 
-int ExecuteScheduleMultiCore(ScheduleCell strats[],
-                             HeuristicParms_p  h_parms,
-                             bool print_rusage,
-                             int wc_time_limit,
-                             int compute_cores_per_schedule,
-                             int max_cores,
+int ExecuteScheduleMultiCore(ScheduleCell strats[], HeuristicParms_p h_parms,
+                             bool print_rusage, int wc_time_limit,
+                             int compute_cores_per_schedule, int max_cores,
                              bool serialize);
 
 Schedule_p GetFilteredDefaultSchedule(Schedule_p exhausted_sched);

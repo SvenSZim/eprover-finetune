@@ -34,22 +34,21 @@
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
 
-bool          TOGreater(OCB_p ocb, Term_p s, Term_p t, DerefType
-                        deref_s, DerefType deref_t);
-CompareResult TOCompare(OCB_p ocb, Term_p s, Term_p t, DerefType
-                        deref_s, DerefType deref_t);
+bool TOGreater(OCB_p ocb, Term_p s, Term_p t, DerefType deref_s,
+               DerefType deref_t);
+CompareResult TOCompare(OCB_p ocb, Term_p s, Term_p t, DerefType deref_s,
+                        DerefType deref_t);
 
 CompareResult TOCompareSymbolParse(Scanner_p in);
 PStackPointer TOSymbolComparisonChainParse(Scanner_p in, OCB_p ocb);
 PStackPointer TOPrecedenceParse(Scanner_p in, OCB_p ocb);
-void          TOSymbolWeightParse(Scanner_p in, OCB_p ocb);
-long          TOWeightsParse(Scanner_p in, OCB_p ocb);
+void TOSymbolWeightParse(Scanner_p in, OCB_p ocb);
+long TOWeightsParse(Scanner_p in, OCB_p ocb);
 
 #endif
 

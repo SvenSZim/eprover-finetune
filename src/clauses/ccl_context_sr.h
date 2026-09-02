@@ -38,23 +38,20 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
 
-int  ClauseContextualSimplifyReflect(ClauseSet_p set, Clause_p clause);
+int ClauseContextualSimplifyReflect(ClauseSet_p set, Clause_p clause);
 long ClauseSetFindContextSRClauses(ClauseSet_p set, Clause_p clause,
-               PStack_p res);
+                                   PStack_p res);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

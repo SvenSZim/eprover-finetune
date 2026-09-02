@@ -35,10 +35,10 @@ Changes
 
 typedef struct kbdesccell
 {
-   char         *version;
-   double       neg_proportion;
-   long         fail_neg_examples;
-}KBDescCell, *KBDesc_p;
+   char* version;
+   double neg_proportion;
+   long fail_neg_examples;
+} KBDescCell, *KBDesc_p;
 
 
 #define KB_ANNOTATION_NO 7
@@ -51,22 +51,19 @@ typedef struct kbdesccell
 #define KBDescCellAlloc() (KBDescCell*)SizeMalloc(sizeof(KBDescCell))
 #define KBDescCellFree(junk) SizeFree(junk, sizeof(KBDescCell))
 
-KBDesc_p KBDescAlloc(char* version, double neg_prop, long
-           neg_examples);
-void     KBDescFree(KBDesc_p desc);
+KBDesc_p KBDescAlloc(char* version, double neg_prop, long neg_examples);
+void KBDescFree(KBDesc_p desc);
 
-void     KBDescPrint(FILE* out, KBDesc_p desc);
+void KBDescPrint(FILE* out, KBDesc_p desc);
 KBDesc_p KBDescParse(Scanner_p in);
 
-char*    KBFileName(DStr_p name, char *basename, char* file);
+char* KBFileName(DStr_p name, char* basename, char* file);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

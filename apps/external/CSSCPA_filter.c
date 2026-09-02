@@ -31,11 +31,11 @@ Changes
 /*                  Data types                                         */
 /*---------------------------------------------------------------------*/
 
-#define NAME    "CSSCPA_filter"
+#define NAME "CSSCPA_filter"
 
 typedef enum
 {
-   OPT_NOOPT=0,
+   OPT_NOOPT = 0,
    OPT_HELP,
    OPT_VERSION,
    OPT_VERBOSE,
@@ -43,7 +43,7 @@ typedef enum
    OPT_SILENT,
    OPT_OUTPUTLEVEL,
    OPT_RANT
-}OptionCodes;
+} OptionCodes;
 
 
 
@@ -51,56 +51,38 @@ typedef enum
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-OptCell opts[] =
-{
-   {OPT_HELP,
-    'h', "help",
-    NoArg, NULL,
-    "Print a short description of program usage and options."},
+OptCell opts[] = {
+   { OPT_HELP, 'h', "help", NoArg, NULL,
+     "Print a short description of program usage and options." },
 
-   {OPT_VERSION,
-    '\0', "version",
-    NoArg, NULL,
-    "Print the version number of the program."},
+   { OPT_VERSION, '\0', "version", NoArg, NULL,
+     "Print the version number of the program." },
 
-   {OPT_VERBOSE,
-    'v', "verbose",
-    OptArg, "1",
-    "Verbose comments on the progress of the program."},
+   { OPT_VERBOSE, 'v', "verbose", OptArg, "1",
+     "Verbose comments on the progress of the program." },
 
-   {OPT_OUTPUT,
-    'o', "output-file",
-    ReqArg, NULL,
-   "Redirect output into the named file."},
+   { OPT_OUTPUT, 'o', "output-file", ReqArg, NULL,
+     "Redirect output into the named file." },
 
-    {OPT_SILENT,
-    's', "silent",
-    NoArg, NULL,
-    "Equivalent to --output-level=0."},
+   { OPT_SILENT, 's', "silent", NoArg, NULL,
+     "Equivalent to --output-level=0." },
 
-   {OPT_OUTPUTLEVEL,
-    'l', "output-level",
-    ReqArg, NULL,
-    "Select an output level, greater values imply more verbose"
-    " output. At the moment, level 0 only prints the result of each"
-    " statement, and level 1 also prints what happens to each"
-    " clause."},
+   { OPT_OUTPUTLEVEL, 'l', "output-level", ReqArg, NULL,
+     "Select an output level, greater values imply more verbose"
+     " output. At the moment, level 0 only prints the result of each"
+     " statement, and level 1 also prints what happens to each"
+     " clause." },
 
-    {OPT_RANT,
-    'r', "rant-about-input-buffering",
-     OptArg, "666",
-    "Tell the program how much you hate to include the "
+   { OPT_RANT, 'r', "rant-about-input-buffering", OptArg, "666",
+     "Tell the program how much you hate to include the "
      "'Please'-sequence in the input. The optional argument is the "
-     " rant-intensity."},
+     " rant-intensity." },
 
-   {OPT_NOOPT,
-    '\0', NULL,
-    NoArg, NULL,
-    NULL}
+   { OPT_NOOPT, '\0', NULL, NoArg, NULL, NULL }
 };
 
-char   *outname   = NULL;
-bool   app_encode = false;
+char* outname = NULL;
+bool app_encode = false;
 
 /*---------------------------------------------------------------------*/
 /*                      Forward Declarations                           */
@@ -116,10 +98,10 @@ void print_help(FILE* out);
 
 int main(int argc, char* argv[])
 {
-   Scanner_p     in;
-   CLState_p     state;
+   Scanner_p in;
+   CLState_p state;
    CSSCPAState_p procstate;
-   int           i;
+   int i;
 
    assert(argv[0]);
 
@@ -131,21 +113,21 @@ int main(int argc, char* argv[])
 
    OutputFormat = TPTPFormat;
 
-   if(state->argc ==  0)
+   if(state->argc == 0)
    {
       CLStateInsertArg(state, "-");
    }
 
    procstate = CSSCPAStateAlloc();
 
-   for(i=0; state->argv[i]; i++)
+   for(i = 0; state->argv[i]; i++)
    {
-      in = CreateScanner(StreamTypeFile, state->argv[i], true, NULL,true);
+      in = CreateScanner(StreamTypeFile, state->argv[i], true, NULL, true);
       ScannerSetFormat(in, TSTPFormat);
       CSSCPALoop(in, procstate);
       DestroyScanner(in);
    }
-   fprintf(GlobalOut, "\n"COMCHAR" Resulting clause set:\n");
+   fprintf(GlobalOut, "\n" COMCHAR " Resulting clause set:\n");
    ClauseSetTSTPPrint(GlobalOut, procstate->pos_units, true);
    ClauseSetTSTPPrint(GlobalOut, procstate->neg_units, true);
    ClauseSetTSTPPrint(GlobalOut, procstate->non_units, true);
@@ -184,52 +166,53 @@ CLState_p process_options(int argc, char* argv[])
 {
    Opt_p handle;
    CLState_p state;
-   char*  arg;
+   char* arg;
 
-   state = CLStateAlloc(argc,argv);
+   state = CLStateAlloc(argc, argv);
 
    while((handle = CLStateGetOpt(state, &arg, opts)))
    {
       switch(handle->option_code)
       {
-      case OPT_VERBOSE:
-       Verbose = CLStateGetIntArg(handle, arg);
-       break;
-      case OPT_HELP:
-       print_help(stdout);
-       exit(NO_ERROR);
-      case OPT_VERSION:
-       printf(NAME " " VERSION "\n");
-       exit(NO_ERROR);
-      case OPT_OUTPUT:
-       outname = arg;
-       break;
-      case OPT_SILENT:
+         case OPT_VERBOSE:
+            Verbose = CLStateGetIntArg(handle, arg);
+            break;
+         case OPT_HELP:
+            print_help(stdout);
+            exit(NO_ERROR);
+         case OPT_VERSION:
+            printf(NAME " " VERSION "\n");
+            exit(NO_ERROR);
+         case OPT_OUTPUT:
+            outname = arg;
+            break;
+         case OPT_SILENT:
             OutputLevel = 0;
             break;
-      case OPT_OUTPUTLEVEL:
+         case OPT_OUTPUTLEVEL:
             OutputLevel = CLStateGetIntArg(handle, arg);
-       if(OutputLevel>1)
-       {
-          Error("Option -l (--output-level) accepts only 0 or 1"
-           "for CSSCPA_filter",
+            if(OutputLevel > 1)
+            {
+               Error("Option -l (--output-level) accepts only 0 or 1"
+                     "for CSSCPA_filter",
                      USAGE_ERROR);
-       }
+            }
             break;
-      case OPT_RANT:
-       if(CLStateGetIntArg(handle, arg)!=0)
-       {
-          fprintf(stderr, "Improve it yourself, mate. The code is"
-             " free.\n");
-       }
-       else
-       {
-          fprintf(stderr, "You call that a rant????\n");
-       }
-       break;
-     default:
-    assert(false);
-    break;
+         case OPT_RANT:
+            if(CLStateGetIntArg(handle, arg) != 0)
+            {
+               fprintf(stderr,
+                       "Improve it yourself, mate. The code is"
+                       " free.\n");
+            }
+            else
+            {
+               fprintf(stderr, "You call that a rant????\n");
+            }
+            break;
+         default:
+            assert(false);
+            break;
       }
    }
    return state;
@@ -238,8 +221,7 @@ CLState_p process_options(int argc, char* argv[])
 void print_help(FILE* out)
 {
    fprintf(out, "\n\
-\n"
-NAME " " VERSION "\n\
+\n" NAME " " VERSION "\n\
 \n\
 Usage: " NAME " [options] [files]\n\
 \n\

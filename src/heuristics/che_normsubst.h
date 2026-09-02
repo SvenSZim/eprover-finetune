@@ -39,7 +39,7 @@ typedef struct normsubstcell
    NumTree_p used_ids;
    NumTree_p norm_funs;
    NumTree_p norm_vars;
-}NormSubstCell, *NormSubst_p;
+} NormSubstCell, *NormSubst_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -47,18 +47,16 @@ typedef struct normsubstcell
 /*---------------------------------------------------------------------*/
 
 #define NormSubstCellAlloc() (NormSubstCell*)SizeMalloc(sizeof(NormSubstCell))
-#define NormSubstCellFree(junk)        SizeFree(junk, sizeof(NormSubstCell))
+#define NormSubstCellFree(junk) SizeFree(junk, sizeof(NormSubstCell))
 
 NormSubst_p NormSubstAlloc(void);
-void        NormSubstFree(NormSubst_p junk);
+void NormSubstFree(NormSubst_p junk);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

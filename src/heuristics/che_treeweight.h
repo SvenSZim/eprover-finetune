@@ -32,7 +32,7 @@
 
 typedef struct treeweightparamcell
 {
-   OCB_p        ocb;
+   OCB_p ocb;
    ProofState_p proofstate;
 
    VarNormStyle var_norm;
@@ -41,44 +41,34 @@ typedef struct treeweightparamcell
    VarBank_p vars;
    PStack_p terms;
    int ins_cost;
-   int del_cost; 
+   int del_cost;
    int ch_cost;
 
    TermWeightExtension_p twe;
-   void   (*init_fun)(struct treeweightparamcell*);
-}TreeWeightParamCell, *TreeWeightParam_p;
+   void (*init_fun)(struct treeweightparamcell*);
+} TreeWeightParamCell, *TreeWeightParam_p;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define TreeWeightParamCellAlloc() (TreeWeightParamCell*) \
-        SizeMalloc(sizeof(TreeWeightParamCell))
-#define TreeWeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(TreeWeightParamCell))
+#define TreeWeightParamCellAlloc()                                             \
+   (TreeWeightParamCell*)SizeMalloc(sizeof(TreeWeightParamCell))
+#define TreeWeightParamCellFree(junk)                                          \
+   SizeFree(junk, sizeof(TreeWeightParamCell))
 
 TreeWeightParam_p TreeWeightParamAlloc(void);
-void              TreeWeightParamFree(TreeWeightParam_p junk);
+void TreeWeightParamFree(TreeWeightParam_p junk);
 
 
-WFCB_p ConjectureTreeDistanceWeightParse(
-   Scanner_p in, 
-   OCB_p ocb, 
-   ProofState_p state);
+WFCB_p ConjectureTreeDistanceWeightParse(Scanner_p in, OCB_p ocb,
+                                         ProofState_p state);
 
 WFCB_p ConjectureTreeDistanceWeightInit(
-   ClausePrioFun prio_fun, 
-   OCB_p ocb,
-   ProofState_p proofstate,
-   VarNormStyle var_norm,
-   RelatedTermSet rel_terms,
-   int ins_cost,
-   int del_cost, 
-   int ch_cost,
-   TermWeightExtenstionStyle ext_style,
-   double max_term_multiplier,
-   double max_literal_multiplier,
-   double pos_multiplier);
+   ClausePrioFun prio_fun, OCB_p ocb, ProofState_p proofstate,
+   VarNormStyle var_norm, RelatedTermSet rel_terms, int ins_cost, int del_cost,
+   int ch_cost, TermWeightExtenstionStyle ext_style, double max_term_multiplier,
+   double max_literal_multiplier, double pos_multiplier);
 
 double ConjectureTreeDistanceWeightCompute(void* data, Clause_p clause);
 

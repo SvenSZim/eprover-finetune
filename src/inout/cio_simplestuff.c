@@ -106,8 +106,8 @@ bool TCPReadTextBlock(DStr_p result, int fd, char* terminator)
       res = TCPStringRecvX(fd);
       if(strcmp(res, terminator) == 0)
       {
-        FREE(res);
-        break;
+         FREE(res);
+         break;
       }
       DStrAppendStr(result, res);
       FREE(res);

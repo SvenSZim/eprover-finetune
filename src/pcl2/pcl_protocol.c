@@ -86,13 +86,13 @@ PCLProt_p PCLProtAlloc(void)
 void PCLProtFree(PCLProt_p junk)
 {
    PStack_p stack;
-   PTree_p  cell;
+   PTree_p cell;
    TypeBank_p sort_table = junk->terms->sig->type_bank;
 
    assert(junk && junk->terms);
 
    stack = PTreeTraverseInit(junk->steps);
-   while((cell=PTreeTraverseNext(stack)))
+   while((cell = PTreeTraverseNext(stack)))
    {
       PCLStepFree(cell->key);
    }
@@ -124,8 +124,7 @@ PCLStep_p PCLProtExtractStep(PCLProt_p prot, PCLStep_p step)
 {
    PCLStep_p res;
 
-   res = PTreeObjExtractObject(&(prot->steps), step,
-                PCLStepIdCompare);
+   res = PTreeObjExtractObject(&(prot->steps), step, PCLStepIdCompare);
    if(res)
    {
       prot->number--;
@@ -153,12 +152,12 @@ bool PCLProtDeleteStep(PCLProt_p prot, PCLStep_p step)
 {
    PCLStep_p tree_step;
 
-   assert(prot&&step);
+   assert(prot && step);
 
-   tree_step = PCLProtExtractStep(prot,step);
+   tree_step = PCLProtExtractStep(prot, step);
    if(tree_step)
    {
-      assert(step==tree_step);
+      assert(step == tree_step);
       PCLStepFree(tree_step);
       return true;
    }
@@ -181,7 +180,7 @@ bool PCLProtDeleteStep(PCLProt_p prot, PCLStep_p step)
 PCLStep_p PCLProtFindStep(PCLProt_p prot, PCLId_p id)
 {
    PCLStepCell tmp;
-   PTree_p     cell;
+   PTree_p cell;
 
    tmp.id = id;
 
@@ -192,7 +191,6 @@ PCLStep_p PCLProtFindStep(PCLProt_p prot, PCLId_p id)
    }
    return NULL;
 }
-
 
 
 
@@ -212,16 +210,16 @@ void PCLProtSerialize(PCLProt_p prot)
 {
    if(!prot->is_ordered)
    {
-      PStack_p  stack;
-      PTree_p   cell;
+      PStack_p stack;
+      PTree_p cell;
       PCLStep_p step;
 
       PStackReset(prot->in_order);
       stack = PTreeTraverseInit(prot->steps);
-      while((cell=PTreeTraverseNext(stack)))
+      while((cell = PTreeTraverseNext(stack)))
       {
-    step = cell->key;
-    PStackPushP(prot->in_order, step);
+         step = cell->key;
+         PStackPushP(prot->in_order, step);
       }
       PStackFree(stack);
       prot->is_ordered = true;
@@ -244,11 +242,11 @@ void PCLProtSerialize(PCLProt_p prot)
 
 long PCLProtParse(Scanner_p in, PCLProt_p prot)
 {
-   long       res = 0;
-   PCLStep_p  step;
-   PTree_p    cell;
-   DStr_p     source_name;
-   long       line, column;
+   long res = 0;
+   PCLStep_p step;
+   PTree_p cell;
+   DStr_p source_name;
+   long line, column;
    StreamType type;
 
    while(TestInpTok(in, PosInt))
@@ -267,8 +265,7 @@ long PCLProtParse(Scanner_p in, PCLProt_p prot)
       cell = PCLProtInsertStep(prot, step);
       if(cell)
       {
-         Error("%s duplicate PCL identifier",
-               SYNTAX_ERROR,
+         Error("%s duplicate PCL identifier", SYNTAX_ERROR,
                PosRep(type, source_name, line, column));
       }
       DStrReleaseRef(source_name);
@@ -296,18 +293,18 @@ long PCLProtParse(Scanner_p in, PCLProt_p prot)
 /----------------------------------------------------------------------*/
 
 void PCLProtPrintExtra(FILE* out, PCLProt_p prot, bool data,
-             OutputFormatType format)
+                       OutputFormatType format)
 {
    PCLStep_p step;
    PStackPointer i;
 
    PCLProtSerialize(prot);
 
-   for(i=0; i<PStackGetSP(prot->in_order); i++)
+   for(i = 0; i < PStackGetSP(prot->in_order); i++)
    {
       step = PStackElementP(prot->in_order, i);
       PCLStepPrintFormat(out, step, data, format);
-      fputc('\n',out);
+      fputc('\n', out);
    }
 }
 
@@ -379,11 +376,10 @@ long PCLProtStripFOF(PCLProt_p prot)
    {
       PCLProtSerialize(prot); /* Should be serialized, but let's play
                                * it safe */
-      for(i=0; i<PStackGetSP(prot->in_order); i++)
+      for(i = 0; i < PStackGetSP(prot->in_order); i++)
       {
          step = PStackElementP(prot->in_order, i);
-         if(!PCLStepQueryProp(step,PCLIsFOFStep)
-            &&
+         if(!PCLStepQueryProp(step, PCLIsFOFStep) &&
             PCLStepHasFOFParent(prot, step))
          {
             PCLExprFree(step->just);
@@ -399,7 +395,8 @@ long PCLProtStripFOF(PCLProt_p prot)
 
       step = PStackPopP(fof_steps);
       check = PCLProtDeleteStep(prot, step);
-      UNUSED(check); assert(check);
+      UNUSED(check);
+      assert(check);
    }
    PStackFree(fof_steps);
    return res;
@@ -425,12 +422,11 @@ void PCLProtResetTreeData(PCLProt_p prot, bool just_weights)
 
    PCLProtSerialize(prot);
 
-   for(i=0; i<PStackGetSP(prot->in_order); i++)
+   for(i = 0; i < PStackGetSP(prot->in_order); i++)
    {
       step = PStackElementP(prot->in_order, i);
       PCLStepResetTreeData(step, just_weights);
    }
-
 }
 
 
@@ -446,30 +442,30 @@ void PCLProtResetTreeData(PCLProt_p prot, bool just_weights)
 //
 /----------------------------------------------------------------------*/
 
-void PCLExprCollectPreconds(PCLProt_p prot, PCLExpr_p expr, PTree_p *tree)
+void PCLExprCollectPreconds(PCLProt_p prot, PCLExpr_p expr, PTree_p* tree)
 {
    PCLStep_p step;
-   int       i;
+   int i;
 
    assert(prot && expr);
 
    switch(expr->op)
    {
-   case PCLOpNoOp:
-    assert(false);
-    break;
-   case PCLOpInitial:
-    break;
-   case PCLOpQuote:
-    step = PCLProtFindStep(prot,PCLExprArg(expr,0));
-    PTreeStore(tree, step);
-    break;
-   default:
-    for(i=0; i<expr->arg_no; i++)
-    {
-       PCLExprCollectPreconds(prot, PCLExprArg(expr,i), tree);
-    }
-    break;
+      case PCLOpNoOp:
+         assert(false);
+         break;
+      case PCLOpInitial:
+         break;
+      case PCLOpQuote:
+         step = PCLProtFindStep(prot, PCLExprArg(expr, 0));
+         PTreeStore(tree, step);
+         break;
+      default:
+         for(i = 0; i < expr->arg_no; i++)
+         {
+            PCLExprCollectPreconds(prot, PCLExprArg(expr, i), tree);
+         }
+         break;
    }
 }
 
@@ -495,10 +491,10 @@ PCLStep_p PCLExprGetQuotedArg(PCLProt_p prot, PCLExpr_p expr, int arg)
 
    /* printf("pcl_expr_get_quoted_arg(%p, %p, %d)...\n", prot, expr,
       arg); */
-   argexpr = PCLExprArg(expr,arg);
+   argexpr = PCLExprArg(expr, arg);
    if(argexpr->op == PCLOpQuote)
    {
-      return PCLProtFindStep(prot,PCLExprArg(argexpr,0));
+      return PCLProtFindStep(prot, PCLExprArg(argexpr, 0));
    }
    return NULL;
 }
@@ -529,36 +525,33 @@ bool PCLProtMarkProofClauses(PCLProt_p prot)
 
    PCLProtSerialize(prot);
 
-   for(i=0; i<PStackGetSP(prot->in_order); i++)
+   for(i = 0; i < PStackGetSP(prot->in_order); i++)
    {
       step = PStackElementP(prot->in_order, i);
-      if((PCLStepIsShell(step)
-          &&step->extra
-          &&(strcmp(step->extra, "'proof'")==0))
-         ||
-         (!PCLStepIsShell(step)&&
-         !PCLStepIsFOF(step)&&
+      if((PCLStepIsShell(step) && step->extra &&
+          (strcmp(step->extra, "'proof'") == 0)) ||
+         (!PCLStepIsShell(step) && !PCLStepIsFOF(step) &&
           ClauseIsEmpty(step->logic.clause)))
       {
-    res = true;
+         res = true;
       }
       if(PCLStepExtract(step->extra))
       {
-    PStackPushP(to_proc, step);
+         PStackPushP(to_proc, step);
       }
    }
    while(!PStackEmpty(to_proc))
    {
       step = PStackPopP(to_proc);
-      if(!PCLStepQueryProp(step,PCLIsProofStep))
+      if(!PCLStepQueryProp(step, PCLIsProofStep))
       {
-    PCLStepSetProp(step,PCLIsProofStep);
-    PCLExprCollectPreconds(prot, step->just, &root);
-    while(root)
-    {
-       step = PTreeExtractRootKey(&root);
-       PStackPushP(to_proc, step);
-    }
+         PCLStepSetProp(step, PCLIsProofStep);
+         PCLExprCollectPreconds(prot, step->just, &root);
+         while(root)
+         {
+            step = PTreeExtractRootKey(&root);
+            PStackPushP(to_proc, step);
+         }
       }
    }
    PStackFree(to_proc);
@@ -586,10 +579,10 @@ void PCLProtSetProp(PCLProt_p prot, PCLStepProperties props)
 
    PCLProtSerialize(prot);
 
-   for(i=0; i<PStackGetSP(prot->in_order); i++)
+   for(i = 0; i < PStackGetSP(prot->in_order); i++)
    {
       step = PStackElementP(prot->in_order, i);
-      PCLStepSetProp(step,props);
+      PCLStepSetProp(step, props);
    }
 }
 
@@ -613,10 +606,10 @@ void PCLProtDelProp(PCLProt_p prot, PCLStepProperties props)
 
    PCLProtSerialize(prot);
 
-   for(i=0; i<PStackGetSP(prot->in_order); i++)
+   for(i = 0; i < PStackGetSP(prot->in_order); i++)
    {
       step = PStackElementP(prot->in_order, i);
-      PCLStepDelProp(step,props);
+      PCLStepDelProp(step, props);
    }
 }
 
@@ -641,10 +634,10 @@ long PCLProtCountProp(PCLProt_p prot, PCLStepProperties props)
 
    PCLProtSerialize(prot);
 
-   for(i=0; i<PStackGetSP(prot->in_order); i++)
+   for(i = 0; i < PStackGetSP(prot->in_order); i++)
    {
       step = PStackElementP(prot->in_order, i);
-      if(PCLStepQueryProp(step,props))
+      if(PCLStepQueryProp(step, props))
       {
          res++;
       }
@@ -673,10 +666,10 @@ long PCLProtCollectPropSteps(PCLProt_p prot, PCLStepProperties props,
 
    PCLProtSerialize(prot);
 
-   for(i=0; i<PStackGetSP(prot->in_order); i++)
+   for(i = 0; i < PStackGetSP(prot->in_order); i++)
    {
       step = PStackElementP(prot->in_order, i);
-      if(PCLStepQueryProp(step,props))
+      if(PCLStepQueryProp(step, props))
       {
          PStackPushP(steps, step);
       }
@@ -696,22 +689,21 @@ long PCLProtCollectPropSteps(PCLProt_p prot, PCLStepProperties props,
 //
 /----------------------------------------------------------------------*/
 
-void PCLProtPrintPropClauses(FILE* out, PCLProt_p prot,
-              PCLStepProperties prop,
-              OutputFormatType format)
+void PCLProtPrintPropClauses(FILE* out, PCLProt_p prot, PCLStepProperties prop,
+                             OutputFormatType format)
 {
    PCLStep_p step;
    PStackPointer i;
 
    PCLProtSerialize(prot);
 
-   for(i=0; i<PStackGetSP(prot->in_order); i++)
+   for(i = 0; i < PStackGetSP(prot->in_order); i++)
    {
       step = PStackElementP(prot->in_order, i);
-      if(PCLStepQueryProp(step,prop))
+      if(PCLStepQueryProp(step, prop))
       {
          PCLStepPrintFormat(out, step, false, format);
-         fputc('\n',out);
+         fputc('\n', out);
       }
    }
 }
@@ -740,10 +732,10 @@ void PCLProtPrintExamples(FILE* out, PCLProt_p prot)
    /* The above also serializes the protocol! */
    assert(prot->is_ordered);
 
-   for(i=0; i<PStackGetSP(prot->in_order); i++)
+   for(i = 0; i < PStackGetSP(prot->in_order); i++)
    {
       step = PStackElementP(prot->in_order, i);
-      if(PCLStepQueryProp(step,PCLIsExample))
+      if(PCLStepQueryProp(step, PCLIsExample))
       {
          PCLStepPrintExample(out, step, i, proof_steps, prot->number);
          fputc('\n', out);

@@ -64,7 +64,8 @@ ExtInferenceType str2eit(char* value)
    {
       return NoLits;
    }
-   Error("Unknown ExtInferenceType identifier. Expected all, max or off.", USAGE_ERROR);
+   Error("Unknown ExtInferenceType identifier. Expected all, max or off.",
+         USAGE_ERROR);
    return NoLits; //will not return, stiffles compiler warning
 }
 
@@ -125,7 +126,7 @@ UnifMode str2um(char* value)
 //
 /----------------------------------------------------------------------*/
 
-static Clause_p get_next_clause(PStack_p *stacks, int pos)
+static Clause_p get_next_clause(PStack_p* stacks, int pos)
 {
    Eval_p current;
 
@@ -138,10 +139,7 @@ static Clause_p get_next_clause(PStack_p *stacks, int pos)
 }
 
 
-void default_exit_fun(void* data)
-{
-   return;
-}
+void default_exit_fun(void* data) { return; }
 
 /*---------------------------------------------------------------------*/
 /*                         Exported Functions                          */
@@ -163,116 +161,116 @@ void HeuristicParmsInitialize(HeuristicParms_p handle)
 {
    OrderParmsInitialize(&(handle->order_params));
 
-   handle->no_preproc                    = false;
-   handle->eqdef_maxclauses              = DEFAULT_EQDEF_MAXCLAUSES;
-   handle->eqdef_incrlimit               = DEFAULT_EQDEF_INCRLIMIT;
-   handle->formula_def_limit             = 24;
-   handle->miniscope_limit               = DEFAULT_MINISCOPE_LIMIT;
-   handle->sine                          = NULL;
+   handle->no_preproc = false;
+   handle->eqdef_maxclauses = DEFAULT_EQDEF_MAXCLAUSES;
+   handle->eqdef_incrlimit = DEFAULT_EQDEF_INCRLIMIT;
+   handle->formula_def_limit = 24;
+   handle->miniscope_limit = DEFAULT_MINISCOPE_LIMIT;
+   handle->sine = NULL;
 
-   handle->add_goal_defs_pos             = false;
-   handle->add_goal_defs_neg             = false;
-   handle->add_goal_defs_subterms        = false;
+   handle->add_goal_defs_pos = false;
+   handle->add_goal_defs_neg = false;
+   handle->add_goal_defs_subterms = false;
 
-   handle->heuristic_name                = HCB_DEFAULT_HEURISTIC;
-   handle->heuristic_def                 = NULL;
-   handle->prefer_initial_clauses        = false;
+   handle->heuristic_name = HCB_DEFAULT_HEURISTIC;
+   handle->heuristic_def = NULL;
+   handle->prefer_initial_clauses = false;
 
-   handle->bce                           = false;
-   handle->bce_max_occs                  = DEFAULT_SYM_OCCS;
+   handle->bce = false;
+   handle->bce_max_occs = DEFAULT_SYM_OCCS;
 
-   handle->pred_elim                     = false;
-   handle->pred_elim_gates               = false;
-   handle->pred_elim_max_occs            = DEFAULT_SYM_OCCS;
-   handle->pred_elim_tolerance           = 0;
-   handle->pred_elim_force_mu_decrease   = false;
-   handle->pred_elim_ignore_conj_syms    = false;
+   handle->pred_elim = false;
+   handle->pred_elim_gates = false;
+   handle->pred_elim_max_occs = DEFAULT_SYM_OCCS;
+   handle->pred_elim_tolerance = 0;
+   handle->pred_elim_force_mu_decrease = false;
+   handle->pred_elim_ignore_conj_syms = false;
 
-   handle->selection_strategy            = SelectNoLiterals;
-   handle->pos_lit_sel_min               = 0;
-   handle->pos_lit_sel_max               = LONG_MAX;
-   handle->neg_lit_sel_min               = 0;
-   handle->neg_lit_sel_max               = LONG_MAX;
-   handle->all_lit_sel_min               = 0;
-   handle->all_lit_sel_max               = LONG_MAX;
-   handle->weight_sel_min                = 0;
-   handle->select_on_proc_only           = false;
-   handle->inherit_paramod_lit           = false;
-   handle->inherit_goal_pm_lit           = false;
-   handle->inherit_conj_pm_lit           = false;
+   handle->selection_strategy = SelectNoLiterals;
+   handle->pos_lit_sel_min = 0;
+   handle->pos_lit_sel_max = LONG_MAX;
+   handle->neg_lit_sel_min = 0;
+   handle->neg_lit_sel_max = LONG_MAX;
+   handle->all_lit_sel_min = 0;
+   handle->all_lit_sel_max = LONG_MAX;
+   handle->weight_sel_min = 0;
+   handle->select_on_proc_only = false;
+   handle->inherit_paramod_lit = false;
+   handle->inherit_goal_pm_lit = false;
+   handle->inherit_conj_pm_lit = false;
 
-   handle->enable_eq_factoring           = true;
-   handle->enable_neg_unit_paramod       = true;
-   handle->enable_given_forward_simpl    = true;
-   handle->pm_type                       = ParamodPlain;
+   handle->enable_eq_factoring = true;
+   handle->enable_neg_unit_paramod = true;
+   handle->enable_given_forward_simpl = true;
+   handle->pm_type = ParamodPlain;
 
-   handle->ac_handling                   = ACDiscardAll;
-   handle->ac_res_aggressive             = true;
+   handle->ac_handling = ACDiscardAll;
+   handle->ac_res_aggressive = true;
 
-   handle->forward_context_sr            = false;
+   handle->forward_context_sr = false;
    handle->forward_context_sr_aggressive = false;
-   handle->backward_context_sr           = false;
+   handle->backward_context_sr = false;
 
    handle->forward_subsumption_aggressive = false;
 
-   handle->forward_demod                 = FullRewrite;
-   handle->prefer_general                = false;
-   handle->lambda_demod                  = false;
+   handle->forward_demod = FullRewrite;
+   handle->prefer_general = false;
+   handle->lambda_demod = false;
 
-   handle->er_varlit_destructive         = false;
-   handle->er_strong_destructive         = false;
-   handle->er_aggressive                 = false;
+   handle->er_varlit_destructive = false;
+   handle->er_strong_destructive = false;
+   handle->er_aggressive = false;
 
-   handle->condensing                    = false;
-   handle->condensing_aggressive         = false;
+   handle->condensing = false;
+   handle->condensing_aggressive = false;
 
-   handle->split_clauses                 = SplitNone;
-   handle->split_method                  = SplitGroundNone;
-   handle->split_aggressive              = false;
-   handle->split_fresh_defs              = true;
+   handle->split_clauses = SplitNone;
+   handle->split_method = SplitGroundNone;
+   handle->split_aggressive = false;
+   handle->split_fresh_defs = true;
 
-   handle->diseq_decomposition           = 0;
-   handle->diseq_decomp_maxarity         = LONG_MAX;
+   handle->diseq_decomposition = 0;
+   handle->diseq_decomp_maxarity = LONG_MAX;
 
    strcpy(handle->rw_bw_index_type, DEFAULT_RW_BW_INDEX_NAME);
    strcpy(handle->pm_from_index_type, DEFAULT_PM_FROM_INDEX_NAME);
    strcpy(handle->pm_into_index_type, DEFAULT_PM_INTO_INDEX_NAME);
 
-   handle->sat_check_grounding           = GMNoGrounding;
-   handle->sat_check_step_limit          = LONG_MAX;
-   handle->sat_check_size_limit          = LONG_MAX;
-   handle->sat_check_ttinsert_limit      = LONG_MAX;
-   handle->sat_check_normconst           = false;
-   handle->sat_check_normalize           = false;
-   handle->sat_check_decision_limit      = 10000;
-   handle->filter_orphans_limit          = DEFAULT_FILTER_ORPHANS_LIMIT;
-   handle->forward_contract_limit        = DEFAULT_FORWARD_CONTRACT_LIMIT;
-   handle->delete_bad_limit              = DEFAULT_DELETE_BAD_LIMIT;
-   handle->mem_limit                     = 0;
-   handle->watchlist_simplify            = true;
-   handle->watchlist_is_static           = false;
-   handle->use_tptp_sos                  = false;
-   handle->presat_interreduction         = false;
-   handle->detsort_bw_rw                 = false;
-   handle->detsort_tmpset                = false;
+   handle->sat_check_grounding = GMNoGrounding;
+   handle->sat_check_step_limit = LONG_MAX;
+   handle->sat_check_size_limit = LONG_MAX;
+   handle->sat_check_ttinsert_limit = LONG_MAX;
+   handle->sat_check_normconst = false;
+   handle->sat_check_normalize = false;
+   handle->sat_check_decision_limit = 10000;
+   handle->filter_orphans_limit = DEFAULT_FILTER_ORPHANS_LIMIT;
+   handle->forward_contract_limit = DEFAULT_FORWARD_CONTRACT_LIMIT;
+   handle->delete_bad_limit = DEFAULT_DELETE_BAD_LIMIT;
+   handle->mem_limit = 0;
+   handle->watchlist_simplify = true;
+   handle->watchlist_is_static = false;
+   handle->use_tptp_sos = false;
+   handle->presat_interreduction = false;
+   handle->detsort_bw_rw = false;
+   handle->detsort_tmpset = false;
 
-   handle->arg_cong                      = AllLits;
-   handle->neg_ext                       = NoLits;
-   handle->pos_ext                       = NoLits;
-   handle->inverse_recognition           = false;
-   handle->replace_inj_defs              = false;
-   handle->lift_lambdas                  = true;
-   handle->ext_rules_max_depth           = NO_EXT_SUP;
-   handle->lambda_to_forall              = true;
-   handle->unroll_only_formulas          = true;
-   handle->elim_leibniz_max_depth        = NO_ELIM_LEIBNIZ;
-   handle->prim_enum_mode                = PragmaticMode;
-   handle->prim_enum_max_depth           = -1;
-   handle->inst_choice_max_depth         = -1;
-   handle->local_rw                      = false;
-   handle->prune_args                    = false;
-   handle->preinstantiate_induction      = false;
-   handle->fool_unroll                   = true;
+   handle->arg_cong = AllLits;
+   handle->neg_ext = NoLits;
+   handle->pos_ext = NoLits;
+   handle->inverse_recognition = false;
+   handle->replace_inj_defs = false;
+   handle->lift_lambdas = true;
+   handle->ext_rules_max_depth = NO_EXT_SUP;
+   handle->lambda_to_forall = true;
+   handle->unroll_only_formulas = true;
+   handle->elim_leibniz_max_depth = NO_ELIM_LEIBNIZ;
+   handle->prim_enum_mode = PragmaticMode;
+   handle->prim_enum_max_depth = -1;
+   handle->inst_choice_max_depth = -1;
+   handle->local_rw = false;
+   handle->prune_args = false;
+   handle->preinstantiate_induction = false;
+   handle->fool_unroll = true;
 
    handle->func_proj_limit = 0;
    handle->imit_limit = 0;
@@ -345,44 +343,61 @@ void HeuristicParmsPrint(FILE* out, HeuristicParms_p handle)
 
    OrderParmsPrint(out, &(handle->order_params));
 
-   fprintf(out, "   no_preproc:                     %s\n", BOOL2STR(handle->no_preproc));
-   fprintf(out, "   eqdef_maxclauses:               %ld\n", handle->eqdef_maxclauses);
-   fprintf(out, "   eqdef_incrlimit:                %ld\n", handle->eqdef_incrlimit);
-   fprintf(out, "   formula_def_limit:              %ld\n", handle->formula_def_limit);
-   fprintf(out, "   miniscope_limit:                %ld\n", handle->miniscope_limit);
+   fprintf(out, "   no_preproc:                     %s\n",
+           BOOL2STR(handle->no_preproc));
+   fprintf(out, "   eqdef_maxclauses:               %ld\n",
+           handle->eqdef_maxclauses);
+   fprintf(out, "   eqdef_incrlimit:                %ld\n",
+           handle->eqdef_incrlimit);
+   fprintf(out, "   formula_def_limit:              %ld\n",
+           handle->formula_def_limit);
+   fprintf(out, "   miniscope_limit:                %ld\n",
+           handle->miniscope_limit);
 
-   fprintf(out, "   sine:                           \"%s\"\n", handle->sine ? handle->sine : "None");
-   fprintf(out, "   add_goal_defs_pos:             %s\n", BOOL2STR(handle->add_goal_defs_pos));
-   fprintf(out, "   add_goal_defs_neg:             %s\n", BOOL2STR(handle->add_goal_defs_neg));
-   fprintf(out, "   add_goal_defs_subterms:        %s\n", BOOL2STR(handle->add_goal_defs_subterms));
+   fprintf(out, "   sine:                           \"%s\"\n",
+           handle->sine ? handle->sine : "None");
+   fprintf(out, "   add_goal_defs_pos:             %s\n",
+           BOOL2STR(handle->add_goal_defs_pos));
+   fprintf(out, "   add_goal_defs_neg:             %s\n",
+           BOOL2STR(handle->add_goal_defs_neg));
+   fprintf(out, "   add_goal_defs_subterms:        %s\n",
+           BOOL2STR(handle->add_goal_defs_subterms));
 
    // TEMPORARILY DISABLING BCE PRINTING AND PARSING
-//    fprintf(out, "   bce:                           %s\n", BOOL2STR(handle->bce));
-//    fprintf(out, "   bce_max_occs:                  %d\n", handle->bce_max_occs);
+   //    fprintf(out, "   bce:                           %s\n", BOOL2STR(handle->bce));
+   //    fprintf(out, "   bce_max_occs:                  %d\n", handle->bce_max_occs);
 
-//    fprintf(out, "   pred_elim:                     %s\n", BOOL2STR(handle->pred_elim));
-//    fprintf(out, "   pred_elim_gates:               %s\n", BOOL2STR(handle->pred_elim_gates));
-//    fprintf(out, "   pred_elim_max_occs:            %d\n", handle->pred_elim_max_occs);
-//    fprintf(out, "   pred_elim_tolerance:           %d\n", handle->pred_elim_tolerance);
-//    fprintf(out, "   pred_elim_force_mu_decrease    %s\n", BOOL2STR(handle->pred_elim_force_mu_decrease));
-//    fprintf(out, "   pred_elim_ignore_conj_syms     %s\n", BOOL2STR(handle->pred_elim_ignore_conj_syms));
+   //    fprintf(out, "   pred_elim:                     %s\n", BOOL2STR(handle->pred_elim));
+   //    fprintf(out, "   pred_elim_gates:               %s\n", BOOL2STR(handle->pred_elim_gates));
+   //    fprintf(out, "   pred_elim_max_occs:            %d\n", handle->pred_elim_max_occs);
+   //    fprintf(out, "   pred_elim_tolerance:           %d\n", handle->pred_elim_tolerance);
+   //    fprintf(out, "   pred_elim_force_mu_decrease    %s\n", BOOL2STR(handle->pred_elim_force_mu_decrease));
+   //    fprintf(out, "   pred_elim_ignore_conj_syms     %s\n", BOOL2STR(handle->pred_elim_ignore_conj_syms));
 
-   fprintf(out, "   heuristic_name:                %s\n", handle->heuristic_name);
+   fprintf(out, "   heuristic_name:                %s\n",
+           handle->heuristic_name);
    fprintf(out, "   heuristic_def:                 \"%s\"\n",
-           handle->heuristic_def?handle->heuristic_def:"");
+           handle->heuristic_def ? handle->heuristic_def : "");
    fprintf(out, "   prefer_initial_clauses:         %s\n",
            BOOL2STR(handle->prefer_initial_clauses));
 
    fprintf(out, "   selection_strategy:             %s\n",
            GetLitSelName(handle->selection_strategy));
 
-   fprintf(out, "   pos_lit_sel_min:                %ld\n", handle->pos_lit_sel_min);
-   fprintf(out, "   pos_lit_sel_max:                %ld\n", handle->pos_lit_sel_max);
-   fprintf(out, "   neg_lit_sel_min:                %ld\n", handle->neg_lit_sel_min);
-   fprintf(out, "   neg_lit_sel_max:                %ld\n", handle->neg_lit_sel_max);
-   fprintf(out, "   all_lit_sel_min:                %ld\n", handle->all_lit_sel_min);
-   fprintf(out, "   all_lit_sel_max:                %ld\n", handle->all_lit_sel_max);
-   fprintf(out, "   weight_sel_min:                 %ld\n", handle->weight_sel_min);
+   fprintf(out, "   pos_lit_sel_min:                %ld\n",
+           handle->pos_lit_sel_min);
+   fprintf(out, "   pos_lit_sel_max:                %ld\n",
+           handle->pos_lit_sel_max);
+   fprintf(out, "   neg_lit_sel_min:                %ld\n",
+           handle->neg_lit_sel_min);
+   fprintf(out, "   neg_lit_sel_max:                %ld\n",
+           handle->neg_lit_sel_max);
+   fprintf(out, "   all_lit_sel_min:                %ld\n",
+           handle->all_lit_sel_min);
+   fprintf(out, "   all_lit_sel_max:                %ld\n",
+           handle->all_lit_sel_max);
+   fprintf(out, "   weight_sel_min:                 %ld\n",
+           handle->weight_sel_min);
 
    fprintf(out, "   select_on_proc_only:            %s\n",
            BOOL2STR(handle->select_on_proc_only));
@@ -400,7 +415,8 @@ void HeuristicParmsPrint(FILE* out, HeuristicParms_p handle)
    fprintf(out, "   enable_given_forward_simpl:     %s\n",
            BOOL2STR(handle->enable_given_forward_simpl));
 
-   fprintf(out, "   pm_type:                        %s\n", ParamodStr(handle->pm_type));
+   fprintf(out, "   pm_type:                        %s\n",
+           ParamodStr(handle->pm_type));
 
    fprintf(out, "   ac_handling:                    %d\n", handle->ac_handling);
    fprintf(out, "   ac_res_aggressive:              %s\n",
@@ -415,11 +431,12 @@ void HeuristicParmsPrint(FILE* out, HeuristicParms_p handle)
    fprintf(out, "   forward_subsumption_aggressive: %s\n",
            BOOL2STR(handle->forward_subsumption_aggressive));
 
-   fprintf(out, "   forward_demod:                  %d\n", handle->forward_demod);
+   fprintf(out, "   forward_demod:                  %d\n",
+           handle->forward_demod);
    fprintf(out, "   prefer_general:                 %s\n",
            BOOL2STR(handle->prefer_general));
-//    fprintf(out, "   lambda_demod:                 %s\n",
-//            BOOL2STR(handle->lambda_demod));
+   //    fprintf(out, "   lambda_demod:                 %s\n",
+   //            BOOL2STR(handle->lambda_demod));
 
    fprintf(out, "   condensing:                     %s\n",
            BOOL2STR(handle->condensing));
@@ -433,24 +450,33 @@ void HeuristicParmsPrint(FILE* out, HeuristicParms_p handle)
    fprintf(out, "   er_aggressive:                  %s\n",
            BOOL2STR(handle->er_aggressive));
 
-   fprintf(out, "   split_clauses:                  %d\n", handle->split_clauses);
-   fprintf(out, "   split_method:                   %d\n", handle->split_method);
+   fprintf(out, "   split_clauses:                  %d\n",
+           handle->split_clauses);
+   fprintf(out, "   split_method:                   %d\n",
+           handle->split_method);
    fprintf(out, "   split_aggressive:               %s\n",
            BOOL2STR(handle->split_aggressive));
    fprintf(out, "   split_fresh_defs:               %s\n",
            BOOL2STR(handle->split_fresh_defs));
 
-   fprintf(out, "   diseq_decomposition:            %ld\n", handle->diseq_decomposition);
-   fprintf(out, "   diseq_decomp_maxarity:          %ld\n", handle->diseq_decomp_maxarity);
+   fprintf(out, "   diseq_decomposition:            %ld\n",
+           handle->diseq_decomposition);
+   fprintf(out, "   diseq_decomp_maxarity:          %ld\n",
+           handle->diseq_decomp_maxarity);
 
-   fprintf(out, "   rw_bw_index_type:               %s\n", handle->rw_bw_index_type);
-   fprintf(out, "   pm_from_index_type:             %s\n", handle->pm_from_index_type);
-   fprintf(out, "   pm_into_index_type:             %s\n", handle->pm_into_index_type);
+   fprintf(out, "   rw_bw_index_type:               %s\n",
+           handle->rw_bw_index_type);
+   fprintf(out, "   pm_from_index_type:             %s\n",
+           handle->pm_from_index_type);
+   fprintf(out, "   pm_into_index_type:             %s\n",
+           handle->pm_into_index_type);
 
    fprintf(out, "   sat_check_grounding:            %s\n",
            GroundingStratNames[handle->sat_check_grounding]);
-   fprintf(out, "   sat_check_step_limit:           %ld\n", handle->sat_check_step_limit);
-   fprintf(out, "   sat_check_size_limit:           %ld\n", handle->sat_check_size_limit);
+   fprintf(out, "   sat_check_step_limit:           %ld\n",
+           handle->sat_check_step_limit);
+   fprintf(out, "   sat_check_size_limit:           %ld\n",
+           handle->sat_check_size_limit);
    fprintf(out, "   sat_check_ttinsert_limit:       %ld\n",
            handle->sat_check_ttinsert_limit);
    fprintf(out, "   sat_check_normconst:            %s\n",
@@ -460,9 +486,12 @@ void HeuristicParmsPrint(FILE* out, HeuristicParms_p handle)
    fprintf(out, "   sat_check_decision_limit:       %d\n",
            handle->sat_check_decision_limit);
 
-   fprintf(out, "   filter_orphans_limit:           %ld\n", handle->filter_orphans_limit);
-   fprintf(out, "   forward_contract_limit:         %ld\n", handle->forward_contract_limit);
-   fprintf(out, "   delete_bad_limit:               %lld\n", handle->delete_bad_limit);
+   fprintf(out, "   filter_orphans_limit:           %ld\n",
+           handle->filter_orphans_limit);
+   fprintf(out, "   forward_contract_limit:         %ld\n",
+           handle->forward_contract_limit);
+   fprintf(out, "   delete_bad_limit:               %lld\n",
+           handle->delete_bad_limit);
    fprintf(out, "   mem_limit:                      %" PRIuMAX "\n",
            (uintmax_t)handle->mem_limit);
 
@@ -518,20 +547,16 @@ void HeuristicParmsPrint(FILE* out, HeuristicParms_p handle)
            BOOL2STR(handle->fool_unroll));
    fprintf(out, "   func_proj_limit:               %d\n",
            handle->func_proj_limit);
-   fprintf(out, "   imit_limit:                    %d\n",
-           handle->imit_limit);
-   fprintf(out, "   ident_limit:                   %d\n",
-           handle->ident_limit);
-   fprintf(out, "   elim_limit:                    %d\n",
-           handle->elim_limit);
+   fprintf(out, "   imit_limit:                    %d\n", handle->imit_limit);
+   fprintf(out, "   ident_limit:                   %d\n", handle->ident_limit);
+   fprintf(out, "   elim_limit:                    %d\n", handle->elim_limit);
    fprintf(out, "   unif_mode:                     %s\n",
            UM2STR(handle->unif_mode));
    fprintf(out, "   pattern_oracle:                %s\n",
            BOOL2STR(handle->pattern_oracle));
    fprintf(out, "   fixpoint_oracle:               %s\n",
            BOOL2STR(handle->fixpoint_oracle));
-   fprintf(out, "   max_unifiers:                  %d\n",
-           handle->max_unifiers);
+   fprintf(out, "   max_unifiers:                  %d\n", handle->max_unifiers);
    fprintf(out, "   max_unif_steps:                %d\n",
            handle->max_unif_steps);
 
@@ -558,8 +583,7 @@ void HeuristicParmsPrint(FILE* out, HeuristicParms_p handle)
 //
 /----------------------------------------------------------------------*/
 
-bool HeuristicParmsParseInto(Scanner_p in,
-                             HeuristicParms_p handle,
+bool HeuristicParmsParseInto(Scanner_p in, HeuristicParms_p handle,
                              bool warn_missing)
 {
    bool res = true;
@@ -588,15 +612,15 @@ bool HeuristicParmsParseInto(Scanner_p in,
    PARSE_BOOL(add_goal_defs_subterms);
 
    // temporarily ignoring BCE AND PE SETTINGS.
-//    PARSE_BOOL(bce);
-//    PARSE_INT(bce_max_occs);
+   //    PARSE_BOOL(bce);
+   //    PARSE_INT(bce_max_occs);
 
-//    PARSE_BOOL(pred_elim);
-//    PARSE_BOOL(pred_elim_gates);
-//    PARSE_INT(pred_elim_max_occs);
-//    PARSE_INT(pred_elim_tolerance);
-//    PARSE_BOOL(pred_elim_force_mu_decrease);
-//    PARSE_BOOL(pred_elim_ignore_conj_syms);
+   //    PARSE_BOOL(pred_elim);
+   //    PARSE_BOOL(pred_elim_gates);
+   //    PARSE_INT(pred_elim_max_occs);
+   //    PARSE_INT(pred_elim_tolerance);
+   //    PARSE_BOOL(pred_elim_force_mu_decrease);
+   //    PARSE_BOOL(pred_elim_ignore_conj_syms);
 
    PARSE_IDENTIFIER(heuristic_name);
    PARSE_STRING(heuristic_def);
@@ -608,7 +632,8 @@ bool HeuristicParmsParseInto(Scanner_p in,
       AcceptInpTok(in, Colon);
       CheckInpTok(in, Identifier);
 
-      handle->selection_strategy = GetLitSelFun(DStrView(AktToken(in)->literal));
+      handle->selection_strategy =
+         GetLitSelFun(DStrView(AktToken(in)->literal));
       if(!handle->selection_strategy)
       {
          DStr_p err = DStrAlloc();
@@ -671,7 +696,7 @@ bool HeuristicParmsParseInto(Scanner_p in,
    PARSE_BOOL(forward_context_sr_aggressive);
    PARSE_BOOL(backward_context_sr);
    PARSE_BOOL(forward_subsumption_aggressive);
-   PARSE_INT_LIMITED(forward_demod,0,2);
+   PARSE_INT_LIMITED(forward_demod, 0, 2);
    PARSE_BOOL(prefer_general);
    //PARSE_BOOL(lambda_demod);
    PARSE_BOOL(condensing);
@@ -766,7 +791,6 @@ HeuristicParms_p HeuristicParmsParse(Scanner_p in, bool warn_missing)
 
 
 
-
 /*-----------------------------------------------------------------------
 //
 // Function: HCBAlloc()
@@ -783,14 +807,14 @@ HCB_p HCBAlloc(void)
 {
    HCB_p handle = HCBCellAlloc();
 
-   handle->wfcb_list     = PDArrayAlloc(4,4);
-   handle->wfcb_no       = 0;
-   handle->current_eval  = 0;
-   handle->select_switch = PDArrayAlloc(4,4);
-   handle->select_count  = 0;
-   handle->hcb_select    = HCBStandardClauseSelect;
-   handle->hcb_exit      = default_exit_fun;
-   handle->data          = NULL;
+   handle->wfcb_list = PDArrayAlloc(4, 4);
+   handle->wfcb_no = 0;
+   handle->current_eval = 0;
+   handle->select_switch = PDArrayAlloc(4, 4);
+   handle->select_count = 0;
+   handle->hcb_select = HCBStandardClauseSelect;
+   handle->hcb_exit = default_exit_fun;
+   handle->data = NULL;
 
    return handle;
 }
@@ -840,18 +864,18 @@ long HCBAddWFCB(HCB_p hcb, WFCB_p wfcb, long steps)
 {
    assert(hcb);
    assert(wfcb);
-   assert(steps >0);
+   assert(steps > 0);
 
    if(hcb->wfcb_no)
    {
-      steps+= PDArrayElementInt(hcb->select_switch, hcb->wfcb_no-1);
+      steps += PDArrayElementInt(hcb->select_switch, hcb->wfcb_no - 1);
    }
    PDArrayAssignP(hcb->wfcb_list, hcb->wfcb_no, wfcb);
    PDArrayAssignInt(hcb->select_switch, hcb->wfcb_no, steps);
    hcb->wfcb_no++;
 
-   hcb->hcb_select = (hcb->wfcb_no != 1) ?
-      HCBStandardClauseSelect : HCBSingleWeightClauseSelect;
+   hcb->hcb_select = (hcb->wfcb_no != 1) ? HCBStandardClauseSelect
+                                         : HCBSingleWeightClauseSelect;
 
    return hcb->wfcb_no;
 }
@@ -880,7 +904,7 @@ void HCBClauseEvaluate(HCB_p hcb, Clause_p clause)
    ClauseAddEvalCell(clause, EvalsAlloc(hcb->wfcb_no));
 
    empty = ClauseIsSemFalse(clause);
-   for(i=0; i< hcb->wfcb_no; i++)
+   for(i = 0; i < hcb->wfcb_no; i++)
    {
       ClauseAddEvaluation(PDArrayElementP(hcb->wfcb_list, i), clause, i, empty);
    }
@@ -913,7 +937,7 @@ Clause_p HCBStandardClauseSelect(HCB_p hcb, ClauseSet_p set)
    }
    hcb->select_count++;
    while(hcb->select_count ==
-         PDArrayElementInt(hcb->select_switch,hcb->current_eval))
+         PDArrayElementInt(hcb->select_switch, hcb->current_eval))
    {
       hcb->current_eval++;
    }
@@ -974,22 +998,21 @@ long HCBClauseSetDelProp(HCB_p hcb, ClauseSet_p set, long number,
 {
    int i, j;
    long prop_cleared = 0;
-   PStack_p *stacks = SizeMalloc(hcb->wfcb_no*sizeof(PStack_p));
+   PStack_p* stacks = SizeMalloc(hcb->wfcb_no * sizeof(PStack_p));
    Clause_p clause;
 
-   for(i=0; i< hcb->wfcb_no; i++)
+   for(i = 0; i < hcb->wfcb_no; i++)
    {
-      stacks[i]=
-         EvalTreeTraverseInit(PDArrayElementP(set->eval_indices, i),i);
+      stacks[i] =
+         EvalTreeTraverseInit(PDArrayElementP(set->eval_indices, i), i);
    }
    while(number)
    {
-      for(i=0; i < hcb->wfcb_no; i++)
+      for(i = 0; i < hcb->wfcb_no; i++)
       {
-         for(j=0; j < PDArrayElementInt(hcb->select_switch, j); j++)
+         for(j = 0; j < PDArrayElementInt(hcb->select_switch, j); j++)
          {
-            while((clause =
-                   get_next_clause(stacks,i)))
+            while((clause = get_next_clause(stacks, i)))
             {
                if(ClauseQueryProp(clause, prop))
                {
@@ -1011,11 +1034,11 @@ long HCBClauseSetDelProp(HCB_p hcb, ClauseSet_p set, long number,
          }
       }
    }
-   for(i=0; i< hcb->wfcb_no; i++)
+   for(i = 0; i < hcb->wfcb_no; i++)
    {
       EvalTreeTraverseExit(stacks[i]);
    }
-   SizeFree(stacks, hcb->wfcb_no*sizeof(PStack_p));
+   SizeFree(stacks, hcb->wfcb_no * sizeof(PStack_p));
 
    return prop_cleared;
 }
@@ -1033,8 +1056,7 @@ long HCBClauseSetDelProp(HCB_p hcb, ClauseSet_p set, long number,
 //
 /----------------------------------------------------------------------*/
 
-long HCBClauseSetDeleteBadClauses(HCB_p hcb, ClauseSet_p set, long
-                                  number)
+long HCBClauseSetDeleteBadClauses(HCB_p hcb, ClauseSet_p set, long number)
 {
    long res;
 

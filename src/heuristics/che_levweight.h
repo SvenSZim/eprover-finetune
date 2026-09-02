@@ -32,7 +32,7 @@
 
 typedef struct levweightparamcell
 {
-   OCB_p        ocb;
+   OCB_p ocb;
    ProofState_p proofstate;
 
    VarNormStyle var_norm;
@@ -41,44 +41,33 @@ typedef struct levweightparamcell
    VarBank_p vars;
    PStack_p codes;
    int ins_cost;
-   int del_cost; 
+   int del_cost;
    int ch_cost;
 
    TermWeightExtension_p twe;
-   void   (*init_fun)(struct levweightparamcell*);
-}LevWeightParamCell, *LevWeightParam_p;
+   void (*init_fun)(struct levweightparamcell*);
+} LevWeightParamCell, *LevWeightParam_p;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define LevWeightParamCellAlloc() (LevWeightParamCell*) \
-        SizeMalloc(sizeof(LevWeightParamCell))
-#define LevWeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(LevWeightParamCell))
+#define LevWeightParamCellAlloc()                                              \
+   (LevWeightParamCell*)SizeMalloc(sizeof(LevWeightParamCell))
+#define LevWeightParamCellFree(junk) SizeFree(junk, sizeof(LevWeightParamCell))
 
 LevWeightParam_p LevWeightParamAlloc(void);
-void              LevWeightParamFree(LevWeightParam_p junk);
+void LevWeightParamFree(LevWeightParam_p junk);
 
 
-WFCB_p ConjectureLevDistanceWeightParse(
-   Scanner_p in, 
-   OCB_p ocb, 
-   ProofState_p state);
+WFCB_p ConjectureLevDistanceWeightParse(Scanner_p in, OCB_p ocb,
+                                        ProofState_p state);
 
 WFCB_p ConjectureLevDistanceWeightInit(
-   ClausePrioFun prio_fun, 
-   OCB_p ocb,
-   ProofState_p proofstate,
-   VarNormStyle var_norm,
-   RelatedTermSet rel_terms,
-   int ins_cost,
-   int del_cost, 
-   int ch_cost,
-   TermWeightExtenstionStyle ext_style,
-   double max_term_multiplier,
-   double max_literal_multiplier,
-   double pos_multiplier);
+   ClausePrioFun prio_fun, OCB_p ocb, ProofState_p proofstate,
+   VarNormStyle var_norm, RelatedTermSet rel_terms, int ins_cost, int del_cost,
+   int ch_cost, TermWeightExtenstionStyle ext_style, double max_term_multiplier,
+   double max_literal_multiplier, double pos_multiplier);
 
 double ConjectureLevDistanceWeightCompute(void* data, Clause_p clause);
 

@@ -61,7 +61,7 @@ EServer_p EServerAlloc(void)
    EServer_p handle = EServerCellAlloc();
 
    handle->listening = -1;
-   handle->sessions  = PQueueAlloc();
+   handle->sessions = PQueueAlloc();
 
    return handle;
 }
@@ -79,9 +79,7 @@ EServer_p EServerAlloc(void)
 //
 /----------------------------------------------------------------------*/
 
-void EServerFree(EServer_p junk)
-{
-}
+void EServerFree(EServer_p junk) {}
 
 
 /*-----------------------------------------------------------------------
@@ -96,9 +94,7 @@ void EServerFree(EServer_p junk)
 //
 /----------------------------------------------------------------------*/
 
-void EServerReset(EServer_p server)
-{
-}
+void EServerReset(EServer_p server) {}
 
 
 /*-----------------------------------------------------------------------
@@ -146,9 +142,9 @@ bool EServerListen(EServer_p server, int port)
 bool EServerAccept(EServer_p server)
 {
    struct sockaddr addr;
-   socklen_t       addr_len = sizeof(addr);
-   int             sock;
-   ESession_p      session;
+   socklen_t addr_len = sizeof(addr);
+   int sock;
+   ESession_p session;
 
    assert(server->listening != -1);
 
@@ -180,17 +176,14 @@ bool EServerAccept(EServer_p server)
 //
 /----------------------------------------------------------------------*/
 
-int EServerInitFDSet(EServer_p server,
-                     fd_set *rd_fds,
-                     fd_set *wr_fds)
+int EServerInitFDSet(EServer_p server, fd_set* rd_fds, fd_set* wr_fds)
 {
    long index;
    int tmp, max_fd = 0;
    ESession_p handle;
 
-   for(index = PQueueTailIndex(server->sessions);
-       index != -1;
-       index =  PQueueIncIndex(server->sessions, index))
+   for(index = PQueueTailIndex(server->sessions); index != -1;
+       index = PQueueIncIndex(server->sessions, index))
    {
       handle = PQueueElementP(server->sessions, index);
       tmp = ESessionInitFDSet(handle, rd_fds, wr_fds);
@@ -201,9 +194,6 @@ int EServerInitFDSet(EServer_p server,
 
    return max_fd;
 }
-
-
-
 
 
 

@@ -38,10 +38,10 @@ Changes
 
 typedef enum
 {
-   RWNotRewritable     = 0,
+   RWNotRewritable = 0,
    RWLimitedRewritable = 1,
-   RWAlwaysRewritable  = 2,
-}RWResultType;
+   RWAlwaysRewritable = 2,
+} RWResultType;
 
 
 /*---------------------------------------------------------------------*/
@@ -49,15 +49,14 @@ typedef enum
 /*---------------------------------------------------------------------*/
 
 
-void   TermAddRWLink(Term_p term, Term_p replace,
-                     struct clause_cell *demod,
-                     bool sos, RWResultType type);
+void TermAddRWLink(Term_p term, Term_p replace, struct clause_cell* demod,
+                   bool sos, RWResultType type);
 
-void   TermDeleteRWLink(Term_p term);
+void TermDeleteRWLink(Term_p term);
 Term_p TermFollowRWChain(Term_p term);
 
-Term_p TBTermPosReplace(TB_p bank, Term_p repl, TermPos_p pos,
-                        DerefType deref, int remains, Term_p orig);
+Term_p TBTermPosReplace(TB_p bank, Term_p repl, TermPos_p pos, DerefType deref,
+                        int remains, Term_p orig);
 
 
 #endif
@@ -65,8 +64,6 @@ Term_p TBTermPosReplace(TB_p bank, Term_p repl, TermPos_p pos,
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

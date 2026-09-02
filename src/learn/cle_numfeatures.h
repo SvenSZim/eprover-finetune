@@ -54,15 +54,15 @@ Changes
 
 typedef struct featurescell
 {
-   long      pred_max_arity;
+   long pred_max_arity;
    PDArray_p pred_distrib;
-   long      func_max_arity;
+   long func_max_arity;
    PDArray_p func_distrib;
-   double    features[FEATURE_NUMBER];
-}FeaturesCell, *Features_p;
+   double features[FEATURE_NUMBER];
+} FeaturesCell, *Features_p;
 
-#define SEL_FEATURE_WEIGHTS {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, \
-                             1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0}
+#define SEL_FEATURE_WEIGHTS                                                    \
+   { 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0 }
 #define SEL_PRED_WEIGHT 1.0
 #define SEL_FUNC_WEIGHT 1.0
 
@@ -75,16 +75,16 @@ typedef struct featurescell
 #define FeaturesCellFree(junk) SizeFree(junk, sizeof(FeaturesCell))
 
 Features_p FeaturesAlloc(void);
-void       FeaturesFree(Features_p junk);
+void FeaturesFree(Features_p junk);
 
 void ComputeClauseSetNumFeatures(Features_p features, ClauseSet_p set,
-             Sig_p sig);
+                                 Sig_p sig);
 
-void       NumFeaturesPrint(FILE* out, Features_p features);
+void NumFeaturesPrint(FILE* out, Features_p features);
 Features_p NumFeaturesParse(Scanner_p in);
 
-double     NumFeatureDistance(Features_p f1, Features_p f2, double
-               pred_w, double func_w, double* weights);
+double NumFeatureDistance(Features_p f1, Features_p f2, double pred_w,
+                          double func_w, double* weights);
 
 
 #endif
@@ -92,8 +92,6 @@ double     NumFeatureDistance(Features_p f1, Features_p f2, double
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

@@ -34,7 +34,7 @@ typedef struct fixd_array_cell
 {
    long size;
    long array[];
-}FixedDArrayCell, *FixedDArray_p;
+} FixedDArrayCell, *FixedDArray_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -43,7 +43,7 @@ typedef struct fixd_array_cell
 
 
 FixedDArray_p FixedDArrayAlloc(long size);
-void          FixedDArrayFree(FixedDArray_p junk);
+void FixedDArrayFree(FixedDArray_p junk);
 
 #define FixedDArraySize(array) ((array)->size)
 
@@ -52,7 +52,8 @@ void FixedDArrayInitialize(FixedDArray_p array, long value);
 void FixedDArrayAdd(FixedDArray_p dest, FixedDArray_p s1, FixedDArray_p s2);
 void FixedDArrayMulAdd(FixedDArray_p dest, FixedDArray_p s1, long f1,
                        FixedDArray_p s2, long f2);
-#define FixedDArraySub(dest, s1, s2) FixedDArrayMulAdd((dest),(s1), 1, (s2), -1)
+#define FixedDArraySub(dest, s1, s2)                                           \
+   FixedDArrayMulAdd((dest), (s1), 1, (s2), -1)
 void FixedDArrayMax(FixedDArray_p dest, FixedDArray_p s1, FixedDArray_p s2);
 void FixedDArrayMin(FixedDArray_p dest, FixedDArray_p s1, FixedDArray_p s2);
 

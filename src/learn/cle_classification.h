@@ -33,26 +33,22 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
 
-double TSMTermClassify(TSMAdmin_p admin, Term_p term, PatternSubst_p
-             subst);
+double TSMTermClassify(TSMAdmin_p admin, Term_p term, PatternSubst_p subst);
 
-bool   TSMClassifiedTermCheck(TSMAdmin_p admin, FlatAnnoTerm_p term);
+bool TSMClassifiedTermCheck(TSMAdmin_p admin, FlatAnnoTerm_p term);
 
-long   TSMClassifySet(TSMAdmin_p admin, FlatAnnoSet_p set);
+long TSMClassifySet(TSMAdmin_p admin, FlatAnnoSet_p set);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

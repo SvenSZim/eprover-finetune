@@ -38,11 +38,11 @@ Changes
 
 typedef struct pcl2poscell
 {
-   long      literal;
-   EqnSide   side;
-   long      termposlen; /* Might take a stack here, but stacks will */
-   PDArray_p termpos;    /* be, on average, much to large */
-}PCL2PosCell, *PCL2Pos_p;
+   long literal;
+   EqnSide side;
+   long termposlen;   /* Might take a stack here, but stacks will */
+   PDArray_p termpos; /* be, on average, much to large */
+} PCL2PosCell, *PCL2Pos_p;
 
 
 
@@ -51,13 +51,13 @@ typedef struct pcl2poscell
 /*---------------------------------------------------------------------*/
 
 #define PCL2PosCellAlloc() (PCL2PosCell*)SizeMalloc(sizeof(PCL2PosCell))
-#define PCL2PosCellFree(junk)         SizeFree(junk, sizeof(PCL2PosCell))
+#define PCL2PosCellFree(junk) SizeFree(junk, sizeof(PCL2PosCell))
 
 PCL2Pos_p PCL2PosAlloc(void);
-void      PCL2PosFree(PCL2Pos_p pos);
+void PCL2PosFree(PCL2Pos_p pos);
 
 PCL2Pos_p PCL2PosParse(Scanner_p in);
-void      PCL2PosPrint(FILE* out, PCL2Pos_p pos);
+void PCL2PosPrint(FILE* out, PCL2Pos_p pos);
 
 
 #endif

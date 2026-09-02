@@ -78,10 +78,7 @@ char* EmptyString = "";
 //
 /----------------------------------------------------------------------*/
 
-void InitError(char* progname)
-{
-   ProgName = progname;
-}
+void InitError(char* progname) { ProgName = progname; }
 
 
 /*-----------------------------------------------------------------------
@@ -97,8 +94,7 @@ void InitError(char* progname)
 //
 /----------------------------------------------------------------------*/
 
-__attribute__((noreturn))
-void Error(char* message, ErrorCodes ret, ...)
+__attribute__((noreturn)) void Error(char* message, ErrorCodes ret, ...)
 {
    va_list ap;
    va_start(ap, ret);
@@ -126,8 +122,7 @@ void Error(char* message, ErrorCodes ret, ...)
 //
 /----------------------------------------------------------------------*/
 
-__attribute__((noreturn))
-void SysError(char* message, ErrorCodes ret, ...)
+__attribute__((noreturn)) void SysError(char* message, ErrorCodes ret, ...)
 {
    va_list ap;
    va_start(ap, ret);
@@ -213,7 +208,7 @@ void ELog(char* message, ...)
    va_list ap;
    va_start(ap, message);
 
-   FILE *logfile;
+   FILE* logfile;
    sprintf(ErrStr, "elog%d.log", getpid());
    logfile = fopen(ErrStr, "a");
 
@@ -223,7 +218,6 @@ void ELog(char* message, ...)
    va_end(ap);
    fclose(logfile);
 }
-
 
 
 
@@ -248,8 +242,8 @@ double GetTotalCPUTime(void)
 
    if(!getrusage(RUSAGE_SELF, &usage))
    {
-      res = (usage.ru_utime.tv_sec+usage.ru_stime.tv_sec)+
-         ((usage.ru_utime.tv_usec+usage.ru_stime.tv_usec)/1000000.0);
+      res = (usage.ru_utime.tv_sec + usage.ru_stime.tv_sec) +
+         ((usage.ru_utime.tv_usec + usage.ru_stime.tv_usec) / 1000000.0);
    }
    return res;
 }
@@ -278,8 +272,8 @@ double GetTotalCPUTimeIncludingChildren(void)
    if((int)res != -1 && !getrusage(RUSAGE_CHILDREN, &usage))
    {
 
-      res += (usage.ru_utime.tv_sec+usage.ru_stime.tv_sec)+
-              ((usage.ru_utime.tv_usec+usage.ru_stime.tv_usec)/1000000.0);
+      res += (usage.ru_utime.tv_sec + usage.ru_stime.tv_sec) +
+         ((usage.ru_utime.tv_usec + usage.ru_stime.tv_usec) / 1000000.0);
    }
    return res;
 }
@@ -304,35 +298,29 @@ void PrintRusage(FILE* out)
    if(getrusage(RUSAGE_SELF, &usage))
    {
       TmpErrno = errno;
-      SysError("Unable to get resource usage information",
-          SYS_ERROR);
+      SysError("Unable to get resource usage information", SYS_ERROR);
    }
    if(getrusage(RUSAGE_CHILDREN, &cusage))
    {
       TmpErrno = errno;
-      SysError("Unable to get resource usage information",
-          SYS_ERROR);
+      SysError("Unable to get resource usage information", SYS_ERROR);
    }
-   usage.ru_utime.tv_sec  += cusage.ru_utime.tv_sec;
+   usage.ru_utime.tv_sec += cusage.ru_utime.tv_sec;
    usage.ru_utime.tv_usec += cusage.ru_utime.tv_usec;
-   usage.ru_stime.tv_sec  += cusage.ru_stime.tv_sec;
+   usage.ru_stime.tv_sec += cusage.ru_stime.tv_sec;
    usage.ru_stime.tv_usec += cusage.ru_stime.tv_usec;
 
    fprintf(out,
-      "\n"COMCHAR" -------------------------------------------------\n");
-   fprintf(out,
-      COMCHAR" User time                : %.3f s\n",
-      (usage.ru_utime.tv_sec)+(usage.ru_utime.tv_usec)/1000000.0);
-   fprintf(out,
-      COMCHAR" System time              : %.3f s\n",
-      (usage.ru_stime.tv_sec)+(usage.ru_stime.tv_usec)/1000000.0);
-   fprintf(out,
-      COMCHAR" Total time               : %.3f s\n",
-      (usage.ru_utime.tv_sec+usage.ru_stime.tv_sec)+
-      ((usage.ru_utime.tv_usec+usage.ru_stime.tv_usec)/1000000.0));
-   fprintf(out,
-      COMCHAR" Maximum resident set size: %ld pages\n",
-      usage.ru_maxrss);
+           "\n" COMCHAR " -------------------------------------------------\n");
+   fprintf(out, COMCHAR " User time                : %.3f s\n",
+           (usage.ru_utime.tv_sec) + (usage.ru_utime.tv_usec) / 1000000.0);
+   fprintf(out, COMCHAR " System time              : %.3f s\n",
+           (usage.ru_stime.tv_sec) + (usage.ru_stime.tv_usec) / 1000000.0);
+   fprintf(out, COMCHAR " Total time               : %.3f s\n",
+           (usage.ru_utime.tv_sec + usage.ru_stime.tv_sec) +
+              ((usage.ru_utime.tv_usec + usage.ru_stime.tv_usec) / 1000000.0));
+   fprintf(out, COMCHAR " Maximum resident set size: %ld pages\n",
+           usage.ru_maxrss);
 }
 
 
@@ -387,7 +375,7 @@ bool TestLetterString(char* to_check, char* options)
 //
 /----------------------------------------------------------------------*/
 
-void CheckOptionLetterString(char* to_check, char* options, char *option)
+void CheckOptionLetterString(char* to_check, char* options, char* option)
 {
    if(!TestLetterString(to_check, options))
    {

@@ -52,51 +52,52 @@ typedef enum
    NoArg,
    OptArg,
    ReqArg
-}OptArgType;
+} OptArgType;
 
 typedef struct optcell
 {
-   int         option_code;
-   char        shortopt;    /* Single Character options */
-   char*       longopt;     /* Double dash, GNU-Style */
-   OptArgType  type;        /* What about Arguments? */
-   char*       arg_default; /* Default for optional argument (long
+   int option_code;
+   char shortopt;     /* Single Character options */
+   char* longopt;     /* Double dash, GNU-Style */
+   OptArgType type;   /* What about Arguments? */
+   char* arg_default; /* Default for optional argument (long
                 style only */
-   char*       desc;        /* Put the documentation in immediately! */
-}OptCell, *Opt_p;
+   char* desc;        /* Put the documentation in immediately! */
+} OptCell, *Opt_p;
 
 
 typedef struct clstatecell
 {
-   int     sc_opt_c;  /* Which character of the current element of
+   int sc_opt_c; /* Which character of the current element of
           argv has to be read next? */
-   int     argi;      /* Which element of argv[] ? */
-   int     argsize;   /* How large is the argv array really? */
-   int     argc;      /* How many elements in argv[]? */
-   char**  argv;      /* Vector of arguments. Processed options and
+   int argi;     /* Which element of argv[] ? */
+   int argsize;  /* How large is the argv array really? */
+   int argc;     /* How many elements in argv[]? */
+   char** argv;  /* Vector of arguments. Processed options and
           option args will be removed */
-}CLStateCell, *CLState_p;
+} CLStateCell, *CLState_p;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
 #define CLStateCellAlloc() (CLStateCell*)SizeMalloc(sizeof(CLStateCell))
-#define CLStateCellFree(junk)        SizeFree(junk, sizeof(CLStateCell))
+#define CLStateCellFree(junk) SizeFree(junk, sizeof(CLStateCell))
 
 
 #define FORMAT_WIDTH 78
 
 CLState_p CLStateAlloc(int argc, char* argv[]);
-void      CLStateFree(CLState_p junk);
+void CLStateFree(CLState_p junk);
 
-Opt_p  CLStateGetOpt(CLState_p state, char** arg, OptCell options[]);
-int    CLStateInsertArg(CLState_p state, char* arg);
+Opt_p CLStateGetOpt(CLState_p state, char** arg, OptCell options[]);
+int CLStateInsertArg(CLState_p state, char* arg);
 
 double CLStateGetFloatArg(Opt_p option, char* arg);
-long   CLStateGetIntArg(Opt_p option, char* arg);
-long   CLStateGetIntArgCheckRange(Opt_p option, char* arg, long lower, long upper);
-bool   CLStateGetBoolArg(Opt_p option, char* arg);
+long CLStateGetIntArg(Opt_p option, char* arg);
+long CLStateGetIntArgCheckRange(Opt_p option, char* arg, long lower,
+                                long upper);
+bool CLStateGetBoolArg(Opt_p option, char* arg);
 
 void PrintOption(FILE* out, Opt_p option);
 void PrintOptions(FILE* out, OptCell option[], char* header);

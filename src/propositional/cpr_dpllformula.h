@@ -40,35 +40,35 @@ typedef struct atom_cell
    long neg_occur;
    PTree_p pos_active;
    PTree_p neg_active;
-}AtomCell, *Atom_p;
+} AtomCell, *Atom_p;
 
 typedef struct dpllrep_cell
 {
    PropSig_p sig;
-   PStack_p  clauses;
-   long      atom_no;
-   Atom_p    atoms;
-}DPLLFormulaCell, *DPLLFormula_p;
+   PStack_p clauses;
+   long atom_no;
+   Atom_p atoms;
+} DPLLFormulaCell, *DPLLFormula_p;
 
 
 #define DEFAULT_ATOM_NUMBER 500;
-#define ATOM_GROWTH_FACTOR  1.5
+#define ATOM_GROWTH_FACTOR 1.5
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define DPLLFormulaCellAlloc() (DPLLFormulaCell*)SizeMalloc(sizeof(DPLLFormulaCell))
-#define DPLLFormulaCellFree(junk)            SizeFree(junk, sizeof(DPLLFormulaCell))
+#define DPLLFormulaCellAlloc()                                                 \
+   (DPLLFormulaCell*)SizeMalloc(sizeof(DPLLFormulaCell))
+#define DPLLFormulaCellFree(junk) SizeFree(junk, sizeof(DPLLFormulaCell))
 
 DPLLFormula_p DPLLFormulaAlloc(void);
 void DPLLFormulaFree(DPLLFormula_p junk);
-void DPLLFormulaPrint(FILE* out,DPLLFormula_p form, DPLLOutputFormat format,
-            bool print_atoms);
-void DPLLRegisterClauseLiteral(DPLLFormula_p form,
-                DPLLClause_p clause,
-                PLiteralCode lit);
+void DPLLFormulaPrint(FILE* out, DPLLFormula_p form, DPLLOutputFormat format,
+                      bool print_atoms);
+void DPLLRegisterClauseLiteral(DPLLFormula_p form, DPLLClause_p clause,
+                               PLiteralCode lit);
 void DPLLFormulaInsertClause(DPLLFormula_p form, DPLLClause_p clause);
 void DPLLFormulaParseLOP(Scanner_p in, Sig_p sig, DPLLFormula_p form);
 
@@ -77,8 +77,6 @@ void DPLLFormulaParseLOP(Scanner_p in, Sig_p sig, DPLLFormula_p form);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

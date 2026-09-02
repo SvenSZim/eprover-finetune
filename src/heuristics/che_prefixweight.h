@@ -32,50 +32,42 @@
 
 typedef struct prefixweightparamcell
 {
-   OCB_p        ocb;
+   OCB_p ocb;
    ProofState_p proofstate;
 
    VarNormStyle var_norm;
    RelatedTermSet rel_terms;
 
-   PDTree_p  terms;
+   PDTree_p terms;
    VarBank_p vars;
-   double    match_weight;
-   double    miss_weight;
+   double match_weight;
+   double miss_weight;
 
    TermWeightExtension_p twe;
-   void   (*init_fun)(struct prefixweightparamcell*);
-}PrefixWeightParamCell, *PrefixWeightParam_p;
+   void (*init_fun)(struct prefixweightparamcell*);
+} PrefixWeightParamCell, *PrefixWeightParam_p;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define PrefixWeightParamCellAlloc() (PrefixWeightParamCell*) \
-        SizeMalloc(sizeof(PrefixWeightParamCell))
-#define PrefixWeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(PrefixWeightParamCell))
+#define PrefixWeightParamCellAlloc()                                           \
+   (PrefixWeightParamCell*)SizeMalloc(sizeof(PrefixWeightParamCell))
+#define PrefixWeightParamCellFree(junk)                                        \
+   SizeFree(junk, sizeof(PrefixWeightParamCell))
 
 PrefixWeightParam_p PrefixWeightParamAlloc(void);
-void              PrefixWeightParamFree(PrefixWeightParam_p junk);
+void PrefixWeightParamFree(PrefixWeightParam_p junk);
 
 
-WFCB_p ConjectureTermPrefixWeightParse(
-   Scanner_p in, 
-   OCB_p ocb, 
-   ProofState_p state);
+WFCB_p ConjectureTermPrefixWeightParse(Scanner_p in, OCB_p ocb,
+                                       ProofState_p state);
 
 WFCB_p ConjectureTermPrefixWeightInit(
-   ClausePrioFun prio_fun, 
-   OCB_p ocb,
-   ProofState_p proofstate,
-   VarNormStyle var_norm,
-   RelatedTermSet rel_terms,
-   double match_weight,
-   double miss_weight,
-   TermWeightExtenstionStyle ext_style,
-   double max_term_multiplier,
-   double max_literal_multiplier,
+   ClausePrioFun prio_fun, OCB_p ocb, ProofState_p proofstate,
+   VarNormStyle var_norm, RelatedTermSet rel_terms, double match_weight,
+   double miss_weight, TermWeightExtenstionStyle ext_style,
+   double max_term_multiplier, double max_literal_multiplier,
    double pos_multiplier);
 
 double ConjectureTermPrefixWeightCompute(void* data, Clause_p clause);

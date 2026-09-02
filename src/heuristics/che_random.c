@@ -47,7 +47,6 @@ Changes
 
 
 
-
 /*-----------------------------------------------------------------------
 //
 // Function: RandWeightInit()
@@ -61,15 +60,15 @@ Changes
 /----------------------------------------------------------------------*/
 
 WFCB_p RandWeightInit(ClausePrioFun prio_fun, long range, double fifo_w,
-                    double sc_w, unsigned int seed1, unsigned int seed2,
-                    unsigned int seed3)
+                      double sc_w, unsigned int seed1, unsigned int seed2,
+                      unsigned int seed3)
 {
    RandomWeightParam_p data = RandomWeightParamCellAlloc();
 
    data->fifo_counter = 0.0;
-   data->rand_range   = range;
-   data->fifo_weight  = fifo_w;
-   data->sc_weight    = sc_w;
+   data->rand_range = range;
+   data->fifo_weight = fifo_w;
+   data->sc_weight = sc_w;
    data->rand_state.xstate = 684291357;
    data->rand_state.ystate = 123459876;
    data->rand_state.zstate = 918273645;
@@ -108,9 +107,9 @@ WFCB_p RandWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
 {
    ClausePrioFun prio_fun;
    unsigned int rand_range;
-   double        fifo_w;
-   double        sc_w;
-   unsigned int  seed1 = 0, seed2 = 0, seed3 = 0;
+   double fifo_w;
+   double sc_w;
+   unsigned int seed1 = 0, seed2 = 0, seed3 = 0;
 
    AcceptInpTok(in, OpenBracket);
    prio_fun = ParsePrioFun(in);
@@ -124,23 +123,23 @@ WFCB_p RandWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
    if(TestInpTok(in, Comma))
    {
       AcceptInpTok(in, Comma);
-      seed1=ParseInt(in);
+      seed1 = ParseInt(in);
    }
    if(TestInpTok(in, Comma))
    {
       AcceptInpTok(in, Comma);
-      seed2=ParseInt(in);
+      seed2 = ParseInt(in);
    }
    if(TestInpTok(in, Comma))
    {
       AcceptInpTok(in, Comma);
-      seed3=ParseInt(in);
+      seed3 = ParseInt(in);
    }
 
    AcceptInpTok(in, CloseBracket);
 
-   return RandWeightInit(prio_fun, rand_range,
-                       fifo_w, sc_w, seed1, seed2, seed3);
+   return RandWeightInit(prio_fun, rand_range, fifo_w, sc_w, seed1, seed2,
+                         seed3);
 }
 
 
@@ -162,16 +161,15 @@ double RandWeightCompute(void* data, Clause_p clause)
 
    double fifo, sc, rnd;
 
-   sc   = ClauseStandardWeight(clause);
+   sc = ClauseStandardWeight(clause);
    fifo = (local->fifo_counter)++;
-   rnd  = JKISSRandDouble(&(local->rand_state));
+   rnd = JKISSRandDouble(&(local->rand_state));
 
    //printf("%d  %f  %f\n", local->rand_range,
    //       local->sc_weight, local->fifo_weight);
 
-   return rnd*local->rand_range
-      +sc*local->sc_weight
-      +fifo*local->fifo_weight;
+   return rnd * local->rand_range + sc * local->sc_weight +
+      fifo * local->fifo_weight;
 }
 
 
@@ -187,10 +185,7 @@ double RandWeightCompute(void* data, Clause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-void RandWeightExit(void* data)
-{
-   RandomWeightParamCellFree(data);
-}
+void RandWeightExit(void* data) { RandomWeightParamCellFree(data); }
 
 
 /*---------------------------------------------------------------------*/

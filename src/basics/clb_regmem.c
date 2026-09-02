@@ -65,7 +65,7 @@ static PTree_p reg_mem_tree = NULL;
 
 void* RegMemAlloc(size_t size)
 {
-   void *res = SecureMalloc(size);
+   void* res = SecureMalloc(size);
 
    PTreeStore(&reg_mem_tree, res);
 
@@ -87,10 +87,10 @@ void* RegMemAlloc(size_t size)
 
 void* RegMemRealloc(void* mem, size_t size)
 {
-   void *res;
+   void* res;
 
    PTreeDeleteEntry(&reg_mem_tree, mem);
-   res = SecureRealloc(mem,size);
+   res = SecureRealloc(mem, size);
    PTreeStore(&reg_mem_tree, res);
 
    return res;
@@ -109,7 +109,7 @@ void* RegMemRealloc(void* mem, size_t size)
 //
 /----------------------------------------------------------------------*/
 
-void  RegMemFree(void* mem)
+void RegMemFree(void* mem)
 {
    PTreeDeleteEntry(&reg_mem_tree, mem);
    FREE(mem);
@@ -133,7 +133,7 @@ void  RegMemFree(void* mem)
 //
 /----------------------------------------------------------------------*/
 
-void* RegMemProvide(void* mem, size_t *oldsize, size_t newsize)
+void* RegMemProvide(void* mem, size_t* oldsize, size_t newsize)
 {
    size_t newlimit;
 
@@ -147,7 +147,7 @@ void* RegMemProvide(void* mem, size_t *oldsize, size_t newsize)
       newlimit *= 2;
    }
    mem = RegMemRealloc(mem, newlimit);
-   memset(mem+*oldsize, 0, newlimit-*oldsize);
+   memset(mem + *oldsize, 0, newlimit - *oldsize);
    *oldsize = newlimit;
 
    return mem;
@@ -166,7 +166,7 @@ void* RegMemProvide(void* mem, size_t *oldsize, size_t newsize)
 //
 /----------------------------------------------------------------------*/
 
-void  RegMemCleanUp(void)
+void RegMemCleanUp(void)
 {
    void* mem;
 

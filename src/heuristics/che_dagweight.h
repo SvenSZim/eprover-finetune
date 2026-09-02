@@ -34,18 +34,18 @@ Contents
 typedef struct dagweightparamcell
 {
    double pos_multiplier;
-   long   vweight;
-   long   fweight;
-   long   dup_weight;    /* Weight used for repeated subterm - set to
+   long vweight;
+   long fweight;
+   long dup_weight; /* Weight used for repeated subterm - set to
                             0 for perfect DAG weight */
-   bool   pos_use_dag;
-   bool   pos_term_reset;
-   bool   pos_eqn_reset;
-   bool   neg_use_dag;
-   bool   neg_term_reset;
-   bool   neg_eqn_reset;
-   bool   pos_neg_reset;
-}DAGWeightParamCell, *DAGWeightParam_p;
+   bool pos_use_dag;
+   bool pos_term_reset;
+   bool pos_eqn_reset;
+   bool neg_use_dag;
+   bool neg_term_reset;
+   bool neg_eqn_reset;
+   bool pos_neg_reset;
+} DAGWeightParamCell, *DAGWeightParam_p;
 
 /* There are many ways to consider the terms in a clause as a dag:
    - Each term in a literal is considered as an independent dag.
@@ -66,19 +66,19 @@ typedef struct dagweightparamcell
 
 typedef struct RDAGWeightparamcell
 {
-   OCB_p  ocb;
-   long   vweight;
-   long   fweight;
-   long   nvweight;
-   long   nfweight;
-   long   dup_weight;
+   OCB_p ocb;
+   long vweight;
+   long fweight;
+   long nvweight;
+   long nfweight;
+   long dup_weight;
    double uniqmax_term_multiplier;
    double max_term_multiplier;
    double max_literal_multiplier;
    double pos_multiplier;
    double pneq_multiplier; /* bonus/malus for non-equational pos literals */
    double nneq_multiplier; /* bonus/malus for non-equational neg literals */
-}RDAGWeightParamCell, *RDAGWeightParam_p;
+} RDAGWeightParamCell, *RDAGWeightParam_p;
 
 
 
@@ -87,22 +87,20 @@ typedef struct RDAGWeightparamcell
 /*---------------------------------------------------------------------*/
 
 
-#define DAGWeightParamCellAlloc() (DAGWeightParamCell*) \
-        SizeMalloc(sizeof(DAGWeightParamCell))
-#define DAGWeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(DAGWeightParamCell))
+#define DAGWeightParamCellAlloc()                                              \
+   (DAGWeightParamCell*)SizeMalloc(sizeof(DAGWeightParamCell))
+#define DAGWeightParamCellFree(junk) SizeFree(junk, sizeof(DAGWeightParamCell))
 
 
-#define RDAGWeightParamCellAlloc() (RDAGWeightParamCell*) \
-        SizeMalloc(sizeof(RDAGWeightParamCell))
-#define RDAGWeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(RDAGWeightParamCell))
+#define RDAGWeightParamCellAlloc()                                             \
+   (RDAGWeightParamCell*)SizeMalloc(sizeof(RDAGWeightParamCell))
+#define RDAGWeightParamCellFree(junk)                                          \
+   SizeFree(junk, sizeof(RDAGWeightParamCell))
 
 
-WFCB_p DAGWeightInit(ClausePrioFun prio_fun, int fweight, int
-                     vweight, double pos_multiplier, long dup_weight,
-                     bool pos_use_dag, bool pos_term_reset,
-                     bool pos_eqn_reset, bool neg_use_dag,
+WFCB_p DAGWeightInit(ClausePrioFun prio_fun, int fweight, int vweight,
+                     double pos_multiplier, long dup_weight, bool pos_use_dag,
+                     bool pos_term_reset, bool pos_eqn_reset, bool neg_use_dag,
                      bool neg_term_reset, bool neg_eqn_reset,
                      bool pos_neg_reset);
 
@@ -113,14 +111,10 @@ double DAGWeightCompute(void* data, Clause_p clause);
 void DAGWeightExit(void* data);
 
 
-WFCB_p RDAGWeightInit(ClausePrioFun prio_fun,
-                      OCB_p ocb,
-                      long fweight,
-                      long vweight,
-                      long dup_weight,
+WFCB_p RDAGWeightInit(ClausePrioFun prio_fun, OCB_p ocb, long fweight,
+                      long vweight, long dup_weight,
                       double uniqmax_term_multiplier,
-                      double max_term_multiplier,
-                      double max_literal_multiplier,
+                      double max_term_multiplier, double max_literal_multiplier,
                       double pos_multiplier);
 
 WFCB_p RDAGWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
@@ -130,28 +124,18 @@ double RDAGWeightCompute(void* data, Clause_p clause);
 void RDAGWeightExit(void* data);
 
 
-WFCB_p RDAGWeight2Init(ClausePrioFun prio_fun,
-                       OCB_p ocb,
-                       long fweight,
-                       long vweight,
-                       long dup_weight,
-                       double max_term_multiplier,
-                       double pos_multiplier);
+WFCB_p RDAGWeight2Init(ClausePrioFun prio_fun, OCB_p ocb, long fweight,
+                       long vweight, long dup_weight,
+                       double max_term_multiplier, double pos_multiplier);
 
 WFCB_p RDAGWeight2Parse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double RDAGWeight2Compute(void* data, Clause_p clause);
 
-WFCB_p RDAGWeight3Init(ClausePrioFun prio_fun,
-                       OCB_p ocb,
-                       long fweight,
-                       long vweight,
-                       long nfweight,
-                       long nvweight,
-                       long dup_weight,
-                       double max_term_multiplier,
-                       double pos_multiplier,
-                       double pneq_multiplier,
+WFCB_p RDAGWeight3Init(ClausePrioFun prio_fun, OCB_p ocb, long fweight,
+                       long vweight, long nfweight, long nvweight,
+                       long dup_weight, double max_term_multiplier,
+                       double pos_multiplier, double pneq_multiplier,
                        double nneq_multiplier);
 
 WFCB_p RDAGWeight3Parse(Scanner_p in, OCB_p ocb, ProofState_p state);

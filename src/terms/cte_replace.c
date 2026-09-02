@@ -63,22 +63,22 @@ extern TB_p bank;
 //
 /----------------------------------------------------------------------*/
 
-void TermAddRWLink(Term_p term, Term_p replace, struct clause_cell *demod,
+void TermAddRWLink(Term_p term, Term_p replace, struct clause_cell* demod,
                    bool sos, RWResultType type)
 {
    assert(term);
    assert(replace);
-   assert(term!=replace);
+   assert(term != replace);
 
    TermCellSetProp(term, TPIsRewritten);
 
-   if(type==RWAlwaysRewritable)
+   if(type == RWAlwaysRewritable)
    {
       TermCellSetProp(term, TPIsRRewritten);
    }
 
    TermRWReplaceField(term) = replace;
-   TermRWDemodField(term)   = demod;
+   TermRWDemodField(term) = demod;
 
    if(sos)
    {
@@ -103,10 +103,10 @@ void TermDeleteRWLink(Term_p term)
 {
    assert(term);
 
-   TermCellDelProp(term, TPIsRewritten|TPIsRRewritten|TPIsSOSRewritten);
+   TermCellDelProp(term, TPIsRewritten | TPIsRRewritten | TPIsSOSRewritten);
 
    TermRWReplaceField(term) = NULL;
-   TermRWDemodField(term)   = 0;
+   TermRWDemodField(term) = 0;
 }
 
 
@@ -163,13 +163,13 @@ Term_p TermFollowRWChain(Term_p term)
 //
 /----------------------------------------------------------------------*/
 
-Term_p TBTermPosReplace(TB_p bank, Term_p repl, TermPos_p pos,
-                        DerefType deref, int remains, Term_p old_into)
+Term_p TBTermPosReplace(TB_p bank, Term_p repl, TermPos_p pos, DerefType deref,
+                        int remains, Term_p old_into)
 {
-   Term_p        handle, old;
-   int           subscript;
+   Term_p handle, old;
+   int subscript;
    PStackPointer i;
-   PStack_p      store = PStackAlloc();
+   PStack_p store = PStackAlloc();
 
 
    assert(bank);
@@ -195,10 +195,12 @@ Term_p TBTermPosReplace(TB_p bank, Term_p repl, TermPos_p pos,
 #ifdef ENABLE_LFHO
       if(remains != -1)
       {
-         Term_p tmp_repl = MakeRewrittenTerm(TermDerefAlways(handle->args[subscript]),
-                                             TermDerefAlways(repl), remains, bank);
+         Term_p tmp_repl =
+            MakeRewrittenTerm(TermDerefAlways(handle->args[subscript]),
+                              TermDerefAlways(repl), remains, bank);
 
-         handle->args[subscript] = remains ? TBTermTopInsert(bank, tmp_repl) : tmp_repl;
+         handle->args[subscript] =
+            remains ? TBTermTopInsert(bank, tmp_repl) : tmp_repl;
 
          remains = -1;
       }
@@ -223,7 +225,7 @@ Term_p TBTermPosReplace(TB_p bank, Term_p repl, TermPos_p pos,
    }
    else
    {
-      repl  = TBInsertNoProps(bank, repl, deref);
+      repl = TBInsertNoProps(bank, repl, deref);
    }
 
    while(!PStackEmpty(store))

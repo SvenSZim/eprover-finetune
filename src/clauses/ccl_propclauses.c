@@ -62,7 +62,7 @@ PropClause_p PropClauseAlloc(Clause_p clause)
 {
    PropClause_p handle = PropClauseCellAlloc();
    Eqn_p lit;
-   int   i;
+   int i;
 
    assert(clause);
 
@@ -70,8 +70,7 @@ PropClause_p PropClauseAlloc(Clause_p clause)
    handle->lit_no = ClauseLiteralNumber(clause);
    if(clause->literals)
    {
-      handle->literals = SizeMalloc(handle->lit_no
-                                    *sizeof(PropLitCell));
+      handle->literals = SizeMalloc(handle->lit_no * sizeof(PropLitCell));
    }
    else
    {
@@ -80,7 +79,7 @@ PropClause_p PropClauseAlloc(Clause_p clause)
 
 
    lit = clause->literals;
-   for(i=0; i<handle->lit_no; i++)
+   for(i = 0; i < handle->lit_no; i++)
    {
       assert(lit);
       assert(lit->rterm->f_code == SIG_TRUE_CODE);
@@ -138,16 +137,14 @@ void PropClauseFree(PropClause_p clause)
 
 Clause_p PropClauseToClause(TB_p bank, PropClause_p clause)
 {
-   Eqn_p    list=NULL, *eqn;
+   Eqn_p list = NULL, *eqn;
    Clause_p handle;
    int i;
 
    eqn = &list;
-   for(i=0; i<clause->lit_no; i++)
+   for(i = 0; i < clause->lit_no; i++)
    {
-      *eqn = EqnAlloc(clause->literals[i].lit,
-                      bank->true_term,
-                      bank, false);
+      *eqn = EqnAlloc(clause->literals[i].lit, bank->true_term, bank, false);
       (*eqn)->properties = clause->literals[i].properties;
       eqn = &((*eqn)->next);
    }
@@ -194,7 +191,7 @@ long PropClauseMaxVar(PropClause_p clause)
    int i;
    long res = 0, tmp;
 
-   for(i=0; i<clause->lit_no; i++)
+   for(i = 0; i < clause->lit_no; i++)
    {
       tmp = clause->literals[i].lit->entry_no;
       if(tmp > res)
@@ -225,8 +222,8 @@ PropClauseSet_p PropClauseSetAlloc(void)
    set->members = 0;
    set->literals = 0;
    set->empty_clauses = 0;
-   set->list    = NULL;
-   set->inspos  = &(set->list);
+   set->list = NULL;
+   set->inspos = &(set->list);
 
    return set;
 }
@@ -246,7 +243,7 @@ PropClauseSet_p PropClauseSetAlloc(void)
 
 void PropClauseSetFree(PropClauseSet_p set)
 {
-   PropClause_p handle,tmp;
+   PropClause_p handle, tmp;
 
    assert(set);
 
@@ -272,8 +269,7 @@ void PropClauseSetFree(PropClauseSet_p set)
 //
 /----------------------------------------------------------------------*/
 
-long PropClauseSetInsertPropClause(PropClauseSet_p set, PropClause_p
-                                   clause)
+long PropClauseSetInsertPropClause(PropClauseSet_p set, PropClause_p clause)
 {
    assert(set && clause && set->inspos);
 
@@ -281,8 +277,8 @@ long PropClauseSetInsertPropClause(PropClauseSet_p set, PropClause_p
    *(set->inspos) = clause;
    set->inspos = &(clause->next);
    set->members++;
-   set->literals+=clause->lit_no;
-   if(clause->lit_no==0)
+   set->literals += clause->lit_no;
+   if(clause->lit_no == 0)
    {
       set->empty_clauses++;
    }

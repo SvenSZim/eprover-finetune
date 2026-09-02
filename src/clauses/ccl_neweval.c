@@ -55,7 +55,7 @@ static Eval_p evals_alloc_raw(int eval_no)
 {
    Eval_p eval = EvalCellAlloc(eval_no);
 
-   eval->eval_no    = eval_no;
+   eval->eval_no = eval_no;
    eval->eval_count = 0;
 
    return eval;
@@ -77,9 +77,9 @@ static Eval_p evals_alloc_raw(int eval_no)
 static Eval_p splay_tree(Eval_p tree, Eval_p splay, int pos)
 {
    Eval_p left, right, tmp, newnode;
-   long   cmpres;
+   long cmpres;
 
-   if (!tree)
+   if(!tree)
    {
       return tree;
    }
@@ -90,10 +90,10 @@ static Eval_p splay_tree(Eval_p tree, Eval_p splay, int pos)
    left = newnode;
    right = newnode;
 
-   for (;;)
+   for(;;)
    {
       cmpres = EvalCompare(splay, tree, pos);
-      if (cmpres < 0)
+      if(cmpres < 0)
       {
          if(!tree->evals[pos].lson)
          {
@@ -105,7 +105,7 @@ static Eval_p splay_tree(Eval_p tree, Eval_p splay, int pos)
             tree->evals[pos].lson = tmp->evals[pos].rson;
             tmp->evals[pos].rson = tree;
             tree = tmp;
-            if (!tree->evals[pos].lson)
+            if(!tree->evals[pos].lson)
             {
                break;
             }
@@ -116,7 +116,7 @@ static Eval_p splay_tree(Eval_p tree, Eval_p splay, int pos)
       }
       else if(cmpres > 0)
       {
-         if (!tree->evals[pos].rson)
+         if(!tree->evals[pos].rson)
          {
             break;
          }
@@ -126,7 +126,7 @@ static Eval_p splay_tree(Eval_p tree, Eval_p splay, int pos)
             tree->evals[pos].rson = tmp->evals[pos].lson;
             tmp->evals[pos].lson = tree;
             tree = tmp;
-            if (!tree->evals[pos].rson)
+            if(!tree->evals[pos].rson)
             {
                break;
             }
@@ -217,7 +217,7 @@ void EvalsFree(Eval_p junk)
 void EvalPrint(FILE* out, Eval_p eval, int pos)
 {
    fprintf(out, "[%3ld:%.10f:%ld]", eval->evals[pos].priority,
-      eval->evals[pos].heuristic, eval->eval_count);
+           eval->evals[pos].heuristic, eval->eval_count);
 }
 
 
@@ -238,7 +238,6 @@ void EvalPrintComment(FILE* out, Eval_p eval, int pos)
    fprintf(out, "/*");
    EvalPrint(out, eval, pos);
    fprintf(out, "*/");
-
 }
 
 
@@ -258,7 +257,7 @@ void EvalListPrint(FILE* out, Eval_p list)
 {
    int i;
 
-   for(i=0; i<list->eval_no; i++)
+   for(i = 0; i < list->eval_no; i++)
    {
       EvalPrint(out, list, i);
    }
@@ -301,7 +300,7 @@ void EvalListSetPriority(Eval_p list, EvalPriority priority)
 {
    int i;
 
-   for(i=0; i<list->eval_no; i++)
+   for(i = 0; i < list->eval_no; i++)
    {
       list->evals[i].priority = priority;
    }
@@ -323,11 +322,10 @@ void EvalListChangePriority(Eval_p list, EvalPriority diff)
 {
    int i;
 
-   for(i=0; i<list->eval_no; i++)
+   for(i = 0; i < list->eval_no; i++)
    {
       list->evals[i].priority += diff;
    }
-
 }
 
 
@@ -353,20 +351,20 @@ bool EvalGreater(Eval_p ev1, Eval_p ev2, int pos)
    }
    else if(ev1->evals[pos].priority == ev2->evals[pos].priority)
    {
-      if(ev1->eval_count==ev2->eval_count)
+      if(ev1->eval_count == ev2->eval_count)
       {
          return false;
       }
       if(ev1->evals[pos].heuristic > ev2->evals[pos].heuristic)
       {
-    return true;
+         return true;
       }
       else if(ev1->evals[pos].heuristic == ev2->evals[pos].heuristic)
       {
-    if(ev1->eval_count > ev2->eval_count)
-    {
-       return true;
-    }
+         if(ev1->eval_count > ev2->eval_count)
+         {
+            return true;
+         }
       }
    }
    return false;
@@ -401,7 +399,8 @@ long EvalCompare(Eval_p ev1, Eval_p ev2, int pos)
       return res;
    }
 
-   long res_heuristic = CMP(ev1->evals[pos].heuristic, ev2->evals[pos].heuristic);
+   long res_heuristic =
+      CMP(ev1->evals[pos].heuristic, ev2->evals[pos].heuristic);
    if(res_heuristic)
    {
       return res_heuristic;
@@ -409,7 +408,6 @@ long EvalCompare(Eval_p ev1, Eval_p ev2, int pos)
 
    return res;
 }
-
 
 
 
@@ -427,10 +425,10 @@ long EvalCompare(Eval_p ev1, Eval_p ev2, int pos)
 //
 /----------------------------------------------------------------------*/
 
-Eval_p EvalTreeInsert(Eval_p *root, Eval_p newnode, int pos)
+Eval_p EvalTreeInsert(Eval_p* root, Eval_p newnode, int pos)
 {
    long cmpres;
-   if (!*root)
+   if(!*root)
    {
       newnode->evals[pos].lson = newnode->evals[pos].rson = NULL;
       *root = newnode;
@@ -440,7 +438,7 @@ Eval_p EvalTreeInsert(Eval_p *root, Eval_p newnode, int pos)
 
    cmpres = EvalCompare(newnode, *root, pos);
 
-   if (cmpres < 0)
+   if(cmpres < 0)
    {
       newnode->evals[pos].lson = (*root)->evals[pos].lson;
       newnode->evals[pos].rson = *root;
@@ -473,12 +471,12 @@ Eval_p EvalTreeInsert(Eval_p *root, Eval_p newnode, int pos)
 //
 /----------------------------------------------------------------------*/
 
-Eval_p EvalTreeFind(Eval_p *root, Eval_p key, int pos)
+Eval_p EvalTreeFind(Eval_p* root, Eval_p key, int pos)
 {
    if(*root)
    {
       *root = splay_tree(*root, key, pos);
-      if(EvalCompare(*root, key, pos)==0)
+      if(EvalCompare(*root, key, pos) == 0)
       {
          return *root;
       }
@@ -501,18 +499,18 @@ Eval_p EvalTreeFind(Eval_p *root, Eval_p key, int pos)
 /----------------------------------------------------------------------*/
 
 
-Eval_p EvalTreeExtractEntry(Eval_p *root, Eval_p key, int pos)
+Eval_p EvalTreeExtractEntry(Eval_p* root, Eval_p key, int pos)
 {
    Eval_p x, cell;
 
-   if (!(*root))
+   if(!(*root))
    {
       return NULL;
    }
    *root = splay_tree(*root, key, pos);
-   if(EvalCompare(key, (*root), pos)==0)
+   if(EvalCompare(key, (*root), pos) == 0)
    {
-      if (!(*root)->evals[pos].lson)
+      if(!(*root)->evals[pos].lson)
       {
          x = (*root)->evals[pos].rson;
       }
@@ -542,7 +540,7 @@ Eval_p EvalTreeExtractEntry(Eval_p *root, Eval_p key, int pos)
 //
 /----------------------------------------------------------------------*/
 
-bool EvalTreeDeleteEntry(Eval_p *root, Eval_p key, int pos)
+bool EvalTreeDeleteEntry(Eval_p* root, Eval_p key, int pos)
 {
    Eval_p cell;
 
@@ -656,7 +654,7 @@ Eval_p EvalTreeTraverseNext(PStack_p state, int pos)
 void EvalTreePrintInOrder(FILE* out, Eval_p tree, int pos)
 {
    PStack_p state;
-   Eval_p   handle;
+   Eval_p handle;
 
    state = EvalTreeTraverseInit(tree, pos);
 

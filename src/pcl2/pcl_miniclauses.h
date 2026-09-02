@@ -40,11 +40,10 @@ Changes
 typedef struct mini_clause_cell
 {
    /* ClauseProperties properties; */
-   short            literal_no;
-   short            *sign; /* For literals */
-   Term_p           *lit_terms; /* Literals are just pairs of terms */
-}MiniClauseCell, *MiniClause_p;
-
+   short literal_no;
+   short* sign;       /* For literals */
+   Term_p* lit_terms; /* Literals are just pairs of terms */
+} MiniClauseCell, *MiniClause_p;
 
 
 
@@ -52,21 +51,20 @@ typedef struct mini_clause_cell
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define MiniClauseCellAlloc()\
-        (MiniClauseCell*)SizeMalloc(sizeof(MiniClauseCell))
-#define MiniClauseCellFree(junk)\
-        SizeFree(junk, sizeof(MiniClauseCell))
+#define MiniClauseCellAlloc()                                                  \
+   (MiniClauseCell*)SizeMalloc(sizeof(MiniClauseCell))
+#define MiniClauseCellFree(junk) SizeFree(junk, sizeof(MiniClauseCell))
 
-void    MiniClauseFree(MiniClause_p clause);
+void MiniClauseFree(MiniClause_p clause);
 
 MiniClause_p ClauseToMiniClause(Clause_p clause);
-Clause_p     MiniClauseToClause(MiniClause_p clause, TB_p bank);
+Clause_p MiniClauseToClause(MiniClause_p clause, TB_p bank);
 
 MiniClause_p MinifyClause(Clause_p clause);
-Clause_p     UnMinifyClause(MiniClause_p clause, TB_p bank);
+Clause_p UnMinifyClause(MiniClause_p clause, TB_p bank);
 
-void MiniClausePrint(FILE* out, MiniClause_p compact, TB_p bank, bool
-           full_terms);
+void MiniClausePrint(FILE* out, MiniClause_p compact, TB_p bank,
+                     bool full_terms);
 
 void MiniClausePCLPrint(FILE* out, MiniClause_p compact, TB_p bank);
 void MiniClauseTSTPCorePrint(FILE* out, MiniClause_p compact, TB_p bank);
@@ -76,8 +74,6 @@ void MiniClauseTSTPCorePrint(FILE* out, MiniClause_p compact, TB_p bank);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

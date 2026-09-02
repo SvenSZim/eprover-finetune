@@ -43,9 +43,9 @@ typedef struct memcell
 {
    struct memcell* next;
 #ifndef NDEBUG
-   unsigned long   test;
+   unsigned long test;
 #endif
-}MemCell, *Mem_p;
+} MemCell, *Mem_p;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
@@ -61,7 +61,7 @@ extern Mem_p free_mem_list[]; /* Exported for use by inline
                                * functions/Macros */
 
 static inline void* SizeMallocReal(size_t size);
-static inline void  SizeFreeReal(void* junk, size_t size);
+static inline void SizeFreeReal(void* junk, size_t size);
 
 
 /* For estimating the real memory consumption of a data type - the
@@ -70,46 +70,54 @@ static inline void  SizeFreeReal(void* junk, size_t size);
    a very rough but machine-independent estimate is used. */
 
 #ifdef CONSTANT_MEM_ESTIMATE
-#define MEMSIZE(type) "There is a bug in the code! Everything has to work with constants."
+#define MEMSIZE(type)                                                          \
+   "There is a bug in the code! Everything has to work with constants."
 #else
-#define MEMSIZE(type) (sizeof(type)+sizeof(void*))
+#define MEMSIZE(type) (sizeof(type) + sizeof(void*))
 #endif
 
 #ifdef USE_SYSTEM_MEM
 
 #ifndef NDEBUG
-#define SizeFree(junk, size) free(junk); junk=NULL
-#define SizeMalloc(size)     malloc(size)
-#define ENSURE_NULL(junk)    junk=NULL
+#define SizeFree(junk, size)                                                   \
+   free(junk);                                                                 \
+   junk = NULL
+#define SizeMalloc(size) malloc(size)
+#define ENSURE_NULL(junk) junk = NULL
 #else
 #define SizeFree(junk, size) free(junk)
-#define SizeMalloc(size)     malloc(size)
+#define SizeMalloc(size) malloc(size)
 #define ENSURE_NULL(junk) /* Only defined in debug mode */
 #endif
 
 #else
 
 #ifndef NDEBUG
-#define SizeFree(junk, size) SizeFreeReal(junk, size); junk=NULL
-#define SizeMalloc(size)     SizeMallocReal(size)
-#define ENSURE_NULL(junk)    junk=NULL
+#define SizeFree(junk, size)                                                   \
+   SizeFreeReal(junk, size);                                                   \
+   junk = NULL
+#define SizeMalloc(size) SizeMallocReal(size)
+#define ENSURE_NULL(junk) junk = NULL
 #else
 #define SizeFree(junk, size) SizeFreeReal(junk, size);
-#define SizeMalloc(size)     SizeMallocReal(size)
+#define SizeMalloc(size) SizeMallocReal(size)
 #define ENSURE_NULL(junk) /* Only defined in debug mode */
 #endif
 
 #endif
 
-void  MemFlushFreeList(void);
+void MemFlushFreeList(void);
 void* SecureMalloc(size_t size);
-void* SecureRealloc(void *ptr, size_t size);
+void* SecureRealloc(void* ptr, size_t size);
 char* SecureStrdup(const char* source);
 char* SecureStrndup(const char* source, size_t n);
-#define FREE(junk) assert(junk);free(junk); junk=NULL
+#define FREE(junk)                                                             \
+   assert(junk);                                                               \
+   free(junk);                                                                 \
+   junk = NULL
 
 long* IntArrayAlloc(int size);
-#define IntArrayFree(array, size) SizeFree(array, size*sizeof(long))
+#define IntArrayFree(array, size) SizeFree(array, size * sizeof(long))
 
 #ifdef CLB_MEMORY_DEBUG
 void MemDebugPrintStats(FILE* out);
@@ -125,13 +133,21 @@ extern long secure_realloc_m_count;
 extern long secure_realloc_f_count;
 void MemFreeListPrint(FILE* out);
 #undef FREE
-#define FREE(junk) assert(junk); clb_free_count++; free(junk); junk=NULL
+#define FREE(junk)                                                             \
+   assert(junk);                                                               \
+   clb_free_count++;                                                           \
+   free(junk);                                                                 \
+   junk = NULL
 #endif
 
 #ifdef CLB_MEMORY_DEBUG2
 #undef FREE
-#define FREE(junk) assert(junk); clb_free_count++; printf("\nBlock %p F:\n", junk); \
-   free(junk); junk=NULL
+#define FREE(junk)                                                             \
+   assert(junk);                                                               \
+   clb_free_count++;                                                           \
+   printf("\nBlock %p F:\n", junk);                                            \
+   free(junk);                                                                 \
+   junk = NULL
 #endif
 
 /*-------------------------------------------------------------------------
@@ -164,7 +180,7 @@ static inline void* SizeMallocReal(size_t size)
 {
    Mem_p handle;
 
-   if(size>=MEM_ARR_MIN_INDEX && size<MEM_ARR_SIZE && free_mem_list[size])
+   if(size >= MEM_ARR_MIN_INDEX && size < MEM_ARR_SIZE && free_mem_list[size])
    {
       assert(free_mem_list[size]->test == MEM_FREE_PATTERN);
       assert((free_mem_list[size]->test = MEM_RSET_PATTERN, true));
@@ -175,14 +191,14 @@ static inline void* SizeMallocReal(size_t size)
    {
       handle = SecureMalloc(size);
 #ifndef NDEBUG
-      if(size>=MEM_ARR_MIN_INDEX && size<MEM_ARR_SIZE)
+      if(size >= MEM_ARR_MIN_INDEX && size < MEM_ARR_SIZE)
       {
          assert((handle->test = MEM_RSET_PATTERN, true));
       }
 #endif
    }
 #ifdef CLB_MEMORY_DEBUG
-   size_malloc_mem+=size;
+   size_malloc_mem += size;
    size_malloc_count++;
 #endif
 #ifdef CLB_MEMORY_DEBUG2
@@ -210,13 +226,13 @@ static inline void* SizeMallocReal(size_t size)
 
 static inline void SizeFreeReal(void* junk, size_t size)
 {
-   assert(junk!=NULL);
+   assert(junk != NULL);
 
 #ifdef CLB_MEMORY_DEBUG2
    printf("\nBlock %p D: size %zd\n", junk, size);
 #endif
 
-   if(size>=MEM_ARR_MIN_INDEX && size<MEM_ARR_SIZE)
+   if(size >= MEM_ARR_MIN_INDEX && size < MEM_ARR_SIZE)
    {
       ((Mem_p)junk)->next = free_mem_list[size];
       free_mem_list[size] = (Mem_p)junk;
@@ -229,7 +245,7 @@ static inline void SizeFreeReal(void* junk, size_t size)
    }
 
 #ifdef CLB_MEMORY_DEBUG
-   size_free_mem+=size;
+   size_free_mem += size;
    size_free_count++;
 #endif
 }

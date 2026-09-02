@@ -37,26 +37,25 @@ Changes
 
 typedef struct raw_spec_feature_cell
 {
-   long      sentence_no;
+   long sentence_no;
    long long term_size;
-   int       sig_size;
-   int       pred_size;
-   int       predc_size;
-   int       fun_size;
-   int       func_size;
-   long      conjecture_count;
-   long      hypothesis_count;
-   int       num_lambdas;
-   bool      has_choice_sym; // has a symobl in the signature of the type
+   int sig_size;
+   int pred_size;
+   int predc_size;
+   int fun_size;
+   int func_size;
+   long conjecture_count;
+   long hypothesis_count;
+   int num_lambdas;
+   bool has_choice_sym;      // has a symobl in the signature of the type
                              // that fits a monomorphized choice
-   int       num_of_definitions; // number of formulas tagged with definition
-   double    perc_of_form_defs; // percentage of which defines formulas
-   int       order; // order of signature
-   int       conj_order; // order of conjecture symbols
-   bool      app_var_lits; // do the formulas have applied variable literals
-   char      class[RAW_CLASS_SIZE];
-}RawSpecFeatureCell, *RawSpecFeature_p;
-
+   int num_of_definitions;   // number of formulas tagged with definition
+   double perc_of_form_defs; // percentage of which defines formulas
+   int order;                // order of signature
+   int conj_order;           // order of conjecture symbols
+   bool app_var_lits;        // do the formulas have applied variable literals
+   char class[RAW_CLASS_SIZE];
+} RawSpecFeatureCell, *RawSpecFeature_p;
 
 
 
@@ -77,8 +76,6 @@ void RawSpecFeaturesPrint(FILE* out, RawSpecFeature_p features);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

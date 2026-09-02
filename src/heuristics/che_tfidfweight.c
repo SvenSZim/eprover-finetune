@@ -64,39 +64,30 @@
 /*                         Internal Functions                          */
 /*---------------------------------------------------------------------*/
 
-static void tfidf_documents_add_term(
-   PDTree_p documents, 
-   Term_p term,
-   Clause_p clause, 
-   Eqn_p lit, 
-   EqnSide side, 
-   VarNormStyle var_norm,
-   VarBank_p vars)
+static void tfidf_documents_add_term(PDTree_p documents, Term_p term,
+                                     Clause_p clause, Eqn_p lit, EqnSide side,
+                                     VarNormStyle var_norm, VarBank_p vars)
 {
    ClausePos_p pos;
    Term_p copy;
 
-   copy = TermCopyNormalizeVars(vars,term,var_norm);
+   copy = TermCopyNormalizeVars(vars, term, var_norm);
 
-   pos          = ClausePosCellAlloc();
-   pos->clause  = clause;
+   pos = ClausePosCellAlloc();
+   pos->clause = clause;
    pos->literal = lit;
-   pos->side    = side;
-   pos->pos     = NULL;
-   PDTreeInsertTerm(documents,copy,pos,false);
+   pos->side = side;
+   pos->pos = NULL;
+   PDTreeInsertTerm(documents, copy, pos, false);
    ClausePosCellFree(pos);
 
    TermFree(copy);
 }
 
-static void tfidf_documents_add_subterms(
-   PDTree_p documents, 
-   Term_p term,
-   Clause_p clause, 
-   Eqn_p lit, 
-   EqnSide side, 
-   VarNormStyle var_norm,
-   VarBank_p vars)
+static void tfidf_documents_add_subterms(PDTree_p documents, Term_p term,
+                                         Clause_p clause, Eqn_p lit,
+                                         EqnSide side, VarNormStyle var_norm,
+                                         VarBank_p vars)
 {
    int i;
    PStack_p stack;
@@ -105,15 +96,16 @@ static void tfidf_documents_add_subterms(
    stack = PStackAlloc();
 
    PStackPushP(stack, term);
-   while (!PStackEmpty(stack))
+   while(!PStackEmpty(stack))
    {
       subterm = PStackPopP(stack);
-      if(TermIsFreeVar(subterm)) {
+      if(TermIsFreeVar(subterm))
+      {
          continue;
       }
-      tfidf_documents_add_term(
-         documents,subterm,clause,lit,side,var_norm,vars);
-      for(i=0; i<subterm->arity; i++)
+      tfidf_documents_add_term(documents, subterm, clause, lit, side, var_norm,
+                               vars);
+      for(i = 0; i < subterm->arity; i++)
       {
          PStackPushP(stack, subterm->args[i]);
       }
@@ -122,20 +114,17 @@ static void tfidf_documents_add_subterms(
    PStackFree(stack);
 }
 
-static void tfidf_documents_add_clause(
-   PDTree_p documents, 
-   Clause_p clause,
-   VarNormStyle var_norm,
-   VarBank_p vars)
+static void tfidf_documents_add_clause(PDTree_p documents, Clause_p clause,
+                                       VarNormStyle var_norm, VarBank_p vars)
 {
    Eqn_p lit;
 
-   for (lit=clause->literals; lit; lit=lit->next)
+   for(lit = clause->literals; lit; lit = lit->next)
    {
-      tfidf_documents_add_subterms(
-         documents,lit->lterm,clause,lit,LeftSide,var_norm,vars);
-      tfidf_documents_add_subterms(
-         documents,lit->rterm,clause,lit,RightSide,var_norm,vars);
+      tfidf_documents_add_subterms(documents, lit->lterm, clause, lit, LeftSide,
+                                   var_norm, vars);
+      tfidf_documents_add_subterms(documents, lit->rterm, clause, lit,
+                                   RightSide, var_norm, vars);
    }
 }
 
@@ -144,7 +133,7 @@ static void tfidf_init(TfIdfWeightParam_p data)
    Clause_p clause;
    Clause_p anchor;
 
-   if (data->eval_bank) 
+   if(data->eval_bank)
    {
       return;
    }
@@ -152,19 +141,20 @@ static void tfidf_init(TfIdfWeightParam_p data)
    data->eval_bank = TBAlloc(data->ocb->sig);
    data->documents = PDTreeAlloc(data->eval_bank);
    anchor = data->proofstate->axioms->anchor;
-   for (clause=anchor->succ; clause!=anchor; clause=clause->succ)
+   for(clause = anchor->succ; clause != anchor; clause = clause->succ)
    {
-      if(ClauseQueryTPTPType(clause)==CPTypeNegConjecture) {
-         TBInsertClauseTermsNormalized(
-            data->eval_bank,clause,data->var_norm,data->rel_terms);
-      }
-      else 
+      if(ClauseQueryTPTPType(clause) == CPTypeNegConjecture)
       {
-         tfidf_documents_add_clause(data->documents,clause,
-            data->var_norm,data->eval_bank->vars);
+         TBInsertClauseTermsNormalized(data->eval_bank, clause, data->var_norm,
+                                       data->rel_terms);
+      }
+      else
+      {
+         tfidf_documents_add_clause(data->documents, clause, data->var_norm,
+                                    data->eval_bank->vars);
       }
    }
-   
+
    data->eval_freqs = TBCountTermFreqs(data->eval_bank);
 }
 
@@ -177,20 +167,21 @@ static double tfidf_term_weight(Term_p term, TfIdfWeightParam_p data)
    PDTNode_p node;
    NumTree_p cell;
 
-   norm = TermCopyNormalizeVars(data->eval_bank->vars,term,data->var_norm);
-   repr = TBFindRepr(data->eval_bank,norm);
+   norm = TermCopyNormalizeVars(data->eval_bank->vars, term, data->var_norm);
+   repr = TBFindRepr(data->eval_bank, norm);
    cell = repr ? NumTreeFind(&data->eval_freqs, repr->entry_no) : NULL;
    tf = cell ? (cell->val1.i_val) : 0;
-   tf = (data->tf_fact*(tf-1))+1; // make tf=1 when tf_fact=0 ("disable tf")
+   tf =
+      (data->tf_fact * (tf - 1)) + 1; // make tf=1 when tf_fact=0 ("disable tf")
 
-   node = PDTreeMatchPrefix(data->documents,norm,&matched,&remains);
-   df = (remains==0)?node->ref_count:0;
+   node = PDTreeMatchPrefix(data->documents, norm, &matched, &remains);
+   df = (remains == 0) ? node->ref_count : 0;
 
-   idf = log((1+data->documents->clause_count)/(1+df));
-   tfidf = tf*idf; 
+   idf = log((1 + data->documents->clause_count) / (1 + df));
+   tfidf = tf * idf;
    TermFree(norm);
 
-   return 1/(1+tfidf);
+   return 1 / (1 + tfidf);
 }
 
 /*---------------------------------------------------------------------*/
@@ -230,12 +221,12 @@ TfIdfWeightParam_p TfIdfWeightParamAlloc(void)
 
 void TfIdfWeightParamFree(TfIdfWeightParam_p junk)
 {
-   if (junk->eval_bank) 
+   if(junk->eval_bank)
    {
       PDTreeFree(junk->documents);
       junk->documents = NULL;
       // hack to avoid assertion in TBFree: sig is freed later
-      junk->eval_bank->sig = NULL; 
+      junk->eval_bank->sig = NULL;
       TBFree(junk->eval_bank);
       junk->eval_bank = NULL;
       NumTreeFree(junk->eval_freqs);
@@ -256,11 +247,9 @@ void TfIdfWeightParamFree(TfIdfWeightParam_p junk)
 //
 /----------------------------------------------------------------------*/
 
-WFCB_p ConjectureTermTfIdfWeightParse(
-   Scanner_p in,  
-   OCB_p ocb, 
-   ProofState_p state)
-{  
+WFCB_p ConjectureTermTfIdfWeightParse(Scanner_p in, OCB_p ocb,
+                                      ProofState_p state)
+{
    int update_docs;
    double tf_fact;
    double pos_multiplier, max_term_multiplier, max_literal_multiplier;
@@ -282,7 +271,7 @@ WFCB_p ConjectureTermTfIdfWeightParse(
    AcceptInpTok(in, Comma);
    tf_fact = ParseFloat(in);
    AcceptInpTok(in, Comma);
-   
+
    ext_style = (TermWeightExtenstionStyle)ParseInt(in);
    AcceptInpTok(in, Comma);
    max_term_multiplier = ParseFloat(in);
@@ -291,19 +280,10 @@ WFCB_p ConjectureTermTfIdfWeightParse(
    AcceptInpTok(in, Comma);
    pos_multiplier = ParseFloat(in);
    AcceptInpTok(in, CloseBracket);
-   
+
    return ConjectureTermTfIdfWeightInit(
-      prio_fun, 
-      ocb,
-      state,
-      var_norm,
-      rel_terms,
-      update_docs,
-      tf_fact,
-      ext_style,
-      max_term_multiplier,
-      max_literal_multiplier,
-      pos_multiplier);
+      prio_fun, ocb, state, var_norm, rel_terms, update_docs, tf_fact,
+      ext_style, max_term_multiplier, max_literal_multiplier, pos_multiplier);
 }
 
 /*-----------------------------------------------------------------------
@@ -319,40 +299,27 @@ WFCB_p ConjectureTermTfIdfWeightParse(
 /----------------------------------------------------------------------*/
 
 WFCB_p ConjectureTermTfIdfWeightInit(
-   ClausePrioFun prio_fun, 
-   OCB_p ocb,
-   ProofState_p proofstate,
-   VarNormStyle var_norm,
-   RelatedTermSet rel_terms,
-   int update_docs,
-   double tf_fact,
-   TermWeightExtenstionStyle ext_style,
-   double max_term_multiplier,
-   double max_literal_multiplier,
+   ClausePrioFun prio_fun, OCB_p ocb, ProofState_p proofstate,
+   VarNormStyle var_norm, RelatedTermSet rel_terms, int update_docs,
+   double tf_fact, TermWeightExtenstionStyle ext_style,
+   double max_term_multiplier, double max_literal_multiplier,
    double pos_multiplier)
 {
    TfIdfWeightParam_p data = TfIdfWeightParamAlloc();
 
-   data->init_fun    = tfidf_init;
-   data->ocb         = ocb;
-   data->proofstate  = proofstate;
-   data->var_norm    = var_norm;
-   data->rel_terms   = rel_terms;
+   data->init_fun = tfidf_init;
+   data->ocb = ocb;
+   data->proofstate = proofstate;
+   data->var_norm = var_norm;
+   data->rel_terms = rel_terms;
    data->update_docs = update_docs;
-   data->eval_freqs  = NULL;
+   data->eval_freqs = NULL;
    data->twe = TermWeightExtensionAlloc(
-      max_term_multiplier,
-      max_literal_multiplier,
-      pos_multiplier,
-      ext_style,
-      (TermWeightFun)tfidf_term_weight,
-      data);
-   
-   return WFCBAlloc(
-      ConjectureTermTfIdfWeightCompute, 
-      prio_fun,
-      ConjectureTermTfIdfWeightExit, 
-      data);
+      max_term_multiplier, max_literal_multiplier, pos_multiplier, ext_style,
+      (TermWeightFun)tfidf_term_weight, data);
+
+   return WFCBAlloc(ConjectureTermTfIdfWeightCompute, prio_fun,
+                    ConjectureTermTfIdfWeightExit, data);
 }
 
 /*-----------------------------------------------------------------------
@@ -371,16 +338,16 @@ double ConjectureTermTfIdfWeightCompute(void* data, Clause_p clause)
 {
    double res;
    TfIdfWeightParam_p local;
-   
+
    local = data;
    local->init_fun(data);
 
    ClauseCondMarkMaximalTerms(local->ocb, clause);
    res = ClauseTermExtWeight(clause, local->twe);
-   if (local->update_docs) 
+   if(local->update_docs)
    {
-      tfidf_documents_add_clause(
-         local->documents,clause,local->var_norm,local->eval_bank->vars);
+      tfidf_documents_add_clause(local->documents, clause, local->var_norm,
+                                 local->eval_bank->vars);
    }
 
    return res;
@@ -401,7 +368,7 @@ double ConjectureTermTfIdfWeightCompute(void* data, Clause_p clause)
 void ConjectureTermTfIdfWeightExit(void* data)
 {
    TfIdfWeightParam_p junk = data;
-  
+
    TermWeightExtensionFree(junk->twe);
    TfIdfWeightParamFree(junk);
 }

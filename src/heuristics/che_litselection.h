@@ -37,19 +37,19 @@ typedef void (*LiteralSelectionFun)(OCB_p ocb, Clause_p clause);
 
 typedef struct litsel_name_fun_assoc_cell
 {
-   char*                name;
-   LiteralSelectionFun  fun;
-}LitSelNameFunAssocCell;
+   char* name;
+   LiteralSelectionFun fun;
+} LitSelNameFunAssocCell;
 
 typedef struct lit_eval_cell
 {
    Eqn_p literal;
-   bool  forbidden; /* Never select this; */
-   bool  exclusive; /* If this is selected, select no others */
-   int   w1; /* Lexicographically compared weights */
-   int   w2;
-   int   w3;
-}LitEvalCell, *LitEval_p;
+   bool forbidden; /* Never select this; */
+   bool exclusive; /* If this is selected, select no others */
+   int w1;         /* Lexicographically compared weights */
+   int w2;
+   int w3;
+} LitEvalCell, *LitEval_p;
 
 typedef void LitWeightFun(LitEval_p, Clause_p, void*);
 
@@ -57,12 +57,17 @@ typedef void LitWeightFun(LitEval_p, Clause_p, void*);
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define LitEvalInit(cell) \
-        {(cell)->forbidden = false;cell->exclusive=true;\
-        cell->w1=0;cell->w2=0;cell->w3=0;}
+#define LitEvalInit(cell)                                                      \
+   {                                                                           \
+      (cell)->forbidden = false;                                               \
+      cell->exclusive = true;                                                  \
+      cell->w1 = 0;                                                            \
+      cell->w2 = 0;                                                            \
+      cell->w3 = 0;                                                            \
+   }
 
 LiteralSelectionFun GetLitSelFun(char* name);
-char*               GetLitSelName(LiteralSelectionFun fun);
+char* GetLitSelName(LiteralSelectionFun fun);
 void LitSelAppendNames(DStr_p str);
 
 void SelectNoLiterals(OCB_p ocb, Clause_p clause);
@@ -252,8 +257,6 @@ void SelectCQIPrecWNTNp(OCB_p ocb, Clause_p clause);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

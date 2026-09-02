@@ -38,10 +38,10 @@
 
 typedef struct var_inst
 {
-   Term_p        variable;
-   PStack_p      alternatives;
+   Term_p variable;
+   PStack_p alternatives;
    PStackPointer position;
-}VarInstCell, *VarInst_p;
+} VarInstCell, *VarInst_p;
 
 /* For many variables, do the same */
 
@@ -49,7 +49,7 @@ typedef struct varset_inst
 {
    long size;
    VarInst_p cells;
-}VarSetInstCell, *VarSetInst_p;
+} VarSetInstCell, *VarSetInst_p;
 
 
 /* We represent a set of ground clauses in a special way, with
@@ -59,12 +59,12 @@ typedef struct varset_inst
 typedef enum
 {
    GCUNone = 0,
-   GCUPos  = 1,
-   GCUNeg  = 2,
-   GCUBoth = GCUPos|GCUNeg
-}GCUEncoding;
+   GCUPos = 1,
+   GCUNeg = 2,
+   GCUBoth = GCUPos | GCUNeg
+} GCUEncoding;
 
-#define DEFAULT_LIT_NO   4096
+#define DEFAULT_LIT_NO 4096
 #define DEFAULT_LIT_GROW 8192
 
 typedef enum
@@ -73,85 +73,81 @@ typedef enum
    cpl_lowmem,
    cpl_timeout,
    cpl_unknown
-}
-   GroundSetState;
+} GroundSetState;
 
 typedef struct ground_set_cell
 {
-   TB_p            lit_bank;  /* Only reference, not administered
+   TB_p lit_bank;    /* Only reference, not administered
                                  from here! */
-   long            max_literal; /* Maximal literal number */
-   long            unit_no;
-   GroundSetState  complete;    /* Is the proofstate complete? */
-   PDArray_p       units;       /* Wich ones are present? */
-   PDArray_p       unit_terms;  /* And how do they look? */
+   long max_literal; /* Maximal literal number */
+   long unit_no;
+   GroundSetState complete; /* Is the proofstate complete? */
+   PDArray_p units;         /* Wich ones are present? */
+   PDArray_p unit_terms;    /* And how do they look? */
    PropClauseSet_p non_units;
-}GroundSetCell, *GroundSet_p;
+} GroundSetCell, *GroundSet_p;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define VarSetInstCellAlloc()    (VarSetInstCell*)SizeMalloc(sizeof(VarSetInstCell))
+#define VarSetInstCellAlloc()                                                  \
+   (VarSetInstCell*)SizeMalloc(sizeof(VarSetInstCell))
 #define VarSetInstCellFree(junk) SizeFree(junk, sizeof(VarSetInstCell))
 
 VarSetInst_p VarSetInstAlloc(Clause_p clause);
-void         VarSetInstFree(VarSetInst_p junk);
+void VarSetInstFree(VarSetInst_p junk);
 
-VarSetInst_p VarSetConstrInstAlloc(LitOccTable_p p_table,
-                                   LitOccTable_p n_table, Clause_p
-                                   clause, PTree_p ground_terms);
+VarSetInst_p VarSetConstrInstAlloc(LitOccTable_p p_table, LitOccTable_p n_table,
+                                   Clause_p clause, PTree_p ground_terms);
 
 void VarSetConstrInstFree(VarSetInst_p junk);
 
-int  ClauseCmpByLen(const void* clause1, const void* clause2);
+int ClauseCmpByLen(const void* clause1, const void* clause2);
 bool EqnEqlitRecode(Eqn_p lit);
 bool ClauseEqlitRecode(Clause_p clause);
 long ClauseSetEqlitRecode(ClauseSet_p set);
 
 #define EqnLitCode(eq) ((eq)->lterm->entry_no)
 
-#define GroundSetCellAlloc()    (GroundSetCell*)SizeMalloc(sizeof(GroundSetCell))
+#define GroundSetCellAlloc() (GroundSetCell*)SizeMalloc(sizeof(GroundSetCell))
 #define GroundSetCellFree(junk) SizeFree(junk, sizeof(GroundSetCell))
 
-void        PrintDimacsHeader(FILE* out, long max_lit, long members);
-void        ClausePrintDimacs(FILE* out, Clause_p clause);
-void        ClauseSetPrintDimacs(FILE* out, ClauseSet_p set);
+void PrintDimacsHeader(FILE* out, long max_lit, long members);
+void ClausePrintDimacs(FILE* out, Clause_p clause);
+void ClauseSetPrintDimacs(FILE* out, ClauseSet_p set);
 GroundSet_p GroundSetAlloc(TB_p bank);
-void        GroundSetFree(GroundSet_p junk);
+void GroundSetFree(GroundSet_p junk);
 
-#define     GroundSetMembers(set) ((set)->unit_no+((set)->non_units->members))
+#define GroundSetMembers(set) ((set)->unit_no + ((set)->non_units->members))
 
-long        GroundSetMaxVar(GroundSet_p set);
+long GroundSetMaxVar(GroundSet_p set);
 
 /* Dimacs format provers oven cannot cope with empty clauses, so we
    print them as a set of two trivially complementary clauses */
-#define     GroundSetDimacsPrintMembers(set)                    \
-   (GroundSetMembers(set)+(set)->non_units->empty_clauses)
-#define     GroundSetLiterals(set) ((set)->unit_no+((set)->non_units->literals))
-bool        GroundSetInsert(GroundSet_p set, Clause_p clause);
-void        GroundSetPrint(FILE* out, GroundSet_p set);
-void        GroundSetPrintDimacs(FILE* out, GroundSet_p set);
+#define GroundSetDimacsPrintMembers(set)                                       \
+   (GroundSetMembers(set) + (set)->non_units->empty_clauses)
+#define GroundSetLiterals(set) ((set)->unit_no + ((set)->non_units->literals))
+bool GroundSetInsert(GroundSet_p set, Clause_p clause);
+void GroundSetPrint(FILE* out, GroundSet_p set);
+void GroundSetPrintDimacs(FILE* out, GroundSet_p set);
 
-bool        GroundSetUnitSimplifyClause(GroundSet_p set, Clause_p clause,
-                                        bool subsume, bool resolve);
+bool GroundSetUnitSimplifyClause(GroundSet_p set, Clause_p clause, bool subsume,
+                                 bool resolve);
 
-bool ClauseCreateGroundInstances(TB_p bank, Clause_p clause,
-                                 VarSetInst_p inst, GroundSet_p
-                                 groundset, bool subsume, bool
-                                 resolve, bool taut_check);
+bool ClauseCreateGroundInstances(TB_p bank, Clause_p clause, VarSetInst_p inst,
+                                 GroundSet_p groundset, bool subsume,
+                                 bool resolve, bool taut_check);
 
 bool ClauseSetCreateGroundInstances(TB_p bank, ClauseSet_p set,
-                                    GroundSet_p groundset, bool
-                                    subsume, bool resolve, bool
-                                    taut_check, long give_up);
+                                    GroundSet_p groundset, bool subsume,
+                                    bool resolve, bool taut_check,
+                                    long give_up);
 
 bool ClauseSetCreateConstrGroundInstances(TB_p bank, ClauseSet_p set,
-                                          GroundSet_p groundset, bool
-                                          subsume, bool resolve,
-                                          bool taut_check, long
-                                          give_up, long
-                                          just_one_instance);
+                                          GroundSet_p groundset, bool subsume,
+                                          bool resolve, bool taut_check,
+                                          long give_up, long just_one_instance);
 
 #endif
 

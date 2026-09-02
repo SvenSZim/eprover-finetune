@@ -33,9 +33,9 @@ Changes
 /*---------------------------------------------------------------------*/
 
 
-long  OutputLevel = 1;
+long OutputLevel = 1;
 FILE* GlobalOut;
-int   GlobalOutFD = STDOUT_FILENO;
+int GlobalOutFD = STDOUT_FILENO;
 
 /*---------------------------------------------------------------------*/
 /*                      Forward Declarations                           */
@@ -68,7 +68,7 @@ int   GlobalOutFD = STDOUT_FILENO;
 
 void OpenGlobalOut(char* outname)
 {
-   GlobalOut   = OutOpen(outname);
+   GlobalOut = OutOpen(outname);
    GlobalOutFD = fileno(GlobalOut);
 }
 
@@ -91,16 +91,16 @@ FILE* OutOpen(char* name)
 {
    FILE* out;
 
-   if(name && strcmp(name,"-")!= 0)
+   if(name && strcmp(name, "-") != 0)
    {
       VERBOUTARG("Output file is ", name);
 
-      if(! (out = fopen(name,"w")))
+      if(!(out = fopen(name, "w")))
       {
-    TmpErrno = errno; /* Save error number, the following call to
+         TmpErrno = errno; /* Save error number, the following call to
              sprintf() can theoretically alter  the
              value !*/
-    sprintf(ErrStr, "Cannot open file %s", name);
+         sprintf(ErrStr, "Cannot open file %s", name);
          SysError(ErrStr, FILE_ERROR);
       }
    }

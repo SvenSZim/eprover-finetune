@@ -87,7 +87,7 @@ static FPTree_p fpindex_alternative(FPTree_p index, FunCode f_code)
 
 static FPTree_p* fpindex_alternative_ref(FPTree_p index, FunCode f_code)
 {
-   void *res;
+   void* res;
 
    assert(index);
 
@@ -156,11 +156,10 @@ static bool fpindex_rek_delete(FPTree_p index, IndexFP_p key, int current)
    }
    if(current == key[0])
    {
-      return index->payload==NULL;
+      return index->payload == NULL;
    }
-   delete = fpindex_rek_delete(fpindex_alternative(index, key[current]),
-                               key,
-                               current+1);
+   delete = fpindex_rek_delete(fpindex_alternative(index, key[current]), key,
+                               current + 1);
    if(delete)
    {
       FPTree_p junk = fpindex_extract_alt(index, key[current]);
@@ -170,7 +169,7 @@ static bool fpindex_rek_delete(FPTree_p index, IndexFP_p key, int current)
       }
       FPTreeCellFree(junk);
    }
-   return index->count==0;
+   return index->count == 0;
 }
 
 
@@ -187,12 +186,11 @@ static bool fpindex_rek_delete(FPTree_p index, IndexFP_p key, int current)
 //
 /----------------------------------------------------------------------*/
 
-static long fp_index_rek_find_unif(FPTree_p index, IndexFP_p key,
-                                   Sig_p sig,
+static long fp_index_rek_find_unif(FPTree_p index, IndexFP_p key, Sig_p sig,
                                    int current, PStack_p collect)
 {
    FunCode i = 0;
-   long    res = 0;
+   long res = 0;
    IntMapIter_p iter;
    long iter_start;
    FPTree_p child;
@@ -213,24 +211,15 @@ static long fp_index_rek_find_unif(FPTree_p index, IndexFP_p key,
          - any variable
          - or a below_var position */
       res += fp_index_rek_find_unif(fpindex_alternative(index, key[current]),
-                                    key,
-                                    sig,
-                                    current+1,
-                                    collect);
+                                    key, sig, current + 1, collect);
       if(SigSymbolUnifiesWithVar(sig, key[current]))
-      {  /* Predicates can never unify with variables
+      { /* Predicates can never unify with variables
                -- not true in full HO case
                -- temproraily enabled  */
-         res += fp_index_rek_find_unif(fpindex_alternative(index, ANY_VAR),
-                                       key,
-                                       sig,
-                                       current+1,
-                                       collect);
+         res += fp_index_rek_find_unif(fpindex_alternative(index, ANY_VAR), key,
+                                       sig, current + 1, collect);
          res += fp_index_rek_find_unif(fpindex_alternative(index, BELOW_VAR),
-                                       key,
-                                       sig,
-                                       current+1,
-                                       collect);
+                                       key, sig, current + 1, collect);
       }
    }
    else if(key[current] == NOT_IN_TERM)
@@ -238,15 +227,9 @@ static long fp_index_rek_find_unif(FPTree_p index, IndexFP_p key,
       /* Position does not exist in t or any instance -> it cannot
        * unify with an existing position. */
       res += fp_index_rek_find_unif(fpindex_alternative(index, NOT_IN_TERM),
-                                    key,
-                                    sig,
-                                    current+1,
-                                    collect);
-      res += fp_index_rek_find_unif(fpindex_alternative(index, BELOW_VAR),
-                                    key,
-                                    sig,
-                                    current+1,
-                                    collect);
+                                    key, sig, current + 1, collect);
+      res += fp_index_rek_find_unif(fpindex_alternative(index, BELOW_VAR), key,
+                                    sig, current + 1, collect);
    }
    else if(key[current] == BELOW_VAR || key[current] == ANY_VAR)
    {
@@ -257,30 +240,21 @@ static long fp_index_rek_find_unif(FPTree_p index, IndexFP_p key,
          BELOW_VAR in the query term, the instantiation of X may not
          have the p. */
 
-      res += fp_index_rek_find_unif(fpindex_alternative(index, ANY_VAR),
-                                    key,
-                                    sig,
-                                    current+1,
-                                    collect);
-      res += fp_index_rek_find_unif(fpindex_alternative(index, BELOW_VAR),
-                                    key,
-                                    sig,
-                                    current+1,
-                                    collect);
+      res += fp_index_rek_find_unif(fpindex_alternative(index, ANY_VAR), key,
+                                    sig, current + 1, collect);
+      res += fp_index_rek_find_unif(fpindex_alternative(index, BELOW_VAR), key,
+                                    sig, current + 1, collect);
 
-      iter_start = key[current] == BELOW_VAR? 0:1;
+      iter_start = key[current] == BELOW_VAR ? 0 : 1;
       iter = IntMapIterAlloc(index->f_alternatives, iter_start, LONG_MAX);
-      while((child=IntMapIterNext(iter, &i)))
+      while((child = IntMapIterNext(iter, &i)))
       {
          assert(child);
 
-         if(i<=0 || SigSymbolUnifiesWithVar(sig, i))
+         if(i <= 0 || SigSymbolUnifiesWithVar(sig, i))
          {
-            res += fp_index_rek_find_unif(child,
-                                          key,
-                                          sig,
-                                          current+1,
-                                          collect);
+            res +=
+               fp_index_rek_find_unif(child, key, sig, current + 1, collect);
          }
       }
       IntMapIterFree(iter);
@@ -303,11 +277,11 @@ static long fp_index_rek_find_unif(FPTree_p index, IndexFP_p key,
 
 
 static long fp_index_rek_find_matchable(FPTree_p index, IndexFP_p key,
-                                        Sig_p sig,
-                                        int current, PStack_p collect)
+                                        Sig_p sig, int current,
+                                        PStack_p collect)
 {
    FunCode i = 0;
-   long    res = 0;
+   long res = 0;
    IntMapIter_p iter;
    long iter_start;
    FPTree_p child;
@@ -325,11 +299,9 @@ static long fp_index_rek_find_matchable(FPTree_p index, IndexFP_p key,
    {
       /* t|p is a function symbol, compatible with:
          - the same symbol  */
-      res += fp_index_rek_find_matchable(fpindex_alternative(index, key[current]),
-                                         key,
-                                         sig,
-                                         current+1,
-                                         collect);
+      res +=
+         fp_index_rek_find_matchable(fpindex_alternative(index, key[current]),
+                                     key, sig, current + 1, collect);
    }
    else if(key[current] == NOT_IN_TERM)
    {
@@ -337,11 +309,9 @@ static long fp_index_rek_find_matchable(FPTree_p index, IndexFP_p key,
          - it cannot match an existing position
          - It also cannot  match below-var (?), though, as instantiation can
          introduce new excluded positions */
-      res += fp_index_rek_find_matchable(fpindex_alternative(index, NOT_IN_TERM),
-                                         key,
-                                         sig,
-                                         current+1,
-                                         collect);
+      res +=
+         fp_index_rek_find_matchable(fpindex_alternative(index, NOT_IN_TERM),
+                                     key, sig, current + 1, collect);
       //res += fp_index_rek_find_matchable(fpindex_alternative(index, BELOW_VAR),
       //key,
       //sig,
@@ -358,30 +328,22 @@ static long fp_index_rek_find_matchable(FPTree_p index, IndexFP_p key,
          have the p. */
 
       res += fp_index_rek_find_matchable(fpindex_alternative(index, ANY_VAR),
-                                         key,
-                                         sig,
-                                         current+1,
-                                         collect);
+                                         key, sig, current + 1, collect);
       if(key[current] == BELOW_VAR)
       {
-         res += fp_index_rek_find_matchable(fpindex_alternative(index, BELOW_VAR),
-                                            key,
-                                            sig,
-                                            current+1,
-                                            collect);
+         res +=
+            fp_index_rek_find_matchable(fpindex_alternative(index, BELOW_VAR),
+                                        key, sig, current + 1, collect);
       }
-      iter_start = key[current] == BELOW_VAR? 0:1;
+      iter_start = key[current] == BELOW_VAR ? 0 : 1;
       iter = IntMapIterAlloc(index->f_alternatives, iter_start, LONG_MAX);
-      while((child=IntMapIterNext(iter, &i)))
+      while((child = IntMapIterNext(iter, &i)))
       {
          assert(child);
 
-         if(i<=0 || SigSymbolUnifiesWithVar(sig, i))
+         if(i <= 0 || SigSymbolUnifiesWithVar(sig, i))
          {
-            res += fp_index_rek_find_matchable(child,
-                                               key,
-                                               sig,
-                                               current+1,
+            res += fp_index_rek_find_matchable(child, key, sig, current + 1,
                                                collect);
          }
       }
@@ -407,9 +369,9 @@ static long fp_index_rek_find_matchable(FPTree_p index, IndexFP_p key,
 void fp_index_leaf_prt_size(FILE* out, PStack_p stack, FPTree_p leaf)
 {
    long tmp;
-   fprintf(out, COMCHAR" ");
+   fprintf(out, COMCHAR " ");
    PStackPrintInt(out, "%4ld.", stack);
-   tmp =  PObjTreeNodes(leaf->payload);
+   tmp = PObjTreeNodes(leaf->payload);
    fprintf(out, ":%ld terms\n", tmp);
 }
 
@@ -427,42 +389,34 @@ void fp_index_leaf_prt_size(FILE* out, PStack_p stack, FPTree_p leaf)
 //
 /----------------------------------------------------------------------*/
 
-static long fp_index_tree_print(FILE* out,
-                                FPTree_p index,
-                                PStack_p stack,
-                                FPLeafPrintFun prtfun,
-                                long *entries)
+static long fp_index_tree_print(FILE* out, FPTree_p index, PStack_p stack,
+                                FPLeafPrintFun prtfun, long* entries)
 {
    long res = 0, tmp;
    IntMapIter_p iter;
-   long         i=0;
-   FPTree_p    child;
+   long i = 0;
+   FPTree_p child;
 
    if(index->payload)
    {
       res++;
-      tmp =  PObjTreeNodes(index->payload);
+      tmp = PObjTreeNodes(index->payload);
       *entries += tmp;
       prtfun(out, stack, index);
    }
    if(index->f_alternatives)
    {
       iter = IntMapIterAlloc(index->f_alternatives, BELOW_VAR, LONG_MAX);
-      while((child=IntMapIterNext(iter, &i)))
+      while((child = IntMapIterNext(iter, &i)))
       {
          PStackPushInt(stack, i);
-         res+= fp_index_tree_print(out,
-                                   child,
-                                   stack,
-                                   prtfun,
-                                   entries);
+         res += fp_index_tree_print(out, child, stack, prtfun, entries);
          (void)PStackPopInt(stack);
       }
       IntMapIterFree(iter);
    }
    return res;
 }
-
 
 
 
@@ -482,9 +436,9 @@ static long fp_index_tree_print(FILE* out,
 long fp_index_tree_collect_distrib(FPTree_p index, PStack_p stack)
 {
    IntMapIter_p iter;
-   long         i = 0;
-   FPTree_p     child;
-   long         res = 1;
+   long i = 0;
+   FPTree_p child;
+   long res = 1;
 
    if(index->payload)
    {
@@ -493,10 +447,9 @@ long fp_index_tree_collect_distrib(FPTree_p index, PStack_p stack)
    if(index->f_alternatives)
    {
       iter = IntMapIterAlloc(index->f_alternatives, BELOW_VAR, LONG_MAX);
-      while((child=IntMapIterNext(iter, &i)))
+      while((child = IntMapIterNext(iter, &i)))
       {
-         res += fp_index_tree_collect_distrib(child,
-                                              stack);
+         res += fp_index_tree_collect_distrib(child, stack);
       }
       IntMapIterFree(iter);
    }
@@ -519,13 +472,13 @@ static char* fp_symbol(Sig_p sig, FunCode symbol)
 {
    switch(symbol)
    {
-   case BELOW_VAR:
+      case BELOW_VAR:
          return "B";
-   case ANY_VAR:
+      case ANY_VAR:
          return "A";
-   case NOT_IN_TERM:
+      case NOT_IN_TERM:
          return "N";
-   default:
+      default:
          return SigFindName(sig, symbol);
    }
 }
@@ -542,19 +495,19 @@ static char* fp_symbol(Sig_p sig, FunCode symbol)
 //
 /----------------------------------------------------------------------*/
 
-void fp_index_tree_print_node(FILE* out, FPTree_p index,
-                               PStack_p stack, Sig_p sig)
+void fp_index_tree_print_node(FILE* out, FPTree_p index, PStack_p stack,
+                              Sig_p sig)
 {
    DStr_p label = DStrAlloc();
    PStackPointer i;
    char* del = "";
    FunCode symbol;
 
-   for(i=0; i<PStackGetSP(stack); i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
       DStrAppendStr(label, del);
       del = ", ";
-      symbol = PStackElementInt(stack,i);
+      symbol = PStackElementInt(stack, i);
       DStrAppendStr(label, fp_symbol(sig, symbol));
    }
    fprintf(out, "   l%p [label=\"%s\"]\n", index, DStrView(label));
@@ -575,19 +528,19 @@ void fp_index_tree_print_node(FILE* out, FPTree_p index,
 //
 /----------------------------------------------------------------------*/
 
-void fp_index_tree_print_nodes(FILE* out, FPTree_p index,
-                               PStack_p stack, Sig_p sig)
+void fp_index_tree_print_nodes(FILE* out, FPTree_p index, PStack_p stack,
+                               Sig_p sig)
 {
    IntMapIter_p iter;
-   long         i = 0;
-   FPTree_p    child;
+   long i = 0;
+   FPTree_p child;
 
    fp_index_tree_print_node(out, index, stack, sig);
 
    if(index->f_alternatives)
    {
       iter = IntMapIterAlloc(index->f_alternatives, BELOW_VAR, LONG_MAX);
-      while((child=IntMapIterNext(iter, &i)))
+      while((child = IntMapIterNext(iter, &i)))
       {
          PStackPushInt(stack, i);
          fp_index_tree_print_nodes(out, child, stack, sig);
@@ -610,20 +563,20 @@ void fp_index_tree_print_nodes(FILE* out, FPTree_p index,
 //
 /----------------------------------------------------------------------*/
 
-void fp_index_tree_print_edges(FILE* out, FPTree_p index,
-                               PStack_p stack, Sig_p sig)
+void fp_index_tree_print_edges(FILE* out, FPTree_p index, PStack_p stack,
+                               Sig_p sig)
 {
    IntMapIter_p iter;
-   long         i = 0;
-   FPTree_p    child;
+   long i = 0;
+   FPTree_p child;
 
    if(index->f_alternatives)
    {
       iter = IntMapIterAlloc(index->f_alternatives, BELOW_VAR, LONG_MAX);
-      while((child=IntMapIterNext(iter, &i)))
+      while((child = IntMapIterNext(iter, &i)))
       {
-         fprintf(out, "   l%p -- l%p [label=%s]\n",
-                 index, child, fp_symbol(sig, i));
+         fprintf(out, "   l%p -- l%p [label=%s]\n", index, child,
+                 fp_symbol(sig, i));
          fp_index_tree_print_edges(out, child, stack, sig);
       }
       IntMapIterFree(iter);
@@ -645,13 +598,13 @@ void fp_index_tree_print_edges(FILE* out, FPTree_p index,
 void fp_index_collect_leaves(FPTree_p index, PStack_p result)
 {
    IntMapIter_p iter;
-   long         i = 0;
-   FPTree_p    child;
+   long i = 0;
+   FPTree_p child;
 
    if(index->f_alternatives)
    {
       iter = IntMapIterAlloc(index->f_alternatives, BELOW_VAR, LONG_MAX);
-      while((child=IntMapIterNext(iter, &i)))
+      while((child = IntMapIterNext(iter, &i)))
       {
          fp_index_collect_leaves(child, result);
       }
@@ -684,7 +637,7 @@ long fp_index_find_all(FPTree_p index, PStack_p collect)
    long res = 0;
 
    fp_index_collect_leaves(index, stack);
-   for(i=0; i<PStackGetSP(stack); i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
       FPTree_p leaf;
 
@@ -714,8 +667,8 @@ long fp_index_find_all(FPTree_p index, PStack_p collect)
 //
 /----------------------------------------------------------------------*/
 
-#define GET_SYMBOL_ARITY(sig, f_code) \
-   (((f_code) > 0)?SigFindArity((sig), (f_code)):0)
+#define GET_SYMBOL_ARITY(sig, f_code)                                          \
+   (((f_code) > 0) ? SigFindArity((sig), (f_code)) : 0)
 
 /*-----------------------------------------------------------------------
 //
@@ -739,17 +692,13 @@ long fp_index_find_all(FPTree_p index, PStack_p collect)
 //
 /----------------------------------------------------------------------*/
 
-long dt_index_rek_find_matchable(FPTree_p index,
-                                 IndexFP_p key,
-                                 Sig_p sig,
-                                 int current,
-                                 int skip_term,
-                                 PStack_p collect)
+long dt_index_rek_find_matchable(FPTree_p index, IndexFP_p key, Sig_p sig,
+                                 int current, int skip_term, PStack_p collect)
 {
    long res = 0;
    IntMapIter_p iter;
-   long         i = 0;
-   FPTree_p    child;
+   long i = 0;
+   FPTree_p child;
 
    if(!index)
    {
@@ -758,15 +707,12 @@ long dt_index_rek_find_matchable(FPTree_p index,
    if(skip_term)
    {
       iter = IntMapIterAlloc(index->f_alternatives, BELOW_VAR, LONG_MAX);
-      while((child=IntMapIterNext(iter, &i)))
+      while((child = IntMapIterNext(iter, &i)))
       {
          //printf("Branch (%d) %s\n", skip_term,i>0?SigFindName(sig, i):"X");
-         res += dt_index_rek_find_matchable(child,
-                                            key,
-                                            sig,
-                                            current,
-                                            skip_term-1+GET_SYMBOL_ARITY(sig,i),
-                                            collect);
+         res += dt_index_rek_find_matchable(
+            child, key, sig, current, skip_term - 1 + GET_SYMBOL_ARITY(sig, i),
+            collect);
       }
       IntMapIterFree(iter);
    }
@@ -778,17 +724,13 @@ long dt_index_rek_find_matchable(FPTree_p index,
    else if(key[current] == ANY_VAR)
    {
       iter = IntMapIterAlloc(index->f_alternatives, BELOW_VAR, LONG_MAX);
-      while((child=IntMapIterNext(iter, &i)))
+      while((child = IntMapIterNext(iter, &i)))
       {
-         if(i<=0 || SigSymbolUnifiesWithVar(sig, i))
+         if(i <= 0 || SigSymbolUnifiesWithVar(sig, i))
          {
             //printf("Branch (%d) %s\n", skip_term,i>0?SigFindName(sig, i):"X");
-            res += dt_index_rek_find_matchable(child,
-                                               key,
-                                               sig,
-                                               current+1,
-                                               GET_SYMBOL_ARITY(sig,i),
-                                               collect);
+            res += dt_index_rek_find_matchable(
+               child, key, sig, current + 1, GET_SYMBOL_ARITY(sig, i), collect);
          }
       }
       IntMapIterFree(iter);
@@ -797,12 +739,8 @@ long dt_index_rek_find_matchable(FPTree_p index,
    {
       child = fpindex_alternative(index, key[current]);
       //printf("Branch (%d) %s\n", skip_term, key[current]>0?SigFindName(sig,  key[current]):"X");
-      res = dt_index_rek_find_matchable(child,
-                                        key,
-                                        sig,
-                                        current+1,
-                                        0,
-                                        collect);
+      res =
+         dt_index_rek_find_matchable(child, key, sig, current + 1, 0, collect);
    }
    return res;
 }
@@ -822,18 +760,14 @@ long dt_index_rek_find_matchable(FPTree_p index,
 //
 /----------------------------------------------------------------------*/
 
-static long dt_index_rek_find_unifiable(FPTree_p index,
-                                        IndexFP_p key,
-                                        Sig_p sig,
-                                        int current,
-                                        int skip_term,
-                                        int skip_key,
-                                        PStack_p collect)
+static long dt_index_rek_find_unifiable(FPTree_p index, IndexFP_p key,
+                                        Sig_p sig, int current, int skip_term,
+                                        int skip_key, PStack_p collect)
 {
    long res = 0;
    IntMapIter_p iter;
-   long         i = 0;
-   FPTree_p    child;
+   long i = 0;
+   FPTree_p child;
 
    if(!index)
    {
@@ -842,27 +776,19 @@ static long dt_index_rek_find_unifiable(FPTree_p index,
    if(skip_term)
    {
       iter = IntMapIterAlloc(index->f_alternatives, BELOW_VAR, LONG_MAX);
-      while((child=IntMapIterNext(iter, &i)))
+      while((child = IntMapIterNext(iter, &i)))
       {
-         res += dt_index_rek_find_unifiable(child,
-                                            key,
-                                            sig,
-                                            current,
-                                            skip_term-1+GET_SYMBOL_ARITY(sig,i),
-                                            0,
-                                            collect);
+         res += dt_index_rek_find_unifiable(
+            child, key, sig, current, skip_term - 1 + GET_SYMBOL_ARITY(sig, i),
+            0, collect);
       }
       IntMapIterFree(iter);
    }
    else if(skip_key)
    {
-      res += dt_index_rek_find_unifiable(index,
-                                         key,
-                                         sig,
-                                         current+1,
-                                         0,
-                                         skip_key-1+GET_SYMBOL_ARITY(sig,key[current]),
-                                         collect);
+      res += dt_index_rek_find_unifiable(
+         index, key, sig, current + 1, 0,
+         skip_key - 1 + GET_SYMBOL_ARITY(sig, key[current]), collect);
    }
    else if(current == key[0])
    {
@@ -872,16 +798,12 @@ static long dt_index_rek_find_unifiable(FPTree_p index,
    else if(key[current] == ANY_VAR)
    {
       iter = IntMapIterAlloc(index->f_alternatives, BELOW_VAR, LONG_MAX);
-      while((child=IntMapIterNext(iter, &i)))
+      while((child = IntMapIterNext(iter, &i)))
       {
-         if(i<=0 || SigSymbolUnifiesWithVar(sig, i))
+         if(i <= 0 || SigSymbolUnifiesWithVar(sig, i))
          {
-            res += dt_index_rek_find_unifiable(child,
-                                               key,
-                                               sig,
-                                               current+1,
-                                               GET_SYMBOL_ARITY(sig,i),
-                                               0,
+            res += dt_index_rek_find_unifiable(child, key, sig, current + 1,
+                                               GET_SYMBOL_ARITY(sig, i), 0,
                                                collect);
          }
       }
@@ -890,25 +812,15 @@ static long dt_index_rek_find_unifiable(FPTree_p index,
    else
    {
       child = fpindex_alternative(index, key[current]);
-      res += dt_index_rek_find_unifiable(child,
-                                         key,
-                                         sig,
-                                         current+1,
-                                         0,
-                                         0,
+      res += dt_index_rek_find_unifiable(child, key, sig, current + 1, 0, 0,
                                          collect);
       if(key[current] <= 0 || SigSymbolUnifiesWithVar(sig, key[current]))
       {
          child = fpindex_alternative(index, ANY_VAR);
-         res += dt_index_rek_find_unifiable(child,
-                                            key,
-                                            sig,
-                                            current+1,
-                                            0,
+         res += dt_index_rek_find_unifiable(child, key, sig, current + 1, 0,
                                             GET_SYMBOL_ARITY(sig, key[current]),
                                             collect);
       }
-
    }
    return res;
 }
@@ -936,8 +848,8 @@ FPTree_p FPTreeAlloc(void)
    FPTree_p handle = FPTreeCellAlloc();
 
    handle->f_alternatives = NULL;
-   handle->count          = 0;
-   handle->payload        = NULL;
+   handle->count = 0;
+   handle->payload = NULL;
 
    return handle;
 }
@@ -958,8 +870,8 @@ FPTree_p FPTreeAlloc(void)
 void FPTreeFree(FPTree_p index, FPTreeFreeFun payload_free)
 {
    IntMapIter_p iter;
-   long         i;
-   FPTree_p    child;
+   long i;
+   FPTree_p child;
 
    if(index->payload)
    {
@@ -968,7 +880,7 @@ void FPTreeFree(FPTree_p index, FPTreeFreeFun payload_free)
    if(index->f_alternatives)
    {
       iter = IntMapIterAlloc(index->f_alternatives, BELOW_VAR, LONG_MAX);
-      while((child=IntMapIterNext(iter, &i)))
+      while((child = IntMapIterNext(iter, &i)))
       {
          assert(child);
          FPTreeFree(child, payload_free);
@@ -998,7 +910,7 @@ FPTree_p FPTreeFind(FPTree_p root, IndexFP_p key)
    long i;
    FPTree_p res = root;
 
-   for(i=1; (i<key[0]) && res; i++)
+   for(i = 1; (i < key[0]) && res; i++)
    {
       res = fpindex_alternative(res, key[i]);
    }
@@ -1024,7 +936,7 @@ FPTree_p FPTreeInsert(FPTree_p root, IndexFP_p key)
    long i, current;
    FPTree_p res = root, *pos;
 
-   for(i=1; (i<key[0]) && res; i++)
+   for(i = 1; (i < key[0]) && res; i++)
    {
       current = key[i];
 
@@ -1074,9 +986,7 @@ void FPTreeDelete(FPTree_p root, IndexFP_p key)
 //
 /----------------------------------------------------------------------*/
 
-long FPTreeFindUnifiable(FPTree_p root,
-                         IndexFP_p key,
-                         Sig_p sig,
+long FPTreeFindUnifiable(FPTree_p root, IndexFP_p key, Sig_p sig,
                          PStack_p collect)
 {
    long count = 0;
@@ -1099,9 +1009,7 @@ long FPTreeFindUnifiable(FPTree_p root,
 //
 /----------------------------------------------------------------------*/
 
-long FPTreeFindMatchable(FPTree_p root,
-                         IndexFP_p key,
-                         Sig_p sig,
+long FPTreeFindMatchable(FPTree_p root, IndexFP_p key, Sig_p sig,
                          PStack_p collect)
 {
    long count = 0;
@@ -1123,16 +1031,15 @@ long FPTreeFindMatchable(FPTree_p root,
 //
 /----------------------------------------------------------------------*/
 
-FPIndex_p FPIndexAlloc(FPIndexFunction fp_fun,
-                       Sig_p sig,
+FPIndex_p FPIndexAlloc(FPIndexFunction fp_fun, Sig_p sig,
                        FPTreeFreeFun payload_free)
 {
    FPIndex_p handle = FPIndexCellAlloc();
 
-   handle->fp_fun       = fp_fun;
-   handle->sig          = sig;
+   handle->fp_fun = fp_fun;
+   handle->sig = sig;
    handle->payload_free = payload_free;
-   handle->index        = FPTreeAlloc();
+   handle->index = FPTreeAlloc();
 
    return handle;
 }
@@ -1190,7 +1097,7 @@ FPTree_p FPIndexFind(FPIndex_p index, Term_p term)
 //
 /----------------------------------------------------------------------*/
 
-FPTree_p  FPIndexInsert(FPIndex_p index, Term_p term)
+FPTree_p FPIndexInsert(FPIndex_p index, Term_p term)
 {
    IndexFP_p key = index->fp_fun(term);
    FPTree_p res = FPTreeInsert(index->index, key);
@@ -1245,12 +1152,7 @@ long FPIndexFindUnifiable(FPIndex_p index, Term_p term, PStack_p collect)
 
    if(index->fp_fun == IndexDTCreate)
    {
-      res = dt_index_rek_find_unifiable(index->index,
-                                        key,
-                                        index->sig,
-                                        1,
-                                        0,
-                                        0,
+      res = dt_index_rek_find_unifiable(index->index, key, index->sig, 1, 0, 0,
                                         collect);
    }
    else
@@ -1289,18 +1191,13 @@ long FPIndexFindMatchable(FPIndex_p index, Term_p term, PStack_p collect)
       //printf("Query: ");
       //TermPrint(stdout, term, index->sig, DEREF_NEVER);
       //printf("\n");
-      res = dt_index_rek_find_matchable(index->index,
-                                        key,
-                                        index->sig,
-                                        1,
-                                        0,
+      res = dt_index_rek_find_matchable(index->index, key, index->sig, 1, 0,
                                         collect);
    }
    else
    {
 
       res = FPTreeFindMatchable(index->index, key, index->sig, collect);
-
    }
    IndexFPFree(key);
    PERF_CTR_EXIT(IndexMatchTimer);
@@ -1323,13 +1220,13 @@ long FPIndexFindMatchable(FPIndex_p index, Term_p term, PStack_p collect)
 
 void FPIndexDistribPrint(FILE* out, FPIndex_p index)
 {
-   long leaves, entries=0;
+   long leaves, entries = 0;
    PStack_p path = PStackAlloc();
 
    leaves = fp_index_tree_print(out, index->index, path, fp_index_leaf_prt_size,
                                 &entries);
-   fprintf(out, COMCHAR" %ld entries, %ld leaves, %f entries/leaf\n",
-           entries, leaves, (double)entries/leaves);
+   fprintf(out, COMCHAR " %ld entries, %ld leaves, %f entries/leaf\n", entries,
+           leaves, (double)entries / leaves);
 
    PStackFree(path);
 }
@@ -1350,14 +1247,15 @@ void FPIndexDistribPrint(FILE* out, FPIndex_p index)
 //
 /----------------------------------------------------------------------*/
 
-long FPIndexCollectDistrib(FPIndex_p index, long* leaves, double* avg, double* stddev)
+long FPIndexCollectDistrib(FPIndex_p index, long* leaves, double* avg,
+                           double* stddev)
 {
    long res;
    PStack_p dist_stack = PStackAlloc();
 
    res = fp_index_tree_collect_distrib(index->index, dist_stack);
 
-   *avg    = PStackComputeAverage(dist_stack, stddev);
+   *avg = PStackComputeAverage(dist_stack, stddev);
    *leaves = PStackGetSP(dist_stack);
    PStackFree(dist_stack);
 
@@ -1379,17 +1277,17 @@ long FPIndexCollectDistrib(FPIndex_p index, long* leaves, double* avg, double* s
 
 void FPIndexDistribDataPrint(FILE* out, FPIndex_p index)
 {
-   long   leaves = 0;
-   long   nodes  = 0;
-   double avg    = 0 ;
+   long leaves = 0;
+   long nodes = 0;
+   double avg = 0;
    double stddev = 0;
 
    if(index)
    {
       nodes = FPIndexCollectDistrib(index, &leaves, &avg, &stddev);
    }
-   fprintf(out, "%5ld nodes, %5ld leaves, %6.2f+/-%4.3f terms/leaf",
-           nodes, leaves, avg, stddev);
+   fprintf(out, "%5ld nodes, %5ld leaves, %6.2f+/-%4.3f terms/leaf", nodes,
+           leaves, avg, stddev);
 }
 
 /*-----------------------------------------------------------------------
@@ -1433,7 +1331,7 @@ long FPIndexCollectLeaves(FPIndex_p index, PStack_p result)
    PStackPointer sp = PStackGetSP(result);
 
    fp_index_collect_leaves(index->index, result);
-   return PStackGetSP(result)-sp;
+   return PStackGetSP(result) - sp;
 }
 
 
@@ -1460,7 +1358,7 @@ void FPIndexPrintDot(FILE* out, char* name, FPIndex_p index,
    fp_index_tree_print_edges(out, index->index, stack, sig);
 
    FPIndexCollectLeaves(index, stack);
-   for(i=0; i<PStackGetSP(stack); i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
       FPTree_p leaf;
 
@@ -1477,7 +1375,6 @@ void FPIndexPrintDot(FILE* out, char* name, FPIndex_p index,
 
    PStackFree(stack);
 }
-
 
 
 

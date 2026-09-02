@@ -55,8 +55,8 @@ typedef struct wfcbadmincell
 {
    PStack_p names;
    PStack_p wfcb_set;
-   long     anon_counter;
-}WFCBAdminCell, *WFCBAdmin_p;
+   long anon_counter;
+} WFCBAdminCell, *WFCBAdmin_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -64,22 +64,21 @@ typedef struct wfcbadmincell
 /*---------------------------------------------------------------------*/
 
 #define WFCBAdminCellAlloc() (WFCBAdminCell*)SizeMalloc(sizeof(WFCBAdminCell))
-#define WFCBAdminCellFree(junk)         SizeFree(junk, sizeof(WFCBAdminCell))
+#define WFCBAdminCellFree(junk) SizeFree(junk, sizeof(WFCBAdminCell))
 
 extern char* WeightFunParseFunNames[];
 
 WFCBAdmin_p WFCBAdminAlloc(void);
-void        WFCBAdminFree(WFCBAdmin_p junk);
-long        WFCBAdminAddWFCB(WFCBAdmin_p set, char* name, WFCB_p wfcb);
-WFCB_p      WFCBAdminFindWFCB(WFCBAdmin_p set, char* name);
+void WFCBAdminFree(WFCBAdmin_p junk);
+long WFCBAdminAddWFCB(WFCBAdmin_p set, char* name, WFCB_p wfcb);
+WFCB_p WFCBAdminFindWFCB(WFCBAdmin_p set, char* name);
 
 WeightFunParseFun GetWeightFunParseFun(char* name);
-WFCB_p      WeightFunParse(Scanner_p in, OCB_p ocb, ProofState_p
-             state);
-char*       WeightFunDefParse(WFCBAdmin_p set, Scanner_p in, OCB_p
-                ocb, ProofState_p state);
-long         WeightFunDefListParse(WFCBAdmin_p set, Scanner_p in,
-               OCB_p ocb, ProofState_p state);
+WFCB_p WeightFunParse(Scanner_p in, OCB_p ocb, ProofState_p state);
+char* WeightFunDefParse(WFCBAdmin_p set, Scanner_p in, OCB_p ocb,
+                        ProofState_p state);
+long WeightFunDefListParse(WFCBAdmin_p set, Scanner_p in, OCB_p ocb,
+                           ProofState_p state);
 
 
 #endif

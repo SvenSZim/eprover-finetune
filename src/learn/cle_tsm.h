@@ -37,43 +37,43 @@ typedef enum
    TSMTypeRecursive,
    TSMTypeRecurrent,
    TSMTypeRecurrentLocal
-}TSMType;
+} TSMType;
 
 typedef struct tsmadmincell
 {
-   TSMType        tsmtype;
-   TB_p           index_bank;      /* Where all the index terms go */
-   IndexType      index_type;
-   int            index_depth;
-   double         limit;
-   bool           local_limit;
-   double         eval_limit; /* Set a posteriory for classification */
-   double         unmapped_eval;
-   double         unmapped_weight;
-   struct tsmcell *tsm;
-   struct tsmcell *emptytsm;
-   PStack_p       tsmstack;
-   PStack_p       cachestack;
+   TSMType tsmtype;
+   TB_p index_bank; /* Where all the index terms go */
+   IndexType index_type;
+   int index_depth;
+   double limit;
+   bool local_limit;
+   double eval_limit; /* Set a posteriory for classification */
+   double unmapped_eval;
+   double unmapped_weight;
+   struct tsmcell* tsm;
+   struct tsmcell* emptytsm;
+   PStack_p tsmstack;
+   PStack_p cachestack;
    PatternSubst_p subst;
-}TSMAdminCell, *TSMAdmin_p;
+} TSMAdminCell, *TSMAdmin_p;
 
 
 typedef struct tsmcell
 {
    TSMAdmin_p admin;
    TSMIndex_p index;
-   long       maxindex;
-   PDArray_p  tsas;
-}TSMCell, *TSM_p;
+   long maxindex;
+   PDArray_p tsas;
+} TSMCell, *TSM_p;
 
 typedef struct tsacell
 {
    TSMAdmin_p admin;
    double eval_weight;
    double eval;
-   int    arity;
-   TSM_p  *arg_tsms;
-}TSACell, *TSA_p;
+   int arity;
+   TSM_p* arg_tsms;
+} TSACell, *TSA_p;
 
 
 #define TSM_MAX_TERMTOP 5
@@ -84,52 +84,48 @@ typedef struct tsacell
 
 extern char* TSMTypeNames[];
 
-#define       GetTSMType(name) StringIndex((name), TSMTypeNames)
+#define GetTSMType(name) StringIndex((name), TSMTypeNames)
 
-#define       TSMEvalNormalize(eval, limit) (((eval) < (limit))?-1:1)
+#define TSMEvalNormalize(eval, limit) (((eval) < (limit)) ? -1 : 1)
 
-double        TSMRemainderEntropy(PDArray_p partition, long *parts,
-                                  double limit, long max_index);
-double        TSMFlatAnnoSetEntropy(FlatAnnoSet_p set, double limit);
-long          TSMPartitionSet(PDArray_p partition, TSMIndex_p index,
-                              FlatAnnoSet_p set, PDArray_p cache);
+double TSMRemainderEntropy(PDArray_p partition, long* parts, double limit,
+                           long max_index);
+double TSMFlatAnnoSetEntropy(FlatAnnoSet_p set, double limit);
+long TSMPartitionSet(PDArray_p partition, TSMIndex_p index, FlatAnnoSet_p set,
+                     PDArray_p cache);
 
-IndexType     TSMFindOptimalIndex(TSMAdmin_p admin, FlatAnnoSet_p set,
-                                  long *depth, IndexType indextype,
-                                  double limit);
+IndexType TSMFindOptimalIndex(TSMAdmin_p admin, FlatAnnoSet_p set, long* depth,
+                              IndexType indextype, double limit);
 
-long          TSMCreateSubtermSet(FlatAnnoSet_p set, FlatAnnoTerm_p
-                                  list, int sel);
-double        TSMFindPartLimit(FlatAnnoSet_p set, double part);
+long TSMCreateSubtermSet(FlatAnnoSet_p set, FlatAnnoTerm_p list, int sel);
+double TSMFindPartLimit(FlatAnnoSet_p set, double part);
 
 #define TSMAdminCellAlloc() (TSMAdminCell*)SizeMalloc(sizeof(TSMAdminCell))
 #define TSMAdminCellFree(junk) SizeFree(junk, sizeof(TSMAdminCell))
 
 TSMAdmin_p TSMAdminAlloc(Sig_p sig, TSMType type);
-void       TSMAdminFree(TSMAdmin_p junk);
+void TSMAdminFree(TSMAdmin_p junk);
 
 #define TSMCellAlloc() (TSMCell*)SizeMalloc(sizeof(TSMCell))
 #define TSMCellFree(junk) SizeFree(junk, sizeof(TSMCell))
 
-void TSMAdminBuildTSM(TSMAdmin_p admin, FlatAnnoSet_p set, IndexType
-                      type, int depth, PatternSubst_p subst);
-TSM_p   TSMCreate(TSMAdmin_p admin, FlatAnnoSet_p set);
-void    TSMFree(TSM_p tsm);
+void TSMAdminBuildTSM(TSMAdmin_p admin, FlatAnnoSet_p set, IndexType type,
+                      int depth, PatternSubst_p subst);
+TSM_p TSMCreate(TSMAdmin_p admin, FlatAnnoSet_p set);
+void TSMFree(TSM_p tsm);
 
 #define TSACellAlloc() (TSACell*)SizeMalloc(sizeof(TSACell))
 #define TSACellFree(junk) SizeFree(junk, sizeof(TSACell))
 
-TSA_p   TSACreate(TSMAdmin_p admin, FlatAnnoTerm_p list);
-void    TSAFree(TSA_p tsa);
+TSA_p TSACreate(TSMAdmin_p admin, FlatAnnoTerm_p list);
+void TSAFree(TSA_p tsa);
 
-double  TSMEvalTerm(TSMAdmin_p admin, Term_p term, PatternSubst_p
-                    subst);
-double  TSMComputeClassificationLimit(TSMAdmin_p admin,  FlatAnnoSet_p
-                                      set);
-double TSMComputeAverageEval(TSMAdmin_p admin,  FlatAnnoSet_p set);
+double TSMEvalTerm(TSMAdmin_p admin, Term_p term, PatternSubst_p subst);
+double TSMComputeClassificationLimit(TSMAdmin_p admin, FlatAnnoSet_p set);
+double TSMComputeAverageEval(TSMAdmin_p admin, FlatAnnoSet_p set);
 
-void    TSMPrintFlat(FILE* out, TSM_p tsm);
-void    TSMPrintRek(FILE* out, TSMAdmin_p admin, TSM_p tsm, int depth);
+void TSMPrintFlat(FILE* out, TSM_p tsm);
+void TSMPrintRek(FILE* out, TSMAdmin_p admin, TSM_p tsm, int depth);
 
 #endif
 

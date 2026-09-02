@@ -43,7 +43,7 @@ WFCB_p FIFOEvalParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double FIFOEvalCompute(void* data, Clause_p clause);
 
-void   FIFOEvalExit(void* data);
+void FIFOEvalExit(void* data);
 
 
 #endif
@@ -51,8 +51,6 @@ void   FIFOEvalExit(void* data);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

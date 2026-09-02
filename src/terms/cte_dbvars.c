@@ -55,8 +55,9 @@ Term_p mk_db(FunCode db_idx, Type_p type)
    assert(type);
 
    Term_p var = TermDefaultCellAlloc();
-   TermCellSetProp(var, TPIsShared|TPIsDBVar|TPHasDBSubterm
-                        |(TypeIsArrow(type)?TPHasEtaExpandableSubterm:0));
+   TermCellSetProp(var,
+                   TPIsShared | TPIsDBVar | TPHasDBSubterm |
+                      (TypeIsArrow(type) ? TPHasEtaExpandableSubterm : 0));
 
    var->weight = DEFAULT_FWEIGHT;
    var->v_count = 0;
@@ -90,7 +91,7 @@ Term_p _RequestDBVar(DBVarBank_p db_bank, Type_p type, long db_index)
 {
    assert(db_index >= 0);
    assert(type->type_uid != INVALID_TYPE_UID);
-   
+
    IntMap_p* typemap_ref = (IntMap_p*)IntMapGetRef(db_bank, db_index);
    if(!*typemap_ref)
    {
@@ -98,7 +99,7 @@ Term_p _RequestDBVar(DBVarBank_p db_bank, Type_p type, long db_index)
    }
 
    IntMap_p typemap = *typemap_ref;
-   Term_p *term_ref = (Term_p*)IntMapGetRef(typemap, type->type_uid);
+   Term_p* term_ref = (Term_p*)IntMapGetRef(typemap, type->type_uid);
    if(!*term_ref)
    {
       *term_ref = mk_db(db_index, type);

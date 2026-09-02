@@ -31,71 +31,57 @@
 
 typedef struct termweightparamcell
 {
-   OCB_p        ocb;
+   OCB_p ocb;
    ProofState_p proofstate;
 
    VarNormStyle var_norm;
    RelatedTermSet rel_terms;
 
-   TB_p   eval_bank;
+   TB_p eval_bank;
    NumTree_p eval_freqs;
-   long   vweight;
-   long   fweight;
-   long   cweight;
-   long   pweight;
-   long   conj_fweight;
-   long   conj_cweight;
-   long   conj_pweight;
+   long vweight;
+   long fweight;
+   long cweight;
+   long pweight;
+   long conj_fweight;
+   long conj_cweight;
+   long conj_pweight;
 
    TermWeightExtension_p twe;
-   void   (*init_fun)(struct termweightparamcell*);
-}TermWeightParamCell, *TermWeightParam_p;
+   void (*init_fun)(struct termweightparamcell*);
+} TermWeightParamCell, *TermWeightParam_p;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define TermWeightParamCellAlloc() (TermWeightParamCell*) \
-        SizeMalloc(sizeof(TermWeightParamCell))
-#define TermWeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(TermWeightParamCell))
+#define TermWeightParamCellAlloc()                                             \
+   (TermWeightParamCell*)SizeMalloc(sizeof(TermWeightParamCell))
+#define TermWeightParamCellFree(junk)                                          \
+   SizeFree(junk, sizeof(TermWeightParamCell))
 
 TermWeightParam_p TermWeightParamAlloc(void);
-void              TermWeightParamFree(TermWeightParam_p junk);
+void TermWeightParamFree(TermWeightParam_p junk);
 
 
-WFCB_p ConjectureRelativeTermWeightParse(
-   Scanner_p in, 
-   OCB_p ocb, 
-   ProofState_p state);
+WFCB_p ConjectureRelativeTermWeightParse(Scanner_p in, OCB_p ocb,
+                                         ProofState_p state);
 
 WFCB_p ConjectureRelativeTermWeightInit(
-   ClausePrioFun prio_fun, 
-   OCB_p ocb,
-   ProofState_p proofstate,
-   VarNormStyle var_norm,
-   RelatedTermSet rel_terms,
-   long   vweight,
-   long   fweight,
-   long   cweight,
-   long   pweight,
-   long   conj_fweight,
-   long   conj_cweight,
-   long   conj_pweight,
-   TermWeightExtenstionStyle ext_style,
-   double max_term_multiplier,
-   double max_literal_multiplier,
+   ClausePrioFun prio_fun, OCB_p ocb, ProofState_p proofstate,
+   VarNormStyle var_norm, RelatedTermSet rel_terms, long vweight, long fweight,
+   long cweight, long pweight, long conj_fweight, long conj_cweight,
+   long conj_pweight, TermWeightExtenstionStyle ext_style,
+   double max_term_multiplier, double max_literal_multiplier,
    double pos_multiplier);
 
 double ConjectureRelativeTermWeightCompute(void* data, Clause_p clause);
 
 void ConjectureRelativeTermWeightExit(void* data);
 
-void TBInsertClauseTermsNormalized(
-   TB_p bank, 
-   Clause_p clause, 
-   VarNormStyle var_norm, 
-   RelatedTermSet rel_terms);
+void TBInsertClauseTermsNormalized(TB_p bank, Clause_p clause,
+                                   VarNormStyle var_norm,
+                                   RelatedTermSet rel_terms);
 
 #endif
 

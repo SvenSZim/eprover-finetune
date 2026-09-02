@@ -37,11 +37,11 @@ Changes
 
 typedef struct clause_info_cell
 {
-   char *name;   /* In the input file, if any */
-   char *source; /* File name, if any */
+   char* name;   /* In the input file, if any */
+   char* source; /* File name, if any */
    long line;
    long column;
-}ClauseInfoCell, *ClauseInfo_p;
+} ClauseInfoCell, *ClauseInfo_p;
 
 
 
@@ -49,21 +49,22 @@ typedef struct clause_info_cell
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define ClauseInfoCellAlloc()    (ClauseInfoCell*)SizeMalloc(sizeof(ClauseInfoCell))
+#define ClauseInfoCellAlloc()                                                  \
+   (ClauseInfoCell*)SizeMalloc(sizeof(ClauseInfoCell))
 #define ClauseInfoCellFree(junk) SizeFree(junk, sizeof(ClauseInfoCell))
 
 ClauseInfo_p ClauseInfoAlloc(char* name, char* source, long line, long column);
-#define      ClauseInfoAllocEmpty() ClauseInfoAlloc(NULL, NULL, -1, -1)
-void         ClauseInfoFree(ClauseInfo_p info);
-void         ClauseSourceInfoPrint(FILE* out, ClauseInfo_p info,
-                                   char *inf_lit, char* delim);
-#define ClauseSourceInfoPrintTSTP(out, info) \
-        ClauseSourceInfoPrint((out), (info), "file", "'")
+#define ClauseInfoAllocEmpty() ClauseInfoAlloc(NULL, NULL, -1, -1)
+void ClauseInfoFree(ClauseInfo_p info);
+void ClauseSourceInfoPrint(FILE* out, ClauseInfo_p info, char* inf_lit,
+                           char* delim);
+#define ClauseSourceInfoPrintTSTP(out, info)                                   \
+   ClauseSourceInfoPrint((out), (info), "file", "'")
 
-#define ClauseSourceInfoPrintPCL(out, info) \
-        ClauseSourceInfoPrint((out), (info), "initial", "\"")
-long    ClauseInfoGetIdNameSpace(ClauseInfo_p info);
-long    ClauseInfoGetIdCounter(ClauseInfo_p info);
+#define ClauseSourceInfoPrintPCL(out, info)                                    \
+   ClauseSourceInfoPrint((out), (info), "initial", "\"")
+long ClauseInfoGetIdNameSpace(ClauseInfo_p info);
+long ClauseInfoGetIdCounter(ClauseInfo_p info);
 
 
 #endif

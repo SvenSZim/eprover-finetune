@@ -35,9 +35,9 @@ Changes
 typedef struct formula_set_cell
 {
    WFormula_p anchor;
-   long       members;
-   DStr_p     identifier;
-}FormulaSetCell, *FormulaSet_p;
+   long members;
+   DStr_p identifier;
+} FormulaSetCell, *FormulaSet_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -45,50 +45,48 @@ typedef struct formula_set_cell
 /*---------------------------------------------------------------------*/
 
 
-#define FormulaSetCellAlloc()    (FormulaSetCell*)SizeMalloc(sizeof(FormulaSetCell))
+#define FormulaSetCellAlloc()                                                  \
+   (FormulaSetCell*)SizeMalloc(sizeof(FormulaSetCell))
 #define FormulaSetCellFree(junk) SizeFree(junk, sizeof(FormulaSetCell))
 
 FormulaSet_p FormulaSetAlloc(void);
-void         FormulaSetFreeFormulas(FormulaSet_p set);
-void         FormulaSetFree(FormulaSet_p set);
-#define      FormulaSetCardinality(set) ((set)->members)
-#define      FormulaSetEmpty(set)\
-             ((set)->anchor->succ == (set)->anchor)
-long         FormulaSetStackCardinality(PStack_p stack);
-void         FormulaSetGCMarkCells(FormulaSet_p set);
-void         FormulaSetMarkPolarity(FormulaSet_p set);
-void         FormulaSetInsert(FormulaSet_p set, WFormula_p newform);
-void         FormulaSetReplace(WFormula_p form, WFormula_p newform);
-long         FormulaSetInsertSet(FormulaSet_p set, FormulaSet_p from);
-WFormula_p   FormulaSetExtractEntry(WFormula_p form);
-WFormula_p   FormulaSetExtractFirst(FormulaSet_p set);
-#define      FormulaSetMoveFormula(set, form) \
-             FormulaSetExtractEntry(form);FormulaSetInsert((set), (form))
+void FormulaSetFreeFormulas(FormulaSet_p set);
+void FormulaSetFree(FormulaSet_p set);
+#define FormulaSetCardinality(set) ((set)->members)
+#define FormulaSetEmpty(set) ((set)->anchor->succ == (set)->anchor)
+long FormulaSetStackCardinality(PStack_p stack);
+void FormulaSetGCMarkCells(FormulaSet_p set);
+void FormulaSetMarkPolarity(FormulaSet_p set);
+void FormulaSetInsert(FormulaSet_p set, WFormula_p newform);
+void FormulaSetReplace(WFormula_p form, WFormula_p newform);
+long FormulaSetInsertSet(FormulaSet_p set, FormulaSet_p from);
+WFormula_p FormulaSetExtractEntry(WFormula_p form);
+WFormula_p FormulaSetExtractFirst(FormulaSet_p set);
+#define FormulaSetMoveFormula(set, form)                                       \
+   FormulaSetExtractEntry(form);                                               \
+   FormulaSetInsert((set), (form))
 
-int          FormulaConjectureOrder(FormulaSet_p set);
+int FormulaConjectureOrder(FormulaSet_p set);
 
-void         FormulaSetDeleteEntry(WFormula_p form);
-bool         FormulaSetIsUntyped(FormulaSet_p set);
+void FormulaSetDeleteEntry(WFormula_p form);
+bool FormulaSetIsUntyped(FormulaSet_p set);
 
-void         FormulaSetPrint(FILE* out, FormulaSet_p set,
-                             bool fullterms);
-void         FormulaSetPrettyPrintTSTP(FILE* out, FormulaSet_p set, bool fullterms);
-bool         FormulaSetHasInterpretedSymbol(FormulaSet_p set);
-long         FormulaSetSplitConjectures(FormulaSet_p set,
-                                        PList_p conjectures,
-                                        PList_p rest);
+void FormulaSetPrint(FILE* out, FormulaSet_p set, bool fullterms);
+void FormulaSetPrettyPrintTSTP(FILE* out, FormulaSet_p set, bool fullterms);
+bool FormulaSetHasInterpretedSymbol(FormulaSet_p set);
+long FormulaSetSplitConjectures(FormulaSet_p set, PList_p conjectures,
+                                PList_p rest);
 
-long long    FormulaSetStandardWeight(FormulaSet_p set);
-long         FormulaSetCountConjectures(FormulaSet_p set, long* hypos);
-void         FormulaStackCondSetType(PStack_p stack, FormulaProperties type);
-long         FormulaSetCollectFCode(FormulaSet_p set, FunCode f_code,
-                                    PStack_p result);
+long long FormulaSetStandardWeight(FormulaSet_p set);
+long FormulaSetCountConjectures(FormulaSet_p set, long* hypos);
+void FormulaStackCondSetType(PStack_p stack, FormulaProperties type);
+long FormulaSetCollectFCode(FormulaSet_p set, FunCode f_code, PStack_p result);
 
 void FormulaSetAppEncode(FILE* out, FormulaSet_p set);
 void FormulaSetDefinitionStatistics(FormulaSet_p orig, FormulaSet_p arch,
                                     TB_p bank, int* num_defs,
-                                    double* percentage_form_defs,
-                                    int* num_lams, bool* app_var_lits);
+                                    double* percentage_form_defs, int* num_lams,
+                                    bool* app_var_lits);
 
 
 #endif

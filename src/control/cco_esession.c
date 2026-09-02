@@ -60,7 +60,7 @@ ESession_p ESessionAlloc(int sock)
 {
    ESession_p handle = ESessionCellAlloc();
 
-   handle->state   = ESNoState;
+   handle->state = ESNoState;
    handle->channel = TCPChannelAlloc(sock);
    handle->running = NULL;
 
@@ -104,17 +104,15 @@ void ESessionFree(ESession_p junk)
 //
 /----------------------------------------------------------------------*/
 
-int ESessionInitFDSet(ESession_p session,
-                     fd_set *rd_fds,
-                     fd_set *wr_fds)
+int ESessionInitFDSet(ESession_p session, fd_set* rd_fds, fd_set* wr_fds)
 {
    int tmp, max_fd;
 
-   if(session->state==ESNoState || session->state==ESStale)
+   if(session->state == ESNoState || session->state == ESStale)
    {
       return 0;
    }
-   assert(session->channel->sock >=0);
+   assert(session->channel->sock >= 0);
 
    max_fd = session->channel->sock;
 
@@ -144,9 +142,7 @@ int ESessionInitFDSet(ESession_p session,
 //
 /----------------------------------------------------------------------*/
 
-void ESessionDoIO(ESession_p session,
-                  fd_set *rd_fds,
-                  fd_set *wr_fds)
+void ESessionDoIO(ESession_p session, fd_set* rd_fds, fd_set* wr_fds)
 {
    MsgStatus res;
 
@@ -154,29 +150,29 @@ void ESessionDoIO(ESession_p session,
    {
       /* Do I/O for the controlled processes */
    }
-   if(session->state==ESNoState || session->state==ESStale)
+   if(session->state == ESNoState || session->state == ESStale)
    {
       return;
    }
-   assert(session->channel->sock >=0);
+   assert(session->channel->sock >= 0);
    if(FD_ISSET(session->channel->sock, rd_fds))
    {
       res = TCPChannelRead(session->channel);
       switch(res)
       {
-      case NWConnClosed:
-      case NWError:
+         case NWConnClosed:
+         case NWError:
             TCPChannelClose(session->channel);
             session->state = ESStale;
             break;
-      case NWSuccess:
+         case NWSuccess:
             TCPChannelSendStr(session->channel, "wait");
             break;
-      default:
+         default:
             break;
       }
    }
-   if(session->state==ESNoState || session->state==ESStale)
+   if(session->state == ESNoState || session->state == ESStale)
    {
       return;
    }
@@ -185,12 +181,12 @@ void ESessionDoIO(ESession_p session,
       res = TCPChannelWrite(session->channel);
       switch(res)
       {
-      case NWConnClosed:
-      case NWError:
+         case NWConnClosed:
+         case NWError:
             TCPChannelClose(session->channel);
             session->state = ESStale;
             break;
-      default:
+         default:
             break;
       }
    }
@@ -212,7 +208,7 @@ void ESessionDoIO(ESession_p session,
 void ESessionProcessCmds(ESession_p session)
 {
    TCPMsg_p msg;
-   char     *str;
+   char* str;
 
    while(TCPChannelHasInMsg(session->channel))
    {

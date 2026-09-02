@@ -51,10 +51,10 @@
 
 double sim_eqn_weight(Eqn_p eqn, SimParam_p parms)
 {
-   double   clash_weight = 0.0;
+   double clash_weight = 0.0;
    PStack_p stack = PStackAlloc();
-   Term_p   lside, rside;
-   int      i;
+   Term_p lside, rside;
+   int i;
 
    lside = eqn->lterm;
    rside = eqn->rterm;
@@ -68,7 +68,7 @@ double sim_eqn_weight(Eqn_p eqn, SimParam_p parms)
 
       if(lside->f_code == rside->f_code)
       {
-         for(i=0; i<lside->arity; i++)
+         for(i = 0; i < lside->arity; i++)
          {
             PStackPushP(stack, lside->args[i]);
             PStackPushP(stack, rside->args[i]);
@@ -96,7 +96,7 @@ double sim_eqn_weight(Eqn_p eqn, SimParam_p parms)
             else
             {
                clash_weight += parms->term_term_clash *
-                  (TermWeight(lside, 1, 1)+TermWeight(rside, 1, 1));
+                  (TermWeight(lside, 1, 1) + TermWeight(rside, 1, 1));
             }
          }
       }
@@ -120,15 +120,16 @@ double sim_eqn_weight(Eqn_p eqn, SimParam_p parms)
 
 double sim_weight(Clause_p clause, SimParam_p parms)
 {
-   Eqn_p  handle = clause->literals;
-   double res    = 0.0;
+   Eqn_p handle = clause->literals;
+   double res = 0.0;
 
    while(handle)
    {
       res += sim_eqn_weight(handle, parms);
       handle = handle->next;
    }
-   return res*5+ClauseWeight(clause, 1, 1, 1, 1, 2, parms->app_var_mult, false);
+   return res * 5 +
+      ClauseWeight(clause, 1, 1, 1, 1, 2, parms->app_var_mult, false);
 }
 
 /*---------------------------------------------------------------------*/
@@ -148,18 +149,18 @@ double sim_weight(Clause_p clause, SimParam_p parms)
 //
 /----------------------------------------------------------------------*/
 
-WFCB_p SimWeightInit(ClausePrioFun prio_fun, double equal_weight, double
-                     var_var_clash, double var_term_clash, double
-                     term_term_clash, double app_var_mult)
+WFCB_p SimWeightInit(ClausePrioFun prio_fun, double equal_weight,
+                     double var_var_clash, double var_term_clash,
+                     double term_term_clash, double app_var_mult)
 {
    SimParam_p data = SimParamCellAlloc();
 
-   data->equal_weight    = equal_weight;
-   data->equal_weight    = equal_weight;
-   data->var_var_clash   = var_var_clash;
-   data->var_term_clash  = var_term_clash;
+   data->equal_weight = equal_weight;
+   data->equal_weight = equal_weight;
+   data->var_var_clash = var_var_clash;
+   data->var_term_clash = var_term_clash;
    data->term_term_clash = term_term_clash;
-   data->app_var_mult    = app_var_mult;
+   data->app_var_mult = app_var_mult;
 
    return WFCBAlloc(SimWeightCompute, prio_fun, SimWeightExit, data);
 }
@@ -181,8 +182,8 @@ WFCB_p SimWeightInit(ClausePrioFun prio_fun, double equal_weight, double
 WFCB_p SimWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
 {
    ClausePrioFun prio_fun;
-   double equal_weight, var_var_clash, var_term_clash,
-      term_term_clash, app_var_mult = APP_VAR_MULT_DEFAULT;
+   double equal_weight, var_var_clash, var_term_clash, term_term_clash,
+      app_var_mult = APP_VAR_MULT_DEFAULT;
 
    AcceptInpTok(in, OpenBracket);
    prio_fun = ParsePrioFun(in);
@@ -199,8 +200,8 @@ WFCB_p SimWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
 
    AcceptInpTok(in, CloseBracket);
 
-   return SimWeightInit(prio_fun, equal_weight, var_var_clash,
-                        var_term_clash, term_term_clash, app_var_mult);
+   return SimWeightInit(prio_fun, equal_weight, var_var_clash, var_term_clash,
+                        term_term_clash, app_var_mult);
 }
 
 
@@ -218,7 +219,7 @@ WFCB_p SimWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
 
 double SimWeightCompute(void* data, Clause_p clause)
 {
-   SimParam_p    local = data;
+   SimParam_p local = data;
 
    return sim_weight(clause, local);
 }
@@ -236,10 +237,7 @@ double SimWeightCompute(void* data, Clause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-void SimWeightExit(void* data)
-{
-   SimParamCellFree(data);
-}
+void SimWeightExit(void* data) { SimParamCellFree(data); }
 
 
 /*---------------------------------------------------------------------*/

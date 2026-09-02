@@ -63,8 +63,7 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-ClauseInfo_p ClauseInfoAlloc(char* name, char* source,
-                             long line, long column)
+ClauseInfo_p ClauseInfoAlloc(char* name, char* source, long line, long column)
 {
    ClauseInfo_p handle = ClauseInfoCellAlloc();
 
@@ -76,7 +75,7 @@ ClauseInfo_p ClauseInfoAlloc(char* name, char* source,
    }
    if(source)
    {
-      handle->source= SecureStrdup(source);
+      handle->source = SecureStrdup(source);
    }
    handle->line = line;
    handle->column = column;
@@ -129,15 +128,16 @@ void ClauseInfoFree(ClauseInfo_p info)
 //
 /----------------------------------------------------------------------*/
 
-void ClauseSourceInfoPrint(FILE* out, ClauseInfo_p info, char *inf_lit, char* delim)
+void ClauseSourceInfoPrint(FILE* out, ClauseInfo_p info, char* inf_lit,
+                           char* delim)
 {
    if(!info)
    {
       return;
    }
    DStr_p source_accu = DStrAlloc();
-   char *source = "unknown";
-   char *name;
+   char* source = "unknown";
+   char* name;
    char buffer[100]; /* At most 2 longs and some filler */
 
    if(info->source)
@@ -190,7 +190,7 @@ void ClauseSourceInfoPrint(FILE* out, ClauseInfo_p info, char *inf_lit, char* de
 long ClauseInfoGetIdNameSpace(ClauseInfo_p info)
 {
    long res;
-   char *endptr;
+   char* endptr;
 
    if(!info)
    {
@@ -200,15 +200,15 @@ long ClauseInfoGetIdNameSpace(ClauseInfo_p info)
    {
       return -1;
    }
-   if((strncmp(info->name, "i_", 2)==0) ||
-      (strncmp(info->name, "c_", 2)==0))
+   if((strncmp(info->name, "i_", 2) == 0) ||
+      (strncmp(info->name, "c_", 2) == 0))
    {
-      if((info->name[2]<'0') || (info->name[2]>'9'))
+      if((info->name[2] < '0') || (info->name[2] > '9'))
       {
          return -1;
       }
-      res = strtol(info->name+3, &endptr, 10);
-      if(*endptr!='_')
+      res = strtol(info->name + 3, &endptr, 10);
+      if(*endptr != '_')
       {
          return -1;
       }
@@ -242,7 +242,7 @@ long ClauseInfoGetIdNameSpace(ClauseInfo_p info)
 long ClauseInfoGetIdCounter(ClauseInfo_p info)
 {
    long res;
-   char *endptr;
+   char* endptr;
 
    if(!info)
    {
@@ -252,15 +252,15 @@ long ClauseInfoGetIdCounter(ClauseInfo_p info)
    {
       return -1;
    }
-   if((strncmp(info->name, "i_", 2)==0) ||
-      (strncmp(info->name, "c_", 2)==0))
+   if((strncmp(info->name, "i_", 2) == 0) ||
+      (strncmp(info->name, "c_", 2) == 0))
    {
-      if((info->name[2]<'0') || (info->name[2]>'9'))
+      if((info->name[2] < '0') || (info->name[2] > '9'))
       {
          return -1;
       }
-      res = strtol(info->name+3, &endptr, 10);
-      if(*endptr!='_')
+      res = strtol(info->name + 3, &endptr, 10);
+      if(*endptr != '_')
       {
          return -1;
       }

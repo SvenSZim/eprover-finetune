@@ -54,7 +54,7 @@
 
 bool is_flattened(Type_p t)
 {
-   for(int i=0; i<t->arity-1; i++)
+   for(int i = 0; i < t->arity - 1; i++)
    {
       if(!is_flattened(t->args[i]))
       {
@@ -62,7 +62,7 @@ bool is_flattened(Type_p t)
       }
    }
 
-   return t->arity == 0 || !TypeIsArrow(t->args[t->arity-1]);
+   return t->arity == 0 || !TypeIsArrow(t->args[t->arity - 1]);
 }
 
 
@@ -80,7 +80,7 @@ bool is_flattened(Type_p t)
 
 bool arguments_flattened(Type_p t)
 {
-   for(int i=0; i<t->arity-1; i++)
+   for(int i = 0; i < t->arity - 1; i++)
    {
       if(!is_flattened(t->args[i]))
       {
@@ -150,9 +150,9 @@ bool TypeIsUntyped(Type_p t)
 {
    if(!TypeIsArrow(t))
    {
-      return (t->f_code == STBool)||(t->f_code == STIndividuals);
+      return (t->f_code == STBool) || (t->f_code == STIndividuals);
    }
-   for(int i=0; i<t->arity; i++)
+   for(int i = 0; i < t->arity; i++)
    {
       if(!TypeIsUntyped(t->args[i]))
       {
@@ -174,12 +174,12 @@ bool TypeIsUntyped(Type_p t)
 //
 /----------------------------------------------------------------------*/
 
-Type_p  TypeCopy(Type_p orig)
+Type_p TypeCopy(Type_p orig)
 {
-   Type_p handle = TypeAlloc(orig->f_code, orig->arity,
-                             TypeArgArrayAlloc(orig->arity));
+   Type_p handle =
+      TypeAlloc(orig->f_code, orig->arity, TypeArgArrayAlloc(orig->arity));
 
-   for(int i=0; i<orig->arity; i++)
+   for(int i = 0; i < orig->arity; i++)
    {
       handle->args[i] = orig->args[i];
    }
@@ -199,10 +199,7 @@ Type_p  TypeCopy(Type_p orig)
 //
 /----------------------------------------------------------------------*/
 
-void TypeTopFree(Type_p junk)
-{
-   TypeCellFree(junk);
-}
+void TypeTopFree(Type_p junk) { TypeCellFree(junk); }
 
 
 /*-----------------------------------------------------------------------
@@ -223,7 +220,7 @@ void TypeFree(Type_p junk)
    if(junk->arity)
    {
       assert(junk->args);
-      SizeFree(junk->args, junk->arity*sizeof(Type_p));
+      SizeFree(junk->args, junk->arity * sizeof(Type_p));
    }
    else
    {
@@ -252,13 +249,13 @@ int TypesCmp(Type_p t1, Type_p t2)
    int res = t1->f_code - t2->f_code;
 
    // if it is not arrow type cons -> same nr of args
-   assert(!(t1->f_code == t2->f_code && t1->f_code != ArrowTypeCons)
-          || t1->arity == t2->arity);
+   assert(!(t1->f_code == t2->f_code && t1->f_code != ArrowTypeCons) ||
+          t1->arity == t2->arity);
 
    if(!res)
    {
       res = t1->arity - t2->arity; // Should be 0? (StS)
-      for(int i=0; i<t1->arity && !res; i++)
+      for(int i = 0; i < t1->arity && !res; i++)
       {
          res = PCmp(t1->args[i], t2->args[i]);
       }
@@ -288,28 +285,27 @@ Type_p FlattenType(Type_p type)
 
    Type_p res = type;
 
-   if(type->arity && type->args[type->arity-1]->f_code == ArrowTypeCons)
+   if(type->arity && type->args[type->arity - 1]->f_code == ArrowTypeCons)
    {
-      int total_args = type->arity-1 + type->args[type->arity-1]->arity;
+      int total_args = type->arity - 1 + type->args[type->arity - 1]->arity;
       int i;
       Type_p* args = TypeArgArrayAlloc(total_args);
 
-      for(i=0; i < type->arity-1; i++)
+      for(i = 0; i < type->arity - 1; i++)
       {
          args[i] = type->args[i];
       }
 
       // i is now type->arity-1
-      for(int j=0; j < type->args[i]->arity; j++)
+      for(int j = 0; j < type->args[i]->arity; j++)
       {
-         args[i+j] = type->args[i]->args[j];
+         args[i + j] = type->args[i]->args[j];
       }
 
       res = AllocArrowType(total_args, args);
    }
 
    return res;
-
 }
 
 
@@ -330,7 +326,7 @@ Type_p GetReturnSort(Type_p type)
    assert(type);
    if(TypeIsArrow(type))
    {
-      return type->args[type->arity-1];
+      return type->args[type->arity - 1];
    }
    else
    {
@@ -383,7 +379,7 @@ DStr_p TypeAppEncodedName(Type_p type)
 
 inline int TypeGetMaxArity(Type_p t)
 {
-  return (TypeIsArrow(t) ? (t)->arity-1 : 0);
+   return (TypeIsArrow(t) ? (t)->arity - 1 : 0);
 }
 
 /*-----------------------------------------------------------------------
@@ -406,7 +402,7 @@ bool TypeHasBool(Type_p t)
    }
 
    bool ans = false;
-   for(int i=0; i<t->arity && !(ans = TypeHasBool(t->args[i])); i++)
+   for(int i = 0; i < t->arity && !(ans = TypeHasBool(t->args[i])); i++)
       ;
 
    return ans;
@@ -428,22 +424,22 @@ bool TypeHasBool(Type_p t)
 
 Type_p ArrowTypeFlattened(Type_p const* args, int args_num, Type_p ret)
 {
-   if (args_num == 0)
+   if(args_num == 0)
    {
       return ret;
    }
    else
    {
-      Type_p* args_ret = TypeArgArrayAlloc(args_num+1);
-      for(int i=0; i<args_num; i++)
+      Type_p* args_ret = TypeArgArrayAlloc(args_num + 1);
+      for(int i = 0; i < args_num; i++)
       {
          args_ret[i] = args[i];
       }
       args_ret[args_num] = ret;
-      Type_p args_ret_ty = AllocArrowType(args_num+1, args_ret);
+      Type_p args_ret_ty = AllocArrowType(args_num + 1, args_ret);
       Type_p res = FlattenType(args_ret_ty);
 
-      if (res != args_ret_ty)
+      if(res != args_ret_ty)
       {
          TypeFree(args_ret_ty);
       }
@@ -468,22 +464,20 @@ Type_p TypeDropFirstArg(Type_p ty)
 {
    assert(TypeIsArrow(ty));
 
-   if (ty->arity == 2)
+   if(ty->arity == 2)
    {
       return ty->args[1];
    }
    else
    {
       assert(ty->arity >= 3);
-      Type_p* args = TypeArgArrayAlloc(ty->arity-1);
-      for(int i=0; i<ty->arity-1; i++)
+      Type_p* args = TypeArgArrayAlloc(ty->arity - 1);
+      for(int i = 0; i < ty->arity - 1; i++)
       {
-         args[i] = ty->args[i+1];
+         args[i] = ty->args[i + 1];
       }
-      return AllocArrowType(ty->arity-1, args);
-
+      return AllocArrowType(ty->arity - 1, args);
    }
-
 }
 
 /*-----------------------------------------------------------------------
@@ -501,21 +495,21 @@ Type_p TypeDropFirstArg(Type_p ty)
 bool IsChoiceType(Type_p ty)
 {
    bool is_choice = false;
-   if(TypeIsArrow(ty) && ty->arity>=2 &&
+   if(TypeIsArrow(ty) && ty->arity >= 2 &&
       (TypeIsArrow(ty->args[0]) && ty->args[0]->arity == 2 &&
        TypeIsPredicate(ty->args[0])))
    {
       // remaining checks if var type is (A -> o) -> A
       is_choice = true;
       Type_p a_type = ty->args[0]->args[0];
-      if(TypeIsArrow(a_type) && a_type->arity == ty->arity-1)
+      if(TypeIsArrow(a_type) && a_type->arity == ty->arity - 1)
       {
-         for(int i=0; is_choice && i< a_type->arity; i++)
+         for(int i = 0; is_choice && i < a_type->arity; i++)
          {
-            is_choice = is_choice && a_type->args[i] == ty->args[i+1];
+            is_choice = is_choice && a_type->args[i] == ty->args[i + 1];
          }
       }
-      else if (!TypeIsArrow(a_type) && ty->arity == 2)
+      else if(!TypeIsArrow(a_type) && ty->arity == 2)
       {
          is_choice = a_type == ty->args[1];
       }

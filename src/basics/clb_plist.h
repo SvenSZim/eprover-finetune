@@ -36,28 +36,27 @@ Changes
 typedef struct plistcell
 {
    IntOrP key;
-   struct plistcell *pred;
-   struct plistcell *succ;
-}PListCell, *PList_p;
+   struct plistcell* pred;
+   struct plistcell* succ;
+} PListCell, *PList_p;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
 #define PListCellAlloc() (PListCell*)SizeMalloc(sizeof(PListCell))
-#define PListCellFree(junk)         SizeFree(junk, sizeof(PListCell))
+#define PListCellFree(junk) SizeFree(junk, sizeof(PListCell))
 
 PList_p PListAlloc(void);
-void    PListFree(PList_p junk);
+void PListFree(PList_p junk);
 #define PListEmpty(anchor) ((anchor)->pred == anchor)
 
-void    PListInsert(PList_p where, PList_p cell);
-void    PListStore(PList_p where, IntOrP val);
-void    PListStoreP(PList_p where, void* val);
-void    PListStoreInt(PList_p where, long val);
+void PListInsert(PList_p where, PList_p cell);
+void PListStore(PList_p where, IntOrP val);
+void PListStoreP(PList_p where, void* val);
+void PListStoreInt(PList_p where, long val);
 PList_p PListExtract(PList_p element);
-void    PListDelete(PList_p element);
-
+void PListDelete(PList_p element);
 
 
 
@@ -66,8 +65,6 @@ void    PListDelete(PList_p element);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

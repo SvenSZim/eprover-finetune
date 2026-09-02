@@ -36,21 +36,21 @@ Changes
 
 typedef struct quadkeycell
 {
-   void*               p1;
-   int                 i1;
-   void*               p2;
-   int                 i2;
-}QuadKeyCell,QuadKey,*QuadKey_p;
+   void* p1;
+   int i1;
+   void* p2;
+   int i2;
+} QuadKeyCell, QuadKey, *QuadKey_p;
 
 /* Quadtree cell: We have the 4-part key and a single value. */
 
 typedef struct quadtreecell
 {
-   QuadKey             key;
-   IntOrP              val;
-   struct quadtreecell *lson;
-   struct quadtreecell *rson;
-}QuadTreeCell, *QuadTree_p;
+   QuadKey key;
+   IntOrP val;
+   struct quadtreecell* lson;
+   struct quadtreecell* rson;
+} QuadTreeCell, *QuadTree_p;
 
 
 
@@ -58,17 +58,17 @@ typedef struct quadtreecell
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define QuadTreeCellAlloc()    (QuadTreeCell*)SizeMalloc(sizeof(QuadTreeCell))
+#define QuadTreeCellAlloc() (QuadTreeCell*)SizeMalloc(sizeof(QuadTreeCell))
 #define QuadTreeCellFree(junk) SizeFree(junk, sizeof(QuadTreeCell))
 
-int        DoubleKeyCmp(void* p1, int i1, void *p2, int i2);
-int        QuadKeyCmp(QuadKey_p p1, QuadKey_p p2);
-void       QuadTreeFree(QuadTree_p junk);
-QuadTree_p QuadTreeInsert(QuadTree_p *root, QuadTree_p newnode);
-bool       QuadTreeStore(QuadTree_p *root, QuadKey_p key, IntOrP val);
-QuadTree_p QuadTreeFind(QuadTree_p *root, QuadKey_p key);
-QuadTree_p QuadTreeExtractEntry(QuadTree_p *root, QuadKey_p key);
-bool       QuadTreeDeleteEntry(QuadTree_p *root, QuadKey_p key);
+int DoubleKeyCmp(void* p1, int i1, void* p2, int i2);
+int QuadKeyCmp(QuadKey_p p1, QuadKey_p p2);
+void QuadTreeFree(QuadTree_p junk);
+QuadTree_p QuadTreeInsert(QuadTree_p* root, QuadTree_p newnode);
+bool QuadTreeStore(QuadTree_p* root, QuadKey_p key, IntOrP val);
+QuadTree_p QuadTreeFind(QuadTree_p* root, QuadKey_p key);
+QuadTree_p QuadTreeExtractEntry(QuadTree_p* root, QuadKey_p key);
+bool QuadTreeDeleteEntry(QuadTree_p* root, QuadKey_p key);
 
 AVL_TRAVERSE_DECLARATION(QuadTree, QuadTree_p)
 #define QuadTreeTraverseExit(stack) PStackFree(stack)

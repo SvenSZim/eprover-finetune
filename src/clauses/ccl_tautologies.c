@@ -55,10 +55,10 @@
 
 CompareResult TO_ground_compare(Term_p t1, Term_p t2)
 {
-   long          w1, w2;
+   long w1, w2;
    CompareResult res = to_equal;
-   int           i;
-   PStack_p      stack = PStackAlloc();
+   int i;
+   PStack_p stack = PStackAlloc();
 
    PStackPushP(stack, t1);
    PStackPushP(stack, t2);
@@ -71,11 +71,11 @@ CompareResult TO_ground_compare(Term_p t1, Term_p t2)
       w1 = TermStandardWeight(t1);
       w2 = TermStandardWeight(t2);
 
-      if(w1<w2)
+      if(w1 < w2)
       {
          res = to_lesser;
       }
-      else if(w1>w2)
+      else if(w1 > w2)
       {
          res = to_greater;
       }
@@ -95,12 +95,12 @@ CompareResult TO_ground_compare(Term_p t1, Term_p t2)
       {
          res = to_greater;
       }
-      if(res!= to_equal)
+      if(res != to_equal)
       {
          break;
       }
       assert(problemType == PROBLEM_HO || t1->arity == t2->arity);
-      for(i = 0; i<t1->arity; i++)
+      for(i = 0; i < t1->arity; i++)
       {
          PStackPushP(stack, t1->args[i]);
          PStackPushP(stack, t2->args[i]);
@@ -175,7 +175,8 @@ static bool term_compute_top_nf(TermRef ref, Eqn_p eqns)
       if(TermStructEqualNoDeref(lside, *ref))
       {
          TermFree(*ref);
-         *ref = TermCopy(rside, handle->bank->vars, handle->bank->db_vars, false);
+         *ref =
+            TermCopy(rside, handle->bank->vars, handle->bank->db_vars, false);
          return true;
       }
       handle = handle->next;
@@ -205,13 +206,13 @@ static bool term_compute_ground_NF(TermRef ref, Eqn_p eqns)
    int i;
    bool res = false, tmp;
 
-   for(i=0 ; i< (*ref)->arity; i++)
+   for(i = 0; i < (*ref)->arity; i++)
    {
       tmp = term_compute_ground_NF((&(*ref)->args[i]), eqns);
-      res = res||tmp;
+      res = res || tmp;
    }
    tmp = term_compute_top_nf(ref, eqns);
-   res = res||tmp;
+   res = res || tmp;
 
    return res;
 }
@@ -235,8 +236,9 @@ static bool ground_normalize_eqn(Eqn_p eqn, Eqn_p eqns)
    bool res = false, tmp;
    Term_p term, shared;
 
-   term = TermCopy(eqn->lterm, eqn->bank->vars, eqn->bank->db_vars, DEREF_NEVER);
-   tmp  = term_compute_ground_NF(&term, eqns);
+   term =
+      TermCopy(eqn->lterm, eqn->bank->vars, eqn->bank->db_vars, DEREF_NEVER);
+   tmp = term_compute_ground_NF(&term, eqns);
    if(tmp)
    {
       shared = TBInsert(eqn->bank, term, DEREF_NEVER);
@@ -245,8 +247,9 @@ static bool ground_normalize_eqn(Eqn_p eqn, Eqn_p eqns)
    }
    TermFree(term);
 
-   term = TermCopy(eqn->rterm, eqn->bank->vars, eqn->bank->db_vars, DEREF_NEVER);
-   tmp  = term_compute_ground_NF(&term, eqns);
+   term =
+      TermCopy(eqn->rterm, eqn->bank->vars, eqn->bank->db_vars, DEREF_NEVER);
+   tmp = term_compute_ground_NF(&term, eqns);
    if(tmp)
    {
       shared = TBInsert(eqn->bank, term, DEREF_NEVER);
@@ -274,7 +277,7 @@ static bool ground_normalize_eqn(Eqn_p eqn, Eqn_p eqns)
 static void ground_backward_contract(EqnRef from, Eqn_p eqns, EqnRef to)
 {
    Eqn_p handle;
-   bool   res;
+   bool res;
 
    while(*from)
    {
@@ -308,7 +311,7 @@ static void ground_backward_contract(EqnRef from, Eqn_p eqns, EqnRef to)
 static void ground_complete_neg_eqns(EqnRef list)
 {
    Eqn_p unproc = NULL, proc = NULL, handle;
-   bool  cmp;
+   bool cmp;
 
    unproc = *list;
 
@@ -317,13 +320,14 @@ static void ground_complete_neg_eqns(EqnRef list)
       handle = EqnListExtractFirst(&unproc);
       assert(!handle->next);
       ground_normalize_eqn(handle, proc);
-      if(handle->lterm==handle->rterm)
+      if(handle->lterm == handle->rterm)
       {
          EqnFree(handle);
          continue;
       }
       cmp = ground_orient_eqn(handle);
-      UNUSED(cmp); assert(cmp);
+      UNUSED(cmp);
+      assert(cmp);
       ground_backward_contract(&proc, handle, &unproc);
       EqnListInsertFirst(&proc, handle);
    }
@@ -351,15 +355,15 @@ static void ground_complete_neg_eqns(EqnRef list)
 
 bool ClauseIsTautologyReal(TB_p work_bank, Clause_p clause, bool copy_cl)
 {
-   Eqn_p    rw_system, handle;
+   Eqn_p rw_system, handle;
    Clause_p work_copy;
-   bool     res = false;
+   bool res = false;
 
    if(EqnListFindTrue(clause->literals))
    {
       return true;
    }
-   if((clause->pos_lit_no==0) || (clause->neg_lit_no==0))
+   if((clause->pos_lit_no == 0) || (clause->neg_lit_no == 0))
    {
       return false;
    }
@@ -369,8 +373,8 @@ bool ClauseIsTautologyReal(TB_p work_bank, Clause_p clause, bool copy_cl)
       return ClauseIsTrivial(clause);
    }
    work_copy = copy_cl ? ClauseCopy(clause, work_bank) : clause;
-   rw_system = EqnListExtractByProps(&(work_copy->literals),
-                                     EPIsPositive, true);
+   rw_system =
+      EqnListExtractByProps(&(work_copy->literals), EPIsPositive, true);
    assert(rw_system);
    if(clause->neg_lit_no > 1)
    {

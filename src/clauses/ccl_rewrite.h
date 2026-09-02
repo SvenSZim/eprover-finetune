@@ -39,15 +39,14 @@ Changes
 
 typedef struct rw_desc_cell
 {
-   OCB_p        ocb;
-   TB_p         bank;
-   ClauseSet_p  *demods;
-   SysDate      demod_date;
+   OCB_p ocb;
+   TB_p bank;
+   ClauseSet_p* demods;
+   SysDate demod_date;
    RewriteLevel level;
-   bool         prefer_general;
-   bool         sos_rewritten; /* Return value! */
-}RWDescCell, *RWDesc_p;
-
+   bool prefer_general;
+   bool sos_rewritten; /* Return value! */
+} RWDescCell, *RWDesc_p;
 
 
 
@@ -56,7 +55,7 @@ typedef struct rw_desc_cell
 /*---------------------------------------------------------------------*/
 
 
-#define RWDescCellAlloc()    (RWDescCell*)SizeMalloc(sizeof(RWDescCell))
+#define RWDescCellAlloc() (RWDescCell*)SizeMalloc(sizeof(RWDescCell))
 #define RWDescCellFree(junk) SizeFree(junk, sizeof(RWDescCell))
 
 
@@ -69,25 +68,20 @@ extern unsigned long BWRWMatchSuccesses;
 
 
 Term_p TermComputeLINormalform(OCB_p ocb, TB_p bank, Term_p term,
-                ClauseSet_p *demodulators,
-                RewriteLevel level,
-                               bool prefer_general,
-                               bool restricted_rw,
+                               ClauseSet_p* demodulators, RewriteLevel level,
+                               bool prefer_general, bool restricted_rw,
                                bool lambda_demod);
 
-long ClauseComputeLINormalform(OCB_p ocb, TB_p bank, Clause_p
-                               clause, ClauseSet_p *demodulators,
-                               RewriteLevel level, bool prefer_general,
-                               bool lambda_demod);
+long ClauseComputeLINormalform(OCB_p ocb, TB_p bank, Clause_p clause,
+                               ClauseSet_p* demodulators, RewriteLevel level,
+                               bool prefer_general, bool lambda_demod);
 
-long ClauseSetComputeLINormalform(OCB_p ocb, TB_p bank, ClauseSet_p
-              set, ClauseSet_p *demodulators,
-              RewriteLevel level, bool prefer_general,
-              bool lambda_demod);
+long ClauseSetComputeLINormalform(OCB_p ocb, TB_p bank, ClauseSet_p set,
+                                  ClauseSet_p* demodulators, RewriteLevel level,
+                                  bool prefer_general, bool lambda_demod);
 
-bool FindRewritableClauses(OCB_p ocb, ClauseSet_p set,
-            PStack_p results, Clause_p
-            new_demod, SysDate nf_date);
+bool FindRewritableClauses(OCB_p ocb, ClauseSet_p set, PStack_p results,
+                           Clause_p new_demod, SysDate nf_date);
 
 long FindRewritableClausesIndexed(OCB_p ocb, SubtermIndex_p index,
                                   PStack_p stack, Clause_p new_demod,

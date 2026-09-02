@@ -63,7 +63,7 @@ Changes
 
 int create_server_sock_nofail(int port)
 {
-   int sock = socket(PF_INET,SOCK_STREAM, IPPROTO_TCP);
+   int sock = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
    int res;
    struct sockaddr_in addr;
 
@@ -80,10 +80,10 @@ int create_server_sock_nofail(int port)
    int yes = 1;
    if(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
    {
-     return -1;
+      return -1;
    }
 
-   res = bind(sock, (struct sockaddr *)&addr, sizeof(addr));
+   res = bind(sock, (struct sockaddr*)&addr, sizeof(addr));
 
    if(res == -1)
    {
@@ -123,17 +123,16 @@ int create_client_sock_nofail(char* host, int port)
    res = getaddrinfo(host, portstr, &hints, &addr);
    if(res)
    {
-      return -2-res;
+      return -2 - res;
    }
-   for(iter=addr; iter; iter = iter->ai_next)
+   for(iter = addr; iter; iter = iter->ai_next)
    {
-      sock = socket(iter->ai_family, iter->ai_socktype,
-                    iter->ai_protocol);
-      if (sock < 0)
+      sock = socket(iter->ai_family, iter->ai_socktype, iter->ai_protocol);
+      if(sock < 0)
       {
          continue;
       }
-      if (connect(sock, iter->ai_addr, iter->ai_addrlen) < 0)
+      if(connect(sock, iter->ai_addr, iter->ai_addrlen) < 0)
       {
          close(sock);
          sock = -1;
@@ -142,7 +141,6 @@ int create_client_sock_nofail(char* host, int port)
    }
    return sock;
 }
-
 
 
 
@@ -164,12 +162,12 @@ int create_client_sock_nofail(char* host, int port)
 //
 /----------------------------------------------------------------------*/
 
-TCPMsg_p  TCPMsgAlloc(void)
+TCPMsg_p TCPMsgAlloc(void)
 {
    TCPMsg_p res = TCPMsgCellAlloc();
 
-   res->content            = DStrAlloc();
-   res->len                = -1;
+   res->content = DStrAlloc();
+   res->len = -1;
    res->transmission_count = 0;
 
    return res;
@@ -211,9 +209,9 @@ TCPMsg_p TCPMsgPack(char* str)
    uint32_t len;
    TCPMsg_p handle = TCPMsgAlloc();
 
-   len = strlen(str)+sizeof(len);
+   len = strlen(str) + sizeof(len);
    DStrAppendStr(handle->content, "0000");
-   *((uint32_t*)DStrAddress(handle->content, 0)) =  htonl(len);
+   *((uint32_t*)DStrAddress(handle->content, 0)) = htonl(len);
    DStrAppendStr(handle->content, str);
    handle->len = len;
 
@@ -237,7 +235,7 @@ TCPMsg_p TCPMsgPack(char* str)
 
 char* TCPMsgUnpack(TCPMsg_p msg)
 {
-   char *res = SecureStrdup(DStrAddress(msg->content, sizeof(uint32_t)));
+   char* res = SecureStrdup(DStrAddress(msg->content, sizeof(uint32_t)));
    TCPMsgFree(msg);
 
    return res;
@@ -262,16 +260,15 @@ MsgStatus TCPMsgWrite(int sock, TCPMsg_p msg)
 {
    int remaining, res;
 
-   remaining = msg->len-msg->transmission_count;
+   remaining = msg->len - msg->transmission_count;
 
-   res = write(sock,
-              DStrAddress(msg->content, msg->transmission_count),
-              remaining);
-   if(res < 0 )
+   res = write(sock, DStrAddress(msg->content, msg->transmission_count),
+               remaining);
+   if(res < 0)
    {
       return NWError;
    }
-   msg->transmission_count+=res;
+   msg->transmission_count += res;
    if(!TCP_MSG_COMPLETE(msg))
    {
       return NWIncomplete;
@@ -299,22 +296,21 @@ MsgStatus TCPMsgWrite(int sock, TCPMsg_p msg)
 
 MsgStatus TCPMsgRead(int sock, TCPMsg_p msg)
 {
-   char     buffer[TCP_BUF_SIZE];
+   char buffer[TCP_BUF_SIZE];
    uint32_t len;
-   int      res;
+   int res;
 
    /* Handle header */
    if(msg->transmission_count < (int)sizeof(uint32_t))
    {
-      res = read(sock,
-                 msg->len_buf+msg->transmission_count,
-                 sizeof(uint32_t)-msg->transmission_count);
+      res = read(sock, msg->len_buf + msg->transmission_count,
+                 sizeof(uint32_t) - msg->transmission_count);
       printf("read(Size)=%d\n", res);
       if(res < 0)
       {
          return NWError;
       }
-      if(res ==0)
+      if(res == 0)
       {
          return NWConnClosed;
       }
@@ -330,14 +326,14 @@ MsgStatus TCPMsgRead(int sock, TCPMsg_p msg)
       DStrAppendBuffer(msg->content, msg->len_buf, sizeof(uint32_t));
    }
    /* Rest */
-   len = MIN(TCP_BUF_SIZE-1, msg->len - msg->transmission_count);
+   len = MIN(TCP_BUF_SIZE - 1, msg->len - msg->transmission_count);
    res = read(sock, buffer, len);
    printf("read(msg)=%d\n", res);
    if(res < 0)
    {
       return NWError;
    }
-   if(res ==0)
+   if(res == 0)
    {
       return NWConnClosed;
    }
@@ -375,14 +371,13 @@ MsgStatus TCPMsgSend(int sock, TCPMsg_p msg)
    while(res != NWSuccess)
    {
       res = TCPMsgWrite(sock, msg);
-      if(res==NWError)
+      if(res == NWError)
       {
          break;
       }
    }
    return res;
 }
-
 
 
 
@@ -399,7 +394,7 @@ MsgStatus TCPMsgSend(int sock, TCPMsg_p msg)
 //
 /----------------------------------------------------------------------*/
 
-TCPMsg_p TCPMsgRecv(int sock, MsgStatus *res)
+TCPMsg_p TCPMsgRecv(int sock, MsgStatus* res)
 {
    TCPMsg_p msg = TCPMsgAlloc();
 
@@ -415,7 +410,6 @@ TCPMsg_p TCPMsgRecv(int sock, MsgStatus *res)
    }
    return msg;
 }
-
 
 
 
@@ -438,7 +432,7 @@ MsgStatus TCPStringSend(int sock, char* str, bool err)
    TCPMsg_p msg = TCPMsgPack(str);
    MsgStatus res = TCPMsgSend(sock, msg);
 
-   if(err && res!=NWSuccess)
+   if(err && res != NWSuccess)
    {
       SysError("Could not send string message", SYS_ERROR);
    }
@@ -490,10 +484,7 @@ char* TCPStringRecv(int sock, MsgStatus* res, bool err)
 //
 /----------------------------------------------------------------------*/
 
-void TCPStringSendX(int sock, char* str)
-{
-   TCPStringSend(sock, str, true);
-}
+void TCPStringSendX(int sock, char* str) { TCPStringSend(sock, str, true); }
 
 
 /*-----------------------------------------------------------------------
@@ -533,7 +524,7 @@ int CreateServerSock(int port)
 {
    int sock = create_server_sock_nofail(port);
 
-   if(sock==-1)
+   if(sock == -1)
    {
       TmpErrno = errno;
       SysError("Cannot create socket for port %d", SYS_ERROR, port);
@@ -562,8 +553,7 @@ void Listen(int sock)
    if(res == -1)
    {
       TmpErrno = errno;
-      SysError("Failed to switch socket %d to listening",
-               SYS_ERROR, socket);
+      SysError("Failed to switch socket %d to listening", SYS_ERROR, socket);
    }
 }
 
@@ -593,11 +583,10 @@ int CreateClientSock(char* host, int port)
    if(sock <= -2)
    {
       Error("Could not resolve address (%s)", SYS_ERROR,
-            gai_strerror(-(sock+2)));
+            gai_strerror(-(sock + 2)));
    }
    return sock;
 }
-
 
 
 

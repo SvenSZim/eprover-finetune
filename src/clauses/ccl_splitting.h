@@ -33,10 +33,10 @@ typedef enum
 {
    SplitGroundNone = 0, /* Combine ground literals with first
             subclause */
-   SplitGroundOne  = 1, /* Split off (at most) _one_ ground subclause
+   SplitGroundOne = 1,  /* Split off (at most) _one_ ground subclause
             containing all ground literals */
    SplitGroundFull = 2  /* Split off individual ground literals */
-}SplitType;
+} SplitType;
 
 
 /* Describes which clauses should be split. Note that this currently
@@ -46,17 +46,17 @@ typedef enum
 
 typedef enum
 {
-   SplitNone        = 0,
-   SplitHorn        = 1,
-   SplitNonHorn     = 2,
-   SplitNegative    = 4,
-   SplitPositive    = 8,
-   SplitMixed       = 16,
-   SplitAll         = 7
-}SplitClassType;
+   SplitNone = 0,
+   SplitHorn = 1,
+   SplitNonHorn = 2,
+   SplitNegative = 4,
+   SplitPositive = 8,
+   SplitMixed = 16,
+   SplitAll = 7
+} SplitClassType;
 
-#define QuerySplitClass(var, prop) ((var)&(prop))
-#define SetSplitClass(var, prop) (var) = ((var)|(prop))
+#define QuerySplitClass(var, prop) ((var) & (prop))
+#define SetSplitClass(var, prop) (var) = ((var) | (prop))
 
 
 
@@ -66,12 +66,12 @@ typedef enum
 
 typedef struct lit_split_desc
 {
-   Eqn_p   literal;
-   int     part;
-   PTree_p varset;  /* Initially: Varset of literal, later either
+   Eqn_p literal;
+   int part;
+   PTree_p varset; /* Initially: Varset of literal, later either
              empty (in subsequent literals) or varset of
              partition (for first literal of partition) */
-}LitSplitDescCell, *LitSplitDesc_p;
+} LitSplitDescCell, *LitSplitDesc_p;
 
 
 
@@ -80,16 +80,15 @@ typedef struct lit_split_desc
 /*---------------------------------------------------------------------*/
 
 bool ClauseHasSplitLiteral(Clause_p clause);
-int  ClauseSplit(DefStore_p store, Clause_p clause, ClauseSet_p set,
-                 SplitType how, bool fresh_defs);
+int ClauseSplit(DefStore_p store, Clause_p clause, ClauseSet_p set,
+                SplitType how, bool fresh_defs);
 
 long ClauseSetSplitClauses(DefStore_p store, ClauseSet_p from_set,
-                           ClauseSet_p to_set, SplitType how,
-                           bool fresh_defs);
+                           ClauseSet_p to_set, SplitType how, bool fresh_defs);
 
 long ClauseSetSplitClausesGeneral(DefStore_p store, bool fresh_defs,
-                                  ClauseSet_p from_set,
-                                  ClauseSet_p to_set, long tries);
+                                  ClauseSet_p from_set, ClauseSet_p to_set,
+                                  long tries);
 
 
 #endif
@@ -97,8 +96,6 @@ long ClauseSetSplitClausesGeneral(DefStore_p store, bool fresh_defs,
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

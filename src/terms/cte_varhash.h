@@ -46,16 +46,15 @@ Changes
 
 typedef struct var_hash_entry_cell
 {
-   Term_p                     key;
-   long                       val;
-   struct var_hash_entry_cell *next;
-}VarHashEntryCell, *VarHashEntry_p;
+   Term_p key;
+   long val;
+   struct var_hash_entry_cell* next;
+} VarHashEntryCell, *VarHashEntry_p;
 
 typedef struct var_hash_cell
 {
    VarHashEntry_p hash[VAR_HASH_SIZE];
-}VarHashCell, *VarHash_p;
-
+} VarHashCell, *VarHash_p;
 
 
 
@@ -64,32 +63,27 @@ typedef struct var_hash_cell
 /*---------------------------------------------------------------------*/
 
 
-#define VarHashEntryCellAlloc() \
-      (VarHashEntryCell*)SizeMalloc(sizeof(VarHashEntryCell))
-#define VarHashEntryCellFree(junk) \
-      SizeFree(junk, sizeof(VarHashEntryCell))
+#define VarHashEntryCellAlloc()                                                \
+   (VarHashEntryCell*)SizeMalloc(sizeof(VarHashEntryCell))
+#define VarHashEntryCellFree(junk) SizeFree(junk, sizeof(VarHashEntryCell))
 
 static inline VarHashEntry_p VarHashEntryAlloc(Term_p var, long value);
-void           VarHashEntryListFree(VarHashEntry_p list);
+void VarHashEntryListFree(VarHashEntry_p list);
 
-#define VarHashCellAlloc() \
-      (VarHashCell*)SizeMalloc(sizeof(VarHashCell))
-#define VarHashCellFree(junk) \
-      SizeFree(junk, sizeof(VarHashCell))
+#define VarHashCellAlloc() (VarHashCell*)SizeMalloc(sizeof(VarHashCell))
+#define VarHashCellFree(junk) SizeFree(junk, sizeof(VarHashCell))
 
 static inline VarHash_p VarHashAlloc(void);
-void           VarHashFree(VarHash_p junk);
-int            VarHashFunction(Term_p var);
+void VarHashFree(VarHash_p junk);
+int VarHashFunction(Term_p var);
 VarHashEntry_p VarHashListFind(VarHashEntry_p list, Term_p var);
-long           VarHashAddValue(VarHash_p hash, Term_p var, long
-                value);
-void VarHashAddVarDistrib(VarHash_p hash, Term_p term, DerefType
-           deref, long add);
-static inline VarHashEntry_p VarHashFind(VarHash_p hash, Term_p
-                    var);
+long VarHashAddValue(VarHash_p hash, Term_p var, long value);
+void VarHashAddVarDistrib(VarHash_p hash, Term_p term, DerefType deref,
+                          long add);
+static inline VarHashEntry_p VarHashFind(VarHash_p hash, Term_p var);
 
-void PDArrayAddVarDistrib(PDArray_p array, Term_p term, DerefType
-           deref, long add);
+void PDArrayAddVarDistrib(PDArray_p array, Term_p term, DerefType deref,
+                          long add);
 
 
 
@@ -109,8 +103,7 @@ void PDArrayAddVarDistrib(PDArray_p array, Term_p term, DerefType
 //
 /----------------------------------------------------------------------*/
 
-static inline VarHashEntry_p VarHashEntryAlloc(Term_p var, long
-                     value)
+static inline VarHashEntry_p VarHashEntryAlloc(Term_p var, long value)
 {
    VarHashEntry_p handle = VarHashEntryCellAlloc();
 
@@ -137,10 +130,10 @@ static inline VarHashEntry_p VarHashEntryAlloc(Term_p var, long
 static inline VarHash_p VarHashAlloc(void)
 {
    VarHash_p handle;
-   int       i;
+   int i;
 
    handle = VarHashCellAlloc();
-   for(i=0; i<VAR_HASH_SIZE; i++)
+   for(i = 0; i < VAR_HASH_SIZE; i++)
    {
       handle->hash[i] = NULL;
    }
@@ -160,8 +153,7 @@ static inline VarHash_p VarHashAlloc(void)
 //
 /----------------------------------------------------------------------*/
 
-static inline VarHashEntry_p VarHashFind(VarHash_p hash, Term_p
-                    var)
+static inline VarHashEntry_p VarHashFind(VarHash_p hash, Term_p var)
 {
    int i = VarHashFunction(var);
 
@@ -174,8 +166,6 @@ static inline VarHashEntry_p VarHashFind(VarHash_p hash, Term_p
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

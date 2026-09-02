@@ -58,7 +58,7 @@ static long range_arr_size(long minsize, long size, long grow)
 {
    if(grow)
    {
-      size = ((minsize/grow)+1)*grow;
+      size = ((minsize / grow) + 1) * grow;
    }
    else
    {
@@ -88,22 +88,22 @@ static long range_arr_size(long minsize, long size, long grow)
 
 static void range_arr_expand_down(PDRangeArr_p array, long idx)
 {
-   IntOrP *tmp;
-   long   old_size, old_offset, i;
+   IntOrP* tmp;
+   long old_size, old_offset, i;
 
    assert(array);
-   assert(idx < array->offset+array->size);
+   assert(idx < array->offset + array->size);
 
-   old_size   = array->size;
+   old_size = array->size;
    old_offset = array->offset;
-   tmp        = array->array;
+   tmp = array->array;
 
-   array->size   = range_arr_size(old_offset-idx+old_size,
-                                  old_size, array->grow);
-   array->offset = old_offset-(array->size-old_size);
-   array->array  = SizeMalloc(array->size * sizeof(IntOrP));
+   array->size =
+      range_arr_size(old_offset - idx + old_size, old_size, array->grow);
+   array->offset = old_offset - (array->size - old_size);
+   array->array = SizeMalloc(array->size * sizeof(IntOrP));
 
-   for(i=0; i< (old_offset-array->offset); i++)
+   for(i = 0; i < (old_offset - array->offset); i++)
    {
       if(array->integer)
       {
@@ -114,7 +114,8 @@ static void range_arr_expand_down(PDRangeArr_p array, long idx)
          array->array[i].p_val = NULL;
       }
    }
-   memcpy(array->array+(old_offset-array->offset), tmp, old_size*sizeof(IntOrP));
+   memcpy(array->array + (old_offset - array->offset), tmp,
+          old_size * sizeof(IntOrP));
    SizeFree(tmp, old_size * sizeof(IntOrP));
 }
 
@@ -134,22 +135,21 @@ static void range_arr_expand_down(PDRangeArr_p array, long idx)
 
 static void range_arr_expand_up(PDRangeArr_p array, long idx)
 {
-   IntOrP *tmp;
-   long   old_size, old_offset, i;
+   IntOrP* tmp;
+   long old_size, old_offset, i;
 
    assert(array);
-   assert(idx >= (array->offset+array->size));
+   assert(idx >= (array->offset + array->size));
 
-   old_size   = array->size;
+   old_size = array->size;
    old_offset = array->offset;
-   tmp        = array->array;
+   tmp = array->array;
 
-   array->size = range_arr_size(idx-old_offset+1,
-                                old_size, array->grow);
+   array->size = range_arr_size(idx - old_offset + 1, old_size, array->grow);
    array->array = SizeMalloc(array->size * sizeof(IntOrP));
 
-   memcpy(array->array, tmp, old_size*sizeof(IntOrP));
-   for(i=old_size; i<array->size; i++)
+   memcpy(array->array, tmp, old_size * sizeof(IntOrP));
+   for(i = old_size; i < array->size; i++)
    {
       if(array->integer)
       {
@@ -192,10 +192,10 @@ PDRangeArr_p PDRangeArrAlloc(long idx, long grow)
    handle->integer = false;
    handle->offset = idx;
 
-   handle->size  = grow?grow:1;
-   handle->grow  = grow;
-   handle->array = SizeMalloc(handle->size*sizeof(IntOrP));
-   for(i=0; i<handle->size; i++)
+   handle->size = grow ? grow : 1;
+   handle->grow = grow;
+   handle->array = SizeMalloc(handle->size * sizeof(IntOrP));
+   for(i = 0; i < handle->size; i++)
    {
       handle->array[i].p_val = NULL;
    }
@@ -225,10 +225,10 @@ PDRangeArr_p PDIntRangeArrAlloc(long idx, long grow)
    handle->integer = true;
    handle->offset = idx;
 
-   handle->size  = grow?grow:1;
-   handle->grow  = grow;
-   handle->array = SizeMalloc(handle->size*sizeof(IntOrP));
-   for(i=0; i<handle->size; i++)
+   handle->size = grow ? grow : 1;
+   handle->grow = grow;
+   handle->array = SizeMalloc(handle->size * sizeof(IntOrP));
+   for(i = 0; i < handle->size; i++)
    {
       handle->array[i].i_val = 0;
    }
@@ -254,7 +254,7 @@ void PDRangeArrFree(PDRangeArr_p junk)
    assert(junk->size > 0);
    assert(junk->array);
 
-   SizeFree(junk->array, junk->size*sizeof(IntOrP));
+   SizeFree(junk->array, junk->size * sizeof(IntOrP));
    PDRangeArrCellFree(junk);
 }
 
@@ -280,8 +280,8 @@ void PDRangeArrEnlarge(PDRangeArr_p array, long idx)
    {
       range_arr_expand_up(array, idx);
    }
-   assert(idx>=array->offset);
-   assert(idx<(array->offset+array->size));
+   assert(idx >= array->offset);
+   assert(idx < (array->offset + array->size));
 }
 
 /*-----------------------------------------------------------------------
@@ -303,8 +303,8 @@ PDRangeArr_p PDRangeArrCopy(PDRangeArr_p array)
    PDRangeArr_p handle = PDRangeArrCellAlloc();
 
    *handle = *array;
-   handle->array =  SizeMalloc(handle->size*sizeof(IntOrP));
-   memcpy(handle->array, array->array, handle->size*sizeof(IntOrP));
+   handle->array = SizeMalloc(handle->size * sizeof(IntOrP));
+   memcpy(handle->array, array->array, handle->size * sizeof(IntOrP));
 
    return handle;
 }
@@ -367,15 +367,15 @@ void PDRangeArrElementDeleteInt(PDRangeArr_p array, long idx)
 
 long PDRangeArrMembers(PDRangeArr_p array)
 {
-   long i, res =0;
+   long i, res = 0;
 
    assert(array);
 
-   for(i=PDRangeArrLowKey(array); i<PDRangeArrLimitKey(array); i++)
+   for(i = PDRangeArrLowKey(array); i < PDRangeArrLimitKey(array); i++)
    {
       if(PDRangeArrElementP(array, i))
       {
-    res++;
+         res++;
       }
    }
    return res;
@@ -397,7 +397,7 @@ long PDRangeArrMembers(PDRangeArr_p array)
 
 long PDRangeArrElementIncInt(PDRangeArr_p array, long idx, long value)
 {
-   IntOrP *ref = PDRangeArrElementRef(array, idx);
+   IntOrP* ref = PDRangeArrElementRef(array, idx);
 
    ref->i_val += value;
 

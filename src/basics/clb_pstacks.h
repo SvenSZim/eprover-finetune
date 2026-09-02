@@ -34,86 +34,88 @@ Changes
 
 /* Generic stack data type, can take (long) integers or pointers */
 
-typedef long   PStackPointer;
+typedef long PStackPointer;
 
 typedef struct pstackcell
 {
-   long          size;    /* ...of allocated memory */
+   long size;             /* ...of allocated memory */
    PStackPointer current; /* First unused address, 0 for empty stack */
-   IntOrP        *stack;  /* Stack area */
-}PStackCell, *PStack_p;
+   IntOrP* stack;         /* Stack area */
+} PStackCell, *PStack_p;
 
 
-#define PSTACK_DEFAULT_SIZE 128 /* Stacks grow exponentially (and never
+#define PSTACK_DEFAULT_SIZE                                                    \
+   128 /* Stacks grow exponentially (and never
                                    shrink unless explicitly freed) -
                                    take care */
 
 
 #define PStackCellAlloc() (PStackCell*)SizeMalloc(sizeof(PStackCell))
-#define PStackCellFree(junk)         SizeFree(junk, sizeof(PStackCell))
+#define PStackCellFree(junk) SizeFree(junk, sizeof(PStackCell))
 
 #ifdef CONSTANT_MEM_ESTIMATE
 #define PSTACK_AVG_MEM 68
 #else
-#define PSTACK_AVG_MEM (MEMSIZE(PStackCell)+MEMSIZE(IntOrP)*6)
+#define PSTACK_AVG_MEM (MEMSIZE(PStackCell) + MEMSIZE(IntOrP) * 6)
 #endif
 
-#define  PStackBaseAddress(stackarg) ((stackarg)->stack)
+#define PStackBaseAddress(stackarg) ((stackarg)->stack)
 static inline PStack_p PStackAlloc(void);
 static inline PStack_p PStackVarAlloc(long size);
-static inline void     PStackFree(PStack_p junk);
+static inline void PStackFree(PStack_p junk);
 static inline PStack_p PStackCopy(PStack_p stack);
-#define  PStackEmpty(stack) ((stack)->current == 0)
-static inline void     PStackReset(PStack_p stack);
+#define PStackEmpty(stack) ((stack)->current == 0)
+static inline void PStackReset(PStack_p stack);
 
-static inline void     PStackPushInt(PStack_p stack, long val);
-static inline void     PStackPushP(PStack_p stack, void* val);
-#define  PStackGetSP(stack) ((stack)->current)
-#define  PStackGetTopSP(stack) ((stack)->current-1)
+static inline void PStackPushInt(PStack_p stack, long val);
+static inline void PStackPushP(PStack_p stack, void* val);
+#define PStackGetSP(stack) ((stack)->current)
+#define PStackGetTopSP(stack) ((stack)->current - 1)
 
-static inline IntOrP   PStackPop(PStack_p stack);
-#define  PStackPopInt(stack) (PStackPop(stack).i_val)
-#define  PStackPopP(stack)   (PStackPop(stack).p_val)
-static inline void     PStackDiscardTop(PStack_p stack);
+static inline IntOrP PStackPop(PStack_p stack);
+#define PStackPopInt(stack) (PStackPop(stack).i_val)
+#define PStackPopP(stack) (PStackPop(stack).p_val)
+static inline void PStackDiscardTop(PStack_p stack);
 
-static inline IntOrP   PStackTop(PStack_p stack);
-#define  PStackTopInt(stack) (PStackTop(stack).i_val)
-#define  PStackTopP(stack)   (PStackTop(stack).p_val)
-IntOrP*  PStackTopAddr(PStack_p stack);
+static inline IntOrP PStackTop(PStack_p stack);
+#define PStackTopInt(stack) (PStackTop(stack).i_val)
+#define PStackTopP(stack) (PStackTop(stack).p_val)
+IntOrP* PStackTopAddr(PStack_p stack);
 
-static inline IntOrP   PStackBelowTop(PStack_p stack);
-#define  PStackBelowTopInt(stack) (PStackBelowTop(stack).i_val)
-#define  PStackBelowTopP(stack)   (PStackBelowTop(stack).p_val)
+static inline IntOrP PStackBelowTop(PStack_p stack);
+#define PStackBelowTopInt(stack) (PStackBelowTop(stack).i_val)
+#define PStackBelowTopP(stack) (PStackBelowTop(stack).p_val)
 
 
-static inline IntOrP   PStackElement(PStack_p stack, PStackPointer pos);
-#define  PStackElementInt(stack,pos) (PStackElement(stack,pos).i_val)
-#define  PStackElementP(stack,pos) (PStackElement(stack,pos).p_val)
+static inline IntOrP PStackElement(PStack_p stack, PStackPointer pos);
+#define PStackElementInt(stack, pos) (PStackElement(stack, pos).i_val)
+#define PStackElementP(stack, pos) (PStackElement(stack, pos).p_val)
 
-static inline IntOrP *PStackElementRef(PStack_p stack, PStackPointer pos);
+static inline IntOrP* PStackElementRef(PStack_p stack, PStackPointer pos);
 
-#define   PStackAssignP(stack, pos, value) \
-          PStackElementRef((stack), (pos))->p_val = (value)
-#define   PStackAssignInt(stack, pos, value) \
-          PStackElementRef((stack), (pos))->i_val = (value)
+#define PStackAssignP(stack, pos, value)                                       \
+   PStackElementRef((stack), (pos))->p_val = (value)
+#define PStackAssignInt(stack, pos, value)                                     \
+   PStackElementRef((stack), (pos))->i_val = (value)
 
-void     PStackDiscardElement(PStack_p stack, PStackPointer i);
+void PStackDiscardElement(PStack_p stack, PStackPointer i);
 
-void     PStackSort(PStack_p stack, ComparisonFunctionType cmpfun);
+void PStackSort(PStack_p stack, ComparisonFunctionType cmpfun);
 PStackPointer PStackBinSearch(PStack_p stack, void* key, PStackPointer lower,
-                              PStackPointer upper, ComparisonFunctionType cmpfun);
+                              PStackPointer upper,
+                              ComparisonFunctionType cmpfun);
 
-void     PStackMerge(PStack_p st1, PStack_p st2, PStack_p res,
-                     ComparisonFunctionType cmpfun);
+void PStackMerge(PStack_p st1, PStack_p st2, PStack_p res,
+                 ComparisonFunctionType cmpfun);
 
-double   PStackComputeAverage(PStack_p stack, double *deviation);
+double PStackComputeAverage(PStack_p stack, double* deviation);
 
-void     PStackPushStack(PStack_p target, PStack_p source);
+void PStackPushStack(PStack_p target, PStack_p source);
 
-void     PStackPrintInt(FILE* out, char* format, PStack_p stack);
-void     PStackPrintP(FILE* out, char* format, PStack_p stack);
+void PStackPrintInt(FILE* out, char* format, PStack_p stack);
+void PStackPrintP(FILE* out, char* format, PStack_p stack);
 
-void     PStackGrow(PStack_p stack);
+void PStackGrow(PStack_p stack);
 
 /*---------------------------------------------------------------------*/
 /*                  Implementations as inline functions                */
@@ -205,7 +207,7 @@ static inline PStack_p PStackVarAlloc(long size)
 //
 /----------------------------------------------------------------------*/
 
-static inline void  PStackFree(PStack_p junk)
+static inline void PStackFree(PStack_p junk)
 {
    assert(junk);
    assert(junk->stack);
@@ -234,9 +236,9 @@ static inline PStack_p PStackCopy(PStack_p stack)
    PStack_p handle = PStackAlloc();
    PStackPointer i;
 
-   for(i=0; i<PStackGetSP(stack); i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
-      push(handle, PStackElement(stack,i));
+      push(handle, PStackElement(stack, i));
    }
    return handle;
 }
@@ -254,10 +256,7 @@ static inline PStack_p PStackCopy(PStack_p stack)
 //
 /----------------------------------------------------------------------*/
 
-static inline void PStackReset(PStack_p stack)
-{
-   stack->current = 0;
-}
+static inline void PStackReset(PStack_p stack) { stack->current = 0; }
 
 /*-----------------------------------------------------------------------
 //
@@ -357,7 +356,7 @@ static inline IntOrP PStackTop(PStack_p stack)
 {
    assert(stack->current);
 
-   return stack->stack[stack->current-1];
+   return stack->stack[stack->current - 1];
 }
 
 
@@ -377,9 +376,9 @@ static inline IntOrP PStackTop(PStack_p stack)
 
 static inline IntOrP PStackBelowTop(PStack_p stack)
 {
-   assert(stack->current>=2);
+   assert(stack->current >= 2);
 
-   return stack->stack[stack->current-2];
+   return stack->stack[stack->current - 2];
 }
 
 
@@ -397,8 +396,8 @@ static inline IntOrP PStackBelowTop(PStack_p stack)
 
 static inline IntOrP PStackElement(PStack_p stack, PStackPointer pos)
 {
-   assert(pos<stack->current);
-   assert(pos>=0);
+   assert(pos < stack->current);
+   assert(pos >= 0);
 
    return stack->stack[pos];
 }
@@ -416,10 +415,10 @@ static inline IntOrP PStackElement(PStack_p stack, PStackPointer pos)
 //
 /----------------------------------------------------------------------*/
 
-static inline IntOrP *PStackElementRef(PStack_p stack, PStackPointer pos)
+static inline IntOrP* PStackElementRef(PStack_p stack, PStackPointer pos)
 {
-   assert(pos<stack->current);
-   assert(pos>=0);
+   assert(pos < stack->current);
+   assert(pos >= 0);
 
    return &(stack->stack[pos]);
 }
@@ -438,7 +437,7 @@ static inline IntOrP *PStackElementRef(PStack_p stack, PStackPointer pos)
 
 static inline bool PStackFindP(PStack_p stack, void* p)
 {
-   for(PStackPointer i=0; i<PStackGetSP(stack); i++)
+   for(PStackPointer i = 0; i < PStackGetSP(stack); i++)
    {
       if(PStackElementP(stack, i) == p)
       {
@@ -462,7 +461,7 @@ static inline bool PStackFindP(PStack_p stack, void* p)
 
 static inline bool PStackFindInt(PStack_p stack, long num)
 {
-   for(PStackPointer i=0; i<PStackGetSP(stack); i++)
+   for(PStackPointer i = 0; i < PStackGetSP(stack); i++)
    {
       if(PStackElementInt(stack, i) == num)
       {

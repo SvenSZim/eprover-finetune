@@ -65,12 +65,12 @@ void lit_tree_free(PTree_p tree)
       tree = PStackPopP(stack);
       if(tree)
       {
-    handle = tree->key;
-    assert(handle);
-    assert(handle->lit);
-    LitDescCellFree(handle);
-    PStackPushP(stack, tree->lson);
-    PStackPushP(stack, tree->rson);
+         handle = tree->key;
+         assert(handle);
+         assert(handle->lit);
+         LitDescCellFree(handle);
+         PStackPushP(stack, tree->lson);
+         PStackPushP(stack, tree->rson);
       }
    }
    PStackFree(stack);
@@ -98,8 +98,8 @@ void lit_tree_free(PTree_p tree)
 
 int LitDescCompare(const void* lit1, const void* lit2)
 {
-   const LitDesc_p l1 = (const LitDesc_p) lit1;
-   const LitDesc_p l2 = (const LitDesc_p) lit2;
+   const LitDesc_p l1 = (const LitDesc_p)lit1;
+   const LitDesc_p l2 = (const LitDesc_p)lit2;
 
    return PCmp(l1->lit, l2->lit);
 }
@@ -123,11 +123,11 @@ LitHash_p LitHashAlloc(Sig_p sig)
 
    LitHash_p handle = LitHashCellAlloc();
 
-   handle->sig_size = sig->f_count+1;
-   handle->pos_lits = SizeMalloc(handle->sig_size*sizeof(PTree_p));
-   handle->neg_lits = SizeMalloc(handle->sig_size*sizeof(PTree_p));
+   handle->sig_size = sig->f_count + 1;
+   handle->pos_lits = SizeMalloc(handle->sig_size * sizeof(PTree_p));
+   handle->neg_lits = SizeMalloc(handle->sig_size * sizeof(PTree_p));
 
-   for(i=0; i<handle->sig_size; i++)
+   for(i = 0; i < handle->sig_size; i++)
    {
       handle->pos_lits[i] = NULL;
       handle->neg_lits[i] = NULL;
@@ -152,13 +152,13 @@ void LitHashFree(LitHash_p junk)
 {
    long i;
 
-   for(i=0; i<junk->sig_size; i++)
+   for(i = 0; i < junk->sig_size; i++)
    {
       lit_tree_free(junk->pos_lits[i]);
       lit_tree_free(junk->neg_lits[i]);
    }
-   SizeFree(junk->pos_lits, junk->sig_size*sizeof(PTree_p));
-   SizeFree(junk->neg_lits, junk->sig_size*sizeof(PTree_p));
+   SizeFree(junk->pos_lits, junk->sig_size * sizeof(PTree_p));
+   SizeFree(junk->neg_lits, junk->sig_size * sizeof(PTree_p));
    LitHashCellFree(junk);
 }
 
@@ -179,7 +179,7 @@ void LitHashFree(LitHash_p junk)
 void LitHashInsertEqn(LitHash_p hash, Eqn_p eqn, Clause_p clause)
 {
    LitDesc_p handle = LitDescCellAlloc(), old;
-   PTree_p *root;
+   PTree_p* root;
 
    assert(hash);
    assert(eqn);
@@ -223,7 +223,7 @@ void LitHashInsertClause(LitHash_p hash, Clause_p clause)
 {
    Eqn_p handle;
 
-   for(handle=clause->literals; handle; handle = handle->next)
+   for(handle = clause->literals; handle; handle = handle->next)
    {
       LitHashInsertEqn(hash, handle, clause);
    }
@@ -246,8 +246,7 @@ void LitHashInsertClauseSet(LitHash_p hash, ClauseSet_p set)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!= set->anchor; handle =
-     handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       LitHashInsertClause(hash, handle);
    }
@@ -257,24 +256,6 @@ void LitHashInsertClauseSet(LitHash_p hash, ClauseSet_p set)
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

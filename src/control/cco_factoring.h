@@ -34,19 +34,16 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
 
-long ComputeAllOrderedFactors(TB_p bank, OCB_p ocb,
-               Clause_p clause, ClauseSet_p store,
-               VarBank_p freshvars);
+long ComputeAllOrderedFactors(TB_p bank, OCB_p ocb, Clause_p clause,
+                              ClauseSet_p store, VarBank_p freshvars);
 
-long ComputeAllEqualityFactors(TB_p bank, OCB_p ocb,
-                Clause_p clause, ClauseSet_p store,
-                VarBank_p freshvars);
+long ComputeAllEqualityFactors(TB_p bank, OCB_p ocb, Clause_p clause,
+                               ClauseSet_p store, VarBank_p freshvars);
 
 
 
@@ -55,8 +52,6 @@ long ComputeAllEqualityFactors(TB_p bank, OCB_p ocb,
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

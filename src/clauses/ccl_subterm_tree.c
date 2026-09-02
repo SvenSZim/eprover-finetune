@@ -51,10 +51,7 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-static void subterm_occ_free_wrapper(void *junk)
-{
-   SubtermOccFree(junk);
-}
+static void subterm_occ_free_wrapper(void* junk) { SubtermOccFree(junk); }
 
 /*-----------------------------------------------------------------------
 //
@@ -68,10 +65,7 @@ static void subterm_occ_free_wrapper(void *junk)
 //
 /----------------------------------------------------------------------*/
 
-static void subterm_pos_free_wrapper(void *junk)
-{
-   SubtermPosFree(junk);
-}
+static void subterm_pos_free_wrapper(void* junk) { SubtermPosFree(junk); }
 
 
 /*-----------------------------------------------------------------------
@@ -130,10 +124,10 @@ SubtermOcc_p SubtermOccAlloc(Term_p term)
 {
    SubtermOcc_p handle = SubtermOccCellAlloc();
 
-   handle->term    = term;
+   handle->term = term;
    handle->pl.occs.rw_rest = NULL;
    handle->pl.occs.rw_full = NULL;
-   handle->pl.pos.clauses  = NULL;
+   handle->pl.pos.clauses = NULL;
    return handle;
 }
 
@@ -178,7 +172,6 @@ void SubtermPosFree(SubtermOcc_p soc)
 
 
 
-
 /*-----------------------------------------------------------------------
 //
 // Function: CmpSubtermCells()
@@ -193,10 +186,10 @@ void SubtermPosFree(SubtermOcc_p soc)
 //
 /----------------------------------------------------------------------*/
 
-int CmpSubtermCells(const void *soc1, const void *soc2)
+int CmpSubtermCells(const void* soc1, const void* soc2)
 {
-   const SubtermOcc_p s1 = (const SubtermOcc_p) soc1;
-   const SubtermOcc_p s2 = (const SubtermOcc_p) soc2;
+   const SubtermOcc_p s1 = (const SubtermOcc_p)soc1;
+   const SubtermOcc_p s2 = (const SubtermOcc_p)soc2;
 
    return PCmp(s1->term, s2->term);
 }
@@ -232,10 +225,7 @@ void SubtermBWTreeFree(SubtermTree_p root)
 //
 /----------------------------------------------------------------------*/
 
-void SubtermBWTreeFreeWrapper(void *junk)
-{
-   SubtermBWTreeFree(junk);
-}
+void SubtermBWTreeFreeWrapper(void* junk) { SubtermBWTreeFree(junk); }
 
 
 /*-----------------------------------------------------------------------
@@ -268,10 +258,7 @@ void SubtermOLTreeFree(SubtermTree_p root)
 //
 /----------------------------------------------------------------------*/
 
-void SubtermOLTreeFreeWrapper(void *junk)
-{
-   SubtermOLTreeFree(junk);
-}
+void SubtermOLTreeFreeWrapper(void* junk) { SubtermOLTreeFree(junk); }
 
 
 
@@ -288,7 +275,7 @@ void SubtermOLTreeFreeWrapper(void *junk)
 //
 /----------------------------------------------------------------------*/
 
-SubtermOcc_p SubtermTreeInsertTerm(SubtermTree_p *root, Term_p term)
+SubtermOcc_p SubtermTreeInsertTerm(SubtermTree_p* root, Term_p term)
 {
    SubtermOcc_p old, newnode = SubtermOccAlloc(term);
 
@@ -315,12 +302,11 @@ SubtermOcc_p SubtermTreeInsertTerm(SubtermTree_p *root, Term_p term)
 //
 /----------------------------------------------------------------------*/
 
-SubtermOcc_p SubtermTreeFindTerm(SubtermTree_p *root, Term_p term)
+SubtermOcc_p SubtermTreeFindTerm(SubtermTree_p* root, Term_p term)
 {
    SubtermOcc_p found, key = SubtermOccAlloc(term);
 
-   found = PTreeObjFindObj(root, key,
-                           CmpSubtermCells);
+   found = PTreeObjFindObj(root, key, CmpSubtermCells);
    SubtermOccFree(key);
    return found;
 }
@@ -338,7 +324,7 @@ SubtermOcc_p SubtermTreeFindTerm(SubtermTree_p *root, Term_p term)
 //
 /----------------------------------------------------------------------*/
 
-void SubtermTreeDeleteTerm(SubtermTree_p *root, Term_p term)
+void SubtermTreeDeleteTerm(SubtermTree_p* root, Term_p term)
 {
    SubtermOcc_p old, knode = SubtermOccAlloc(term);
 
@@ -362,8 +348,8 @@ void SubtermTreeDeleteTerm(SubtermTree_p *root, Term_p term)
 //
 /----------------------------------------------------------------------*/
 
-bool SubtermTreeInsertTermOcc(SubtermTree_p *root, Term_p term,
-                              Clause_p clause, bool restricted)
+bool SubtermTreeInsertTermOcc(SubtermTree_p* root, Term_p term, Clause_p clause,
+                              bool restricted)
 {
    SubtermOcc_p handle = SubtermTreeInsertTerm(root, term);
 
@@ -388,8 +374,8 @@ bool SubtermTreeInsertTermOcc(SubtermTree_p *root, Term_p term,
 //
 /----------------------------------------------------------------------*/
 
-bool SubtermTreeDeleteTermOcc(SubtermTree_p *root, Term_p term,
-                              Clause_p clause, bool restricted)
+bool SubtermTreeDeleteTermOcc(SubtermTree_p* root, Term_p term, Clause_p clause,
+                              bool restricted)
 {
    SubtermOcc_p old, knode = SubtermOccAlloc(term);
    SubtermTree_p oldnode;
@@ -471,12 +457,12 @@ void SubtermTreePrintDot(FILE* out, SubtermTree_p root, Sig_p sig)
    {
       PStack_p terms = PStackAlloc();
       PStackPointer i;
-      char* sep="";
+      char* sep = "";
       SubtermOcc_p data;
 
       PTreeToPStack(terms, root);
       fprintf(out, "     t%p [label=\"{|{", root);
-      for(i=0; i<PStackGetSP(terms); i++)
+      for(i = 0; i < PStackGetSP(terms); i++)
       {
          data = PStackElementP(terms, i);
          fprintf(out, "%s", sep);
@@ -504,7 +490,8 @@ void SubtermTreePrintDot(FILE* out, SubtermTree_p root, Sig_p sig)
 
 void SubtermTreePrintDummy(FILE* out, SubtermTree_p root, Sig_p sig)
 {
-   fprintf(out, "     t%p [shape=box label=\"%ld terms\"]\n", root, PObjTreeNodes(root));
+   fprintf(out, "     t%p [shape=box label=\"%ld terms\"]\n", root,
+           PObjTreeNodes(root));
 }
 
 

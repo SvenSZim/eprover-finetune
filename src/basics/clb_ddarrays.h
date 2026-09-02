@@ -34,10 +34,10 @@ Changes
 
 typedef struct ddarraycell
 {
-   long   size;
-   long   grow;
-   double *array;
-}DDArrayCell, *DDArray_p;
+   long size;
+   long grow;
+   double* array;
+} DDArrayCell, *DDArray_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -48,21 +48,20 @@ typedef struct ddarraycell
 #define DDArrayCellFree(junk) SizeFree(junk, sizeof(DDArrayCell))
 
 DDArray_p DDArrayAlloc(long init_size, long grow);
-void      DDArrayFree(DDArray_p junk);
+void DDArrayFree(DDArray_p junk);
 
-void      DDArayEnlarge(DDArray_p array, long idx);
+void DDArayEnlarge(DDArray_p array, long idx);
 static inline double* DDArrayElementRef(DDArray_p array, long idx);
 
 
-#define   DDArrayAssign(array, idx, value) \
-          *DDArrayElementRef((array), (idx)) = (value)
+#define DDArrayAssign(array, idx, value)                                       \
+   *DDArrayElementRef((array), (idx)) = (value)
 
-#define   DDArrayElement(array, idx) \
-     *DDArrayElementRef((array), (idx))
+#define DDArrayElement(array, idx) *DDArrayElementRef((array), (idx))
 
-void      DDArrayAdd(DDArray_p collect, DDArray_p data, long limit);
+void DDArrayAdd(DDArray_p collect, DDArray_p data, long limit);
 
-double    DDArraySelectPart(DDArray_p array, double part, long size);
+double DDArraySelectPart(DDArray_p array, double part, long size);
 
 
 /*---------------------------------------------------------------------*/
@@ -103,8 +102,6 @@ static inline double* DDArrayElementRef(DDArray_p array, long idx)
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

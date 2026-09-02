@@ -60,8 +60,7 @@
 //
 /----------------------------------------------------------------------*/
 
-long ComputeDisEqDecompositions(TB_p terms, Clause_p clause,
-                                ClauseSet_p store,
+long ComputeDisEqDecompositions(TB_p terms, Clause_p clause, ClauseSet_p store,
                                 long diseq_decomposition,
                                 long diseq_decomp_maxarity)
 {
@@ -77,8 +76,7 @@ long ComputeDisEqDecompositions(TB_p terms, Clause_p clause,
       {
          if(EqnIsEquLit(lit) && EqnIsNegative(lit) &&
             lit->lterm->f_code == lit->rterm->f_code &&
-            lit->lterm->arity <= diseq_decomp_maxarity &&
-            lit->lterm->arity)
+            lit->lterm->arity <= diseq_decomp_maxarity && lit->lterm->arity)
          {
             new_clause = ClauseDisEqDecomposition(terms, clause, litpos);
             if(new_clause)

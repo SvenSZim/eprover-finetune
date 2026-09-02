@@ -24,7 +24,6 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
@@ -54,17 +53,17 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-static AxFilter_p sine_get_filter(char* fname, AxFilterSet_p *filters)
+static AxFilter_p sine_get_filter(char* fname, AxFilterSet_p* filters)
 {
-   AxFilter_p    filter;
-   Scanner_p     in;
+   AxFilter_p filter;
+   Scanner_p in;
 
    in = CreateScanner(StreamTypeOptionString, fname, true, NULL, true);
    CheckInpTok(in, Name);
    *filters = AxFilterSetCreateInternal(AxFilterDefaultSet);
-   if(TestTok(LookToken(in,1), OpenBracket))
+   if(TestTok(LookToken(in, 1), OpenBracket))
    {
-      filter  = AxFilterDefParse(in);
+      filter = AxFilterDefParse(in);
       AxFilterSetAddFilter(*filters, filter);
    }
    else
@@ -76,9 +75,7 @@ static AxFilter_p sine_get_filter(char* fname, AxFilterSet_p *filters)
 
          AxFilterSetAddNames(fstring, *filters);
          Error("Unknown SinE-filter '%s' selected (valid choices: %s)",
-               USAGE_ERROR,
-               fname,
-               DStrView(fstring));
+               USAGE_ERROR, fname, DStrView(fstring));
          DStrFree(fstring);
       }
    }
@@ -88,14 +85,14 @@ static AxFilter_p sine_get_filter(char* fname, AxFilterSet_p *filters)
 
 #ifdef NEVER_DEFINED
 
-static AxFilter_p sine_get_filter(char* fname, AxFilterSet_p *filters)
+static AxFilter_p sine_get_filter(char* fname, AxFilterSet_p* filters)
 {
-   AxFilter_p    filter;
-   Scanner_p     in;
+   AxFilter_p filter;
+   Scanner_p in;
 
    in = CreateScanner(StreamTypeOptionString, fname, true, NULL, true);
    CheckInpTok(in, Name);
-   if(!TestInpId(in, "LambdaDef") && TestTok(LookToken(in,1), NoToken))
+   if(!TestInpId(in, "LambdaDef") && TestTok(LookToken(in, 1), NoToken))
    {
       *filters = AxFilterSetCreateInternal(AxFilterDefaultSet);
       filter = AxFilterSetFindFilter(*filters, fname);
@@ -105,16 +102,14 @@ static AxFilter_p sine_get_filter(char* fname, AxFilterSet_p *filters)
 
          AxFilterSetAddNames(fstring, *filters);
          Error("Unknown SinE-filter '%s' selected (valid choices: %s)",
-               USAGE_ERROR,
-               fname,
-               DStrView(fstring));
+               USAGE_ERROR, fname, DStrView(fstring));
          DStrFree(fstring);
       }
    }
    else
    {
       *filters = AxFilterSetAlloc();
-      filter  = AxFilterDefParse(in);
+      filter = AxFilterDefParse(in);
       AxFilterSetAddFilter(*filters, filter);
    }
    DestroyScanner(in);
@@ -178,88 +173,82 @@ static AxFilter_p sine_get_filter(char* fname, AxFilterSet_p *filters)
 /* CLASS_MSSSMLL     : protokoll_X----_auto_sine12    24   */
 /* CLASS_MMMSMLL     : protokoll_X----_auto_sine12    2    */
 /* Raw association */
-char* raw_class[] =
-{
-   "-LMSSMLL",  /*      0 protokoll_X----_auto_300 */
-   "-MMSSMSL",  /*      3 protokoll_X----_auto_300 */
-   "-LMLSMSL",  /*     20 protokoll_X----_auto_sine16 */
-   "-MMSSMSM",  /*     18 protokoll_X----_auto_300 */
-   "-MSSMLSM",  /*      0 protokoll_X----_auto_300 */
-   "-LMLSLLL",  /*      1 protokoll_X----_auto_sine31 */
-   "-MMSMMSM",  /*     13 protokoll_X----_auto_300 */
-   "-LMMSMLL",  /*     24 protokoll_X----_auto_sine03 */
-   "-LLLLMLL",  /*     76 protokoll_X----_auto_sine11 */
-   "-MSLMMSL",  /*     47 protokoll_X----_auto_300 */
-   "-MSLSMSL",  /*    209 protokoll_X----_auto_sine11 */
-   "-SSSSLSM",  /*    205 protokoll_X----_auto_300 */
-   "-SSSSLSL",  /*     23 protokoll_X----_auto_300 */
-   "-SSSSMSL",  /*    216 protokoll_X----_auto_300 */
-   "-SSSSMSM",  /*   2302 protokoll_X----_auto_300 */
-   "-SSSSMSS",  /*   6294 protokoll_X----_auto_300 */
-   "-SMSSMSM",  /*      4 protokoll_X----_auto_sine16 */
-   "-LSMSMSL",  /*     23 protokoll_X----_auto_sine18 */
-   "-SSSSLSS",  /*    154 protokoll_X----_auto_NIX */
-   "-LLLSMSL",  /*      3 protokoll_X----_auto_sine17 */
-   "-MSSSMML",  /*      6 protokoll_X----_auto_sine13 */
-   "-MSSSMSS",  /*     12 protokoll_X----_auto_sine17 */
-   "-LMLMMLL",  /*      7 protokoll_X----_auto_sine12 */
-   "-LMLMLLL",  /*     23 protokoll_X----_auto_sine13 */
-   "-LSLSMSL",  /*     19 protokoll_X----_auto_sine11 */
-   "-MMSSMLL",  /*      2 protokoll_X----_auto_sine31 */
-   "-MSSSMSL",  /*     14 protokoll_X----_auto_sine17 */
-   "-MSSSMSM",  /*    348 protokoll_X----_auto_300 */
-   "-LSSSMSM",  /*      4 protokoll_X----_auto_300 */
-   "-MSMSMSL",  /*     22 protokoll_X----_auto_300 */
-   "-LMLLMSL",  /*     42 protokoll_X----_auto_300 */
-   "-MSSSLSM",  /*     26 protokoll_X----_auto_300 */
-   "-SSSSMLL",  /*      1 protokoll_X----_auto_300 */
-   "-LLLMLLL",  /*     10 protokoll_X----_auto_sine31 */
-   "-LMMMMLL",  /*      6 protokoll_X----_auto_sine16 */
-   "-MSSSMLL",  /*     24 protokoll_X----_auto_sine12 */
-   "-MMMSMLL",  /*      2 protokoll_X----_auto_sine12 */
-   NULL
-};
-char* raw_sine[] =
-{
-   NULL,
-   NULL,
-   "gf200_h_gu_R03_F100_L20000",
-   NULL,
-   NULL,
-   "gf120_h_gu_RUU_F100_L01000",
-   NULL,
-   "gf120_gu_R02_F100_L20000",
-   "gf500_h_gu_R04_F100_L20000",
-   NULL,
-   "gf500_h_gu_R04_F100_L20000",
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   "gf200_h_gu_R03_F100_L20000",
-   "gf200_h_gu_RUU_F100_L20000",
-   NULL,
-   "gf600_h_gu_R05_F100_L20000",
-   "gf120_h_gu_R02_F100_L20000",
-   "gf600_h_gu_R05_F100_L20000",
-   "gf120_h_gu_RUU_F100_L00500",
-   "gf120_h_gu_R02_F100_L20000",
-   "gf500_h_gu_R04_F100_L20000",
-   "gf120_h_gu_RUU_F100_L01000",
-   "gf600_h_gu_R05_F100_L20000",
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   NULL,
-   "gf120_h_gu_RUU_F100_L01000",
-   "gf200_h_gu_R03_F100_L20000",
-   "gf120_h_gu_RUU_F100_L00500",
-   "gf120_h_gu_RUU_F100_L00500",
-   NULL
-};
+char* raw_class[] = { "-LMSSMLL", /*      0 protokoll_X----_auto_300 */
+                      "-MMSSMSL", /*      3 protokoll_X----_auto_300 */
+                      "-LMLSMSL", /*     20 protokoll_X----_auto_sine16 */
+                      "-MMSSMSM", /*     18 protokoll_X----_auto_300 */
+                      "-MSSMLSM", /*      0 protokoll_X----_auto_300 */
+                      "-LMLSLLL", /*      1 protokoll_X----_auto_sine31 */
+                      "-MMSMMSM", /*     13 protokoll_X----_auto_300 */
+                      "-LMMSMLL", /*     24 protokoll_X----_auto_sine03 */
+                      "-LLLLMLL", /*     76 protokoll_X----_auto_sine11 */
+                      "-MSLMMSL", /*     47 protokoll_X----_auto_300 */
+                      "-MSLSMSL", /*    209 protokoll_X----_auto_sine11 */
+                      "-SSSSLSM", /*    205 protokoll_X----_auto_300 */
+                      "-SSSSLSL", /*     23 protokoll_X----_auto_300 */
+                      "-SSSSMSL", /*    216 protokoll_X----_auto_300 */
+                      "-SSSSMSM", /*   2302 protokoll_X----_auto_300 */
+                      "-SSSSMSS", /*   6294 protokoll_X----_auto_300 */
+                      "-SMSSMSM", /*      4 protokoll_X----_auto_sine16 */
+                      "-LSMSMSL", /*     23 protokoll_X----_auto_sine18 */
+                      "-SSSSLSS", /*    154 protokoll_X----_auto_NIX */
+                      "-LLLSMSL", /*      3 protokoll_X----_auto_sine17 */
+                      "-MSSSMML", /*      6 protokoll_X----_auto_sine13 */
+                      "-MSSSMSS", /*     12 protokoll_X----_auto_sine17 */
+                      "-LMLMMLL", /*      7 protokoll_X----_auto_sine12 */
+                      "-LMLMLLL", /*     23 protokoll_X----_auto_sine13 */
+                      "-LSLSMSL", /*     19 protokoll_X----_auto_sine11 */
+                      "-MMSSMLL", /*      2 protokoll_X----_auto_sine31 */
+                      "-MSSSMSL", /*     14 protokoll_X----_auto_sine17 */
+                      "-MSSSMSM", /*    348 protokoll_X----_auto_300 */
+                      "-LSSSMSM", /*      4 protokoll_X----_auto_300 */
+                      "-MSMSMSL", /*     22 protokoll_X----_auto_300 */
+                      "-LMLLMSL", /*     42 protokoll_X----_auto_300 */
+                      "-MSSSLSM", /*     26 protokoll_X----_auto_300 */
+                      "-SSSSMLL", /*      1 protokoll_X----_auto_300 */
+                      "-LLLMLLL", /*     10 protokoll_X----_auto_sine31 */
+                      "-LMMMMLL", /*      6 protokoll_X----_auto_sine16 */
+                      "-MSSSMLL", /*     24 protokoll_X----_auto_sine12 */
+                      "-MMMSMLL", /*      2 protokoll_X----_auto_sine12 */
+                      NULL };
+char* raw_sine[] = { NULL,
+                     NULL,
+                     "gf200_h_gu_R03_F100_L20000",
+                     NULL,
+                     NULL,
+                     "gf120_h_gu_RUU_F100_L01000",
+                     NULL,
+                     "gf120_gu_R02_F100_L20000",
+                     "gf500_h_gu_R04_F100_L20000",
+                     NULL,
+                     "gf500_h_gu_R04_F100_L20000",
+                     NULL,
+                     NULL,
+                     NULL,
+                     NULL,
+                     NULL,
+                     "gf200_h_gu_R03_F100_L20000",
+                     "gf200_h_gu_RUU_F100_L20000",
+                     NULL,
+                     "gf600_h_gu_R05_F100_L20000",
+                     "gf120_h_gu_R02_F100_L20000",
+                     "gf600_h_gu_R05_F100_L20000",
+                     "gf120_h_gu_RUU_F100_L00500",
+                     "gf120_h_gu_R02_F100_L20000",
+                     "gf500_h_gu_R04_F100_L20000",
+                     "gf120_h_gu_RUU_F100_L01000",
+                     "gf600_h_gu_R05_F100_L20000",
+                     NULL,
+                     NULL,
+                     NULL,
+                     NULL,
+                     NULL,
+                     NULL,
+                     "gf120_h_gu_RUU_F100_L01000",
+                     "gf200_h_gu_R03_F100_L20000",
+                     "gf120_h_gu_RUU_F100_L00500",
+                     "gf120_h_gu_RUU_F100_L00500",
+                     NULL };
 /* Predicted solutions: 10203 */
 
 
@@ -278,25 +267,25 @@ char* raw_sine[] =
 
 static char* find_auto_sine(ProofState_p state)
 {
-   SpecLimitsCell      limits;
+   SpecLimitsCell limits;
    RawSpecFeatureCell features;
    int i;
 
-   limits.ax_some_limit        = 1199;
-   limits.ax_many_limit        = 10396;
-   limits.term_medium_limit    = 664277;
-   limits.term_large_limit     = 5573560;
+   limits.ax_some_limit = 1199;
+   limits.ax_many_limit = 10396;
+   limits.term_medium_limit = 664277;
+   limits.term_large_limit = 5573560;
    limits.symbols_medium_limit = 2471;
-   limits.symbols_large_limit  = 4140;
+   limits.symbols_large_limit = 4140;
 
-   limits.predc_medium_limit     = 0;
-   limits.predc_large_limit      = 2;
-   limits.pred_medium_limit      = 1225;
-   limits.pred_large_limit       = 4000;
-   limits.func_medium_limit      = 8;
-   limits.func_large_limit       = 110;
-   limits.fun_medium_limit       = 360;
-   limits.fun_large_limit        = 400;
+   limits.predc_medium_limit = 0;
+   limits.predc_large_limit = 2;
+   limits.pred_medium_limit = 1225;
+   limits.pred_large_limit = 4000;
+   limits.func_medium_limit = 8;
+   limits.func_large_limit = 110;
+   limits.fun_medium_limit = 360;
+   limits.fun_large_limit = 400;
 
 
    const char* SINE_MASK = "-aaaaaaa";
@@ -306,14 +295,14 @@ static char* find_auto_sine(ProofState_p state)
 
    /* Hard-coded exception - no conjecture & no hypotheses == no
       useful SInE! */
-   if(!(features.conjecture_count+features.hypothesis_count))
+   if(!(features.conjecture_count + features.hypothesis_count))
    {
       return NULL;
    }
 
-   for(i=0; raw_class[i]; i++)
+   for(i = 0; raw_class[i]; i++)
    {
-      if(strncmp(raw_class[i], features.class, SINE_CLASS_LEN)==0)
+      if(strncmp(raw_class[i], features.class, SINE_CLASS_LEN) == 0)
       {
          return raw_sine[i];
       }
@@ -325,7 +314,6 @@ static char* find_auto_sine(ProofState_p state)
 /*---------------------------------------------------------------------*/
 /*                         Exported Functions                          */
 /*---------------------------------------------------------------------*/
-
 
 
 
@@ -346,13 +334,13 @@ StructFOFSpec_p StructFOFSpecCreate(TB_p terms)
    StructFOFSpec_p handle = StructFOFSpecCellAlloc();
 
    //handle->sig             = terms->sig;
-   handle->terms           = terms;
+   handle->terms = terms;
    //handle->gc_terms        = NULL;
-   handle->clause_sets     = PStackAlloc();
-   handle->formula_sets    = PStackAlloc();
+   handle->clause_sets = PStackAlloc();
+   handle->formula_sets = PStackAlloc();
    handle->parsed_includes = NULL;
-   handle->f_distrib       = GenDistribAlloc(handle->terms->sig);
-   handle->shared_ax_sp    = 0;
+   handle->f_distrib = GenDistribAlloc(handle->terms->sig);
+   handle->shared_ax_sp = 0;
 
    return handle;
 }
@@ -374,24 +362,23 @@ StructFOFSpec_p StructFOFSpecCreate(TB_p terms)
 StructFOFSpec_p StructFOFSpecAlloc(void)
 {
    Sig_p sig;
-   TB_p  terms;
+   TB_p terms;
    TypeBank_p sort_table;
    StructFOFSpec_p res;
 
    sort_table = TypeBankAlloc();
-   sig =   SigAlloc(sort_table);
+   sig = SigAlloc(sort_table);
    SigInsertInternalCodes(sig);
    /* We assume free numers for LTB to avoid problems with the
       TFF-enabled parser */
-   sig->distinct_props = sig->distinct_props&~
-      (FPIsInteger|FPIsRational|FPIsFloat);
+   sig->distinct_props =
+      sig->distinct_props & ~(FPIsInteger | FPIsRational | FPIsFloat);
 
-   terms         = TBAlloc(sig);
-   res           = StructFOFSpecCreate(terms);
+   terms = TBAlloc(sig);
+   res = StructFOFSpecCreate(terms);
    // res->gc_terms = GCAdminAlloc(terms);
    return res;
 }
-
 
 
 
@@ -411,7 +398,7 @@ StructFOFSpec_p StructFOFSpecAlloc(void)
 void StructFOFSpecDestroy(StructFOFSpec_p ctrl)
 {
    FormulaSet_p fset;
-   ClauseSet_p  cset;
+   ClauseSet_p cset;
 
    while(!PStackEmpty(ctrl->clause_sets))
    {
@@ -449,9 +436,9 @@ void StructFOFSpecDestroy(StructFOFSpec_p ctrl)
 
 void StructFOFSpecFree(StructFOFSpec_p ctrl)
 {
-   TB_p  terms            = ctrl->terms;
-   Sig_p sig              = terms->sig;
-   TypeBank_p sort_table  = sig->type_bank;
+   TB_p terms = ctrl->terms;
+   Sig_p sig = terms->sig;
+   TypeBank_p sort_table = sig->type_bank;
 
    StructFOFSpecDestroy(ctrl);
 
@@ -475,17 +462,14 @@ void StructFOFSpecFree(StructFOFSpec_p ctrl)
 //
 /----------------------------------------------------------------------*/
 
-long StructFOFSpecCollectFCode(StructFOFSpec_p ctrl,
-                               FunCode f_code,
+long StructFOFSpecCollectFCode(StructFOFSpec_p ctrl, FunCode f_code,
                                PStack_p res_formulas)
 {
    long ret = 0;
    FormulaSet_p handle;
    PStackPointer i;
 
-   for(i = 0;
-       i <  PStackGetSP(ctrl->formula_sets);
-       i++)
+   for(i = 0; i < PStackGetSP(ctrl->formula_sets); i++)
    {
       handle = PStackElementP(ctrl->formula_sets, i);
       ret += FormulaSetCollectFCode(handle, f_code, res_formulas);
@@ -511,15 +495,15 @@ long StructFOFSpecParseAxioms(StructFOFSpec_p ctrl, PStack_p axfiles,
                               IOFormat parse_format, char* default_dir)
 {
    PStackPointer i;
-   char*        iname;
+   char* iname;
    FormulaSet_p fset;
-   ClauseSet_p  cset;
-   Scanner_p    in;
-   long         res = 0;
-   static IntOrP dummy = {0};
+   ClauseSet_p cset;
+   Scanner_p in;
+   long res = 0;
+   static IntOrP dummy = { 0 };
 
    //printf(COMCHAR" XXX Called with %ld axiom files\n", PStackGetSP(axfiles));
-   for(i=0; i<PStackGetSP(axfiles); i++)
+   for(i = 0; i < PStackGetSP(axfiles); i++)
    {
       iname = PStackElementP(axfiles, i);
       if(!StrTreeFind(&(ctrl->parsed_includes), iname))
@@ -531,15 +515,14 @@ long StructFOFSpecParseAxioms(StructFOFSpec_p ctrl, PStack_p axfiles,
          {
             ScannerSetFormat(in, parse_format);
 
-            fprintf(GlobalOut, COMCHAR" Parsing %s\n", iname);
+            fprintf(GlobalOut, COMCHAR " Parsing %s\n", iname);
             cset = ClauseSetAlloc();
             fset = FormulaSetAlloc();
             TBGCRegisterFormulaSet(ctrl->terms, fset);
             TBGCRegisterClauseSet(ctrl->terms, cset);
-            res += FormulaAndClauseSetParse(in, fset, cset, ctrl->terms,
-                                            NULL,
+            res += FormulaAndClauseSetParse(in, fset, cset, ctrl->terms, NULL,
                                             &(ctrl->parsed_includes));
-            assert(ClauseSetCardinality(cset)==0);
+            assert(ClauseSetCardinality(cset) == 0);
             PStackPushP(ctrl->clause_sets, cset);
             PStackPushP(ctrl->formula_sets, fset);
             // printf(COMCHAR" %s has %ld formulas\n", iname, FormulaSetCardinality(fset));
@@ -549,10 +532,10 @@ long StructFOFSpecParseAxioms(StructFOFSpec_p ctrl, PStack_p axfiles,
             //GenDistribSizeAdjust(ctrl->f_distrib, ctrl->terms->sig);
             //GenDistribAddClauseSet(ctrl->f_distrib, clauses, 1);
             //GenDistribAddFormulaSet(ctrl->f_distrib, formulas, trim, 1);
-        }
+         }
          else
          {
-            fprintf(GlobalOut, COMCHAR" Could not find %s\n", iname);
+            fprintf(GlobalOut, COMCHAR " Could not find %s\n", iname);
          }
       }
    }
@@ -600,32 +583,32 @@ void StructFOFSpecInitDistrib(StructFOFSpec_p ctrl, bool trim)
 
 long ProofStateSinE(ProofState_p state, char* fname)
 {
-   long            axno_orig, axno;
-   AxFilterSet_p   filters = NULL;
-   AxFilter_p      filter;
+   long axno_orig, axno;
+   AxFilterSet_p filters = NULL;
+   AxFilter_p filter;
    StructFOFSpec_p spec;
-   PStack_p        clauses, formulas;
+   PStack_p clauses, formulas;
 
-   if(!fname || strcmp(fname,"None")==0)
+   if(!fname || strcmp(fname, "None") == 0)
    {
       return 0;
    }
 
-   if(strcmp(fname, "Auto")==0)
+   if(strcmp(fname, "Auto") == 0)
    {
       fname = find_auto_sine(state);
    }
 
    if(!fname)
    {
-      fprintf(GlobalOut, COMCHAR" No SInE strategy applied\n");
+      fprintf(GlobalOut, COMCHAR " No SInE strategy applied\n");
       return 0;
    }
-   fprintf(GlobalOut, COMCHAR" SinE strategy is %s\n", fname);
+   fprintf(GlobalOut, COMCHAR " SinE strategy is %s\n", fname);
 
    filter = sine_get_filter(fname, &filters);
 
-   axno_orig = ClauseSetCardinality(state->axioms)+
+   axno_orig = ClauseSetCardinality(state->axioms) +
       FormulaSetCardinality(state->f_axioms);
 
    /* printf(COMCHAR" Magic happens here %s!\n", fname);
@@ -634,23 +617,21 @@ long ProofStateSinE(ProofState_p state, char* fname)
       printf("\n"); */
 
    formulas = PStackAlloc();
-   clauses  = PStackAlloc();
+   clauses = PStackAlloc();
    GCDeregisterFormulaSet(state->terms->gc, state->f_axioms);
    GCDeregisterClauseSet(state->terms->gc, state->axioms);
 
    spec = StructFOFSpecCreate(state->terms);
-   StructFOFSpecAddProblem(spec, state->axioms, state->f_axioms, filter->trim_implications);
+   StructFOFSpecAddProblem(spec, state->axioms, state->f_axioms,
+                           filter->trim_implications);
 
 
    //StructFOFSpecInitDistrib(spec, filter->trim_implications);
 
    //GenDistribPrint(stdout, spec->f_distrib, 10);
-   StructFOFSpecGetProblem(spec,
-                           filter,
-                           clauses,
-                           formulas);
+   StructFOFSpecGetProblem(spec, filter, clauses, formulas);
 
-   state->axioms   = ClauseSetAlloc();
+   state->axioms = ClauseSetAlloc();
    state->f_axioms = FormulaSetAlloc();
    TBGCRegisterFormulaSet(state->terms, state->f_axioms);
    TBGCRegisterClauseSet(state->terms, state->axioms);
@@ -667,12 +648,12 @@ long ProofStateSinE(ProofState_p state, char* fname)
 
    AxFilterSetFree(filters);
 
-   axno = ClauseSetCardinality(state->axioms)+
+   axno = ClauseSetCardinality(state->axioms) +
       FormulaSetCardinality(state->f_axioms);
 
    //printf(COMCHAR" ...ProofStateSinE()=%ld/%ld\n", axno, axno_orig);
 
-   return axno_orig-axno;
+   return axno_orig - axno;
 }
 
 

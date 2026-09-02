@@ -58,52 +58,52 @@ SpecLimits_p SpecLimitsAlloc(void)
 {
    SpecLimits_p handle = SpecLimitsCellAlloc();
 
-   handle->ngu_absolute           = NGU_ABSOLUTE;
+   handle->ngu_absolute = NGU_ABSOLUTE;
    if(NGU_ABSOLUTE)
    {
-      handle->ngu_few_limit          = NGU_FEW_ABSDEFAULT;
-      handle->ngu_many_limit         = NGU_MANY_ABSDEFAULT;
+      handle->ngu_few_limit = NGU_FEW_ABSDEFAULT;
+      handle->ngu_many_limit = NGU_MANY_ABSDEFAULT;
    }
    else
    {
-      handle->ngu_few_limit          = NGU_FEW_DEFAULT;
-      handle->ngu_many_limit         = NGU_MANY_DEFAULT;
+      handle->ngu_few_limit = NGU_FEW_DEFAULT;
+      handle->ngu_many_limit = NGU_MANY_DEFAULT;
    }
-   handle->gpc_absolute           = GPC_ABSOLUTE;
+   handle->gpc_absolute = GPC_ABSOLUTE;
    if(GPC_ABSOLUTE)
    {
-      handle->gpc_few_limit          = GPC_FEW_ABSDEFAULT;
-      handle->gpc_many_limit         = GPC_MANY_ABSDEFAULT;
+      handle->gpc_few_limit = GPC_FEW_ABSDEFAULT;
+      handle->gpc_many_limit = GPC_MANY_ABSDEFAULT;
    }
    else
    {
-      handle->gpc_few_limit          = GPC_FEW_DEFAULT;
-      handle->gpc_many_limit         = GPC_MANY_DEFAULT;
+      handle->gpc_few_limit = GPC_FEW_DEFAULT;
+      handle->gpc_many_limit = GPC_MANY_DEFAULT;
    }
-   handle->ax_some_limit          = AX_SOME_DEFAULT ;
-   handle->ax_many_limit          = AX_MANY_DEFAULT ;
-   handle->lit_some_limit         = LIT_SOME_DEFAULT;
-   handle->lit_many_limit         = LIT_MANY_DEFAULT;
-   handle->term_medium_limit      = TERM_MED_DEFAULT;
-   handle->term_large_limit       = TERM_LARGE_DEFAULT;
-   handle->far_sum_medium_limit   = FAR_SUM_MED_DEFAULT  ;
-   handle->far_sum_large_limit    = FAR_SUM_LARGE_DEFAULT;
-   handle->depth_medium_limit     = DEPTH_MEDIUM_DEFAULT;
-   handle->depth_deep_limit       = DEPTH_DEEP_DEFAULT;
-   handle->symbols_medium_limit   = SYMBOLS_MEDIUM_DEFAULT;
-   handle->symbols_large_limit    = SYMBOLS_LARGE_DEFAULT;
+   handle->ax_some_limit = AX_SOME_DEFAULT;
+   handle->ax_many_limit = AX_MANY_DEFAULT;
+   handle->lit_some_limit = LIT_SOME_DEFAULT;
+   handle->lit_many_limit = LIT_MANY_DEFAULT;
+   handle->term_medium_limit = TERM_MED_DEFAULT;
+   handle->term_large_limit = TERM_LARGE_DEFAULT;
+   handle->far_sum_medium_limit = FAR_SUM_MED_DEFAULT;
+   handle->far_sum_large_limit = FAR_SUM_LARGE_DEFAULT;
+   handle->depth_medium_limit = DEPTH_MEDIUM_DEFAULT;
+   handle->depth_deep_limit = DEPTH_DEEP_DEFAULT;
+   handle->symbols_medium_limit = SYMBOLS_MEDIUM_DEFAULT;
+   handle->symbols_large_limit = SYMBOLS_LARGE_DEFAULT;
 
-   handle->predc_medium_limit     = PREDC_MEDIUM_DEFAULT;
-   handle->predc_large_limit      = PREDC_LARGE_DEFAULT;
-   handle->pred_medium_limit      = PRED_MEDIUM_DEFAULT;
-   handle->pred_large_limit       = PRED_LARGE_DEFAULT;
-   handle->func_medium_limit      = FUNC_MEDIUM_DEFAULT;
-   handle->func_large_limit       = FUNC_LARGE_DEFAULT;
-   handle->fun_medium_limit       = FUN_MEDIUM_DEFAULT;
-   handle->fun_large_limit        = FUN_LARGE_DEFAULT;
+   handle->predc_medium_limit = PREDC_MEDIUM_DEFAULT;
+   handle->predc_large_limit = PREDC_LARGE_DEFAULT;
+   handle->pred_medium_limit = PRED_MEDIUM_DEFAULT;
+   handle->pred_large_limit = PRED_LARGE_DEFAULT;
+   handle->func_medium_limit = FUNC_MEDIUM_DEFAULT;
+   handle->func_large_limit = FUNC_LARGE_DEFAULT;
+   handle->fun_medium_limit = FUN_MEDIUM_DEFAULT;
+   handle->fun_large_limit = FUN_LARGE_DEFAULT;
 
-   handle->order_medium_limit     = ORDER_MEDIUM_DEFAULT;
-   handle->order_large_limit      = ORDER_LARGE_DEFAULT;
+   handle->order_medium_limit = ORDER_MEDIUM_DEFAULT;
+   handle->order_large_limit = ORDER_LARGE_DEFAULT;
    handle->num_of_defs_medium_limit = DEFS_MEDIUM_DEFAULT;
    handle->num_of_defs_large_limit = DEFS_LARGE_DEFAULT;
    handle->perc_form_defs_medium_limit = DEFS_PERC_MEDIUM_DEFAULT;
@@ -131,11 +131,10 @@ SpecLimits_p SpecLimitsAlloc(void)
 
 long ClauseSetCountGoals(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsGoal(handle))
       {
@@ -159,11 +158,10 @@ long ClauseSetCountGoals(ClauseSet_p set)
 
 long ClauseSetCountUnit(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsUnit(handle))
       {
@@ -188,13 +186,12 @@ long ClauseSetCountUnit(ClauseSet_p set)
 
 long ClauseSetCountUnitGoals(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
-      if(ClauseIsUnit(handle)&&ClauseIsGoal(handle))
+      if(ClauseIsUnit(handle) && ClauseIsGoal(handle))
       {
          res++;
       }
@@ -217,11 +214,10 @@ long ClauseSetCountUnitGoals(ClauseSet_p set)
 
 long ClauseSetCountHorn(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsHorn(handle))
       {
@@ -245,13 +241,12 @@ long ClauseSetCountHorn(ClauseSet_p set)
 
 long ClauseSetCountHornGoals(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
-      if(ClauseIsHorn(handle)&&ClauseIsGoal(handle))
+      if(ClauseIsHorn(handle) && ClauseIsGoal(handle))
       {
          res++;
       }
@@ -274,11 +269,10 @@ long ClauseSetCountHornGoals(ClauseSet_p set)
 
 long ClauseSetCountEquational(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsEquational(handle))
       {
@@ -302,11 +296,10 @@ long ClauseSetCountEquational(ClauseSet_p set)
 
 long ClauseSetCountPureEquational(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsPureEquational(handle))
       {
@@ -331,11 +324,10 @@ long ClauseSetCountPureEquational(ClauseSet_p set)
 
 long ClauseSetCountPosUnits(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsDemodulator(handle))
       {
@@ -360,11 +352,10 @@ long ClauseSetCountPosUnits(ClauseSet_p set)
 
 long ClauseSetCountGroundGoals(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsGoal(handle) && ClauseIsGround(handle))
       {
@@ -389,11 +380,10 @@ long ClauseSetCountGroundGoals(ClauseSet_p set)
 
 long ClauseSetCountGround(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsGround(handle))
       {
@@ -418,11 +408,10 @@ long ClauseSetCountGround(ClauseSet_p set)
 
 long ClauseSetCountGroundUnitAxioms(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsDemodulator(handle) && ClauseIsGround(handle))
       {
@@ -447,11 +436,10 @@ long ClauseSetCountGroundUnitAxioms(ClauseSet_p set)
 
 long ClauseSetCountGroundPositiveAxioms(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsPositive(handle) && ClauseIsGround(handle))
       {
@@ -476,11 +464,10 @@ long ClauseSetCountGroundPositiveAxioms(ClauseSet_p set)
 
 long ClauseSetCountPositiveAxioms(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsPositive(handle))
       {
@@ -505,11 +492,10 @@ long ClauseSetCountPositiveAxioms(ClauseSet_p set)
 
 long ClauseSetCountRangeRestricted(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsRangeRestricted(handle))
       {
@@ -541,7 +527,7 @@ double ClauseSetNonGoundAxiomPart(ClauseSet_p set)
    {
       return 0.0;
    }
-   return (tmp-ClauseSetCountGroundUnitAxioms(set))/(double)tmp;
+   return (tmp - ClauseSetCountGroundUnitAxioms(set)) / (double)tmp;
 }
 
 
@@ -561,36 +547,27 @@ double ClauseSetNonGoundAxiomPart(ClauseSet_p set)
 /----------------------------------------------------------------------*/
 
 long ClauseSetCollectArityInformation(ClauseSet_p set, Sig_p sig,
-                                      int *max_fun_arity,
-                                      int *avg_fun_arity,
-                                      int *sum_fun_arity,
-                                      int *max_pred_arity,
-                                      int *avg_pred_arity,
-                                      int *sum_pred_arity,
-                                      int *non_const_funs,
-                                      int *non_const_preds)
+                                      int* max_fun_arity, int* avg_fun_arity,
+                                      int* sum_fun_arity, int* max_pred_arity,
+                                      int* avg_pred_arity, int* sum_pred_arity,
+                                      int* non_const_funs, int* non_const_preds)
 {
-   int max_f_arity = 0,
-      sum_f_arity = 0,
-      f_count = 0,
-      c_count = 0,
-      non_const_p = 0;
-   int max_p_arity = 0,
-      sum_p_arity = 0,
-      p_count = 0;
-   long  array_size = sizeof(long)*(sig->f_count+1);
-   long *dist_array = SizeMalloc(array_size);
+   int max_f_arity = 0, sum_f_arity = 0, f_count = 0, c_count = 0,
+       non_const_p = 0;
+   int max_p_arity = 0, sum_p_arity = 0, p_count = 0;
+   long array_size = sizeof(long) * (sig->f_count + 1);
+   long* dist_array = SizeMalloc(array_size);
    FunCode i;
 
-   for(i=1; i<= sig->f_count; i++)
+   for(i = 1; i <= sig->f_count; i++)
    {
       dist_array[i] = 0;
    }
    ClauseSetAddSymbolDistribution(set, dist_array);
 
-   for(i=1; i<= sig->f_count; i++)
+   for(i = 1; i <= sig->f_count; i++)
    {
-      if(!SigIsSpecial(sig, i)&&dist_array[i])
+      if(!SigIsSpecial(sig, i) && dist_array[i])
       {
          short arity = SigFindArity(sig, i);
          if(SigIsPredicate(sig, i))
@@ -620,13 +597,13 @@ long ClauseSetCollectArityInformation(ClauseSet_p set, Sig_p sig,
    }
    SizeFree(dist_array, array_size);
 
-   *max_fun_arity   = max_f_arity;
-   *avg_fun_arity   = f_count?sum_f_arity/f_count:0;
-   *sum_fun_arity   = sum_f_arity;
-   *max_pred_arity  = max_p_arity;
-   *avg_pred_arity  = p_count?sum_p_arity/p_count:0;
-   *sum_pred_arity  = sum_p_arity;
-   *non_const_funs  = f_count;
+   *max_fun_arity = max_f_arity;
+   *avg_fun_arity = f_count ? sum_f_arity / f_count : 0;
+   *sum_fun_arity = sum_f_arity;
+   *max_pred_arity = max_p_arity;
+   *avg_pred_arity = p_count ? sum_p_arity / p_count : 0;
+   *sum_pred_arity = sum_p_arity;
+   *non_const_funs = f_count;
    *non_const_preds = non_const_p;
 
    return c_count;
@@ -649,10 +626,9 @@ long ClauseSetCollectArityInformation(ClauseSet_p set, Sig_p sig,
 long ClauseSetCountMaximalTerms(ClauseSet_p set)
 {
    Clause_p handle;
-   long     res = 0;
+   long res = 0;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       res += ClauseCountMaximalTerms(handle);
    }
@@ -674,10 +650,9 @@ long ClauseSetCountMaximalTerms(ClauseSet_p set)
 long ClauseSetCountMaximalLiterals(ClauseSet_p set)
 {
    Clause_p handle;
-   long     res = 0;
+   long res = 0;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       res += ClauseCountMaximalLiterals(handle);
    }
@@ -701,10 +676,9 @@ long ClauseSetCountMaximalLiterals(ClauseSet_p set)
 long ClauseSetCountVariables(ClauseSet_p set)
 {
    Clause_p handle;
-   long     res = 0;
+   long res = 0;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       res += ClauseCountVariableSet(handle);
    }
@@ -728,10 +702,9 @@ long ClauseSetCountVariables(ClauseSet_p set)
 long ClauseSetCountSingletons(ClauseSet_p set)
 {
    Clause_p handle;
-   long     res = 0;
+   long res = 0;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       res += ClauseCountSingletonSet(handle);
    }
@@ -752,13 +725,12 @@ long ClauseSetCountSingletons(ClauseSet_p set)
 //
 /----------------------------------------------------------------------*/
 
-long ClauseSetTPTPDepthInfoAdd(ClauseSet_p set, long* depthmax, long*
-                               depthsum, long* count)
+long ClauseSetTPTPDepthInfoAdd(ClauseSet_p set, long* depthmax, long* depthsum,
+                               long* count)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClauseTPTPDepthInfoAdd(handle, depthmax, depthsum, count);
    }
@@ -781,10 +753,9 @@ long ClauseSetTPTPDepthInfoAdd(ClauseSet_p set, long* depthmax, long*
 long ClauseSetCountUnorientableLiterals(ClauseSet_p set)
 {
    Clause_p handle;
-   long     res = 0;
+   long res = 0;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       res += ClauseCountUnorientableLiterals(handle);
    }
@@ -806,10 +777,9 @@ long ClauseSetCountUnorientableLiterals(ClauseSet_p set)
 long ClauseSetCountEqnLiterals(ClauseSet_p set)
 {
    Clause_p handle;
-   long     res = 0;
+   long res = 0;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       res += ClausePropLitNumber(handle, EPIsEquLiteral);
    }
@@ -858,10 +828,9 @@ long ClauseSetMaxStandardWeight(ClauseSet_p set)
 long ClauseSetTermCells(ClauseSet_p set)
 {
    Clause_p handle;
-   long     res = 0;
+   long res = 0;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       res += ClauseWeight(handle, 1, 1, 1, 1, 1, 1, false);
    }
@@ -884,10 +853,9 @@ long ClauseSetTermCells(ClauseSet_p set)
 long ClauseSetMaxLiteralNumber(ClauseSet_p set)
 {
    Clause_p handle;
-   long     res = 0;
+   long res = 0;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       res = MAX(res, ClauseLiteralNumber(handle));
    }
@@ -912,49 +880,40 @@ void SpecFeaturesCompute(SpecFeature_p features, ClauseSet_p set,
 {
    long tmp, count;
    Sig_p sig = bank->sig;
-   features->clauses          = set->members;
-   features->goals            = ClauseSetCountGoals(set);
-   features->axioms           = features->clauses-features->goals;
+   features->clauses = set->members;
+   features->goals = ClauseSetCountGoals(set);
+   features->axioms = features->clauses - features->goals;
 
-   features->literals         = set->literals;
-   features->term_cells       = ClauseSetTermCells(set);
+   features->literals = set->literals;
+   features->term_cells = ClauseSetTermCells(set);
 
    tmp = 0;
    count = 0;
    features->clause_max_depth = 0;
-   ClauseSetTPTPDepthInfoAdd(set,
-                             &(features->clause_max_depth),
-                             &tmp,
-                             &count);
-   features->clause_avg_depth = count?tmp/count:0;
+   ClauseSetTPTPDepthInfoAdd(set, &(features->clause_max_depth), &tmp, &count);
+   features->clause_avg_depth = count ? tmp / count : 0;
 
-   features->unit             = ClauseSetCountUnit(set);
-   features->unitgoals        = ClauseSetCountUnitGoals(set);
-   features->unitaxioms       = features->unit-features->unitgoals;
+   features->unit = ClauseSetCountUnit(set);
+   features->unitgoals = ClauseSetCountUnitGoals(set);
+   features->unitaxioms = features->unit - features->unitgoals;
 
-   features->horn             = ClauseSetCountHorn(set);
-   features->horngoals        = ClauseSetCountHornGoals(set);
-   features->hornaxioms       = features->horn-features->horngoals;
+   features->horn = ClauseSetCountHorn(set);
+   features->horngoals = ClauseSetCountHornGoals(set);
+   features->hornaxioms = features->horn - features->horngoals;
 
-   features->eq_clauses       = ClauseSetCountEquational(set);
-   features->peq_clauses      = ClauseSetCountPureEquational(set);
+   features->eq_clauses = ClauseSetCountEquational(set);
+   features->peq_clauses = ClauseSetCountPureEquational(set);
    features->groundunitaxioms = ClauseSetCountGroundUnitAxioms(set);
-   features->groundgoals      = ClauseSetCountGroundGoals(set);
-   features->positiveaxioms   = ClauseSetCountPositiveAxioms(set);
+   features->groundgoals = ClauseSetCountGroundGoals(set);
+   features->positiveaxioms = ClauseSetCountPositiveAxioms(set);
    features->groundpositiveaxioms = ClauseSetCountGroundPositiveAxioms(set);
-   features->fun_const_count   =
-      ClauseSetCollectArityInformation(set, sig,
-                                       &(features->max_fun_arity),
-                                       &(features->avg_fun_arity),
-                                       &(features->sum_fun_arity),
-                                       &(features->max_pred_arity),
-                                       &(features->avg_pred_arity),
-                                       &(features->sum_pred_arity),
-                                       &(features->fun_nonconst_count),
-                                       &(features->pred_nonconst_count));
+   features->fun_const_count = ClauseSetCollectArityInformation(
+      set, sig, &(features->max_fun_arity), &(features->avg_fun_arity),
+      &(features->sum_fun_arity), &(features->max_pred_arity),
+      &(features->avg_pred_arity), &(features->sum_pred_arity),
+      &(features->fun_nonconst_count), &(features->pred_nonconst_count));
 
-   features->goals_are_ground = (features->groundgoals ==
-                                 features->goals);
+   features->goals_are_ground = (features->groundgoals == features->goals);
 
    if(features->unitaxioms == features->axioms)
    {
@@ -997,67 +956,66 @@ void SpecFeaturesCompute(SpecFeature_p features, ClauseSet_p set,
 
    switch(features->max_fun_arity)
    {
-   case 0:
+      case 0:
          features->max_fun_ar_class = SpecArity0;
          break;
-   case 1:
+      case 1:
          features->max_fun_ar_class = SpecArity1;
          break;
-   case 2:
+      case 2:
          features->max_fun_ar_class = SpecArity2;
          break;
-   default:
+      default:
          features->max_fun_ar_class = SpecArity3Plus;
          break;
    }
    switch(features->avg_fun_arity)
    {
-   case 0:
+      case 0:
          features->avg_fun_ar_class = SpecArity0;
          break;
-   case 1:
+      case 1:
          features->avg_fun_ar_class = SpecArity1;
          break;
-   case 2:
+      case 2:
          features->avg_fun_ar_class = SpecArity2;
          break;
-   default:
+      default:
          features->avg_fun_ar_class = SpecArity3Plus;
          break;
    }
-   features->ng_unit_axioms_part = features->unitaxioms?
-      ((double)(features->unitaxioms-features->groundunitaxioms)/
-       (double)(features->unitaxioms))
-      :0.0;
+   features->ng_unit_axioms_part = features->unitaxioms
+      ? ((double)(features->unitaxioms - features->groundunitaxioms) /
+         (double)(features->unitaxioms))
+      : 0.0;
 
-   features->ground_positive_axioms_part = features->positiveaxioms?
-      ((double)(features->groundpositiveaxioms)/
-       (double)(features->positiveaxioms))
-      :0.0;
+   features->ground_positive_axioms_part = features->positiveaxioms
+      ? ((double)(features->groundpositiveaxioms) /
+         (double)(features->positiveaxioms))
+      : 0.0;
 
    /* all ho features computed below */
    features->num_of_definitions = -1;
-   ClauseSetComputeHOFeatures(set, sig,
-                              &(features->has_ho_features),
-                              &(features->order),
-                              &(features->quantifies_booleans),
-                              &(features->has_defined_choice),
-                              &(features->perc_of_appvar_lits));
+   ClauseSetComputeHOFeatures(
+      set, sig, &(features->has_ho_features), &(features->order),
+      &(features->quantifies_booleans), &(features->has_defined_choice),
+      &(features->perc_of_appvar_lits));
    // overwriting order as different clausifications can influence it.
    features->order = 1;
    features->goal_order = 1;
-   FormulaSet_p sets[2] = {farch, fset};
-   for(int i=0; i<2; i++)
+   FormulaSet_p sets[2] = { farch, fset };
+   for(int i = 0; i < 2; i++)
    {
       if(sets[i])
       {
-         for(WFormula_p f = sets[i]->anchor->succ; f != sets[i]->anchor; f = f->succ)
+         for(WFormula_p f = sets[i]->anchor->succ; f != sets[i]->anchor;
+             f = f->succ)
          {
             int ord = TermComputeOrder(f->terms->sig, f->tformula);
             features->order = MAX(features->order, ord);
             if(FormulaQueryType(f) == CPTypeConjecture ||
                FormulaQueryType(f) == CPTypeNegConjecture ||
-               FormulaQueryType(f) == CPTypeHypothesis )
+               FormulaQueryType(f) == CPTypeHypothesis)
             {
                features->goal_order = MAX(features->goal_order, ord);
             }
@@ -1084,18 +1042,17 @@ void SpecFeaturesCompute(SpecFeature_p features, ClauseSet_p set,
 void SpecFeaturesAddEval(SpecFeature_p features, SpecLimits_p limits)
 {
 
-   features->goals_are_ground = (features->groundgoals ==
-                                 features->goals);
+   features->goals_are_ground = (features->groundgoals == features->goals);
 
    if(limits->ngu_absolute)
    {
       features->ng_unit_content = SpecFewPosNonGroundUnits;
-      if((features->unitaxioms-features->groundunitaxioms)>
+      if((features->unitaxioms - features->groundunitaxioms) >
          limits->ngu_few_limit)
       {
          features->ng_unit_content = SpecSomePosNonGroundUnits;
       }
-      if((features->unitaxioms-features->groundunitaxioms)>
+      if((features->unitaxioms - features->groundunitaxioms) >
          limits->ngu_many_limit)
       {
          features->ng_unit_content = SpecManyPosNonGroundUnits;
@@ -1103,11 +1060,11 @@ void SpecFeaturesAddEval(SpecFeature_p features, SpecLimits_p limits)
    }
    else
    {
-      if(features->ng_unit_axioms_part<=limits->ngu_few_limit)
+      if(features->ng_unit_axioms_part <= limits->ngu_few_limit)
       {
          features->ng_unit_content = SpecFewPosNonGroundUnits;
       }
-      else if(features->ng_unit_axioms_part>=limits->ngu_many_limit)
+      else if(features->ng_unit_axioms_part >= limits->ngu_many_limit)
       {
          features->ng_unit_content = SpecManyPosNonGroundUnits;
       }
@@ -1131,11 +1088,11 @@ void SpecFeaturesAddEval(SpecFeature_p features, SpecLimits_p limits)
    }
    else
    {
-      if(features->ground_positive_axioms_part<=limits->gpc_few_limit)
+      if(features->ground_positive_axioms_part <= limits->gpc_few_limit)
       {
          features->ground_positive_content = SpecFewPosGround;
       }
-      else if(features->ground_positive_axioms_part>=limits->gpc_many_limit)
+      else if(features->ground_positive_axioms_part >= limits->gpc_many_limit)
       {
          features->ground_positive_content = SpecManyPosGround;
       }
@@ -1186,43 +1143,43 @@ void SpecFeaturesAddEval(SpecFeature_p features, SpecLimits_p limits)
 
    switch(features->max_fun_arity)
    {
-   case 0:
+      case 0:
          features->max_fun_ar_class = SpecArity0;
          break;
-   case 1:
+      case 1:
          features->max_fun_ar_class = SpecArity1;
          break;
-   case 2:
+      case 2:
          features->max_fun_ar_class = SpecArity2;
          break;
-   default:
+      default:
          features->max_fun_ar_class = SpecArity3Plus;
          break;
    }
    switch(features->avg_fun_arity)
    {
-   case 0:
+      case 0:
          features->avg_fun_ar_class = SpecArity0;
          break;
-   case 1:
+      case 1:
          features->avg_fun_ar_class = SpecArity1;
          break;
-   case 2:
+      case 2:
          features->avg_fun_ar_class = SpecArity2;
          break;
-   default:
+      default:
          features->avg_fun_ar_class = SpecArity3Plus;
          break;
    }
-   features->ng_unit_axioms_part = features->unitaxioms?
-      ((double)(features->unitaxioms-features->groundunitaxioms)/
-       (double)(features->unitaxioms))
-      :0.0;
+   features->ng_unit_axioms_part = features->unitaxioms
+      ? ((double)(features->unitaxioms - features->groundunitaxioms) /
+         (double)(features->unitaxioms))
+      : 0.0;
 
-   features->ground_positive_axioms_part = features->positiveaxioms?
-      ((double)(features->groundpositiveaxioms)/
-       (double)(features->positiveaxioms))
-      :0.0;
+   features->ground_positive_axioms_part = features->positiveaxioms
+      ? ((double)(features->groundpositiveaxioms) /
+         (double)(features->positiveaxioms))
+      : 0.0;
    if(features->sum_fun_arity < limits->far_sum_medium_limit)
    {
       features->sum_fun_ar_class = SpecAritySumSmall;
@@ -1322,7 +1279,6 @@ void SpecFeaturesAddEval(SpecFeature_p features, SpecLimits_p limits)
 
 
 
-
 /*-----------------------------------------------------------------------
 //
 // Function: SpecFeaturesPrint()
@@ -1339,39 +1295,22 @@ void SpecFeaturesPrint(FILE* out, SpecFeature_p features)
 {
    assert(features);
 
-   fprintf(out,
-           "( %3ld, %3ld, %3ld, %3ld, %3ld, %3ld, %3ld, %3ld, %3ld,"
-           " %3ld, %3ld, %3ld, %3ld, %3ld, %3ld, %8.6f, %8.6f,"
-           " %3d, %3d, %3d, %3ld, %3ld, %3d, %3d, %8.6f, %8.6f, %s, %s )",
-           features->goals,
-           features->axioms,
-           features->clauses,
-           features->literals,
-           features->term_cells,
-           features->unitgoals,
-           features->unitaxioms,
-           features->horngoals,
-           features->hornaxioms,
-           features->eq_clauses,
-           features->peq_clauses,
-           features->groundunitaxioms,
-           features->groundgoals,
-           features->groundpositiveaxioms,
-           features->positiveaxioms,
-           features->ng_unit_axioms_part,
-           features->ground_positive_axioms_part,
-           features->max_fun_arity,
-           features->avg_fun_arity,
-           features->sum_fun_arity,
-           features->clause_max_depth,
-           features->clause_avg_depth,
-           features->order,
-           features->num_of_definitions,
-           features->perc_of_form_defs,
-           features->perc_of_appvar_lits,
-           BOOL2STR(features->quantifies_booleans),
-           BOOL2STR(features->has_defined_choice)
-      );
+   fprintf(
+      out,
+      "( %3ld, %3ld, %3ld, %3ld, %3ld, %3ld, %3ld, %3ld, %3ld,"
+      " %3ld, %3ld, %3ld, %3ld, %3ld, %3ld, %8.6f, %8.6f,"
+      " %3d, %3d, %3d, %3ld, %3ld, %3d, %3d, %8.6f, %8.6f, %s, %s )",
+      features->goals, features->axioms, features->clauses, features->literals,
+      features->term_cells, features->unitgoals, features->unitaxioms,
+      features->horngoals, features->hornaxioms, features->eq_clauses,
+      features->peq_clauses, features->groundunitaxioms, features->groundgoals,
+      features->groundpositiveaxioms, features->positiveaxioms,
+      features->ng_unit_axioms_part, features->ground_positive_axioms_part,
+      features->max_fun_arity, features->avg_fun_arity, features->sum_fun_arity,
+      features->clause_max_depth, features->clause_avg_depth, features->order,
+      features->num_of_definitions, features->perc_of_form_defs,
+      features->perc_of_appvar_lits, BOOL2STR(features->quantifies_booleans),
+      BOOL2STR(features->has_defined_choice));
 }
 
 
@@ -1391,112 +1330,113 @@ void SpecFeaturesPrint(FILE* out, SpecFeature_p features)
 
 void SpecFeaturesParse(Scanner_p in, SpecFeature_p features)
 {
-   char *class;
+   char* class;
 
    AcceptInpTok(in, OpenBracket);
-   features->goals                       = ParseInt(in);
+   features->goals = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->axioms                      = ParseInt(in);
+   features->axioms = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->clauses                     = ParseInt(in);
+   features->clauses = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->literals                    = ParseInt(in);
+   features->literals = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->term_cells                  = ParseInt(in);
+   features->term_cells = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->unitgoals                   = ParseInt(in);
+   features->unitgoals = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->unitaxioms                  = ParseInt(in);
+   features->unitaxioms = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->horngoals                   = ParseInt(in);
+   features->horngoals = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->hornaxioms                  = ParseInt(in);
+   features->hornaxioms = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->eq_clauses                  = ParseInt(in);
+   features->eq_clauses = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->peq_clauses                 = ParseInt(in);
+   features->peq_clauses = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->groundunitaxioms            = ParseInt(in);
+   features->groundunitaxioms = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->groundgoals                 = ParseInt(in);
+   features->groundgoals = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->groundpositiveaxioms        = ParseInt(in);
+   features->groundpositiveaxioms = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->positiveaxioms              = ParseInt(in);
+   features->positiveaxioms = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->ng_unit_axioms_part         = ParseFloat(in);
+   features->ng_unit_axioms_part = ParseFloat(in);
    AcceptInpTok(in, Comma);
    features->ground_positive_axioms_part = ParseFloat(in);
    AcceptInpTok(in, Comma);
-   features->max_fun_arity               = ParseInt(in);
+   features->max_fun_arity = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->avg_fun_arity               = ParseInt(in);
+   features->avg_fun_arity = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->sum_fun_arity               = ParseInt(in);
+   features->sum_fun_arity = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->clause_max_depth            = ParseInt(in);
+   features->clause_max_depth = ParseInt(in);
    AcceptInpTok(in, Comma);
-   features->clause_avg_depth            = ParseInt(in);
+   features->clause_avg_depth = ParseInt(in);
    AcceptInpTok(in, CloseBracket);
    AcceptInpTok(in, Colon);
 
    class = ParsePlainFilename(in);
    if(strlen(class) < 5)
    {
-      Error("Insufficient class information in class name(s) (to short)", SYNTAX_ERROR);
+      Error("Insufficient class information in class name(s) (to short)",
+            SYNTAX_ERROR);
    }
    switch(class[0])
    {
-   case 'G':
+      case 'G':
          features->axiomtypes = SpecGeneral;
          break;
-   case 'H':
+      case 'H':
          features->axiomtypes = SpecHorn;
          break;
-   case 'U':
+      case 'U':
          features->axiomtypes = SpecUnit;
          break;
-   default:
+      default:
          Error("Insufficient class information in class name(s)", SYNTAX_ERROR);
          break;
    }
    switch(class[1])
    {
-   case 'H':
+      case 'H':
          features->goaltypes = SpecHorn;
          break;
-   case 'U':
+      case 'U':
          features->goaltypes = SpecUnit;
          break;
-   default:
+      default:
          Error("Insufficient class information in class name(s)", SYNTAX_ERROR);
          break;
    }
    switch(class[2])
    {
-   case 'N':
+      case 'N':
          features->eq_content = SpecNoEq;
          break;
-   case 'S':
+      case 'S':
          features->eq_content = SpecSomeEq;
          break;
-   case 'P':
+      case 'P':
          features->eq_content = SpecPureEq;
          break;
-   default:
+      default:
          Error("Insufficient class information in class name(s)", SYNTAX_ERROR);
          break;
    }
    /* class[3] information is recovered from numeric features */
    switch(class[4])
    {
-   case 'G':
+      case 'G':
          features->goals_are_ground = true;
          break;
-   case 'N':
+      case 'N':
          features->goals_are_ground = false;
          break;
-   default:
+      default:
          Error("Insufficient class information in class name(s)", SYNTAX_ERROR);
          break;
    }
@@ -1525,43 +1465,42 @@ void SpecFeaturesParse(Scanner_p in, SpecFeature_p features)
 #define GET_ENCODING(idx) (assert((idx) < (enc_len)), encoding[(idx)])
 char* SpecTypeString(SpecFeature_p features, const char* mask)
 {
-   const char encoding[]="UHGNSPFSMFSMFSMFSMSML0123SMLSMDFSHFSMFSMFSM";
+   const char encoding[] = "UHGNSPFSMFSMFSMFSMSML0123SMLSMDFSHFSMFSMFSM";
 #ifndef NDEBUG
    const int enc_len = strlen(encoding);
 #endif
-   char       result[SPEC_STRING_MEM]; /* Big enough for the '\0'!!!*/
-   int        i, limit;
+   char result[SPEC_STRING_MEM]; /* Big enough for the '\0'!!!*/
+   int i, limit;
 
    assert(features);
-   assert(mask && (strlen(mask)>=13) && (strlen(mask)<=22));
+   assert(mask && (strlen(mask) >= 13) && (strlen(mask) <= 22));
    limit = strlen(mask);
-   snprintf(result, 22, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
-           problemType == PROBLEM_HO ? 'H' : 'F',
-           GET_ENCODING(features->axiomtypes),
-           GET_ENCODING(features->goaltypes),
-           GET_ENCODING(features->eq_content),
-           GET_ENCODING(features->ng_unit_content),
-           features->goals_are_ground?'G':'N',
-           GET_ENCODING(features->set_clause_size),
-           GET_ENCODING(features->set_literal_size),
-           GET_ENCODING(features->set_termcell_size),
-           GET_ENCODING(features->ground_positive_content),
-           GET_ENCODING(features->max_fun_ar_class),
-           GET_ENCODING(features->avg_fun_ar_class),
-           GET_ENCODING(features->sum_fun_ar_class),
-           GET_ENCODING(features->max_depth_class),
-           GET_ENCODING(features->order_class),
-           GET_ENCODING(features->goal_order_class),
-           GET_ENCODING(features->defs_class),
-           GET_ENCODING(features->form_defs_class),
-           GET_ENCODING(features->appvar_lits_class),
-           features->quantifies_booleans?'B':'N',
-           features->has_defined_choice?'C':'N');
-   for(i=0; i<limit; i++)
+   snprintf(
+      result, 22, "%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c%c",
+      problemType == PROBLEM_HO ? 'H' : 'F', GET_ENCODING(features->axiomtypes),
+      GET_ENCODING(features->goaltypes), GET_ENCODING(features->eq_content),
+      GET_ENCODING(features->ng_unit_content),
+      features->goals_are_ground ? 'G' : 'N',
+      GET_ENCODING(features->set_clause_size),
+      GET_ENCODING(features->set_literal_size),
+      GET_ENCODING(features->set_termcell_size),
+      GET_ENCODING(features->ground_positive_content),
+      GET_ENCODING(features->max_fun_ar_class),
+      GET_ENCODING(features->avg_fun_ar_class),
+      GET_ENCODING(features->sum_fun_ar_class),
+      GET_ENCODING(features->max_depth_class),
+      GET_ENCODING(features->order_class),
+      GET_ENCODING(features->goal_order_class),
+      GET_ENCODING(features->defs_class),
+      GET_ENCODING(features->form_defs_class),
+      GET_ENCODING(features->appvar_lits_class),
+      features->quantifies_booleans ? 'B' : 'N',
+      features->has_defined_choice ? 'C' : 'N');
+   for(i = 0; i < limit; i++)
    {
-      if(mask[i]=='-')
+      if(mask[i] == '-')
       {
-         result[i]= '-';
+         result[i] = '-';
       }
    }
    return SecureStrndup(result, 21);
@@ -1599,13 +1538,11 @@ void SpecTypePrint(FILE* out, SpecFeature_p features, char* mask)
 //
 /----------------------------------------------------------------------*/
 
-void ClauseSetPrintPosUnits(FILE* out, ClauseSet_p set, bool
-                            printinfo)
+void ClauseSetPrintPosUnits(FILE* out, ClauseSet_p set, bool printinfo)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsDemodulator(handle))
       {
@@ -1626,15 +1563,13 @@ void ClauseSetPrintPosUnits(FILE* out, ClauseSet_p set, bool
 //
 /----------------------------------------------------------------------*/
 
-void ClauseSetPrintNegUnits(FILE* out, ClauseSet_p set, bool
-                            printinfo)
+void ClauseSetPrintNegUnits(FILE* out, ClauseSet_p set, bool printinfo)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
-      if(ClauseIsUnit(handle)&&ClauseIsGoal(handle))
+      if(ClauseIsUnit(handle) && ClauseIsGoal(handle))
       {
          ClauseLinePrint(out, handle, printinfo);
       }
@@ -1654,13 +1589,11 @@ void ClauseSetPrintNegUnits(FILE* out, ClauseSet_p set, bool
 //
 /----------------------------------------------------------------------*/
 
-void ClauseSetPrintNonUnits(FILE* out, ClauseSet_p set, bool
-                            printinfo)
+void ClauseSetPrintNonUnits(FILE* out, ClauseSet_p set, bool printinfo)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(!ClauseIsUnit(handle))
       {
@@ -1683,8 +1616,8 @@ void ClauseSetPrintNonUnits(FILE* out, ClauseSet_p set, bool
 //
 /----------------------------------------------------------------------*/
 
-void ProofStatePrintSelective(FILE* out, ProofState_p state, char*
-                              descriptor, bool printinfo)
+void ProofStatePrintSelective(FILE* out, ProofState_p state, char* descriptor,
+                              bool printinfo)
 {
    char* current = descriptor;
 
@@ -1693,75 +1626,68 @@ void ProofStatePrintSelective(FILE* out, ProofState_p state, char*
    {
       switch(*current)
       {
-      case 't':
+         case 't':
             if(problemType == PROBLEM_HO || !ClauseSetIsUntyped(state->axioms))
             {
-               fprintf(out, COMCHAR" Type declarations:\n");
+               fprintf(out, COMCHAR " Type declarations:\n");
                SigPrintTypeDeclsTSTP(out, state->terms->sig);
             }
             break;
-      case 'e':
-            fprintf(out, COMCHAR" Processed positive unit clauses:\n");
-            ClauseSetPrintPosUnits(out, state->processed_pos_rules,
-                                   printinfo);
-            ClauseSetPrintPosUnits(out, state->processed_pos_eqns,
-                                   printinfo);
+         case 'e':
+            fprintf(out, COMCHAR " Processed positive unit clauses:\n");
+            ClauseSetPrintPosUnits(out, state->processed_pos_rules, printinfo);
+            ClauseSetPrintPosUnits(out, state->processed_pos_eqns, printinfo);
             fputc('\n', out);
             break;
-      case 'i':
-            fprintf(out, COMCHAR" Processed negative unit clauses:\n");
-            ClauseSetPrintNegUnits(out, state->processed_neg_units,
-                                   printinfo);
+         case 'i':
+            fprintf(out, COMCHAR " Processed negative unit clauses:\n");
+            ClauseSetPrintNegUnits(out, state->processed_neg_units, printinfo);
             fputc('\n', out);
             break;
-      case 'g':
-            fprintf(out, COMCHAR" Processed non-unit clauses:\n");
-            ClauseSetPrintNonUnits(out, state->processed_non_units,
-                                   printinfo);
+         case 'g':
+            fprintf(out, COMCHAR " Processed non-unit clauses:\n");
+            ClauseSetPrintNonUnits(out, state->processed_non_units, printinfo);
             fputc('\n', out);
             break;
-      case 'E':
-            fprintf(out, COMCHAR" Unprocessed positive unit clauses:\n");
-            ClauseSetPrintPosUnits(out, state->unprocessed,
-                                   printinfo);
+         case 'E':
+            fprintf(out, COMCHAR " Unprocessed positive unit clauses:\n");
+            ClauseSetPrintPosUnits(out, state->unprocessed, printinfo);
             fputc('\n', out);
             break;
-      case 'I':
-            fprintf(out, COMCHAR" Unprocessed negative unit clauses:\n");
-            ClauseSetPrintNegUnits(out, state->unprocessed,
-                                   printinfo);
+         case 'I':
+            fprintf(out, COMCHAR " Unprocessed negative unit clauses:\n");
+            ClauseSetPrintNegUnits(out, state->unprocessed, printinfo);
             fputc('\n', out);
             break;
-      case 'G':
-            fprintf(out, COMCHAR" Unprocessed non-unit clauses:\n");
-            ClauseSetPrintNonUnits(out, state->unprocessed,
-                                   printinfo);
+         case 'G':
+            fprintf(out, COMCHAR " Unprocessed non-unit clauses:\n");
+            ClauseSetPrintNonUnits(out, state->unprocessed, printinfo);
             fputc('\n', out);
             break;
-      case 'a':
+         case 'a':
             if(ClauseSetIsEquational(state->axioms))
             {
-               fprintf(out, COMCHAR" Equality axioms:\n");
+               fprintf(out, COMCHAR " Equality axioms:\n");
                EqAxiomsPrint(out, state->signature, true);
             }
             else
             {
-               fprintf(out, COMCHAR" No equality axioms required.\n");
+               fprintf(out, COMCHAR " No equality axioms required.\n");
             }
 
             break;
-      case 'A':
+         case 'A':
             if(ClauseSetIsEquational(state->axioms))
             {
-               fprintf(out, COMCHAR" Equality axioms:\n");
+               fprintf(out, COMCHAR " Equality axioms:\n");
                EqAxiomsPrint(out, state->signature, false);
             }
             else
             {
-               fprintf(out, COMCHAR" No equality axioms required.\n");
+               fprintf(out, COMCHAR " No equality axioms required.\n");
             }
             break;
-      default:
+         default:
             assert(false && "Illegal character in descriptor string");
             break;
       }
@@ -1784,27 +1710,27 @@ void ProofStatePrintSelective(FILE* out, ProofState_p state, char*
 /----------------------------------------------------------------------*/
 SpecLimits_p CreateDefaultSpecLimits(void)
 {
-   SpecLimits_p limits =  SpecLimitsAlloc();
+   SpecLimits_p limits = SpecLimitsAlloc();
 
-   limits->ax_some_limit        = 1000;
-   limits->ax_many_limit        = 100000;
-   limits->lit_some_limit       = 400;
-   limits->lit_many_limit       = 4000;
-   limits->term_medium_limit    = 200;
-   limits->term_large_limit     = 1500;
+   limits->ax_some_limit = 1000;
+   limits->ax_many_limit = 100000;
+   limits->lit_some_limit = 400;
+   limits->lit_many_limit = 4000;
+   limits->term_medium_limit = 200;
+   limits->term_large_limit = 1500;
    limits->far_sum_medium_limit = 4;
-   limits->far_sum_large_limit  = 29;
-   limits->depth_medium_limit   = 4;
-   limits->depth_deep_limit     = 7;
-   limits->gpc_absolute         = true;
-   limits->gpc_few_limit        = 2;
-   limits->gpc_many_limit       = 5;
-   limits->ngu_absolute         = true;
-   limits->ngu_few_limit        = 1;
-   limits->ngu_many_limit       = 3;
+   limits->far_sum_large_limit = 29;
+   limits->depth_medium_limit = 4;
+   limits->depth_deep_limit = 7;
+   limits->gpc_absolute = true;
+   limits->gpc_few_limit = 2;
+   limits->gpc_many_limit = 5;
+   limits->ngu_absolute = true;
+   limits->ngu_few_limit = 1;
+   limits->ngu_many_limit = 3;
 
-   limits->order_medium_limit   = ORDER_MEDIUM_DEFAULT;
-   limits->order_large_limit    = ORDER_LARGE_DEFAULT;
+   limits->order_medium_limit = ORDER_MEDIUM_DEFAULT;
+   limits->order_large_limit = ORDER_LARGE_DEFAULT;
    limits->num_of_defs_medium_limit = DEFS_MEDIUM_DEFAULT;
    limits->num_of_defs_large_limit = DEFS_LARGE_DEFAULT;
    limits->perc_form_defs_medium_limit = DEFS_PERC_MEDIUM_DEFAULT;
@@ -1832,11 +1758,11 @@ SpecLimits_p CreateDefaultSpecLimits(void)
 //
 /----------------------------------------------------------------------*/
 
-#define IS_NON_FO_TERM(t) ( TermIsNonFOPattern(t) || TermHasLambdaSubterm(t) || TermHasDBSubterm(t) )
+#define IS_NON_FO_TERM(t)                                                      \
+   (TermIsNonFOPattern(t) || TermHasLambdaSubterm(t) || TermHasDBSubterm(t))
 
 void ClauseSetComputeHOFeatures(ClauseSet_p set, Sig_p sig,
-                                bool* has_ho_features,
-                                int* order,
+                                bool* has_ho_features, int* order,
                                 bool* quantifies_bools,
                                 bool* has_defined_choice,
                                 double* perc_app_var_lits)
@@ -1848,13 +1774,12 @@ void ClauseSetComputeHOFeatures(ClauseSet_p set, Sig_p sig,
    int av_lits = 0;
 
    int ord = 0;
-   for(FunCode i = sig->internal_symbols+1; i<=sig->f_count; i++)
+   for(FunCode i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
       ord = MAX(ord, TypeGetOrder(SigGetType(sig, i)));
    }
 
-   for(handle = set->anchor->succ; handle!=set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       PTree_p vars = NULL;
       ClauseCollectVariables(handle, &vars);
@@ -1872,10 +1797,10 @@ void ClauseSetComputeHOFeatures(ClauseSet_p set, Sig_p sig,
       bool has_app_var = false;
       for(Eqn_p eqn = handle->literals; eqn; eqn = eqn->next)
       {
-         is_fo = is_fo && !IS_NON_FO_TERM(eqn->lterm)
-                       && !IS_NON_FO_TERM(eqn->rterm);
-         has_app_var = has_app_var || TermIsAppliedFreeVar(eqn->lterm)
-                                   || TermIsAppliedFreeVar(eqn->rterm);
+         is_fo =
+            is_fo && !IS_NON_FO_TERM(eqn->lterm) && !IS_NON_FO_TERM(eqn->rterm);
+         has_app_var = has_app_var || TermIsAppliedFreeVar(eqn->lterm) ||
+            TermIsAppliedFreeVar(eqn->rterm);
       }
 
       has_choice = has_choice || ClauseRecognizeChoice(NULL, handle);
@@ -1886,8 +1811,9 @@ void ClauseSetComputeHOFeatures(ClauseSet_p set, Sig_p sig,
    *has_ho_features = !is_fo;
    *quantifies_bools = var_has_bools;
    *has_defined_choice = has_choice;
-   *perc_app_var_lits =
-      ClauseSetCardinality(set) ? ((double)av_lits / ClauseSetCardinality(set)) : 0.0 ;
+   *perc_app_var_lits = ClauseSetCardinality(set)
+      ? ((double)av_lits / ClauseSetCardinality(set))
+      : 0.0;
 }
 
 /*-----------------------------------------------------------------------
@@ -1906,46 +1832,29 @@ void ClauseSetComputeHOFeatures(ClauseSet_p set, Sig_p sig,
 
 void SpecLimitsPrint(FILE* out, SpecLimits_p limits)
 {
-   fprintf(out, "[ %d | %g | %g | %d | %g | %g |"
-                   " %ld | %ld | %ld | %ld | %ld | %ld | %ld | %ld | %ld | %ld | "
-                   " %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | "
-                   " %g | %g | %g | %g ]\n",
-   limits->ngu_absolute,
-   limits->ngu_few_limit,
-   limits->ngu_many_limit,
-   limits->gpc_absolute,
-   limits->gpc_few_limit,
-   limits->gpc_many_limit,
-   limits->ax_some_limit,
-   limits->ax_many_limit,
-   limits->lit_some_limit,
-   limits->lit_many_limit,
-   limits->term_medium_limit,
-   limits->term_large_limit,
-   limits->far_sum_medium_limit,
-   limits->far_sum_large_limit,
-   limits->depth_medium_limit,
-   limits->depth_deep_limit,
-   limits->symbols_medium_limit,
-   limits->symbols_large_limit,
-   limits->predc_medium_limit,
-   limits->predc_large_limit,
-   limits->pred_medium_limit,
-   limits->pred_large_limit,
-   limits->func_medium_limit,
-   limits->func_large_limit,
-   limits->fun_medium_limit,
-   limits->fun_large_limit,
-   limits->order_medium_limit,
-   limits->order_large_limit,
-   limits->num_of_lams_medium_limit,
-   limits->num_of_lams_large_limit,
-   limits->num_of_defs_medium_limit,
-   limits->num_of_defs_large_limit,
-   limits->perc_form_defs_medium_limit,
-   limits->perc_form_defs_large_limit,
-   limits->perc_app_lits_medium_limit,
-   limits->perc_app_lits_large_limit);
+   fprintf(
+      out,
+      "[ %d | %g | %g | %d | %g | %g |"
+      " %ld | %ld | %ld | %ld | %ld | %ld | %ld | %ld | %ld | %ld | "
+      " %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | %d | "
+      " %g | %g | %g | %g ]\n",
+      limits->ngu_absolute, limits->ngu_few_limit, limits->ngu_many_limit,
+      limits->gpc_absolute, limits->gpc_few_limit, limits->gpc_many_limit,
+      limits->ax_some_limit, limits->ax_many_limit, limits->lit_some_limit,
+      limits->lit_many_limit, limits->term_medium_limit,
+      limits->term_large_limit, limits->far_sum_medium_limit,
+      limits->far_sum_large_limit, limits->depth_medium_limit,
+      limits->depth_deep_limit, limits->symbols_medium_limit,
+      limits->symbols_large_limit, limits->predc_medium_limit,
+      limits->predc_large_limit, limits->pred_medium_limit,
+      limits->pred_large_limit, limits->func_medium_limit,
+      limits->func_large_limit, limits->fun_medium_limit,
+      limits->fun_large_limit, limits->order_medium_limit,
+      limits->order_large_limit, limits->num_of_lams_medium_limit,
+      limits->num_of_lams_large_limit, limits->num_of_defs_medium_limit,
+      limits->num_of_defs_large_limit, limits->perc_form_defs_medium_limit,
+      limits->perc_form_defs_large_limit, limits->perc_app_lits_medium_limit,
+      limits->perc_app_lits_large_limit);
 }
 
 /*-----------------------------------------------------------------------
@@ -1962,8 +1871,7 @@ void SpecLimitsPrint(FILE* out, SpecLimits_p limits)
 //
 /----------------------------------------------------------------------*/
 
-void ClausifyAndClassifyWTimeout(ProofState_p state, int timeout,
-                                 char* mask,
+void ClausifyAndClassifyWTimeout(ProofState_p state, int timeout, char* mask,
                                  char class[SPEC_STRING_MEM])
 {
    const int DEFAULT_MINISCOPE = 1048576;
@@ -1984,12 +1892,12 @@ void ClausifyAndClassifyWTimeout(ProofState_p state, int timeout,
    SpecLimits_p limits = CreateDefaultSpecLimits();
 
    pid_t pid = fork();
-   if (pid == -1)
+   if(pid == -1)
    {
       perror("fork failed");
       exit(1);
    }
-   else if (pid == 0)
+   else if(pid == 0)
    {
       // child
       close(fds[0]);
@@ -1998,13 +1906,13 @@ void ClausifyAndClassifyWTimeout(ProofState_p state, int timeout,
          fprintf(stderr, "softrlimit call failed.\n");
          exit(-1);
       }
-      FormulaSetPreprocConjectures(state->f_axioms, state->f_ax_archive, false, false);
-      FormulaSetCNF2(state->f_axioms, state->f_ax_archive,
-                     state->axioms, state->terms,
-                     state->freshvars,
-                     DEFAULT_MINISCOPE, DEFAULT_FORMULA_DEF_LIMIT,
-                     DEFAULT_LIFT_LAMS, DEFAULT_LAM_TO_FORALL,
-                     DEFAULT_UNFOLD_ONLY_FORM, DEFAULT_UNROLL_FOOL);
+      FormulaSetPreprocConjectures(state->f_axioms, state->f_ax_archive, false,
+                                   false);
+      FormulaSetCNF2(state->f_axioms, state->f_ax_archive, state->axioms,
+                     state->terms, state->freshvars, DEFAULT_MINISCOPE,
+                     DEFAULT_FORMULA_DEF_LIMIT, DEFAULT_LIFT_LAMS,
+                     DEFAULT_LAM_TO_FORALL, DEFAULT_UNFOLD_ONLY_FORM,
+                     DEFAULT_UNROLL_FOOL);
       SpecFeaturesCompute(&features, state->axioms, state->f_axioms,
                           state->f_ax_archive, state->terms);
       SpecFeaturesAddEval(&features, limits);
@@ -2021,8 +1929,8 @@ void ClausifyAndClassifyWTimeout(ProofState_p state, int timeout,
       int nbytes = read(fds[0], class, SPEC_STRING_MEM);
       if(nbytes < SPEC_STRING_MEM)
       {
-         memset(class, '-', SPEC_STRING_MEM-1);
-         class[SPEC_STRING_MEM-1]='\0';
+         memset(class, '-', SPEC_STRING_MEM - 1);
+         class[SPEC_STRING_MEM - 1] = '\0';
       }
       SpecLimitsCellFree(limits);
       waitpid(pid, NULL, 0); // collect exit status

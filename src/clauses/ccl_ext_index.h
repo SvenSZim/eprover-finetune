@@ -37,7 +37,7 @@ typedef IntMap_p ExtIndex_p;
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define ExtIdxAlloc()   IntMapAlloc()
+#define ExtIdxAlloc() IntMapAlloc()
 
 bool TermHasExtEligSubterm(Term_p t);
 
@@ -45,9 +45,11 @@ bool TermHasExtEligSubterm(Term_p t);
 void CollectExtSupFromPos(Clause_p cl, PStack_p pos_stack);
 void CollectExtSupIntoPos(Clause_p cl, PStack_p pos_stack);
 
-void ExtIndexInsertIntoClause(ExtIndex_p into_index, Clause_p cl, int max_depth);
+void ExtIndexInsertIntoClause(ExtIndex_p into_index, Clause_p cl,
+                              int max_depth);
 void ExtIndexDeleteIntoClause(ExtIndex_p into_index, Clause_p cl);
-void ExtIndexInsertFromClause(ExtIndex_p into_index, Clause_p cl, int max_depth);
+void ExtIndexInsertFromClause(ExtIndex_p into_index, Clause_p cl,
+                              int max_depth);
 void ExtIndexDeleteFromClause(ExtIndex_p into_index, Clause_p cl);
 void ExtIndexFree(ExtIndex_p into_index);
 
@@ -58,8 +60,6 @@ void ExtIndexFree(ExtIndex_p into_index);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

@@ -42,12 +42,12 @@
 
 typedef struct numtreecell
 {
-   long               key;
-   IntOrP             val1;
-   IntOrP             val2;
-   struct numtreecell *lson;
-   struct numtreecell *rson;
-}NumTreeCell, *NumTree_p;
+   long key;
+   IntOrP val1;
+   IntOrP val2;
+   struct numtreecell* lson;
+   struct numtreecell* rson;
+} NumTreeCell, *NumTree_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -55,7 +55,7 @@ typedef struct numtreecell
 /*---------------------------------------------------------------------*/
 
 #define NumTreeCellAlloc() (NumTreeCell*)SizeMalloc(sizeof(NumTreeCell))
-#define NumTreeCellFree(junk)        SizeFree(junk, sizeof(NumTreeCell))
+#define NumTreeCellFree(junk) SizeFree(junk, sizeof(NumTreeCell))
 
 #ifdef CONSTANT_MEM_ESTIMATE
 #define NUMTREECELL_MEM 24
@@ -64,18 +64,17 @@ typedef struct numtreecell
 #endif
 
 NumTree_p NumTreeCellAllocEmpty(void);
-void      NumTreeFree(NumTree_p junk);
-NumTree_p NumTreeInsert(NumTree_p *root, NumTree_p newnode);
-bool      NumTreeStore(NumTree_p *root, long key, IntOrP val1, IntOrP val2);
-long      NumTreeDebugPrint(FILE* out, NumTree_p tree,
-                            bool keys_only);
-NumTree_p NumTreeFind(NumTree_p *root, long key);
-NumTree_p NumTreeExtractEntry(NumTree_p *root, long key);
-NumTree_p NumTreeExtractRoot(NumTree_p *root);
-bool      NumTreeDeleteEntry(NumTree_p *root, long key);
-long      NumTreeNodes(NumTree_p root);
+void NumTreeFree(NumTree_p junk);
+NumTree_p NumTreeInsert(NumTree_p* root, NumTree_p newnode);
+bool NumTreeStore(NumTree_p* root, long key, IntOrP val1, IntOrP val2);
+long NumTreeDebugPrint(FILE* out, NumTree_p tree, bool keys_only);
+NumTree_p NumTreeFind(NumTree_p* root, long key);
+NumTree_p NumTreeExtractEntry(NumTree_p* root, long key);
+NumTree_p NumTreeExtractRoot(NumTree_p* root);
+bool NumTreeDeleteEntry(NumTree_p* root, long key);
+long NumTreeNodes(NumTree_p root);
 NumTree_p NumTreeMaxNode(NumTree_p root);
-#define   NumTreeMaxKey(tree) (NumTreeMaxNode(tree)->key)
+#define NumTreeMaxKey(tree) (NumTreeMaxNode(tree)->key)
 
 PStack_p NumTreeLimitedTraverseInit(NumTree_p root, long limit);
 

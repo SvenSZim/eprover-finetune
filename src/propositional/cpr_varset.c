@@ -110,7 +110,7 @@ PLiteralCode AtomSetExtract(AtomSet_p var)
    var->succ->prev = var->prev;
    var->prev->succ = var->succ;
    atom = var->atom;
-   assert(atom!=PLiteralNoLit);
+   assert(atom != PLiteralNoLit);
    AtomSetCellFree(var);
 
    return atom;

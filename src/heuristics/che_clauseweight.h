@@ -38,9 +38,9 @@ typedef struct weightparamcell
 {
    double pos_multiplier;
    double app_var_mult;
-   long   vweight;
-   long   fweight;
-}WeightParamCell, *WeightParam_p;
+   long vweight;
+   long fweight;
+} WeightParamCell, *WeightParam_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -48,29 +48,28 @@ typedef struct weightparamcell
 /*---------------------------------------------------------------------*/
 
 
-#define WeightParamCellAlloc() (WeightParamCell*) \
-        SizeMalloc(sizeof(WeightParamCell))
-#define WeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(WeightParamCell))
+#define WeightParamCellAlloc()                                                 \
+   (WeightParamCell*)SizeMalloc(sizeof(WeightParamCell))
+#define WeightParamCellFree(junk) SizeFree(junk, sizeof(WeightParamCell))
 
-WFCB_p ClauseWeightInit(ClausePrioFun prio_fun, int fweight, int
-         vweight, double pos_multiplier, double app_var_mult);
+WFCB_p ClauseWeightInit(ClausePrioFun prio_fun, int fweight, int vweight,
+                        double pos_multiplier, double app_var_mult);
 
 WFCB_p ClauseWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double ClauseWeightCompute(void* data, Clause_p clause);
 
-void   ClauseWeightExit(void* data);
+void ClauseWeightExit(void* data);
 
-WFCB_p LMaxWeightInit(ClausePrioFun prio_fun, int fweight, int
-             vweight, double pos_multiplier, double app_var_mult);
+WFCB_p LMaxWeightInit(ClausePrioFun prio_fun, int fweight, int vweight,
+                      double pos_multiplier, double app_var_mult);
 
 WFCB_p LMaxWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double LMaxWeightCompute(void* data, Clause_p clause);
 
-WFCB_p CMaxWeightInit(ClausePrioFun prio_fun, int fweight, int
-             vweight, double pos_multiplier, double app_var_mult);
+WFCB_p CMaxWeightInit(ClausePrioFun prio_fun, int fweight, int vweight,
+                      double pos_multiplier, double app_var_mult);
 
 WFCB_p CMaxWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
@@ -78,15 +77,13 @@ double CMaxWeightCompute(void* data, Clause_p clause);
 
 WFCB_p UniqWeightInit(ClausePrioFun prio_fun);
 
-WFCB_p UniqWeightParse(Scanner_p in, OCB_p ocb, ProofState_p
-         state);
+WFCB_p UniqWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double UniqWeightCompute(void* data, Clause_p clause);
 
 WFCB_p DefaultWeightInit(ClausePrioFun prio_fun);
 
-WFCB_p DefaultWeightParse(Scanner_p in, OCB_p ocb, ProofState_p
-           state);
+WFCB_p DefaultWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double DefaultWeightCompute(void* data, Clause_p clause);
 

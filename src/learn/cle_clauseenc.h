@@ -34,11 +34,11 @@
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-Term_p   FlatEncodeClauseListRep(TB_p bank, PStack_p list);
-Term_p   RecEncodeClauseListRep(TB_p bank, PStack_p list);
-Term_p   TermEncodeEqnList(TB_p bank, Eqn_p list, bool flat);
-Term_p   FlatRecodeRecClauseRep(TB_p bank,Term_p clauserep);
-Term_p   ParseClauseTermRep(Scanner_p in, TB_p bank, bool flat);
+Term_p FlatEncodeClauseListRep(TB_p bank, PStack_p list);
+Term_p RecEncodeClauseListRep(TB_p bank, PStack_p list);
+Term_p TermEncodeEqnList(TB_p bank, Eqn_p list, bool flat);
+Term_p FlatRecodeRecClauseRep(TB_p bank, Term_p clauserep);
+Term_p ParseClauseTermRep(Scanner_p in, TB_p bank, bool flat);
 
 #endif
 

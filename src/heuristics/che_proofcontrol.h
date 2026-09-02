@@ -39,20 +39,20 @@ Changes
 
 typedef struct proofcontrolcell
 {
-   OCB_p               ocb;
-   HCB_p               hcb;
-   WFCBAdmin_p         wfcbs;
-   HCBAdmin_p          hcbs;
-   bool                ac_handling_active;
-   HeuristicParmsCell  heuristic_parms;
-   FVIndexParmsCell    fvi_parms;
-   SpecFeatureCell     problem_specs;
+   OCB_p ocb;
+   HCB_p hcb;
+   WFCBAdmin_p wfcbs;
+   HCBAdmin_p hcbs;
+   bool ac_handling_active;
+   HeuristicParmsCell heuristic_parms;
+   FVIndexParmsCell fvi_parms;
+   SpecFeatureCell problem_specs;
    /* Sat solver object. */
-   SatSolver_p         solver;
-}ProofControlCell, *ProofControl_p;
+   SatSolver_p solver;
+} ProofControlCell, *ProofControl_p;
 
-#define HCBARGUMENTS ProofState_p state, ProofControl_p control, \
-                     HeuristicParms_p parms
+#define HCBARGUMENTS                                                           \
+   ProofState_p state, ProofControl_p control, HeuristicParms_p parms
 
 typedef HCB_p (*HCBCreateFun)(HCBARGUMENTS);
 
@@ -61,20 +61,18 @@ typedef HCB_p (*HCBCreateFun)(HCBARGUMENTS);
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-extern  char* DefaultWeightFunctions;
-extern  char* DefaultHeuristics;
+extern char* DefaultWeightFunctions;
+extern char* DefaultHeuristics;
 
-#define ProofControlCellAlloc() \
+#define ProofControlCellAlloc()                                                \
    (ProofControlCell*)SizeMalloc(sizeof(ProofControlCell))
-#define ProofControlCellFree(junk) \
-   SizeFree(junk, sizeof(ProofControlCell))
+#define ProofControlCellFree(junk) SizeFree(junk, sizeof(ProofControlCell))
 
 ProofControl_p ProofControlAlloc(void);
-void           ProofControlFree(ProofControl_p junk);
-void           ProofControlResetSATSolver(ProofControl_p ctrl);
+void ProofControlFree(ProofControl_p junk);
+void ProofControlResetSATSolver(ProofControl_p ctrl);
 
-void           DoLiteralSelection(ProofControl_p control, Clause_p
-              clause);
+void DoLiteralSelection(ProofControl_p control, Clause_p clause);
 
 
 #endif

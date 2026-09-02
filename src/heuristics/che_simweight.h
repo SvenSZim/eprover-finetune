@@ -40,7 +40,7 @@ typedef struct simparamcell
    double var_term_clash;
    double term_term_clash;
    double app_var_mult;
-}SimParamCell, *SimParam_p;
+} SimParamCell, *SimParam_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -48,20 +48,18 @@ typedef struct simparamcell
 /*---------------------------------------------------------------------*/
 
 
-#define SimParamCellAlloc() (SimParamCell*) \
-        SizeMalloc(sizeof(SimParamCell))
-#define SimParamCellFree(junk) \
-        SizeFree(junk, sizeof(SimParamCell))
+#define SimParamCellAlloc() (SimParamCell*)SizeMalloc(sizeof(SimParamCell))
+#define SimParamCellFree(junk) SizeFree(junk, sizeof(SimParamCell))
 
 WFCB_p SimWeightInit(ClausePrioFun prio_fun, double equal_weight,
-           double var_var_clash, double var_term_clash,
-           double term_term_clash, double app_var_mult);
+                     double var_var_clash, double var_term_clash,
+                     double term_term_clash, double app_var_mult);
 
 WFCB_p SimWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double SimWeightCompute(void* data, Clause_p clause);
 
-void   SimWeightExit(void* data);
+void SimWeightExit(void* data);
 
 
 #endif
@@ -69,8 +67,6 @@ void   SimWeightExit(void* data);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

@@ -36,7 +36,8 @@ Changes
 /* Tokens that always are stand-alone identifiers */
 TokenType FuncSymbToken = ATOMIC_FUNC_SYM_TOK;
 /* Tokens that may start a (composite or atomic) identifier */
-TokenType FuncSymbStartToken = ATOMIC_FUNC_SYM_TOK| PosInt | String | Plus | Hyphen;
+TokenType FuncSymbStartToken =
+   ATOMIC_FUNC_SYM_TOK | PosInt | String | Plus | Hyphen;
 
 
 /*---------------------------------------------------------------------*/
@@ -65,16 +66,16 @@ TokenType FuncSymbStartToken = ATOMIC_FUNC_SYM_TOK| PosInt | String | Plus | Hyp
 
 static void normalize_int_rep(DStr_p int_rep)
 {
-   char* work, *sign="";
+   char *work, *sign = "";
    DStr_p tmp = DStrAlloc();
 
    work = DStrView(int_rep);
 
-   if(*work=='+')
+   if(*work == '+')
    {
       work++;
    }
-   else if(*work=='-')
+   else if(*work == '-')
    {
       sign = "-";
       work++;
@@ -124,36 +125,36 @@ static bool normalize_rational_rep(DStr_p int_rep)
    work = DStrView(int_rep);
 
    numerator = strtoll(work, &end, 10);
-   if(*end!='/')
+   if(*end != '/')
    {
       return false;
    }
-   work = end+1;
+   work = end + 1;
    denominator = strtoll(work, &end, 10);
-   if(*end!='\0' || denominator == 0)
+   if(*end != '\0' || denominator == 0)
    {
       return false;
    }
    if(numerator < 0)
    {
-      numerator = numerator*-1;
-      negative=negative*-1;
+      numerator = numerator * -1;
+      negative = negative * -1;
    }
    assert(numerator >= 0);
-   if(denominator<0)
+   if(denominator < 0)
    {
-      denominator = denominator*-1;
-      negative=negative*-1;
+      denominator = denominator * -1;
+      negative = negative * -1;
    }
    assert(denominator > 0);
 
    gcd = ComputeGCD(numerator, denominator);
 
-   numerator=numerator/gcd;
-   denominator=denominator/gcd;
+   numerator = numerator / gcd;
+   denominator = denominator / gcd;
 
    DStrReset(int_rep);
-   DStrAppendInt(int_rep, negative*numerator);
+   DStrAppendInt(int_rep, negative * numerator);
    DStrAppendChar(int_rep, '/');
    DStrAppendInt(int_rep, denominator);
 
@@ -185,7 +186,7 @@ static void normalize_float_rep(DStr_p float_rep)
 
    value = strtod(DStrView(float_rep), &endptr);
 
-   if(fabs(value)>=1000.0)
+   if(fabs(value) >= 1000.0)
    {
       res = snprintf(buff, 128, "%e", value);
    }
@@ -193,12 +194,11 @@ static void normalize_float_rep(DStr_p float_rep)
    {
       res = snprintf(buff, 128, "%f", value);
    }
-   UNUSED(res); assert(res < 128);
+   UNUSED(res);
+   assert(res < 128);
 
    DStrSet(float_rep, buff);
 }
-
-
 
 
 
@@ -242,8 +242,7 @@ FuncSymbType FuncSymbParse(Scanner_p in, DStr_p id)
 
       if(TestInpTok(in, Identifier))
       {
-         if((isupper(DStrView(AktToken(in)->literal)[0])
-             ||
+         if((isupper(DStrView(AktToken(in)->literal)[0]) ||
              DStrView(AktToken(in)->literal)[0] == '_'))
          {
             res = FSIdentVar;
@@ -257,16 +256,16 @@ FuncSymbType FuncSymbParse(Scanner_p in, DStr_p id)
       {
          switch(AktTokenType(in))
          {
-         case SemIdent:
+            case SemIdent:
                res = FSIdentInterpreted;
                break;
-         case SQString:
+            case SQString:
                res = FSIdentFreeFun;
                break;
-         case String:
+            case String:
                res = FSIdentObject;
                break;
-         default:
+            default:
                assert(false && "Unexpected token in FuncSymbParse()");
                break;
          }
@@ -275,28 +274,28 @@ FuncSymbType FuncSymbParse(Scanner_p in, DStr_p id)
    }
    else
    {
-      CheckInpTok(in, PosInt|Plus|Hyphen);
+      CheckInpTok(in, PosInt | Plus | Hyphen);
 
       numtype = ParseNumString(in);
       switch(numtype)
       {
-      case SNInteger:
+         case SNInteger:
             normalize_int_rep(in->accu);
             DStrAppendStr(id, DStrView(in->accu));
             res = FSIdentInt;
             break;
-      case SNRational:
+         case SNRational:
             /* Division by zero is caught in ParseNumString() */
             normalize_rational_rep(in->accu);
             DStrAppendStr(id, DStrView(in->accu));
             res = FSIdentRational;
             break;
-      case SNFloat:
+         case SNFloat:
             normalize_float_rep(in->accu);
             DStrAppendStr(id, DStrView(in->accu));
             res = FSIdentFloat;
             break;
-      default:
+         default:
             assert(false);
             break;
       }

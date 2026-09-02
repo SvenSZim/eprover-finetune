@@ -53,7 +53,7 @@
 //
 /----------------------------------------------------------------------*/
 
-Term_p gd_def_nf(TB_p terms, Term_p term, NumTree_p *defs)
+Term_p gd_def_nf(TB_p terms, Term_p term, NumTree_p* defs)
 {
    int i;
    Term_p def_lhs;
@@ -66,10 +66,10 @@ Term_p gd_def_nf(TB_p terms, Term_p term, NumTree_p *defs)
    cell = NumTreeFind(defs, term->entry_no);
    if(cell)
    {
-      return  cell->val1.p_val;
+      return cell->val1.p_val;
    }
    def_lhs = TermTopCopy(term);
-   for(i=0; i<term->arity; i++)
+   for(i = 0; i < term->arity; i++)
    {
       def_lhs->args[i] = gd_def_nf(terms, term->args[i], defs);
    }
@@ -77,7 +77,7 @@ Term_p gd_def_nf(TB_p terms, Term_p term, NumTree_p *defs)
    cell = NumTreeFind(defs, def_lhs->entry_no);
    if(cell)
    {
-      return  cell->val1.p_val;
+      return cell->val1.p_val;
    }
    return def_lhs;
 }
@@ -99,8 +99,7 @@ Term_p gd_def_nf(TB_p terms, Term_p term, NumTree_p *defs)
 //
 /----------------------------------------------------------------------*/
 
-long gd_term_define(TB_p terms, Term_p term,
-                    NumTree_p *defs,
+long gd_term_define(TB_p terms, Term_p term, NumTree_p* defs,
                     ClauseSet_p clauses)
 {
    Term_p rhs, lhs;
@@ -113,12 +112,12 @@ long gd_term_define(TB_p terms, Term_p term,
       return 0;
    }
    lhs = gd_def_nf(terms, term, defs);
-   new_const = SigGetNewTypedDefCode(terms->sig, NULL, 0, GetReturnSort(term->type));
+   new_const =
+      SigGetNewTypedDefCode(terms->sig, NULL, 0, GetReturnSort(term->type));
    rhs = TermConstCellAlloc(new_const);
    rhs = TBTermTopInsert(terms, rhs);
-   NumTreeStore(defs, lhs->entry_no,
-                ((IntOrP){.p_val=rhs}),
-                ((IntOrP){.p_val=NULL}));
+   NumTreeStore(defs, lhs->entry_no, ((IntOrP){ .p_val = rhs }),
+                ((IntOrP){ .p_val = NULL }));
    def_eqn = EqnAlloc(rhs, lhs, terms, true);
    // Order changed to make Geoff happy - defined symbols on the left
    assert(!def_eqn->next);
@@ -144,8 +143,7 @@ long gd_term_define(TB_p terms, Term_p term,
 //
 /----------------------------------------------------------------------*/
 
-long gd_term_rek_define(TB_p terms, Term_p term,
-                        NumTree_p *defs,
+long gd_term_rek_define(TB_p terms, Term_p term, NumTree_p* defs,
                         ClauseSet_p clauses)
 {
    long res = 0;
@@ -158,7 +156,7 @@ long gd_term_rek_define(TB_p terms, Term_p term,
 
    int i;
 
-   for(i=0; i<term->arity; i++)
+   for(i = 0; i < term->arity; i++)
    {
       res += gd_term_rek_define(terms, term->args[i], defs, clauses);
    }
@@ -166,7 +164,6 @@ long gd_term_rek_define(TB_p terms, Term_p term,
    res += gd_term_define(terms, term, defs, clauses);
    return res;
 }
-
 
 
 
@@ -191,10 +188,8 @@ long gd_term_rek_define(TB_p terms, Term_p term,
 //
 /----------------------------------------------------------------------*/
 
-long ClauseSetGDTransform(TB_p terms,
-                          ClauseSet_p clauses,
-                          bool add_goal_defs_pos,
-                          bool add_goal_defs_neg,
+long ClauseSetGDTransform(TB_p terms, ClauseSet_p clauses,
+                          bool add_goal_defs_pos, bool add_goal_defs_neg,
                           bool add_goal_defs_subterms)
 {
    long res = 0;
@@ -204,16 +199,13 @@ long ClauseSetGDTransform(TB_p terms,
    Term_p term;
    NumTree_p defs = NULL;
 
-   for(handle = clauses->anchor->succ;
-       handle!=clauses->anchor;
+   for(handle = clauses->anchor->succ; handle != clauses->anchor;
        handle = handle->succ)
    {
       if(ClauseIsConjecture(handle))
       {
-         ClauseCollectGroundTerms(handle, &goal_terms,
-                                  add_goal_defs_pos,
-                                  add_goal_defs_neg,
-                                  add_goal_defs_subterms);
+         ClauseCollectGroundTerms(handle, &goal_terms, add_goal_defs_pos,
+                                  add_goal_defs_neg, add_goal_defs_subterms);
       }
    }
    iter_stack = PTreeTraverseInit(goal_terms);

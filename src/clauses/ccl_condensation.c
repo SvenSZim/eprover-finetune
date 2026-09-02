@@ -55,14 +55,14 @@ long CondensationSuccesses = 0;
 
 static bool try_condensation(Clause_p clause, Eqn_p l1, Eqn_p l2, bool swap)
 {
-   Subst_p  subst = SubstAlloc();
-   Eqn_p    newlits;
+   Subst_p subst = SubstAlloc();
+   Eqn_p newlits;
    Clause_p cand;
-   bool     res = false;
+   bool res = false;
 
    if(LiteralUnifyOneWay(l1, l2, subst, false))
    {
-      newlits = EqnListCopyExcept(clause->literals,l2, l1->bank);
+      newlits = EqnListCopyExcept(clause->literals, l2, l1->bank);
       SubstBacktrack(subst);
       EqnListRemoveDuplicates(newlits);
       EqnListRemoveResolved(&newlits);
@@ -113,20 +113,20 @@ static bool try_condensation(Clause_p clause, Eqn_p l1, Eqn_p l2, bool swap)
 
 bool CondenseOnce(Clause_p clause)
 {
-   Eqn_p    l1, l2;
+   Eqn_p l1, l2;
 
    assert(ClauseIsSubsumeOrdered(clause));
 
-   for(l1=clause->literals; l1; l1=l1->next)
+   for(l1 = clause->literals; l1; l1 = l1->next)
    {
       assert(l1);
-      for(l2=l1->next; l2; l2=l2->next)
+      for(l2 = l1->next; l2; l2 = l2->next)
       {
          if(try_condensation(clause, l1, l2, false))
          {
             return true;
          }
-         if((!EqnIsOriented(l1))||(!EqnIsOriented(l2)))
+         if((!EqnIsOriented(l1)) || (!EqnIsOriented(l2)))
          {
             if(try_condensation(clause, l1, l2, true))
             {
@@ -159,7 +159,7 @@ bool Condense(Clause_p clause)
 
    CondensationAttempts++;
 
-   if((clause->pos_lit_no > 1) || (clause->neg_lit_no >1))
+   if((clause->pos_lit_no > 1) || (clause->neg_lit_no > 1))
    {
       clause->weight = ClauseStandardWeight(clause);
       ClauseSubsumeOrderSortLits(clause);

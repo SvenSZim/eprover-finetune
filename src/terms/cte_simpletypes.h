@@ -37,22 +37,23 @@
 /*---------------------------------------------------------------------*/
 
 #define ArrowTypeCons 0
-#define STBool        1     /* Boolean sort, will replace/extend the predicate bit */
+#define STBool 1 /* Boolean sort, will replace/extend the predicate bit */
 #define STIndividuals 2     /* Default sort, "individuums" */
-#define STKind        3     /* The "sort of sorts", $tType in TFF */
-#define STInteger     4     /* Integer numbers */
-#define STRational    5     /* Rational numbers */
-#define STReal        6     /* Reals */
-#define STPredefined  STReal /* Greatest pre-defined type encoding */
+#define STKind 3            /* The "sort of sorts", $tType in TFF */
+#define STInteger 4         /* Integer numbers */
+#define STRational 5        /* Rational numbers */
+#define STReal 6            /* Reals */
+#define STPredefined STReal /* Greatest pre-defined type encoding */
 
 typedef long TypeUniqueID;
 typedef long TypeConsCode;
 
-typedef struct typecell {
-   TypeConsCode      f_code; // Called the same as for terms.
-   int               arity;
+typedef struct typecell
+{
+   TypeConsCode f_code; // Called the same as for terms.
+   int arity;
    struct typecell** args;
-   TypeUniqueID      type_uid;
+   TypeUniqueID type_uid;
 } TypeCell, *Type_p;
 
 /*---------------------------------------------------------------------*/
@@ -60,39 +61,45 @@ typedef struct typecell {
 /*---------------------------------------------------------------------*/
 
 #define SortIsUserDefined(sort) ((sort) > STPredefined)
-#define SortIsInterpreted(sort) (((sort)>=STInteger)&&((sort)<=STPredefined))
+#define SortIsInterpreted(sort)                                                \
+   (((sort) >= STInteger) && ((sort) <= STPredefined))
 
-Type_p  GetReturnSort(Type_p type);
+Type_p GetReturnSort(Type_p type);
 
-#define NO_TYPE                 NULL
-#define INVALID_TYPE_UID        -1
+#define NO_TYPE NULL
+#define INVALID_TYPE_UID -1
 
-#define TypeIsKind(t)   ((t)->f_code == STKind)
-#define TypeIsBool(t)   ((t)->f_code == STBool)
-#define TypeIsArrow(t)  ((t)->f_code == ArrowTypeCons)
+#define TypeIsKind(t) ((t)->f_code == STKind)
+#define TypeIsBool(t) ((t)->f_code == STBool)
+#define TypeIsArrow(t) ((t)->f_code == ArrowTypeCons)
 
-#define TypeIsPredicate(t) (TypeIsBool(t) || (TypeIsArrow(t) && TypeIsBool((t)->args[(t)->arity-1])))
+#define TypeIsPredicate(t)                                                     \
+   (TypeIsBool(t) || (TypeIsArrow(t) && TypeIsBool((t)->args[(t)->arity - 1])))
 
-#define TypeCellAlloc()    (Type_p) SizeMalloc(sizeof(TypeCell))
+#define TypeCellAlloc() (Type_p) SizeMalloc(sizeof(TypeCell))
 #define TypeCellFree(junk) SizeFree(junk, sizeof(TypeCell))
 
-Type_p  TypeCopy(Type_p orig);
+Type_p TypeCopy(Type_p orig);
 
-#define AllocSimpleSort(code)       TypeAlloc((code), 0, NULL)
-#define AllocArrowType(arity, args) ((assert((arity) > 0)),\
-   ((arity) == 1 ? (args)[0] : TypeAlloc(ArrowTypeCons, (arity), (args))))
+#define AllocSimpleSort(code) TypeAlloc((code), 0, NULL)
+#define AllocArrowType(arity, args)                                            \
+   ((assert((arity) > 0)),                                                     \
+    ((arity) == 1 ? (args)[0] : TypeAlloc(ArrowTypeCons, (arity), (args))))
 
-#define TypeArgArrayAlloc(n) ((Type_p*) ((n) == 0 ? NULL : SizeMalloc((n)*sizeof(Type_p))))
-#define TypeArgArrayFree(junk, n) (((n)==0) ? NULL : ( SizeFreeReal((junk),((n)*sizeof(Type_p))) ))
+#define TypeArgArrayAlloc(n)                                                   \
+   ((Type_p*)((n) == 0 ? NULL : SizeMalloc((n) * sizeof(Type_p))))
+#define TypeArgArrayFree(junk, n)                                              \
+   (((n) == 0) ? NULL : (SizeFreeReal((junk), ((n) * sizeof(Type_p)))))
 
-#define  TypeIsArrow(t)       ((t)->f_code == ArrowTypeCons)
-#define  TypeIsKind(t)        ((t)->f_code == STKind)
-#define  TypeIsIndividual(t)  ((t)->f_code == STIndividuals)
-#define  TypeIsTypeConstructor(t) (TypeIsKind(t) || (TypeIsArrow(t) && TypeIsKind((t)->args[0])))
+#define TypeIsArrow(t) ((t)->f_code == ArrowTypeCons)
+#define TypeIsKind(t) ((t)->f_code == STKind)
+#define TypeIsIndividual(t) ((t)->f_code == STIndividuals)
+#define TypeIsTypeConstructor(t)                                               \
+   (TypeIsKind(t) || (TypeIsArrow(t) && TypeIsKind((t)->args[0])))
 
 bool TypeIsUntyped(Type_p t);
 
-#define  GetRetType(t)        (TypeIsArrow(t) ? (t)->args[(t)->arity-1] : (t))
+#define GetRetType(t) (TypeIsArrow(t) ? (t)->args[(t)->arity - 1] : (t))
 
 int TypeGetMaxArity(Type_p t);
 
@@ -126,9 +133,9 @@ static inline Type_p TypeAlloc(TypeConsCode c_code, int arity, Type_p* args)
    Type_p handle = TypeCellAlloc();
 
    handle->f_code = c_code;
-   handle->arity  = arity;
-   handle->args   = args;
-   handle->type_uid  = INVALID_TYPE_UID;
+   handle->arity = arity;
+   handle->args = args;
+   handle->type_uid = INVALID_TYPE_UID;
 
    return handle;
 }
@@ -151,7 +158,7 @@ static inline Type_p AllocArrowTypeCopyArgs(int arity, Type_p const* args)
 {
    assert(arity > 0);
    Type_p* args_copy = TypeArgArrayAlloc(arity);
-   for(int i=0; i<arity; i++)
+   for(int i = 0; i < arity; i++)
    {
       args_copy[i] = args[i];
    }
@@ -171,11 +178,11 @@ static inline Type_p AllocArrowTypeCopyArgs(int arity, Type_p const* args)
 /----------------------------------------------------------------------*/
 static inline int TypeGetOrder(Type_p t)
 {
-   int order=0;
+   int order = 0;
    if(TypeIsArrow(t))
    {
-      assert(!TypeIsArrow(t->args[t->arity-1]));
-      for(int i=0; i<t->arity; i++)
+      assert(!TypeIsArrow(t->args[t->arity - 1]));
+      for(int i = 0; i < t->arity; i++)
       {
          order = MAX(order, TypeGetOrder(t->args[i]));
       }

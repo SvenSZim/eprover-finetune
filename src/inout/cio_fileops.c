@@ -59,18 +59,18 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-FILE* InputOpen(char *name, bool fail)
+FILE* InputOpen(char* name, bool fail)
 {
    FILE* in;
    int statres;
    struct stat stat_buf;
 
-   if(name && strcmp(name,"-")!= 0)
+   if(name && strcmp(name, "-") != 0)
    {
       VERBOUTARG2("Trying file ", name);
       in = fopen(name, "r");
 
-      statres = stat (name, &stat_buf);
+      statres = stat(name, &stat_buf);
       if(statres != 0)
       {
          in = NULL;
@@ -80,7 +80,7 @@ FILE* InputOpen(char *name, bool fail)
             SysError("Cannot stat file %s", FILE_ERROR, name);
          }
       }
-      else if(!S_ISREG (stat_buf.st_mode))
+      else if(!S_ISREG(stat_buf.st_mode))
       {
          in = NULL;
          if(fail)
@@ -92,13 +92,12 @@ FILE* InputOpen(char *name, bool fail)
       if(fail && !in)
       {
          TmpErrno = errno;
-         SysError("Cannot open file %s for reading", FILE_ERROR , name);
+         SysError("Cannot open file %s for reading", FILE_ERROR, name);
       }
       if(fail)
       {
          VERBOUTARG("Input file is ", name);
       }
-
    }
    else
    {
@@ -120,7 +119,7 @@ FILE* InputOpen(char *name, bool fail)
 //
 /----------------------------------------------------------------------*/
 
-void  InputClose(FILE* file)
+void InputClose(FILE* file)
 {
    VERBOUT("Closing input\n");
    if(file != stdin)
@@ -147,15 +146,15 @@ void  InputClose(FILE* file)
 //
 /----------------------------------------------------------------------*/
 
-long  FileLoad(char* name, DStr_p dest)
+long FileLoad(char* name, DStr_p dest)
 {
    FILE* in;
-   long count=0;
+   long count = 0;
    int c;
 
    in = InputOpen(name, true);
 
-   while((c = getc(in))!= EOF)
+   while((c = getc(in)) != EOF)
    {
       count++;
       DStrAppendChar(dest, c);
@@ -190,12 +189,12 @@ long ConcatFiles(char* target, char** sources)
 
    out = OutOpen(target);
 
-   for(i=0; sources[i]; i++)
+   for(i = 0; sources[i]; i++)
    {
       in = InputOpen(sources[i], true);
-      while((c = getc(in))!= EOF)
+      while((c = getc(in)) != EOF)
       {
-    putc(c, out);
+         putc(c, out);
       }
       InputClose(in);
    }
@@ -244,11 +243,12 @@ long CopyFile(char* target, char* source)
 void FileRemove(char* name)
 {
    VERBOUTARG("Removing ", name);
-   if(unlink(name)!=0)
+   if(unlink(name) != 0)
    {
       TmpErrno = errno;
       sprintf(ErrStr, "Cannot remove file %s", name);
-      SysError(ErrStr, FILE_ERROR);      TmpErrno = errno;
+      SysError(ErrStr, FILE_ERROR);
+      TmpErrno = errno;
       SysError("Could not remove temporary file", SYS_ERROR);
    }
 }
@@ -265,13 +265,13 @@ void FileRemove(char* name)
 //
 /----------------------------------------------------------------------*/
 
-void  FilePrint(FILE* out, char* name)
+void FilePrint(FILE* out, char* name)
 {
    FILE* in;
-   int   c;
+   int c;
 
    in = InputOpen(name, true);
-   while((c = getc(in))!=EOF)
+   while((c = getc(in)) != EOF)
    {
       putc(c, out);
    }
@@ -296,16 +296,16 @@ void  FilePrint(FILE* out, char* name)
 
 char* FileNameDirName(char* name)
 {
-   char *res;
+   char* res;
    int i, endpos = 0;
 
    assert(name);
 
-   for(i=0; name[i]; i++)
+   for(i = 0; name[i]; i++)
    {
       if(name[i] == '/')
       {
-         endpos = i+1;
+         endpos = i + 1;
       }
    }
    res = SecureStrndup(name, endpos);
@@ -327,15 +327,15 @@ char* FileNameDirName(char* name)
 //
 /----------------------------------------------------------------------*/
 
-char *FileFindBaseName(char* name)
+char* FileFindBaseName(char* name)
 {
-   char *res = name;
+   char* res = name;
 
-   for( ; *name; name++)
+   for(; *name; name++)
    {
       if(*name == '/')
       {
-    res = name+1;
+         res = name + 1;
       }
    }
    return res;
@@ -388,7 +388,7 @@ char* FileNameStrip(char* name)
 
 
    endpos = FileFindBaseName(name);
-   for(i=0; endpos[i]; i++)
+   for(i = 0; endpos[i]; i++)
    {
       if(endpos[i] == '.')
       {

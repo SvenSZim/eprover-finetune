@@ -107,7 +107,7 @@ PLiteralCode PropSigGetAtomEnc(PropSig_p psig, char* name)
 {
    StrTree_p handle;
 
-   handle = StrTreeFind(&(psig->name_to_enc),name);
+   handle = StrTreeFind(&(psig->name_to_enc), name);
    if(handle)
    {
       return handle->val1.i_val;
@@ -134,7 +134,7 @@ PLiteralCode PropSigInsertAtom(PropSig_p psig, char* name)
    PLiteralCode enc;
    StrTree_p handle;
 
-   enc = PropSigGetAtomEnc(psig,name);
+   enc = PropSigGetAtomEnc(psig, name);
    if(enc)
    {
       return enc;
@@ -142,7 +142,7 @@ PLiteralCode PropSigInsertAtom(PropSig_p psig, char* name)
    handle = StrTreeCellAlloc();
    handle->key = SecureStrdup(name);
    enc = PropSigAtomNumber(psig);
-   PStackPushP(psig->enc_to_name,handle->key);
+   PStackPushP(psig->enc_to_name, handle->key);
    handle->val1.i_val = enc;
    handle = StrTreeInsert(&(psig->name_to_enc), handle);
    assert(!handle);
@@ -169,7 +169,7 @@ char* PropSigGetAtomName(PropSig_p psig, PLiteralCode atom)
    /* printf("Atom: %ld\n",atom); */
    assert(psig);
    assert(PAtomP(atom));
-   assert(atom<PropSigAtomNumber(psig));
+   assert(atom < PropSigAtomNumber(psig));
    return PStackElementP(psig->enc_to_name, atom);
 }
 
@@ -190,11 +190,11 @@ void PropSigPrint(FILE* out, PropSig_p psig)
 {
    long i;
 
-   fprintf(out, COMCHAR" Propositional signature:\n");
-   fprintf(out, COMCHAR" ------------------------\n");
-   for(i=1; i<PropSigAtomNumber(psig); i++)
+   fprintf(out, COMCHAR " Propositional signature:\n");
+   fprintf(out, COMCHAR " ------------------------\n");
+   for(i = 1; i < PropSigAtomNumber(psig); i++)
    {
-      fprintf(out, COMCHAR" %6ld : %s\n", i, PropSigGetAtomName(psig,i));
+      fprintf(out, COMCHAR " %6ld : %s\n", i, PropSigGetAtomName(psig, i));
    }
    fprintf(out, "\n");
 }

@@ -114,8 +114,8 @@ static int pcl_sc_compare(PCLStep_p step1, PCLStep_p step2)
       return 1;
    }
 
-   w1 = ClauseSymTypeWeight(step1->logic.clause, 1,1,1,1,1,1,1,1);
-   w2 = ClauseSymTypeWeight(step2->logic.clause, 1,1,1,1,1,1,1,1);
+   w1 = ClauseSymTypeWeight(step1->logic.clause, 1, 1, 1, 1, 1, 1, 1, 1);
+   w2 = ClauseSymTypeWeight(step2->logic.clause, 1, 1, 1, 1, 1, 1, 1, 1);
 
    if(w1 < w2)
    {
@@ -229,28 +229,28 @@ static int pcl_depth_compare(PCLStep_p step1, PCLStep_p step2)
 static void pcl_prot_global_count(PCLProt_p prot, PCLPropData_p data)
 {
    PCLStep_p tmp;
-   Clause_p  clause;
+   Clause_p clause;
    PStackPointer i;
 
    assert(prot && data);
 
-   data->fof_formulae        = 0;
-   data->pos_clauses         = 0;
-   data->neg_clauses         = 0;
-   data->mix_clauses         = 0;
+   data->fof_formulae = 0;
+   data->pos_clauses = 0;
+   data->neg_clauses = 0;
+   data->mix_clauses = 0;
    data->pos_clause_literals = 0;
    data->neg_clause_literals = 0;
    data->mix_clause_literals = 0;
-   data->pos_literals        = 0;
-   data->neg_literals        = 0;
-   data->const_count         = 0;
-   data->func_count          = 0;
-   data->pred_count          = 0;
-   data->var_count           = 0;
+   data->pos_literals = 0;
+   data->neg_literals = 0;
+   data->const_count = 0;
+   data->func_count = 0;
+   data->pred_count = 0;
+   data->var_count = 0;
 
    PCLProtSerialize(prot);
 
-   for(i=0; i<PStackGetSP(prot->in_order); i++)
+   for(i = 0; i < PStackGetSP(prot->in_order); i++)
    {
       tmp = PStackElementP(prot->in_order, i);
       if(PCLStepIsFOF(tmp))
@@ -265,8 +265,8 @@ static void pcl_prot_global_count(PCLProt_p prot, PCLPropData_p data)
          {
             if(ClauseIsPositive(clause))
             {
-       data->pos_clauses++;
-       data->pos_clause_literals += ClauseLiteralNumber(clause);
+               data->pos_clauses++;
+               data->pos_clause_literals += ClauseLiteralNumber(clause);
             }
             else if(ClauseIsNegative(clause))
             {
@@ -280,14 +280,14 @@ static void pcl_prot_global_count(PCLProt_p prot, PCLPropData_p data)
             }
             data->pos_literals += clause->pos_lit_no;
             data->neg_literals += clause->neg_lit_no;
-            data->const_count  += ClauseSymTypeWeight(clause,
-                                                      1,1,1,0,0,1,0,1);
-            data->func_count   += ClauseSymTypeWeight(clause,
-                                                      1,1,1,0,1,0,0,1);
-            data->pred_count   += ClauseSymTypeWeight(clause,
-                                                      1,1,1,0,0,0,1,1);
-            data->var_count   += ClauseSymTypeWeight(clause,
-                                                     1,1,1,1,0,0,0,1);
+            data->const_count +=
+               ClauseSymTypeWeight(clause, 1, 1, 1, 0, 0, 1, 0, 1);
+            data->func_count +=
+               ClauseSymTypeWeight(clause, 1, 1, 1, 0, 1, 0, 0, 1);
+            data->pred_count +=
+               ClauseSymTypeWeight(clause, 1, 1, 1, 0, 0, 0, 1, 1);
+            data->var_count +=
+               ClauseSymTypeWeight(clause, 1, 1, 1, 1, 0, 0, 0, 1);
          }
       }
    }
@@ -317,7 +317,7 @@ PCLStep_p PCLProtFindMaxStep(PCLProt_p prot, PCLCmpFunType cmp)
 {
    PCLStep_p res = NULL, tmp;
    PStack_p stack;
-   PTree_p  cell;
+   PTree_p cell;
 
    assert(prot && cmp);
    if(!prot->steps)
@@ -328,12 +328,12 @@ PCLStep_p PCLProtFindMaxStep(PCLProt_p prot, PCLCmpFunType cmp)
    cell = PTreeTraverseNext(stack);
    res = cell->key;
 
-   while((cell=PTreeTraverseNext(stack)))
+   while((cell = PTreeTraverseNext(stack)))
    {
       tmp = cell->key;
-      if(cmp(tmp,res) > 0)
+      if(cmp(tmp, res) > 0)
       {
-    res = tmp;
+         res = tmp;
       }
    }
    PStackFree(stack);
@@ -360,12 +360,9 @@ void PCLProtPropAnalyse(PCLProt_p prot, PCLPropData_p data)
 {
    data->max_standard_weight_clause =
       PCLProtFindMaxStep(prot, pcl_weight_compare);
-   data->longest_clause =
-      PCLProtFindMaxStep(prot, pcl_litno_compare);
-   data->max_symbol_clause =
-      PCLProtFindMaxStep(prot, pcl_sc_compare);
-   data->max_depth_clause =
-      PCLProtFindMaxStep(prot, pcl_depth_compare);
+   data->longest_clause = PCLProtFindMaxStep(prot, pcl_litno_compare);
+   data->max_symbol_clause = PCLProtFindMaxStep(prot, pcl_sc_compare);
+   data->max_depth_clause = PCLProtFindMaxStep(prot, pcl_depth_compare);
 
    pcl_prot_global_count(prot, data);
 }
@@ -385,48 +382,43 @@ void PCLProtPropAnalyse(PCLProt_p prot, PCLPropData_p data)
 
 void PCLProtPropDataPrint(FILE* out, PCLPropData_p data)
 {
-   long clauses =
-      data->pos_clauses+data->neg_clauses+data->mix_clauses;
+   long clauses = data->pos_clauses + data->neg_clauses + data->mix_clauses;
 
-   fprintf(out,
-      COMCHAR" Protocol properties\n"
-      COMCHAR" ===================\n"
-      COMCHAR" Number of clauses                  : %6ld\n"
-      COMCHAR" ...of those positive               : %6ld\n"
-      COMCHAR" ...of those negative               : %6ld\n"
-      COMCHAR" ...of those mixed                  : %6ld\n"
-      COMCHAR" Average number of literals         : %6.4f\n"
-      COMCHAR" ...in positive clauses             : %6.4f\n"
-      COMCHAR" ...in negative clauses             : %6.4f\n"
-      COMCHAR" ...in mixed clauses                : %6.4f\n"
-      COMCHAR" ...positive literals only          : %6.4f\n"
-      COMCHAR" ...negative literals only          : %6.4f\n"
-      COMCHAR" Average number of function  symbols: %6.4f\n"
-      COMCHAR" Average number of variable  symbols: %6.4f\n"
-      COMCHAR" Average number of constant  symbols: %6.4f\n"
-      COMCHAR" Average number of predicate symbols: %6.4f\n",
-      clauses,
-      data->pos_clauses,
-      data->neg_clauses,
-      data->mix_clauses,
-      (double)(data->pos_literals+data->neg_literals)/clauses,
-      (double)(data->pos_clause_literals)/data->pos_clauses,
-      (double)(data->neg_clause_literals)/data->neg_clauses,
-      (double)(data->mix_clause_literals)/data->mix_clauses,
-      (double)(data->pos_literals)/clauses,
-      (double)(data->neg_literals)/clauses,
-      (double)(data->func_count)/clauses,
-      (double)(data->var_count)/clauses,
-      (double)(data->const_count)/clauses,
-      (double)(data->pred_count)/clauses);
-   fprintf(out, COMCHAR" Longest Clause (if any): \n");
+   fprintf(
+      out,
+      COMCHAR " Protocol properties\n" COMCHAR " ===================\n" COMCHAR
+              " Number of clauses                  : %6ld\n" COMCHAR
+              " ...of those positive               : %6ld\n" COMCHAR
+              " ...of those negative               : %6ld\n" COMCHAR
+              " ...of those mixed                  : %6ld\n" COMCHAR
+              " Average number of literals         : %6.4f\n" COMCHAR
+              " ...in positive clauses             : %6.4f\n" COMCHAR
+              " ...in negative clauses             : %6.4f\n" COMCHAR
+              " ...in mixed clauses                : %6.4f\n" COMCHAR
+              " ...positive literals only          : %6.4f\n" COMCHAR
+              " ...negative literals only          : %6.4f\n" COMCHAR
+              " Average number of function  symbols: %6.4f\n" COMCHAR
+              " Average number of variable  symbols: %6.4f\n" COMCHAR
+              " Average number of constant  symbols: %6.4f\n" COMCHAR
+              " Average number of predicate symbols: %6.4f\n",
+      clauses, data->pos_clauses, data->neg_clauses, data->mix_clauses,
+      (double)(data->pos_literals + data->neg_literals) / clauses,
+      (double)(data->pos_clause_literals) / data->pos_clauses,
+      (double)(data->neg_clause_literals) / data->neg_clauses,
+      (double)(data->mix_clause_literals) / data->mix_clauses,
+      (double)(data->pos_literals) / clauses,
+      (double)(data->neg_literals) / clauses,
+      (double)(data->func_count) / clauses, (double)(data->var_count) / clauses,
+      (double)(data->const_count) / clauses,
+      (double)(data->pred_count) / clauses);
+   fprintf(out, COMCHAR " Longest Clause (if any): \n");
    PCLStepPrint(out, data->longest_clause);
-   fprintf(out, "\n"COMCHAR" Largest Clause (if any): \n");
+   fprintf(out, "\n" COMCHAR " Largest Clause (if any): \n");
    PCLStepPrint(out, data->max_symbol_clause);
-   fprintf(out, "\n"COMCHAR" Heaviest Clause (if any): \n");
+   fprintf(out, "\n" COMCHAR " Heaviest Clause (if any): \n");
    ClausePropInfoPrint(out, data->max_standard_weight_clause->logic.clause);
    PCLStepPrint(out, data->max_standard_weight_clause);
-   fprintf(out, "\n"COMCHAR" Deepest Clause (if any): \n");
+   fprintf(out, "\n" COMCHAR " Deepest Clause (if any): \n");
    PCLStepPrint(out, data->max_depth_clause);
    fprintf(out, "\n");
 }

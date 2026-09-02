@@ -49,14 +49,14 @@
 
 static FunCode get_new_fun_symbol(PatternSubst_p subst, int arity)
 {
-   long    base;
+   long base;
    IntOrP* where;
 
    where = PDArrayElementRef(subst->used_idents, arity);
    where->i_val++;
    base = where->i_val;
 
-   assert(base<=NORM_SYMBOL_LIMIT && "Too many function symbols ???");
+   assert(base <= NORM_SYMBOL_LIMIT && "Too many function symbols ???");
 
    return PatternNormCode(base, arity);
 }
@@ -84,8 +84,8 @@ FunCode pat_symb_comp_val(PatternSubst_p subst, FunCode f_code)
 
       if(res == f_code)
       {
-         assert(res<=subst->sig->f_count);
-         res = SigGetAlphaRank(subst->sig,f_code);
+         assert(res <= subst->sig->f_count);
+         res = SigGetAlphaRank(subst->sig, f_code);
       }
       return res;
    }
@@ -123,14 +123,13 @@ FunCode pat_symb_comp_val(PatternSubst_p subst, FunCode f_code)
 //
 /----------------------------------------------------------------------*/
 
-static CompareResult pat_symbol_compare(PatternSubst_p subst1, FunCode
-                                        f1, PatternSubst_p subst2,
-                                        FunCode f2)
+static CompareResult pat_symbol_compare(PatternSubst_p subst1, FunCode f1,
+                                        PatternSubst_p subst2, FunCode f2)
 {
    if(PatSymbolIsBound(subst1, f1) && PatSymbolIsBound(subst2, f2))
    {
-      FunCode cmp = pat_symb_comp_val(subst1, f1) -
-         pat_symb_comp_val(subst2, f2);
+      FunCode cmp =
+         pat_symb_comp_val(subst1, f1) - pat_symb_comp_val(subst2, f2);
 
       return Q_TO_PART(cmp);
    }
@@ -158,14 +157,12 @@ static CompareResult pat_symbol_compare(PatternSubst_p subst1, FunCode
 //
 /----------------------------------------------------------------------*/
 
-static void generate_print_rep(FunCode f, char *id)
+static void generate_print_rep(FunCode f, char* id)
 {
    assert(PatIdIsNormId(f));
    assert(id);
 
-   sprintf(id, "f%ld_%ld",
-           PatternIdGetArity(f),
-           PatternIdGetIdent(f));
+   sprintf(id, "f%ld_%ld", PatternIdGetArity(f), PatternIdGetIdent(f));
 }
 
 
@@ -192,12 +189,12 @@ static void generate_print_rep(FunCode f, char *id)
 
 static CompareResult pat_term_size_compare(Term_p t1, Term_p t2)
 {
-   PStack_p      stack;
-   CompareResult res   = to_equal;
-   long          cmp;
-   int           i;
+   PStack_p stack;
+   CompareResult res = to_equal;
+   long cmp;
+   int i;
 
-   if((t1->f_code == SIG_TRUE_CODE)&&(t2->f_code == SIG_TRUE_CODE))
+   if((t1->f_code == SIG_TRUE_CODE) && (t2->f_code == SIG_TRUE_CODE))
    {
       return to_equal;
    }
@@ -210,7 +207,7 @@ static CompareResult pat_term_size_compare(Term_p t1, Term_p t2)
       return to_lesser;
    }
 
-   stack  = PStackAlloc();
+   stack = PStackAlloc();
 
    PStackPushP(stack, t1);
    PStackPushP(stack, t2);
@@ -219,13 +216,15 @@ static CompareResult pat_term_size_compare(Term_p t1, Term_p t2)
    {
       t2 = PStackPopP(stack);
       t1 = PStackPopP(stack);
-      if(t1==t2)
+      if(t1 == t2)
       {
          continue;
       }
 
-      assert(TermStandardWeight(t1) == TermWeight(t1,DEFAULT_VWEIGHT,DEFAULT_FWEIGHT));
-      assert(TermStandardWeight(t2) == TermWeight(t2,DEFAULT_VWEIGHT,DEFAULT_FWEIGHT));
+      assert(TermStandardWeight(t1) ==
+             TermWeight(t1, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
+      assert(TermStandardWeight(t2) ==
+             TermWeight(t2, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
       cmp = TermStandardWeight(t1) - TermStandardWeight(t2);
 
       if(cmp < 0)
@@ -255,14 +254,14 @@ static CompareResult pat_term_size_compare(Term_p t1, Term_p t2)
          break;
       }
       assert(cmp == 0);
-      for(i=0; i<t1->arity; i++)
+      for(i = 0; i < t1->arity; i++)
       {
          PStackPushP(stack, t1->args[i]);
          PStackPushP(stack, t2->args[i]);
       }
    }
    PStackFree(stack);
-   assert((res!=to_uncomparable)&&(res!=to_unknown));
+   assert((res != to_uncomparable) && (res != to_unknown));
    return res;
 }
 
@@ -288,24 +287,24 @@ static void initialize_lit_list(PatternSubst_p subst, Eqn_p list)
    {
       if(!EqnQueryProp(handle, EPIsUsed))
       {
-         EqnDelProp(handle, EPLPatMinimal|EPRPatMinimal);
-         cmpres = PatternTermCompare(subst, handle->lterm, subst,
-                                     handle->rterm);
+         EqnDelProp(handle, EPLPatMinimal | EPRPatMinimal);
+         cmpres =
+            PatternTermCompare(subst, handle->lterm, subst, handle->rterm);
          switch(cmpres)
          {
-         case to_equal: /* Equal stays equal, i.e. we need to consider
+            case to_equal: /* Equal stays equal, i.e. we need to consider
                            only one case! FALLTHROUGH */
-         case to_lesser:
-               EqnSetProp(handle,EPLPatMinimal);
+            case to_lesser:
+               EqnSetProp(handle, EPLPatMinimal);
                break;
-         case to_greater:
-               EqnSetProp(handle,EPRPatMinimal);
+            case to_greater:
+               EqnSetProp(handle, EPRPatMinimal);
                break;
-         case to_uncomparable:
-               EqnSetProp(handle,EPLPatMinimal|EPRPatMinimal);
+            case to_uncomparable:
+               EqnSetProp(handle, EPLPatMinimal | EPRPatMinimal);
                break;
-         case to_unknown:
-         default:
+            case to_unknown:
+            default:
                assert(false);
                break;
          }
@@ -336,7 +335,7 @@ static void mark_minimal_literals(PatternSubst_p subst, Eqn_p list)
 
    for(handle = list; handle; handle = handle->next)
    {
-      if(!EqnIsAnyPropSet(handle, EPLPatMinimal|EPRPatMinimal)||
+      if(!EqnIsAnyPropSet(handle, EPLPatMinimal | EPRPatMinimal) ||
          EqnQueryProp(handle, EPIsUsed))
       {
          continue;
@@ -351,43 +350,41 @@ static void mark_minimal_literals(PatternSubst_p subst, Eqn_p list)
          {
             if(EqnQueryProp(compare, EPLPatMinimal))
             {
-               cmpres = PatternTermPairCompare(subst, handle,
-                                               PENormal, subst,
+               cmpres = PatternTermPairCompare(subst, handle, PENormal, subst,
                                                compare, PENormal);
                switch(cmpres)
                {
-               case to_equal: /* If two literals are _equal_, this
+                  case to_equal: /* If two literals are _equal_, this
                                  will not change -> we can arbitrarily
                                  pick exactly one -> FALLTHROUGH */
-               case to_lesser:
+                  case to_lesser:
                      EqnDelProp(compare, EPLPatMinimal);
                      break;
-               case to_greater:
+                  case to_greater:
                      EqnDelProp(handle, EPLPatMinimal);
                      break;
-               default:
-                     assert(cmpres!=to_unknown);
+                  default:
+                     assert(cmpres != to_unknown);
                      break;
                }
             }
             if(EqnQueryProp(compare, EPRPatMinimal))
             {
-               cmpres = PatternTermPairCompare(subst, handle,
-                                               PENormal, subst,
+               cmpres = PatternTermPairCompare(subst, handle, PENormal, subst,
                                                compare, PEReverse);
                switch(cmpres)
                {
-               case to_equal: /* If two literals are _equal_, this
+                  case to_equal: /* If two literals are _equal_, this
                                  will not change -> we can arbitrarily
                                  pick exactly one -> FALLTHROUGH */
-               case to_lesser:
+                  case to_lesser:
                      EqnDelProp(compare, EPRPatMinimal);
                      break;
-               case to_greater:
+                  case to_greater:
                      EqnDelProp(handle, EPLPatMinimal);
                      break;
-               default:
-                     assert(cmpres!=to_unknown);
+                  default:
+                     assert(cmpres != to_unknown);
                      break;
                }
             }
@@ -396,43 +393,41 @@ static void mark_minimal_literals(PatternSubst_p subst, Eqn_p list)
          {
             if(EqnQueryProp(compare, EPLPatMinimal))
             {
-               cmpres = PatternTermPairCompare(subst, handle,
-                                               PEReverse, subst,
+               cmpres = PatternTermPairCompare(subst, handle, PEReverse, subst,
                                                compare, PENormal);
                switch(cmpres)
                {
-               case to_equal: /* If two literals are _equal_, this
+                  case to_equal: /* If two literals are _equal_, this
                                  will not change -> we can arbitrarily
                                  pick exactly one -> FALLTHROUGH */
-               case to_lesser:
+                  case to_lesser:
                      EqnDelProp(compare, EPLPatMinimal);
                      break;
-               case to_greater:
+                  case to_greater:
                      EqnDelProp(handle, EPRPatMinimal);
                      break;
-               default:
-                     assert(cmpres!=to_unknown);
+                  default:
+                     assert(cmpres != to_unknown);
                      break;
                }
             }
             if(EqnQueryProp(compare, EPRPatMinimal))
             {
-               cmpres = PatternTermPairCompare(subst, handle,
-                                               PEReverse, subst,
+               cmpres = PatternTermPairCompare(subst, handle, PEReverse, subst,
                                                compare, PEReverse);
                switch(cmpres)
                {
-               case to_equal: /* If two literals are _equal_, this
+                  case to_equal: /* If two literals are _equal_, this
                                  will not change -> we can arbitrarily
                                  pick exactly one -> FALLTHROUGH */
-               case to_lesser:
+                  case to_lesser:
                      EqnDelProp(compare, EPRPatMinimal);
                      break;
-               case to_greater:
+                  case to_greater:
                      EqnDelProp(handle, EPRPatMinimal);
                      break;
-               default:
-                     assert(cmpres!=to_unknown);
+                  default:
+                     assert(cmpres != to_unknown);
                      break;
                }
             }
@@ -456,8 +451,7 @@ static void mark_minimal_literals(PatternSubst_p subst, Eqn_p list)
 //
 /----------------------------------------------------------------------*/
 
-static int collect_choices(PatternSubst_p subst, Eqn_p list, PStack_p
-                           choices)
+static int collect_choices(PatternSubst_p subst, Eqn_p list, PStack_p choices)
 {
    int i = 0;
    Eqn_p handle;
@@ -509,12 +503,12 @@ static int collect_choices(PatternSubst_p subst, Eqn_p list, PStack_p
 //
 /----------------------------------------------------------------------*/
 
-static bool complete_state(PatternSubst_p subst, Eqn_p list,
-                           PStack_p order, PStack_p state)
+static bool complete_state(PatternSubst_p subst, Eqn_p list, PStack_p order,
+                           PStack_p state)
 {
    PStack_p choices = PStackAlloc();
-   int      choice_nr;
-   Eqn_p    picked;
+   int choice_nr;
+   Eqn_p picked;
    PatEqnDirection dir;
 
    choice_nr = collect_choices(subst, list, choices);
@@ -522,7 +516,7 @@ static bool complete_state(PatternSubst_p subst, Eqn_p list,
    while(choice_nr && (choice_nr <= PATTERN_SEARCH_BRANCHLIMIT))
    {
       assert(PStackGetSP(choices) >= 2);
-      dir    = PStackPopInt(choices);
+      dir = PStackPopInt(choices);
       picked = PStackPopP(choices);
 
       PStackPushInt(state, PStackGetSP(subst->backtrack));
@@ -555,17 +549,17 @@ static bool complete_state(PatternSubst_p subst, Eqn_p list,
 /----------------------------------------------------------------------*/
 
 static long lit_list_rep_pattern(Eqn_p list, PatternSubst_p* subst,
-                                 PStack_p *order)
+                                 PStack_p* order)
 {
-   PStack_p        best_order = NULL;
-   PatternSubst_p  best_subst = NULL;
-   PStack_p        state = PStackAlloc();
-   PStack_p        choices;
-   Eqn_p           picked;
+   PStack_p best_order = NULL;
+   PatternSubst_p best_subst = NULL;
+   PStack_p state = PStackAlloc();
+   PStack_p choices;
+   Eqn_p picked;
    PatEqnDirection dir;
-   PStackPointer   old_sp;
-   long            count = 1;
-   bool            affordable;
+   PStackPointer old_sp;
+   long count = 1;
+   bool affordable;
 
    EqnListDelProp(list, EPIsUsed);
 
@@ -587,7 +581,7 @@ static long lit_list_rep_pattern(Eqn_p list, PatternSubst_p* subst,
       {
          count++;
          assert(PStackGetSP(choices) >= 2);
-         dir    = PStackPopInt(choices);
+         dir = PStackPopInt(choices);
          picked = PStackPopP(choices);
 
          EqnSetProp(picked, EPIsUsed);
@@ -598,9 +592,8 @@ static long lit_list_rep_pattern(Eqn_p list, PatternSubst_p* subst,
 
          if(affordable)
          {
-            if(PatternLitListCompare(*subst, *order,
-                                     best_subst, best_order)
-               == to_lesser)
+            if(PatternLitListCompare(*subst, *order, best_subst, best_order) ==
+               to_lesser)
             {
                PatternSubstFree(best_subst);
                PStackFree(best_order);
@@ -618,9 +611,9 @@ static long lit_list_rep_pattern(Eqn_p list, PatternSubst_p* subst,
    }
    while(!PStackEmpty(state))
    {
-      choices = PStackPopP(state);/* Choices */
+      choices = PStackPopP(state); /* Choices */
       PStackFree(choices);
-      PStackDiscardTop(state);      /* Old SP */
+      PStackDiscardTop(state); /* Old SP */
    }
    PStackFree(state);
    assert(!affordable || PStackEmpty(*order));
@@ -629,7 +622,7 @@ static long lit_list_rep_pattern(Eqn_p list, PatternSubst_p* subst,
    *order = best_order;
    *subst = best_subst;
 
-   return affordable?count:0;
+   return affordable ? count : 0;
 }
 
 /*---------------------------------------------------------------------*/
@@ -652,15 +645,15 @@ PatternSubst_p PatternSubstAlloc(Sig_p sig)
 {
    PatternSubst_p handle = PatternSubstCellAlloc();
 
-   handle->used_idents = PDIntArrayAlloc(DEFAULT_SIGNATURE_SIZE,
-                                         DEFAULT_SIGNATURE_SIZE);
-   handle->fun_subst   = PDIntArrayAlloc(DEFAULT_SIGNATURE_SIZE,
-                                         DEFAULT_SIGNATURE_SIZE);
-   handle->used_vars   = NORM_VAR_INIT;
-   handle->var_subst   = PDIntArrayAlloc(DEFAULT_VARBANK_SIZE,
-                                         DEFAULT_VARBANK_SIZE);
-   handle->backtrack   = PStackAlloc();
-   handle->sig         = sig;
+   handle->used_idents =
+      PDIntArrayAlloc(DEFAULT_SIGNATURE_SIZE, DEFAULT_SIGNATURE_SIZE);
+   handle->fun_subst =
+      PDIntArrayAlloc(DEFAULT_SIGNATURE_SIZE, DEFAULT_SIGNATURE_SIZE);
+   handle->used_vars = NORM_VAR_INIT;
+   handle->var_subst =
+      PDIntArrayAlloc(DEFAULT_VARBANK_SIZE, DEFAULT_VARBANK_SIZE);
+   handle->backtrack = PStackAlloc();
+   handle->sig = sig;
    return handle;
 }
 
@@ -682,11 +675,11 @@ PatternSubst_p PatternDefaultSubstAlloc(Sig_p sig)
    PatternSubst_p handle = PatternSubstAlloc(sig);
    FunCode i;
 
-   for(i=1; i<=sig->f_count; i++)
+   for(i = 1; i <= sig->f_count; i++)
    {
       if(SigIsSpecial(sig, i))
       {
-         PDArrayAssignInt(handle->fun_subst, i,i);
+         PDArrayAssignInt(handle->fun_subst, i, i);
       }
    }
    return handle;
@@ -783,14 +776,13 @@ PatternSubst_p PatternSubstCopy(PatternSubst_p subst)
    PatternSubst_p handle = PatternSubstCellAlloc();
 
    handle->used_idents = PDArrayCopy(subst->used_idents);
-   handle->fun_subst   = PDArrayCopy(subst->fun_subst);
-   handle->used_vars   = subst->used_vars;
-   handle->var_subst   = PDArrayCopy(subst->var_subst);
-   handle->backtrack   = PStackCopy(subst->backtrack);
-   handle->sig         = subst->sig;
+   handle->fun_subst = PDArrayCopy(subst->fun_subst);
+   handle->used_vars = subst->used_vars;
+   handle->var_subst = PDArrayCopy(subst->var_subst);
+   handle->backtrack = PStackCopy(subst->backtrack);
+   handle->sig = subst->sig;
 
    return handle;
-
 }
 
 /*-----------------------------------------------------------------------
@@ -856,10 +848,9 @@ bool PatSymbolIsBound(PatternSubst_p subst, FunCode f_code)
 //
 /----------------------------------------------------------------------*/
 
-bool PatternSubstBacktrack(PatternSubst_p subst, PStackPointer
-                           old_state)
+bool PatternSubstBacktrack(PatternSubst_p subst, PStackPointer old_state)
 {
-   bool    res = false;
+   bool res = false;
    FunCode symbol, rep_symbol;
 
    assert(subst);
@@ -879,14 +870,15 @@ bool PatternSubstBacktrack(PatternSubst_p subst, PStackPointer
       else
       {
          int arity, count;
-         IntOrP *tmp;
+         IntOrP* tmp;
 
          rep_symbol = PDArrayElementInt(subst->fun_subst, symbol);
          arity = PatternIdGetArity(rep_symbol);
          count = PatternIdGetIdent(rep_symbol);
 
          tmp = PDArrayElementRef(subst->used_idents, arity);
-         UNUSED(count); assert(tmp->i_val == count);
+         UNUSED(count);
+         assert(tmp->i_val == count);
          tmp->i_val--;
          PDArrayAssignInt(subst->fun_subst, symbol, 0);
       }
@@ -920,12 +912,12 @@ bool PatternTermCompute(PatternSubst_p subst, Term_p term)
 
    res = PatSubstExtend(subst, term->f_code, term->arity);
 
-   for(i=0; i< term->arity; i++)
+   for(i = 0; i < term->arity; i++)
    {
       assert(!TermIsFreeVar(term));
       assert(term->args[i]);
       tmp = PatternTermCompute(subst, term->args[i]);
-      res = res||tmp;
+      res = res || tmp;
    }
    return res;
 }
@@ -949,7 +941,7 @@ CompareResult PatternTermCompare(PatternSubst_p subst1, Term_p t1,
    CompareResult res;
 
    res = pat_term_size_compare(t1, t2);
-   assert((res!=to_uncomparable)&&(res!=to_unknown));
+   assert((res != to_uncomparable) && (res != to_unknown));
 
    if(res != to_equal)
    {
@@ -970,13 +962,12 @@ CompareResult PatternTermCompare(PatternSubst_p subst1, Term_p t1,
 
          assert(t1->arity == t2->arity);
 
-         res = pat_symbol_compare(subst1, t1->f_code, subst2,
-                                  t2->f_code);
+         res = pat_symbol_compare(subst1, t1->f_code, subst2, t2->f_code);
          if(res != to_equal)
          {
             break;
          }
-         for(i=0; i<t1->arity; i++)
+         for(i = 0; i < t1->arity; i++)
          {
             PStackPushP(stack, t1->args[i]);
             PStackPushP(stack, t2->args[i]);
@@ -1033,12 +1024,12 @@ v//
 //
 /----------------------------------------------------------------------*/
 
-CompareResult PatternTermPairCompare(PatternSubst_p subst1, Eqn_p
-                                     eqn1, PatEqnDirection dir1,
-                                     PatternSubst_p subst2, Eqn_p
-                                     eqn2, PatEqnDirection dir2)
+CompareResult PatternTermPairCompare(PatternSubst_p subst1, Eqn_p eqn1,
+                                     PatEqnDirection dir1,
+                                     PatternSubst_p subst2, Eqn_p eqn2,
+                                     PatEqnDirection dir2)
 {
-   Term_p l1,l2,r1,r2;
+   Term_p l1, l2, r1, r2;
    CompareResult res;
    long cmpres;
 
@@ -1049,18 +1040,18 @@ CompareResult PatternTermPairCompare(PatternSubst_p subst1, Eqn_p
       return Q_TO_PART(cmpres);
    }
 
-   l1 = PatEqnLTerm(eqn1,dir1);
-   r1 = PatEqnRTerm(eqn1,dir1);
-   l2 = PatEqnLTerm(eqn2,dir2);
-   r2 = PatEqnRTerm(eqn2,dir2);
+   l1 = PatEqnLTerm(eqn1, dir1);
+   r1 = PatEqnRTerm(eqn1, dir1);
+   l2 = PatEqnLTerm(eqn2, dir2);
+   r2 = PatEqnRTerm(eqn2, dir2);
 
    res = pat_term_size_compare(l1, l2);
-   if(res!=to_equal)
+   if(res != to_equal)
    {
       return res;
    }
    res = pat_term_size_compare(r1, r2);
-   if(res!=to_equal)
+   if(res != to_equal)
    {
       return res;
    }
@@ -1106,16 +1097,16 @@ CompareResult PatternTermPairCompare(PatternSubst_p subst1, Eqn_p
 
 bool PatternLitListCompute(PatternSubst_p subst, PStack_p listrep)
 {
-   bool  res = false, tmp;
+   bool res = false, tmp;
    Eqn_p eqn;
    PatEqnDirection dir;
    PStackPointer i;
 
-   for(i=0; i<PStackGetSP(listrep); i+=2)
+   for(i = 0; i < PStackGetSP(listrep); i += 2)
    {
-      assert(i+1 < PStackGetSP(listrep));
+      assert(i + 1 < PStackGetSP(listrep));
       eqn = PStackElementP(listrep, i);
-      dir = PStackElementInt(listrep, i+1);
+      dir = PStackElementInt(listrep, i + 1);
 
       tmp = PatternTermPairCompute(subst, eqn, dir);
       res = res || tmp;
@@ -1140,9 +1131,8 @@ bool PatternLitListCompute(PatternSubst_p subst, PStack_p listrep)
 //
 /----------------------------------------------------------------------*/
 
-CompareResult PatternLitListCompare(PatternSubst_p subst1, PStack_p
-                                    listrep1, PatternSubst_p subst2,
-                                    PStack_p listrep2)
+CompareResult PatternLitListCompare(PatternSubst_p subst1, PStack_p listrep1,
+                                    PatternSubst_p subst2, PStack_p listrep2)
 {
    long cmpres;
    PStackPointer i;
@@ -1150,21 +1140,20 @@ CompareResult PatternLitListCompare(PatternSubst_p subst1, PStack_p
    int dir1, dir2;
    CompareResult res = to_equal;
 
-   cmpres = PStackGetSP(listrep1)-PStackGetSP(listrep2);
+   cmpres = PStackGetSP(listrep1) - PStackGetSP(listrep2);
    if(cmpres)
    {
       return Q_TO_PART(cmpres);
    }
-   for(i=0; i < PStackGetSP(listrep1); i+=2)
+   for(i = 0; i < PStackGetSP(listrep1); i += 2)
    {
-      assert(i+1 < PStackGetSP(listrep1));
+      assert(i + 1 < PStackGetSP(listrep1));
       eqn1 = PStackElementP(listrep1, i);
-      dir1 = PStackElementInt(listrep1, i+1);
+      dir1 = PStackElementInt(listrep1, i + 1);
       eqn2 = PStackElementP(listrep2, i);
-      dir2 = PStackElementInt(listrep2, i+1);
+      dir2 = PStackElementInt(listrep2, i + 1);
 
-      res = PatternTermPairCompare(subst1, eqn1, dir1, subst2, eqn2,
-                                   dir2);
+      res = PatternTermPairCompare(subst1, eqn1, dir1, subst2, eqn2, dir2);
       if(res != to_equal)
       {
          break;
@@ -1189,7 +1178,7 @@ CompareResult PatternLitListCompare(PatternSubst_p subst1, PStack_p
 /----------------------------------------------------------------------*/
 
 long PatternClauseCompute(Clause_p clause, PatternSubst_p* subst,
-                          PStack_p *listrep)
+                          PStack_p* listrep)
 {
    long res;
 
@@ -1219,11 +1208,10 @@ long PatternClauseCompute(Clause_p clause, PatternSubst_p* subst,
 //
 /----------------------------------------------------------------------*/
 
-void PatternTermPrint(FILE* out, PatternSubst_p subst, Term_p term,
-                      Sig_p sig)
+void PatternTermPrint(FILE* out, PatternSubst_p subst, Term_p term, Sig_p sig)
 {
    FunCode id;
-   int  i;
+   int i;
    char new_id[27];
 
    id = PatSymbValue(subst, term->f_code);
@@ -1235,7 +1223,7 @@ void PatternTermPrint(FILE* out, PatternSubst_p subst, Term_p term,
       }
       else
       {
-         fprintf(out, "Xn%ld", -(id-NORM_VAR_INIT));
+         fprintf(out, "Xn%ld", -(id - NORM_VAR_INIT));
       }
    }
    else
@@ -1254,7 +1242,7 @@ void PatternTermPrint(FILE* out, PatternSubst_p subst, Term_p term,
          fprintf(out, "(");
          PatternTermPrint(out, subst, term->args[0], sig);
 
-         for(i=1; i<term->arity; i++)
+         for(i = 1; i < term->arity; i++)
          {
             fprintf(out, ",");
             PatternTermPrint(out, subst, term->args[i], sig);
@@ -1285,13 +1273,13 @@ void PatternEqnPrint(FILE* out, PatternSubst_p subst, Eqn_p eqn,
       if(!direction)
       {
          PatternTermPrint(out, subst, eqn->lterm, eqn->bank->sig);
-         fputs(EqnIsPositive(eqn)?"=":"!=", out);
+         fputs(EqnIsPositive(eqn) ? "=" : "!=", out);
          PatternTermPrint(out, subst, eqn->rterm, eqn->bank->sig);
       }
       else
       {
          PatternTermPrint(out, subst, eqn->rterm, eqn->bank->sig);
-         fputs(EqnIsPositive(eqn)?"=":"!=", out);
+         fputs(EqnIsPositive(eqn) ? "=" : "!=", out);
          PatternTermPrint(out, subst, eqn->lterm, eqn->bank->sig);
       }
    }
@@ -1321,19 +1309,18 @@ void PatternEqnPrint(FILE* out, PatternSubst_p subst, Eqn_p eqn,
 //
 /----------------------------------------------------------------------*/
 
-void PatternClausePrint(FILE* out, PatternSubst_p subst, PStack_p
-                        listrep)
+void PatternClausePrint(FILE* out, PatternSubst_p subst, PStack_p listrep)
 {
    Eqn_p eqn;
    PatEqnDirection dir;
    PStackPointer i;
    char* prefix = "";
 
-   for(i=0; i<PStackGetSP(listrep); i+=2)
+   for(i = 0; i < PStackGetSP(listrep); i += 2)
    {
-      assert(i+1 < PStackGetSP(listrep));
+      assert(i + 1 < PStackGetSP(listrep));
       eqn = PStackElementP(listrep, i);
-      dir = PStackElementInt(listrep, i+1);
+      dir = PStackElementInt(listrep, i + 1);
       fputs(prefix, out);
       PatternEqnPrint(out, subst, eqn, dir);
       prefix = ";";
@@ -1358,7 +1345,7 @@ void PatternClausePrint(FILE* out, PatternSubst_p subst, PStack_p
 PStack_p DebugPatternClauseToStack(Clause_p clause)
 {
    PStack_p res = PStackAlloc();
-   Eqn_p    handle;
+   Eqn_p handle;
 
    for(handle = clause->literals; handle; handle = handle->next)
    {
@@ -1385,15 +1372,15 @@ PStack_p DebugPatternClauseToStack(Clause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-Term_p PatternTranslateSig(Term_p term, PatternSubst_p subst, Sig_p
-                           old_sig, Sig_p new_sig, VarBank_p new_vars)
+Term_p PatternTranslateSig(Term_p term, PatternSubst_p subst, Sig_p old_sig,
+                           Sig_p new_sig, VarBank_p new_vars)
 {
-   char     new_id[27];
-   char*    id;
+   char new_id[27];
+   char* id;
    PStack_p stack = PStackAlloc();
-   Term_p   t, new;
-   FunCode  f_code;
-   int      i;
+   Term_p t, new;
+   FunCode f_code;
+   int i;
 
    /* Deal with variables...this is messy ;-) */
    PStackPushP(stack, term);
@@ -1405,19 +1392,20 @@ Term_p PatternTranslateSig(Term_p term, PatternSubst_p subst, Sig_p
          f_code = PatSymbValue(subst, t->f_code);
          if(f_code)
          {
-            t->binding = VarBankVarAssertAlloc(new_vars, f_code-NORM_VAR_INIT, t->type);
+            t->binding =
+               VarBankVarAssertAlloc(new_vars, f_code - NORM_VAR_INIT, t->type);
          }
       }
       else
       {
-         for(i=0; i<t->arity; i++)
+         for(i = 0; i < t->arity; i++)
          {
             PStackPushP(stack, t->args[i]);
          }
       }
    }
 
-   new = TermCopy(term, new_vars, NULL,  DEREF_ONCE);
+   new = TermCopy(term, new_vars, NULL, DEREF_ONCE);
    /* Reset variables */
    PStackPushP(stack, term);
    while(!PStackEmpty(stack))
@@ -1429,7 +1417,7 @@ Term_p PatternTranslateSig(Term_p term, PatternSubst_p subst, Sig_p
       }
       else
       {
-         for(i=0; i<t->arity; i++)
+         for(i = 0; i < t->arity; i++)
          {
             PStackPushP(stack, t->args[i]);
          }
@@ -1459,7 +1447,7 @@ Term_p PatternTranslateSig(Term_p term, PatternSubst_p subst, Sig_p
          t->f_code = SigInsertId(new_sig, id, t->arity, false);
          assert(t->f_code);
       }
-      for(i=0; i<t->arity; i++)
+      for(i = 0; i < t->arity; i++)
       {
          PStackPushP(stack, t->args[i]);
       }
@@ -1487,9 +1475,9 @@ FunCode PatternSubstGetOriginalSymbol(PatternSubst_p subst, FunCode f)
 
    if(f > 0)
    {
-      for(i=0; i<subst->fun_subst->size; i++)
+      for(i = 0; i < subst->fun_subst->size; i++)
       {
-         if(PDArrayElementInt(subst->fun_subst, i)==f)
+         if(PDArrayElementInt(subst->fun_subst, i) == f)
          {
             return i;
          }
@@ -1504,9 +1492,9 @@ FunCode PatternSubstGetOriginalSymbol(PatternSubst_p subst, FunCode f)
       }
       else
       {
-         for(i=0; i<subst->fun_subst->size; i++)
+         for(i = 0; i < subst->fun_subst->size; i++)
          {
-            if(PDArrayElementInt(subst->var_subst, i)==f)
+            if(PDArrayElementInt(subst->var_subst, i) == f)
             {
                return i;
             }

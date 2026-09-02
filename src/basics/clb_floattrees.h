@@ -35,7 +35,6 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
@@ -51,26 +50,25 @@ Changes
 
 typedef struct floattreecell
 {
-   double               key;
-   IntOrP               val1;
-   IntOrP               val2;
-   struct floattreecell *lson;
-   struct floattreecell *rson;
-}FloatTreeCell, *FloatTree_p;
+   double key;
+   IntOrP val1;
+   IntOrP val2;
+   struct floattreecell* lson;
+   struct floattreecell* rson;
+} FloatTreeCell, *FloatTree_p;
 
 
 #define FloatTreeCellAlloc() (FloatTreeCell*)SizeMalloc(sizeof(FloatTreeCell))
-#define FloatTreeCellFree(junk)        SizeFree(junk, sizeof(FloatTreeCell))
+#define FloatTreeCellFree(junk) SizeFree(junk, sizeof(FloatTreeCell))
 
 FloatTree_p FloatTreeCellAllocEmpty(void);
-void        FloatTreeFree(FloatTree_p junk);
-FloatTree_p FloatTreeInsert(FloatTree_p *root, FloatTree_p new);
-bool        FloatTreeStore(FloatTree_p *root, double key, IntOrP val1,
-            IntOrP val2);
-FloatTree_p FloatTreeFind(FloatTree_p *root, double key);
-FloatTree_p FloatTreeExtractEntry(FloatTree_p *root, double key);
-bool        FloatTreeDeleteEntry(FloatTree_p *root, double key);
-long        FloatTreeNodes(FloatTree_p root);
+void FloatTreeFree(FloatTree_p junk);
+FloatTree_p FloatTreeInsert(FloatTree_p* root, FloatTree_p new);
+bool FloatTreeStore(FloatTree_p* root, double key, IntOrP val1, IntOrP val2);
+FloatTree_p FloatTreeFind(FloatTree_p* root, double key);
+FloatTree_p FloatTreeExtractEntry(FloatTree_p* root, double key);
+bool FloatTreeDeleteEntry(FloatTree_p* root, double key);
+long FloatTreeNodes(FloatTree_p root);
 
 AVL_TRAVERSE_DECLARATION(FloatTree, FloatTree_p)
 #define FloatTreeTraverseExit(stack) PStackFree(stack)
@@ -80,8 +78,6 @@ AVL_TRAVERSE_DECLARATION(FloatTree, FloatTree_p)
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

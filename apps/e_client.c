@@ -40,11 +40,11 @@ Changes
 /*                  Data types                                         */
 /*---------------------------------------------------------------------*/
 
-#define NAME         "e_client"
+#define NAME "e_client"
 
 typedef enum
 {
-   OPT_NOOPT=0,
+   OPT_NOOPT = 0,
    OPT_HELP,
    OPT_VERSION,
    OPT_VERBOSE,
@@ -53,7 +53,7 @@ typedef enum
    OPT_PORT,
    OPT_OUTPUTLEVEL,
    OPT_DUMMY
-}OptionCodes;
+} OptionCodes;
 
 
 
@@ -62,61 +62,43 @@ typedef enum
 /*---------------------------------------------------------------------*/
 
 
-OptCell opts[] =
-{
-   {OPT_HELP,
-    'h', "help",
-    NoArg, NULL,
-    "Print a short description of program usage and options."},
+OptCell opts[] = {
+   { OPT_HELP, 'h', "help", NoArg, NULL,
+     "Print a short description of program usage and options." },
 
-   {OPT_VERSION,
-    'V', "version",
-    NoArg, NULL,
-    "Print the version number of the prover. Please include this"
-    " with all bug reports (if any)."},
+   { OPT_VERSION, 'V', "version", NoArg, NULL,
+     "Print the version number of the prover. Please include this"
+     " with all bug reports (if any)." },
 
-   {OPT_VERBOSE,
-    'v', "verbose",
-    OptArg, "1",
-    "Verbose comments on the progress of the program. This differs "
-    "from the output level (below) in that technical information is "
-    "printed to stderr, while the output level determines which "
-    "logical manipulations of the clauses are printed to stdout."},
+   { OPT_VERBOSE, 'v', "verbose", OptArg, "1",
+     "Verbose comments on the progress of the program. This differs "
+     "from the output level (below) in that technical information is "
+     "printed to stderr, while the output level determines which "
+     "logical manipulations of the clauses are printed to stdout." },
 
-   {OPT_OUTPUT,
-    'o', "output-file",
-    ReqArg, NULL,
-    "Redirect output into the named file (this affects only some "
-    "output, as most is written to automatically generated files "
-    "based on the input and filter names."},
+   { OPT_OUTPUT, 'o', "output-file", ReqArg, NULL,
+     "Redirect output into the named file (this affects only some "
+     "output, as most is written to automatically generated files "
+     "based on the input and filter names." },
 
-   {OPT_SERVER,
-    'S', "server",
-    ReqArg, NULL,
-    "Specify the address of the server. The default is 'localhost'."},
+   { OPT_SERVER, 'S', "server", ReqArg, NULL,
+     "Specify the address of the server. The default is 'localhost'." },
 
-   {OPT_PORT,
-    'P', "service-port",
-    ReqArg, NULL,
-    "Specify the port to use for the deduction service. The default"
-    " is to use 3666"},
+   { OPT_PORT, 'P', "service-port", ReqArg, NULL,
+     "Specify the port to use for the deduction service. The default"
+     " is to use 3666" },
 
-   {OPT_PORT,
-    'P', "port",
-    ReqArg, NULL,
-    "Specify the port to use for the deduction service."},
+   { OPT_PORT, 'P', "port", ReqArg, NULL,
+     "Specify the port to use for the deduction service." },
 
 
-   {OPT_NOOPT,
-    '\0', NULL,
-    NoArg, NULL,
-    NULL}
+   { OPT_NOOPT, '\0', NULL, NoArg, NULL, NULL }
 };
 IOFormat parse_format = TSTPFormat;
-char     *outname    = NULL;
-char     *server     = "localhost";
-int      port        = 3666;
-bool     app_encode = false;
+char* outname = NULL;
+char* server = "localhost";
+int port = 3666;
+bool app_encode = false;
 
 
 
@@ -147,15 +129,15 @@ void print_help(FILE* out);
 
 void tcp_msg_wait(int sock, char* reply)
 {
-   char *msg;
+   char* msg;
 
    while(true)
    {
       msg = TCPStringRecvX(sock);
       if(msg)
       {
-         fprintf(GlobalOut, COMCHAR" Server: %s\n", msg);
-         if(strcmp(msg, reply)==0)
+         fprintf(GlobalOut, COMCHAR " Server: %s\n", msg);
+         if(strcmp(msg, reply) == 0)
          {
             FREE(msg);
             break;
@@ -185,11 +167,11 @@ void tcp_msg_wait(int sock, char* reply)
 
 int main(int argc, char* argv[])
 {
-   CLState_p        state;
-   int              i;
-   DStr_p           problem;
-   DStr_p           cmd;
-   int              sock;
+   CLState_p state;
+   int i;
+   DStr_p problem;
+   DStr_p cmd;
+   int sock;
 
    assert(argv[0]);
 
@@ -201,16 +183,16 @@ int main(int argc, char* argv[])
 
    OpenGlobalOut(outname);
 
-   if(state->argc ==  0)
+   if(state->argc == 0)
    {
       CLStateInsertArg(state, "-");
    }
 
    problem = DStrAlloc();
-   cmd     = DStrAlloc();
-   for(i=0; state->argv[i]; i++)
+   cmd = DStrAlloc();
+   for(i = 0; state->argv[i]; i++)
    {
-      FileLoad(state->argv[i],problem);
+      FileLoad(state->argv[i], problem);
    }
    //fprintf(GlobalOut, "Problem:\n%s", DStrView(problem));
 
@@ -261,32 +243,32 @@ CLState_p process_options(int argc, char* argv[])
 {
    Opt_p handle;
    CLState_p state;
-   char*  arg;
+   char* arg;
 
-   state = CLStateAlloc(argc,argv);
+   state = CLStateAlloc(argc, argv);
 
    while((handle = CLStateGetOpt(state, &arg, opts)))
    {
       switch(handle->option_code)
       {
-      case OPT_VERBOSE:
-       Verbose = CLStateGetIntArg(handle, arg);
-       break;
-      case OPT_HELP:
-       print_help(stdout);
-       exit(NO_ERROR);
-      case OPT_VERSION:
-       fprintf(stdout, "E " VERSION " " E_NICKNAME "\n");
-       exit(NO_ERROR);
-      case OPT_OUTPUT:
-       outname = arg;
-       break;
-      case OPT_SERVER:
+         case OPT_VERBOSE:
+            Verbose = CLStateGetIntArg(handle, arg);
+            break;
+         case OPT_HELP:
+            print_help(stdout);
+            exit(NO_ERROR);
+         case OPT_VERSION:
+            fprintf(stdout, "E " VERSION " " E_NICKNAME "\n");
+            exit(NO_ERROR);
+         case OPT_OUTPUT:
+            outname = arg;
+            break;
+         case OPT_SERVER:
             server = arg;
             break;
-      case OPT_PORT:
-            port  = CLStateGetIntArg(handle, arg);
-            if(port<0 || port>65535)
+         case OPT_PORT:
+            port = CLStateGetIntArg(handle, arg);
+            if(port < 0 || port > 65535)
             {
                Error("Port numbers must be between 0 and 65535", USAGE_ERROR);
             }
@@ -296,9 +278,9 @@ CLState_p process_options(int argc, char* argv[])
                        IPPORT_RESERVED);
             }
             break;
-      default:
-       assert(false && "Unknown option");
-       break;
+         default:
+            assert(false && "Unknown option");
+            break;
       }
    }
    return state;
@@ -315,13 +297,14 @@ Read an problem specification, connect to the E deduction server, \n\
 and try to have the problem solved.\n\
 \n");
    PrintOptions(stdout, opts, "Options:\n\n");
-   fprintf(out, "\n\
+   fprintf(
+      out,
+      "\n\
 Copyright (C) 2011 by Stephan Schulz, " STS_MAIL "\n\
 \n\
-You can find the latest version of E and additional information at\n"
-E_URL
-"\n\n"
-"This program is free software; you can redistribute it and/or modify\n\
+You can find the latest version of E and additional information at\n" E_URL
+      "\n\n"
+      "This program is free software; you can redistribute it and/or modify\n\
 it under the terms of the GNU General Public License as published by\n\
 the Free Software Foundation; either version 2 of the License, or\n\
 (at your option) any later version.\n\
@@ -336,12 +319,9 @@ along with this program (it should be contained in the top level\n\
 directory of the distribution in the file COPYING); if not, write to\n\
 the Free Software Foundation, Inc., 59 Temple Place, Suite 330,\n\
 Boston, MA  02111-1307 USA\n"
-"\n\
+      "\n\
 The original copyright holder can be contacted as\n\
-\n"
-STS_SNAIL
-"\n");
-
+\n" STS_SNAIL "\n");
 }
 
 

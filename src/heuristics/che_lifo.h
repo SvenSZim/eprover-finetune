@@ -44,7 +44,7 @@ WFCB_p LIFOEvalParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double LIFOEvalCompute(void* data, Clause_p clause);
 
-void   LIFOEvalExit(void* data);
+void LIFOEvalExit(void* data);
 
 
 #endif
@@ -52,8 +52,6 @@ void   LIFOEvalExit(void* data);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

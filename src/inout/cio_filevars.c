@@ -59,7 +59,7 @@ FileVars_p FileVarsAlloc(void)
    FileVars_p handle = FileVarsCellAlloc();
 
    handle->names = PStackAlloc();
-   handle->vars  = NULL;
+   handle->vars = NULL;
    return handle;
 }
 
@@ -78,9 +78,9 @@ FileVars_p FileVarsAlloc(void)
 
 void FileVarsFree(FileVars_p handle)
 {
-   PStack_p  stack;
+   PStack_p stack;
    StrTree_p cell;
-   char*     name;
+   char* name;
 
    while(!PStackEmpty(handle->names))
    {
@@ -114,10 +114,10 @@ void FileVarsFree(FileVars_p handle)
 
 long FileVarsParse(Scanner_p in, FileVars_p vars)
 {
-   char*     name;
+   char* name;
    StrTree_p cell, test;
-   long      res = 0;
-   DStr_p    value = DStrAlloc();
+   long res = 0;
+   DStr_p value = DStrAlloc();
 
    assert(!PStackEmpty(vars->names));
    assert(strcmp(PStackTopP(vars->names), DStrView(Source(in))) == 0);
@@ -137,7 +137,8 @@ long FileVarsParse(Scanner_p in, FileVars_p vars)
          cell->key = name;
          cell->val2.p_val = PStackTopP(vars->names);
          test = StrTreeInsert(&(vars->vars), cell);
-         UNUSED(test); assert(test == NULL);
+         UNUSED(test);
+         assert(test == NULL);
       }
       NextToken(in);
       AcceptInpTok(in, EqualSign);
@@ -197,7 +198,7 @@ long FileVarsReadFromFile(char* file, FileVars_p vars)
 //
 /----------------------------------------------------------------------*/
 
-bool FileVarsGetBool(FileVars_p vars, char* name, bool *value)
+bool FileVarsGetBool(FileVars_p vars, char* name, bool* value)
 {
    StrTree_p cell = StrTreeFind(&(vars->vars), name);
 
@@ -238,10 +239,10 @@ bool FileVarsGetBool(FileVars_p vars, char* name, bool *value)
 //
 /----------------------------------------------------------------------*/
 
-bool FileVarsGetInt(FileVars_p vars, char* name,  long *value)
+bool FileVarsGetInt(FileVars_p vars, char* name, long* value)
 {
    StrTree_p cell = StrTreeFind(&(vars->vars), name);
-   char      *eoarg;
+   char* eoarg;
 
    if(!cell)
    {
@@ -283,7 +284,7 @@ bool FileVarsGetInt(FileVars_p vars, char* name,  long *value)
 //
 /----------------------------------------------------------------------*/
 
-bool FileVarsGetStr(FileVars_p vars, char* name,  char **value)
+bool FileVarsGetStr(FileVars_p vars, char* name, char** value)
 {
    StrTree_p cell = StrTreeFind(&(vars->vars), name);
 
@@ -312,7 +313,7 @@ bool FileVarsGetStr(FileVars_p vars, char* name,  char **value)
 //
 /----------------------------------------------------------------------*/
 
-bool FileVarsGetIdentifier(FileVars_p vars, char* name,  char **value)
+bool FileVarsGetIdentifier(FileVars_p vars, char* name, char** value)
 {
    StrTree_p cell = StrTreeFind(&(vars->vars), name);
    Scanner_p in;
@@ -322,8 +323,8 @@ bool FileVarsGetIdentifier(FileVars_p vars, char* name,  char **value)
       return false;
    }
 
-   in = CreateScanner(StreamTypeInternalString, cell->val1.p_val,
-                      true, NULL, true);
+   in = CreateScanner(StreamTypeInternalString, cell->val1.p_val, true, NULL,
+                      true);
    if(!TestInpTok(in, Identifier))
    {
       Error("Identifier value requested for file variable %s read "

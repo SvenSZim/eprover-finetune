@@ -29,63 +29,59 @@ Changes
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-char* WeightFunParseFunNames[]=
-{
-   "Clauseweight",
-   "ClauseLMaxWeight",
-   "ClauseCMaxWeight",
-   "Uniqweight",
-   "Defaultweight",
-   "DAGweight",
-   "RDAGweight",
-   "RDAGweight2",
-   "RDAGweight3",
-   "Refinedweight",
-   "Refinedweight2",
-   "Diversityweight",
-   "PNRefinedweight",
-   "TPTPTypeweight",
-   "Sigweight",
-   "NLweight",
-   "RandomWeight",
-   "SymbolTypeweight",
-   "Depthweight",
-   "WLessDWeight",
-   "Proofweight",
-   "Orientweight",
-   "OrientLMaxWeight",
-   "Simweight",
-   "FIFOWeight",
-   "LIFOWeight",
-   "StaggeredWeight",
-   "ClauseWeightAge",
-   "TSMWeight",
-   "TSMRWeight",
-   "ConjectureSymbolWeight",
-   "ConjectureGeneralSymbolWeight",
-   "ConjectureRelativeSymbolWeight",
-   "ConjectureRelativeTypeSymbolWeight",
-   "ConjectureTypeBasedWeight",
-   "RelevanceLevelWeight",
-   "RelevanceLevelWeight2",
-   "FunWeight",
-   "SymOffsetWeight",
-   "ConjectureRelativeTermWeight",
-   "ConjectureTermTfIdfWeight",
-   "ConjectureLevDistanceWeight",
-   "ConjectureTreeDistanceWeight",
-   "ConjectureTermPrefixWeight",
-   "ConjectureStrucDistanceWeight",
-   "GDWeight",
-   NULL
-};
+char* WeightFunParseFunNames[] = { "Clauseweight",
+                                   "ClauseLMaxWeight",
+                                   "ClauseCMaxWeight",
+                                   "Uniqweight",
+                                   "Defaultweight",
+                                   "DAGweight",
+                                   "RDAGweight",
+                                   "RDAGweight2",
+                                   "RDAGweight3",
+                                   "Refinedweight",
+                                   "Refinedweight2",
+                                   "Diversityweight",
+                                   "PNRefinedweight",
+                                   "TPTPTypeweight",
+                                   "Sigweight",
+                                   "NLweight",
+                                   "RandomWeight",
+                                   "SymbolTypeweight",
+                                   "Depthweight",
+                                   "WLessDWeight",
+                                   "Proofweight",
+                                   "Orientweight",
+                                   "OrientLMaxWeight",
+                                   "Simweight",
+                                   "FIFOWeight",
+                                   "LIFOWeight",
+                                   "StaggeredWeight",
+                                   "ClauseWeightAge",
+                                   "TSMWeight",
+                                   "TSMRWeight",
+                                   "ConjectureSymbolWeight",
+                                   "ConjectureGeneralSymbolWeight",
+                                   "ConjectureRelativeSymbolWeight",
+                                   "ConjectureRelativeTypeSymbolWeight",
+                                   "ConjectureTypeBasedWeight",
+                                   "RelevanceLevelWeight",
+                                   "RelevanceLevelWeight2",
+                                   "FunWeight",
+                                   "SymOffsetWeight",
+                                   "ConjectureRelativeTermWeight",
+                                   "ConjectureTermTfIdfWeight",
+                                   "ConjectureLevDistanceWeight",
+                                   "ConjectureTreeDistanceWeight",
+                                   "ConjectureTermPrefixWeight",
+                                   "ConjectureStrucDistanceWeight",
+                                   "GDWeight",
+                                   NULL };
 
-static WeightFunParseFun parse_fun_array[]=
-{
+static WeightFunParseFun parse_fun_array[] = {
    ClauseWeightParse,
    LMaxWeightParse,
    CMaxWeightParse,
-   UniqWeightParse, /* NOTE2ME:  did not change it */
+   UniqWeightParse,    /* NOTE2ME:  did not change it */
    DefaultWeightParse, /* NOTE2ME:  did not change it */
    DAGWeightParse,
    RDAGWeightParse,
@@ -106,8 +102,8 @@ static WeightFunParseFun parse_fun_array[]=
    ClauseOrientWeightParse,
    OrientLMaxWeightParse,
    SimWeightParse,
-   FIFOEvalParse,  /* NOTE2ME:  did not change it */
-   LIFOEvalParse, /* NOTE2ME:  did not change it */
+   FIFOEvalParse,        /* NOTE2ME:  did not change it */
+   LIFOEvalParse,        /* NOTE2ME:  did not change it */
    StaggeredWeightParse, /* NOTE2ME:  did not change it */
    ClauseWeightAgeParse,
    TSMWeightParse /* NOTE2ME:  did not change it */,
@@ -163,8 +159,8 @@ WFCBAdmin_p WFCBAdminAlloc(void)
 {
    WFCBAdmin_p handle = WFCBAdminCellAlloc();
 
-   handle->names        = PStackAlloc();
-   handle->wfcb_set     = PStackAlloc();
+   handle->names = PStackAlloc();
+   handle->wfcb_set = PStackAlloc();
    handle->anon_counter = 0;
 
    return handle;
@@ -228,12 +224,12 @@ long WFCBAdminAddWFCB(WFCBAdmin_p set, char* name, WFCB_p wfcb)
    assert(name);
    assert(wfcb);
 
-   VERBOSE2(fprintf(stderr, "%s: Adding weight function '%s'.\n",
-         ProgName, name););
+   VERBOSE2(
+      fprintf(stderr, "%s: Adding weight function '%s'.\n", ProgName, name););
    PStackPushP(set->names, SecureStrdup(name));
    PStackPushP(set->wfcb_set, wfcb);
 
-   return PStackGetSP(set->wfcb_set)-1;
+   return PStackGetSP(set->wfcb_set) - 1;
 }
 
 
@@ -262,9 +258,9 @@ WFCB_p WFCBAdminFindWFCB(WFCBAdmin_p set, char* name)
    assert(name);
 
 
-   for(i = PStackGetSP(set->names)-1; i>=0; i--)
+   for(i = PStackGetSP(set->names) - 1; i >= 0; i--)
    {
-      if(strcmp(name, PStackElementP(set->names, i))==0)
+      if(strcmp(name, PStackElementP(set->names, i)) == 0)
       {
          res = PStackElementP(set->wfcb_set, i);
          break;
@@ -295,7 +291,7 @@ WeightFunParseFun GetWeightFunParseFun(char* name)
 
    index = StringIndex(name, WeightFunParseFunNames);
 
-   if(index>=0)
+   if(index >= 0)
    {
       return parse_fun_array[index];
    }
@@ -324,8 +320,7 @@ WFCB_p WeightFunParse(Scanner_p in, OCB_p ocb, ProofState_p state)
 
    if(!parse_fun)
    {
-      AktTokenError(in, "Not a valid weight function specifier",
-          false);
+      AktTokenError(in, "Not a valid weight function specifier", false);
    }
    NextToken(in);
    assert(parse_fun);
@@ -347,14 +342,14 @@ WFCB_p WeightFunParse(Scanner_p in, OCB_p ocb, ProofState_p state)
 /----------------------------------------------------------------------*/
 
 char* WeightFunDefParse(WFCBAdmin_p set, Scanner_p in, OCB_p ocb,
-             ProofState_p state)
+                        ProofState_p state)
 {
    char* name = NULL;
    WFCB_p wfcb;
-   long   res;
-   char   anon_name[14];
+   long res;
+   char anon_name[14];
 
-   if(TestTok(LookToken(in,1), EqualSign))
+   if(TestTok(LookToken(in, 1), EqualSign))
    {
       CheckInpTok(in, Identifier);
       name = SecureStrdup(DStrView(AktToken(in)->literal));
@@ -369,11 +364,11 @@ char* WeightFunDefParse(WFCBAdmin_p set, Scanner_p in, OCB_p ocb,
    }
    wfcb = WeightFunParse(in, ocb, state);
    res = WFCBAdminAddWFCB(set, name, wfcb);
-   if(name!=anon_name)
+   if(name != anon_name)
    {
       FREE(name);
    }
-   return PStackElementP(set->names,res);
+   return PStackElementP(set->names, res);
 }
 
 
@@ -391,19 +386,18 @@ char* WeightFunDefParse(WFCBAdmin_p set, Scanner_p in, OCB_p ocb,
 /----------------------------------------------------------------------*/
 
 long WeightFunDefListParse(WFCBAdmin_p set, Scanner_p in, OCB_p ocb,
-            ProofState_p state)
+                           ProofState_p state)
 {
    long res = 0;
 
-   while(TestInpTok(in, Identifier)&&
-    TestTok(LookToken(in,1), EqualSign|OpenBracket))
+   while(TestInpTok(in, Identifier) &&
+         TestTok(LookToken(in, 1), EqualSign | OpenBracket))
    {
       WeightFunDefParse(set, in, ocb, state);
       res++;
    }
    return res;
 }
-
 
 
 

@@ -50,14 +50,13 @@
 //
 /----------------------------------------------------------------------*/
 
-static long numtree_print(FILE* out, NumTree_p tree, bool keys_only,
-                          int indent)
+static long numtree_print(FILE* out, NumTree_p tree, bool keys_only, int indent)
 {
    DStr_p indstr;
    int i, size;
 
    indstr = DStrAlloc();
-   for(i=0;i<indent;i++)
+   for(i = 0; i < indent; i++)
    {
       DStrAppendStr(indstr, "  ");
    }
@@ -82,10 +81,10 @@ static long numtree_print(FILE* out, NumTree_p tree, bool keys_only,
                  (void*)tree->lson, (void*)tree->rson);
       }
       size = 1;
-      if(tree->lson||tree->rson)
+      if(tree->lson || tree->rson)
       {
-         size += numtree_print(out, tree->lson, keys_only, indent+2);
-         size += numtree_print(out, tree->rson, keys_only, indent+2);
+         size += numtree_print(out, tree->lson, keys_only, indent + 2);
+         size += numtree_print(out, tree->rson, keys_only, indent + 2);
       }
    }
    DStrFree(indstr);
@@ -106,11 +105,11 @@ static long numtree_print(FILE* out, NumTree_p tree, bool keys_only,
 
 static NumTree_p splay_tree(NumTree_p tree, long key)
 {
-   NumTree_p   left, right, tmp;
+   NumTree_p left, right, tmp;
    NumTreeCell newnode;
-   long        cmpres;
+   long cmpres;
 
-   if (!tree)
+   if(!tree)
    {
       return tree;
    }
@@ -120,22 +119,22 @@ static NumTree_p splay_tree(NumTree_p tree, long key)
    left = &newnode;
    right = &newnode;
 
-   for (;;)
+   for(;;)
    {
-      cmpres = key-tree->key;
-      if (cmpres < 0)
+      cmpres = key - tree->key;
+      if(cmpres < 0)
       {
          if(!tree->lson)
          {
             break;
          }
-         if((key- tree->lson->key) < 0)
+         if((key - tree->lson->key) < 0)
          {
             tmp = tree->lson;
             tree->lson = tmp->rson;
             tmp->rson = tree;
             tree = tmp;
-            if (!tree->lson)
+            if(!tree->lson)
             {
                break;
             }
@@ -146,17 +145,17 @@ static NumTree_p splay_tree(NumTree_p tree, long key)
       }
       else if(cmpres > 0)
       {
-         if (!tree->rson)
+         if(!tree->rson)
          {
             break;
          }
-         if((key-tree->rson->key) > 0)
+         if((key - tree->rson->key) > 0)
          {
             tmp = tree->rson;
             tree->rson = tmp->lson;
             tmp->lson = tree;
             tree = tmp;
-            if (!tree->rson)
+            if(!tree->rson)
             {
                break;
             }
@@ -203,7 +202,7 @@ NumTree_p NumTreeCellAllocEmpty(void)
    NumTree_p handle = NumTreeCellAlloc();
 
    handle->val1.i_val = handle->val2.i_val = 0;
-   handle->lson       = handle->rson       = NULL;
+   handle->lson = handle->rson = NULL;
 
    return handle;
 }
@@ -261,9 +260,9 @@ void NumTreeFree(NumTree_p junk)
 //
 /----------------------------------------------------------------------*/
 
-NumTree_p NumTreeInsert(NumTree_p *root, NumTree_p newnode)
+NumTree_p NumTreeInsert(NumTree_p* root, NumTree_p newnode)
 {
-   if (!*root)
+   if(!*root)
    {
       newnode->lson = newnode->rson = NULL;
       *root = newnode;
@@ -271,9 +270,9 @@ NumTree_p NumTreeInsert(NumTree_p *root, NumTree_p newnode)
    }
    *root = splay_tree(*root, newnode->key);
 
-   long cmpres = newnode->key-(*root)->key;
+   long cmpres = newnode->key - (*root)->key;
 
-   if (cmpres < 0)
+   if(cmpres < 0)
    {
       newnode->lson = (*root)->lson;
       newnode->rson = *root;
@@ -307,7 +306,7 @@ NumTree_p NumTreeInsert(NumTree_p *root, NumTree_p newnode)
 //
 /----------------------------------------------------------------------*/
 
-bool NumTreeStore(NumTree_p *root, long key, IntOrP val1, IntOrP val2)
+bool NumTreeStore(NumTree_p* root, long key, IntOrP val1, IntOrP val2)
 {
    NumTree_p handle, newnode;
 
@@ -360,12 +359,12 @@ long NumTreeDebugPrint(FILE* out, NumTree_p tree, bool keys_only)
 //
 /----------------------------------------------------------------------*/
 
-NumTree_p NumTreeFind(NumTree_p *root, long key)
+NumTree_p NumTreeFind(NumTree_p* root, long key)
 {
    if(*root)
    {
       *root = splay_tree(*root, key);
-      if(((*root)->key-key)==0)
+      if(((*root)->key - key) == 0)
       {
          return *root;
       }
@@ -389,18 +388,18 @@ NumTree_p NumTreeFind(NumTree_p *root, long key)
 /----------------------------------------------------------------------*/
 
 
-NumTree_p NumTreeExtractEntry(NumTree_p *root, long key)
+NumTree_p NumTreeExtractEntry(NumTree_p* root, long key)
 {
    NumTree_p x, cell;
 
-   if (!(*root))
+   if(!(*root))
    {
       return NULL;
    }
    *root = splay_tree(*root, key);
-   if((key-(*root)->key)==0)
+   if((key - (*root)->key) == 0)
    {
-      if (!(*root)->lson)
+      if(!(*root)->lson)
       {
          x = (*root)->rson;
       }
@@ -431,7 +430,7 @@ NumTree_p NumTreeExtractEntry(NumTree_p *root, long key)
 //
 /----------------------------------------------------------------------*/
 
-NumTree_p NumTreeExtractRoot(NumTree_p *root)
+NumTree_p NumTreeExtractRoot(NumTree_p* root)
 {
    if(*root)
    {
@@ -453,7 +452,7 @@ NumTree_p NumTreeExtractRoot(NumTree_p *root)
 //
 /----------------------------------------------------------------------*/
 
-bool NumTreeDeleteEntry(NumTree_p *root, long key)
+bool NumTreeDeleteEntry(NumTree_p* root, long key)
 {
    NumTree_p cell;
 
@@ -482,7 +481,7 @@ bool NumTreeDeleteEntry(NumTree_p *root, long key)
 long NumTreeNodes(NumTree_p root)
 {
    PStack_p stack = PStackAlloc();
-   long     res   = 0;
+   long res = 0;
 
    PStackPushP(stack, root);
 
@@ -547,7 +546,7 @@ PStack_p NumTreeLimitedTraverseInit(NumTree_p root, long limit)
 
    while(root)
    {
-      if(root->key<limit)
+      if(root->key < limit)
       {
          root = root->rson;
       }

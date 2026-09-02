@@ -56,29 +56,27 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-static void initialize_lit_table(LitSplitDesc_p lit_table,Clause_p
-             clause, SplitType how, TermProperties
-             var_filter)
+static void initialize_lit_table(LitSplitDesc_p lit_table, Clause_p clause,
+                                 SplitType how, TermProperties var_filter)
 {
    int i, lit_no = ClauseLiteralNumber(clause);
    Eqn_p handle = clause->literals;
 
-   for(i=0; i<lit_no; i++)
+   for(i = 0; i < lit_no; i++)
    {
       assert(handle);
       lit_table[i].literal = handle;
-      lit_table[i].part    = 0;
-      lit_table[i].varset  = NULL;
-      (void)EqnCollectPropVariables(handle, &(lit_table[i].varset),
-              var_filter);
+      lit_table[i].part = 0;
+      lit_table[i].varset = NULL;
+      (void)EqnCollectPropVariables(handle, &(lit_table[i].varset), var_filter);
       /* We are only calling EqnCollectVariables for the side
     effect here */
       if(how == SplitGroundOne || how == SplitGroundNone)
       {
-    if(!lit_table[i].varset)
-    {
-       lit_table[i].part = 1;
-    }
+         if(!lit_table[i].varset)
+         {
+            lit_table[i].part = 1;
+         }
       }
       handle = handle->next;
    }
@@ -100,9 +98,8 @@ static void initialize_lit_table(LitSplitDesc_p lit_table,Clause_p
 //
 /----------------------------------------------------------------------*/
 
-static int cond_init_lit_table(LitSplitDesc_p lit_table,
-                                Clause_p clause, SplitType how,
-                                PStack_p split_vars)
+static int cond_init_lit_table(LitSplitDesc_p lit_table, Clause_p clause,
+                               SplitType how, PStack_p split_vars)
 {
    int split_var_no;
 
@@ -118,18 +115,16 @@ static int cond_init_lit_table(LitSplitDesc_p lit_table,
       Term_p var;
 
       ClauseTermSetProp(clause, TPCheckFlag);
-      for(sp=0; sp<split_var_no; sp++)
+      for(sp = 0; sp < split_var_no; sp++)
       {
-    var = PStackElementP(split_vars,sp);
-    assert(TermCellQueryProp(var, TPCheckFlag));
-    TermCellDelProp(var,TPCheckFlag);
+         var = PStackElementP(split_vars, sp);
+         assert(TermCellQueryProp(var, TPCheckFlag));
+         TermCellDelProp(var, TPCheckFlag);
       }
       initialize_lit_table(lit_table, clause, how, TPCheckFlag);
    }
    return split_var_no;
 }
-
-
 
 
 
@@ -149,14 +144,14 @@ static int cond_init_lit_table(LitSplitDesc_p lit_table,
 
 static int find_free_literal(LitSplitDesc_p lit_table, int lit_no)
 {
-   int res = -1,i;
+   int res = -1, i;
 
-   for(i=0; i<lit_no; i++)
+   for(i = 0; i < lit_no; i++)
    {
       if(!lit_table[i].part)
       {
-    res = i;
-    break;
+         res = i;
+         break;
       }
    }
    return res;
@@ -178,29 +173,30 @@ static int find_free_literal(LitSplitDesc_p lit_table, int lit_no)
 //
 /----------------------------------------------------------------------*/
 
-static void build_part(LitSplitDesc_p lit_table, int lit_no, int
-             lit_index, int part)
+static void build_part(LitSplitDesc_p lit_table, int lit_no, int lit_index,
+                       int part)
 {
    bool new_vars = true;
-   int  i;
+   int i;
 
    lit_table[lit_index].part = part;
    while(new_vars)
    {
       new_vars = false;
-      for(i=lit_index+1; i< lit_no; i++)
+      for(i = lit_index + 1; i < lit_no; i++)
       {
-    if(!lit_table[i].part)
-    {
-       if(PTreeSharedElement(&(lit_table[lit_index].varset),
-              lit_table[i].varset))
-       {
-          lit_table[i].part = part;
-          new_vars = PTreeMerge(&(lit_table[lit_index].varset),
-                 lit_table[i].varset)||new_vars;
-          lit_table[i].varset = NULL;
-       }
-    }
+         if(!lit_table[i].part)
+         {
+            if(PTreeSharedElement(&(lit_table[lit_index].varset),
+                                  lit_table[i].varset))
+            {
+               lit_table[i].part = part;
+               new_vars = PTreeMerge(&(lit_table[lit_index].varset),
+                                     lit_table[i].varset) ||
+                  new_vars;
+               lit_table[i].varset = NULL;
+            }
+         }
       }
    }
 }
@@ -224,7 +220,7 @@ Eqn_p assemble_part_literals(LitSplitDesc_p lit_table, int lit_no, int part)
    Eqn_p handle = NULL, tmp;
    int j;
 
-   for(j=0; j<lit_no; j++)
+   for(j = 0; j < lit_no; j++)
    {
       if(lit_table[j].part == part)
       {
@@ -266,32 +262,31 @@ Eqn_p assemble_part_literals(LitSplitDesc_p lit_table, int lit_no, int part)
 //
 /----------------------------------------------------------------------*/
 
-int clause_split_general(DefStore_p store, Clause_p clause,
-                         ClauseSet_p set, SplitType how,
-                         bool fresh_defs, PStack_p split_vars)
+int clause_split_general(DefStore_p store, Clause_p clause, ClauseSet_p set,
+                         SplitType how, bool fresh_defs, PStack_p split_vars)
 {
-   int               res = 0, part = 0,i,size, lit_no, split_var_no;
-   LitSplitDesc_p    lit_table;
-   Eqn_p             handle,tmp, join;
-   FunCode           new_pred;
-   long              def_id;
-   TB_p              bank;
-   Clause_p          new_clause;
+   int res = 0, part = 0, i, size, lit_no, split_var_no;
+   LitSplitDesc_p lit_table;
+   Eqn_p handle, tmp, join;
+   FunCode new_pred;
+   long def_id;
+   TB_p bank;
+   Clause_p new_clause;
    FormulaProperties props;
 
    assert(clause);
    assert(!clause->set);
    assert(set);
 
-   props = ClauseGiveProps(clause, CPTypeMask|CPIsSOS);
+   props = ClauseGiveProps(clause, CPTypeMask | CPIsSOS);
    lit_no = ClauseLiteralNumber(clause);
 
-   if(lit_no<=1 || ClauseHasSplitLiteral(clause))
+   if(lit_no <= 1 || ClauseHasSplitLiteral(clause))
    {
       return 0;
    }
    bank = clause->literals->bank;
-   size = lit_no*sizeof(LitSplitDescCell);
+   size = lit_no * sizeof(LitSplitDescCell);
    lit_table = SizeMalloc(size);
 
    split_var_no = cond_init_lit_table(lit_table, clause, how, split_vars);
@@ -301,12 +296,12 @@ int clause_split_general(DefStore_p store, Clause_p clause,
       part++;
    }
    /* Find the variable disjoint parts of the clause */
-   while((i=find_free_literal(lit_table, lit_no))!=-1)
+   while((i = find_free_literal(lit_table, lit_no)) != -1)
    {
       part++;
       build_part(lit_table, lit_no, i, part);
    }
-   if(part>1)
+   if(part > 1)
    {
       PStack_p def_stack = PStackAlloc();
 
@@ -315,13 +310,12 @@ int clause_split_general(DefStore_p store, Clause_p clause,
       clause->literals = NULL; /* Literals are stored in lit_table and
               are recycled in new clauses, clause
               skeleton is refilled below. */
-      for(i=1; i<=part; i++)
+      for(i = 1; i <= part; i++)
       {
          if(split_var_no)
          {
             /* Get new predicate code */
-            new_pred = SigGetNewPredicateCode(bank->sig,
-                                              split_var_no);
+            new_pred = SigGetNewPredicateCode(bank->sig, split_var_no);
             SigSetFuncProp(bank->sig, new_pred, FPClSplitDef);
 
             /* Create definition clause (for maintaining completeness) */
@@ -343,8 +337,8 @@ int clause_split_general(DefStore_p store, Clause_p clause,
             /* Create definition clause (for maintaining completeness) */
             handle = assemble_part_literals(lit_table, lit_no, i);
 
-            new_pred = GetDefinitions(store, handle,
-                                      &new_form, &new_clause, fresh_defs);
+            new_pred = GetDefinitions(store, handle, &new_form, &new_clause,
+                                      fresh_defs);
             def_id = 0;
             if(new_form)
             {
@@ -371,7 +365,7 @@ int clause_split_general(DefStore_p store, Clause_p clause,
                NULL); */
          }
          /* Extend remainder clause (after application of definition) */
-         tmp       = GenDefLit(bank, new_pred, false, split_vars);
+         tmp = GenDefLit(bank, new_pred, false, split_vars);
          tmp->next = join;
          join = tmp;
       }
@@ -381,10 +375,10 @@ int clause_split_general(DefStore_p store, Clause_p clause,
       ClauseSetInsert(set, clause);
       DocClauseApplyDefsDefault(clause, clause->ident, def_stack);
 
-      res = part+1;
+      res = part + 1;
       PStackFree(def_stack);
    }
-   for(i=0; i<lit_no; i++)
+   for(i = 0; i < lit_no; i++)
    {
       PTreeFree(lit_table[i].varset);
    }
@@ -413,7 +407,7 @@ static void initialize_permute_stack(PStack_p stack, int size)
    int i;
 
    PStackReset(stack);
-   for(i=0; i<size; i++)
+   for(i = 0; i < size; i++)
    {
       PStackPushInt(stack, i);
    }
@@ -442,15 +436,15 @@ static bool permute_stack_next(PStack_p permute_stack, int var_no)
    {
       tmp = PStackPopInt(permute_stack);
       tmp++;
-      if((tmp) < (var_no-i))
+      if((tmp) < (var_no - i))
       {
-    while(i>=0)
-    {
-       PStackPushInt(permute_stack, tmp);
-       tmp++;
-       i--;
-    }
-    return true;
+         while(i >= 0)
+         {
+            PStackPushInt(permute_stack, tmp);
+            tmp++;
+            i--;
+         }
+         return true;
       }
       i++;
    }
@@ -482,7 +476,7 @@ bool ClauseHasSplitLiteral(Clause_p clause)
    {
       if(EqnQueryProp(handle, EPIsSplitLit))
       {
-    return true;
+         return true;
       }
    }
    return false;
@@ -516,7 +510,7 @@ bool ClauseHasSplitLiteral(Clause_p clause)
 int ClauseSplit(DefStore_p store, Clause_p clause, ClauseSet_p set,
                 SplitType how, bool fresh_defs)
 {
-   int res ;
+   int res;
    PStack_p dummy = PStackAlloc();
 
    res = clause_split_general(store, clause, set, how, fresh_defs, dummy);
@@ -541,22 +535,22 @@ int ClauseSplit(DefStore_p store, Clause_p clause, ClauseSet_p set,
 //
 /----------------------------------------------------------------------*/
 
-int ClauseSplitGeneral(DefStore_p store, bool fresh_defs,
-                       Clause_p clause, ClauseSet_p set, long tries)
+int ClauseSplitGeneral(DefStore_p store, bool fresh_defs, Clause_p clause,
+                       ClauseSet_p set, long tries)
 {
    int res, var_no, set_size;
    PStackPointer i;
    PStack_p vars, split_vars, permute_stack;
-   PTree_p  vars_tree = NULL;
+   PTree_p vars_tree = NULL;
 
-   res =  ClauseSplit(store, clause, set, SplitGroundOne, fresh_defs);
+   res = ClauseSplit(store, clause, set, SplitGroundOne, fresh_defs);
    if(res)
    {
       return res;
    }
 
    var_no = ClauseCollectVariables(clause, &vars_tree);
-   if(var_no<=2) /* Non-ground splitting is useless here */
+   if(var_no <= 2) /* Non-ground splitting is useless here */
    {
       PTreeFree(vars_tree);
       return 0;
@@ -575,26 +569,25 @@ int ClauseSplitGeneral(DefStore_p store, bool fresh_defs,
    while(tries)
    {
       PStackReset(split_vars);
-      for(i=0; i<set_size; i++)
+      for(i = 0; i < set_size; i++)
       {
-    PStackPushP(split_vars,
-           PStackElementP(vars,
-                PStackElementInt(permute_stack, i)));
+         PStackPushP(split_vars,
+                     PStackElementP(vars, PStackElementInt(permute_stack, i)));
       }
       res = clause_split_general(store, clause, set, SplitGroundNone,
                                  fresh_defs, split_vars);
       if(res)
       {
-    break;
+         break;
       }
       if(!permute_stack_next(permute_stack, var_no))
       {
-    if(set_size == var_no-2)
-    {
-       break;
-    }
-    set_size++;
-    initialize_permute_stack(permute_stack, set_size);
+         if(set_size == var_no - 2)
+         {
+            break;
+         }
+         set_size++;
+         initialize_permute_stack(permute_stack, set_size);
       }
       tries--;
    }
@@ -620,10 +613,10 @@ int ClauseSplitGeneral(DefStore_p store, bool fresh_defs,
 long ClauseSetSplitClauses(DefStore_p store, ClauseSet_p from_set,
                            ClauseSet_p to_set, SplitType how, bool fresh_defs)
 {
-   long res=0, tmp;
+   long res = 0, tmp;
    Clause_p handle;
 
-   assert(from_set&&to_set);
+   assert(from_set && to_set);
 
    while(!ClauseSetEmpty(from_set))
    {
@@ -631,7 +624,7 @@ long ClauseSetSplitClauses(DefStore_p store, ClauseSet_p from_set,
       tmp = ClauseSplit(store, handle, to_set, how, fresh_defs);
       if(!tmp)
       {
-    ClauseSetInsert(to_set, handle);
+         ClauseSetInsert(to_set, handle);
       }
       res += tmp;
    }
@@ -653,13 +646,13 @@ long ClauseSetSplitClauses(DefStore_p store, ClauseSet_p from_set,
 /----------------------------------------------------------------------*/
 
 long ClauseSetSplitClausesGeneral(DefStore_p store, bool fresh_defs,
-                                  ClauseSet_p from_set,
-                                  ClauseSet_p to_set, long tries)
+                                  ClauseSet_p from_set, ClauseSet_p to_set,
+                                  long tries)
 {
-   long res=0, tmp;
+   long res = 0, tmp;
    Clause_p handle;
 
-   assert(from_set&&to_set);
+   assert(from_set && to_set);
 
    while(!ClauseSetEmpty(from_set))
    {
@@ -667,13 +660,12 @@ long ClauseSetSplitClausesGeneral(DefStore_p store, bool fresh_defs,
       tmp = ClauseSplitGeneral(store, fresh_defs, handle, to_set, tries);
       if(!tmp)
       {
-    ClauseSetInsert(to_set, handle);
+         ClauseSetInsert(to_set, handle);
       }
       res += tmp;
    }
    return res;
 }
-
 
 
 

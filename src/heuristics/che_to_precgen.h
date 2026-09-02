@@ -37,16 +37,17 @@
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define FREQ_SEMI_INFTY 2000000 /* Bigger than any expected frequency,
+#define FREQ_SEMI_INFTY                                                        \
+   2000000 /* Bigger than any expected frequency,
                                  * small enough to never cause over-
                                  * or underflow */
 
 
-#define TOGenerateDefaultPrecedence(ocb,axioms)                 \
-   TOGeneratePrecedence((ocb), (axioms),NULL, PUnaryFirst)
+#define TOGenerateDefaultPrecedence(ocb, axioms)                               \
+   TOGeneratePrecedence((ocb), (axioms), NULL, PUnaryFirst)
 
-void TOGeneratePrecedence(OCB_p ocb, ClauseSet_p axioms,
-                          char* predefined, OrderParms_p oparms);
+void TOGeneratePrecedence(OCB_p ocb, ClauseSet_p axioms, char* predefined,
+                          OrderParms_p oparms);
 
 
 #endif

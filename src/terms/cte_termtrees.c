@@ -55,10 +55,10 @@ Changes
 
 static Term_p splay_term_tree(Term_p tree, Term_p splay)
 {
-   Term_p   left, right, tmp;
+   Term_p left, right, tmp;
    TermCell new;
 
-   if (!tree)
+   if(!tree)
    {
       return tree;
    }
@@ -68,10 +68,10 @@ static Term_p splay_term_tree(Term_p tree, Term_p splay)
    left = &new;
    right = &new;
 
-   for (;;)
+   for(;;)
    {
       long cmpres = TermTopCompare(splay, tree);
-      if (cmpres < 0)
+      if(cmpres < 0)
       {
          if(!tree->lson)
          {
@@ -83,7 +83,7 @@ static Term_p splay_term_tree(Term_p tree, Term_p splay)
             tree->lson = tmp->rson;
             tmp->rson = tree;
             tree = tmp;
-            if (!tree->lson)
+            if(!tree->lson)
             {
                break;
             }
@@ -94,7 +94,7 @@ static Term_p splay_term_tree(Term_p tree, Term_p splay)
       }
       else if(cmpres > 0)
       {
-         if (!tree->rson)
+         if(!tree->rson)
          {
             break;
          }
@@ -104,7 +104,7 @@ static Term_p splay_term_tree(Term_p tree, Term_p splay)
             tree->rson = tmp->lson;
             tmp->lson = tree;
             tree = tmp;
-            if (!tree->rson)
+            if(!tree->rson)
             {
                break;
             }
@@ -224,7 +224,7 @@ long TermTopCompare(Term_p t1, Term_p t2)
       return t1->arity - t2->arity;
    }
 
-   for(i=0; i<t1->arity; i++)
+   for(i = 0; i < t1->arity; i++)
    {
       /* res = (t1->args[i]->entry_no) - (t2->args[i]->entry_no); */
       res = PCmp(t1->args[i], t2->args[i]);
@@ -251,12 +251,12 @@ long TermTopCompare(Term_p t1, Term_p t2)
 //
 /----------------------------------------------------------------------*/
 
-Term_p TermTreeFind(Term_p *root, Term_p key)
+Term_p TermTreeFind(Term_p* root, Term_p key)
 {
    if(*root)
    {
       *root = splay_term_tree(*root, key);
-      if(TermTopCompare(*root, key)==0)
+      if(TermTopCompare(*root, key) == 0)
       {
          return *root;
       }
@@ -279,9 +279,9 @@ Term_p TermTreeFind(Term_p *root, Term_p key)
 //
 /----------------------------------------------------------------------*/
 
-Term_p TermTreeInsert(Term_p *root, Term_p new)
+Term_p TermTreeInsert(Term_p* root, Term_p new)
 {
-   if (!*root)
+   if(!*root)
    {
       new->lson = new->rson = NULL;
       *root = new;
@@ -291,7 +291,7 @@ Term_p TermTreeInsert(Term_p *root, Term_p new)
 
    long cmpres = TermTopCompare(new, *root);
 
-   if (cmpres < 0)
+   if(cmpres < 0)
    {
       new->lson = (*root)->lson;
       new->rson = *root;
@@ -324,18 +324,18 @@ Term_p TermTreeInsert(Term_p *root, Term_p new)
 //
 /----------------------------------------------------------------------*/
 
-Term_p TermTreeExtract(Term_p *root, Term_p key)
+Term_p TermTreeExtract(Term_p* root, Term_p key)
 {
    Term_p x, cell;
 
-   if (!(*root))
+   if(!(*root))
    {
       return NULL;
    }
    *root = splay_term_tree(*root, key);
-   if(TermTopCompare(key, (*root))==0)
+   if(TermTopCompare(key, (*root)) == 0)
    {
-      if (!(*root)->lson)
+      if(!(*root)->lson)
       {
          x = (*root)->rson;
       }
@@ -365,7 +365,7 @@ Term_p TermTreeExtract(Term_p *root, Term_p key)
 //
 /----------------------------------------------------------------------*/
 
-bool TermTreeDelete(Term_p *root, Term_p term)
+bool TermTreeDelete(Term_p* root, Term_p term)
 {
    Term_p cell;
 
@@ -402,9 +402,9 @@ void TermTreeSetProp(Term_p root, TermProperties props)
       root = PStackPopP(stack);
       if(root)
       {
-    TermCellSetProp(root, props);
-    PStackPushP(stack, root->lson);
-    PStackPushP(stack, root->rson);
+         TermCellSetProp(root, props);
+         PStackPushP(stack, root->lson);
+         PStackPushP(stack, root->rson);
       }
    }
    PStackFree(stack);
@@ -434,9 +434,9 @@ void TermTreeDelProp(Term_p root, TermProperties props)
       root = PStackPopP(stack);
       if(root)
       {
-    TermCellDelProp(root, props);
-    PStackPushP(stack, root->lson);
-    PStackPushP(stack, root->rson);
+         TermCellDelProp(root, props);
+         PStackPushP(stack, root->lson);
+         PStackPushP(stack, root->rson);
       }
    }
    PStackFree(stack);
@@ -457,7 +457,7 @@ void TermTreeDelProp(Term_p root, TermProperties props)
 long TermTreeNodes(Term_p root)
 {
    PStack_p stack = PStackAlloc();
-   long     res   = 0;
+   long res = 0;
 
    PStackPushP(stack, root);
 

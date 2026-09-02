@@ -40,24 +40,17 @@ Changes
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-bool          KBO6Greater(OCB_p ocb, Term_p s, Term_p t, DerefType
-                          deref_s, DerefType deref_t);
+bool KBO6Greater(OCB_p ocb, Term_p s, Term_p t, DerefType deref_s,
+                 DerefType deref_t);
 
-CompareResult KBO6Compare(OCB_p ocb, Term_p t1, Term_p t2,
-                          DerefType deref_t1, DerefType deref_t2);
+CompareResult KBO6Compare(OCB_p ocb, Term_p t1, Term_p t2, DerefType deref_t1,
+                          DerefType deref_t2);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
-
-
-
-
-
 
 
 

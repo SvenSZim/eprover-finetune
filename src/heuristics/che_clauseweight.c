@@ -60,10 +60,10 @@ double uniq_term_weight(Term_p term)
    {
       int i;
 
-      weight = pow(5,term->arity);
-      for(i=0; i< term->arity; i++)
+      weight = pow(5, term->arity);
+      for(i = 0; i < term->arity; i++)
       {
-         weight+= 2*uniq_term_weight(term->args[i]);
+         weight += 2 * uniq_term_weight(term->args[i]);
       }
    }
    return weight;
@@ -83,10 +83,10 @@ double uniq_term_weight(Term_p term)
 
 double uniq_eqn_weight(Eqn_p handle)
 {
-   double multiplier = EqnIsPositive(handle)?7:11;
+   double multiplier = EqnIsPositive(handle) ? 7 : 11;
 
-   return multiplier*(uniq_term_weight(handle->lterm)
-                      + uniq_term_weight(handle->rterm));
+   return multiplier *
+      (uniq_term_weight(handle->lterm) + uniq_term_weight(handle->rterm));
 }
 
 /*---------------------------------------------------------------------*/
@@ -106,18 +106,17 @@ double uniq_eqn_weight(Eqn_p handle)
 //
 /----------------------------------------------------------------------*/
 
-WFCB_p ClauseWeightInit(ClausePrioFun prio_fun, int fweight, int
-         vweight, double pos_multiplier, double app_var_mult)
+WFCB_p ClauseWeightInit(ClausePrioFun prio_fun, int fweight, int vweight,
+                        double pos_multiplier, double app_var_mult)
 {
    WeightParam_p data = WeightParamCellAlloc();
 
-   data->fweight                = fweight;
-   data->vweight                = vweight;
-   data->pos_multiplier         = pos_multiplier;
-   data->app_var_mult           = app_var_mult;
+   data->fweight = fweight;
+   data->vweight = vweight;
+   data->pos_multiplier = pos_multiplier;
+   data->app_var_mult = app_var_mult;
 
-   return WFCBAlloc(ClauseWeightCompute, prio_fun,
-                    ClauseWeightExit, data);
+   return WFCBAlloc(ClauseWeightCompute, prio_fun, ClauseWeightExit, data);
 }
 
 
@@ -153,8 +152,8 @@ WFCB_p ClauseWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
 
    AcceptInpTok(in, CloseBracket);
 
-   return ClauseWeightInit(prio_fun, fweight, vweight,
-            pos_multiplier, app_var_mult);
+   return ClauseWeightInit(prio_fun, fweight, vweight, pos_multiplier,
+                           app_var_mult);
 }
 
 
@@ -173,12 +172,8 @@ WFCB_p ClauseWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
 double ClauseWeightCompute(void* data, Clause_p clause)
 {
    WeightParam_p local = data;
-   return ClauseWeight(clause, 1, 1,
-             local->pos_multiplier,
-             local->vweight,
-             local->fweight,
-             local->app_var_mult,
-             false);
+   return ClauseWeight(clause, 1, 1, local->pos_multiplier, local->vweight,
+                       local->fweight, local->app_var_mult, false);
 }
 
 
@@ -194,10 +189,7 @@ double ClauseWeightCompute(void* data, Clause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-void ClauseWeightExit(void* data)
-{
-   WeightParamCellFree(data);
-}
+void ClauseWeightExit(void* data) { WeightParamCellFree(data); }
 
 /*-----------------------------------------------------------------------
 //
@@ -211,18 +203,17 @@ void ClauseWeightExit(void* data)
 //
 /----------------------------------------------------------------------*/
 
-WFCB_p LMaxWeightInit(ClausePrioFun prio_fun, int fweight, int
-         vweight, double pos_multiplier, double app_var_mult)
+WFCB_p LMaxWeightInit(ClausePrioFun prio_fun, int fweight, int vweight,
+                      double pos_multiplier, double app_var_mult)
 {
    WeightParam_p data = WeightParamCellAlloc();
 
-   data->fweight                = fweight;
-   data->vweight                = vweight;
-   data->pos_multiplier         = pos_multiplier;
-   data->app_var_mult           = app_var_mult;
+   data->fweight = fweight;
+   data->vweight = vweight;
+   data->pos_multiplier = pos_multiplier;
+   data->app_var_mult = app_var_mult;
 
-   return WFCBAlloc(LMaxWeightCompute, prio_fun,
-          ClauseWeightExit, data);
+   return WFCBAlloc(LMaxWeightCompute, prio_fun, ClauseWeightExit, data);
 }
 
 
@@ -258,8 +249,8 @@ WFCB_p LMaxWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
 
    AcceptInpTok(in, CloseBracket);
 
-   return LMaxWeightInit(prio_fun, fweight, vweight,
-          pos_multiplier, app_var_mult);
+   return LMaxWeightInit(prio_fun, fweight, vweight, pos_multiplier,
+                         app_var_mult);
 }
 
 
@@ -284,10 +275,11 @@ double LMaxWeightCompute(void* data, Clause_p clause)
 
    for(handle = clause->literals; handle; handle = handle->next)
    {
-      tmp = EqnMaxWeight(handle, local->vweight, local->fweight, local->app_var_mult);
+      tmp = EqnMaxWeight(handle, local->vweight, local->fweight,
+                         local->app_var_mult);
       if(EqnIsPositive(handle))
       {
-         tmp = tmp*local->pos_multiplier;
+         tmp = tmp * local->pos_multiplier;
       }
    }
    return res;
@@ -306,18 +298,17 @@ double LMaxWeightCompute(void* data, Clause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-WFCB_p CMaxWeightInit(ClausePrioFun prio_fun, int fweight, int
-         vweight, double pos_multiplier, double app_var_mult)
+WFCB_p CMaxWeightInit(ClausePrioFun prio_fun, int fweight, int vweight,
+                      double pos_multiplier, double app_var_mult)
 {
    WeightParam_p data = WeightParamCellAlloc();
 
-   data->fweight                = fweight;
-   data->vweight                = vweight;
-   data->pos_multiplier         = pos_multiplier;
-   data->app_var_mult           = app_var_mult;
+   data->fweight = fweight;
+   data->vweight = vweight;
+   data->pos_multiplier = pos_multiplier;
+   data->app_var_mult = app_var_mult;
 
-   return WFCBAlloc(CMaxWeightCompute, prio_fun,
-          ClauseWeightExit, data);
+   return WFCBAlloc(CMaxWeightCompute, prio_fun, ClauseWeightExit, data);
 }
 
 
@@ -353,8 +344,8 @@ WFCB_p CMaxWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
 
    AcceptInpTok(in, CloseBracket);
 
-   return CMaxWeightInit(prio_fun, fweight, vweight,
-            pos_multiplier, app_var_mult);
+   return CMaxWeightInit(prio_fun, fweight, vweight, pos_multiplier,
+                         app_var_mult);
 }
 
 
@@ -379,11 +370,12 @@ double CMaxWeightCompute(void* data, Clause_p clause)
 
    for(handle = clause->literals; handle; handle = handle->next)
    {
-      tmp = EqnMaxWeight(handle, local->vweight, local->fweight, local->app_var_mult);
-      res = MAX(res,tmp);
+      tmp = EqnMaxWeight(handle, local->vweight, local->fweight,
+                         local->app_var_mult);
+      res = MAX(res, tmp);
    }
-   return clause->pos_lit_no*res*local->pos_multiplier +
-          clause->neg_lit_no*res;
+   return clause->pos_lit_no * res * local->pos_multiplier +
+      clause->neg_lit_no * res;
 }
 
 
@@ -404,8 +396,7 @@ double CMaxWeightCompute(void* data, Clause_p clause)
 
 WFCB_p UniqWeightInit(ClausePrioFun prio_fun)
 {
-   return WFCBAlloc(UniqWeightCompute, prio_fun,
-          TrivialWeightExit, NULL);
+   return WFCBAlloc(UniqWeightCompute, prio_fun, TrivialWeightExit, NULL);
 }
 
 
@@ -446,12 +437,12 @@ WFCB_p UniqWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
 
 double UniqWeightCompute(void* data, Clause_p clause)
 {
-   Eqn_p  handle;
+   Eqn_p handle;
    double weight = 0;
 
    for(handle = clause->literals; handle; handle = handle->next)
    {
-      weight+= uniq_eqn_weight(handle);
+      weight += uniq_eqn_weight(handle);
    }
    return weight;
 }
@@ -472,8 +463,7 @@ double UniqWeightCompute(void* data, Clause_p clause)
 
 WFCB_p DefaultWeightInit(ClausePrioFun prio_fun)
 {
-   return WFCBAlloc(DefaultWeightCompute, prio_fun,
-          TrivialWeightExit, NULL);
+   return WFCBAlloc(DefaultWeightCompute, prio_fun, TrivialWeightExit, NULL);
 }
 
 
@@ -530,10 +520,7 @@ double DefaultWeightCompute(void* data, Clause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-void TrivialWeightExit(void* data)
-{
-   assert(data==NULL);
-}
+void TrivialWeightExit(void* data) { assert(data == NULL); }
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */

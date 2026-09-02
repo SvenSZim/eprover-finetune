@@ -34,7 +34,7 @@ Changes
 typedef struct csu_iter CSUIterator_t;
 typedef CSUIterator_t* CSUIterator_p;
 
-#define CONSTRAINT_STATE(c) ((c)&3)
+#define CONSTRAINT_STATE(c) ((c) & 3)
 #define CONSTRAINT_COUNTER(c) ((c) >> 2) // c must be unisigned!!!
 #define BUILD_CONSTR(c, s) (((c) << 2) | s)
 

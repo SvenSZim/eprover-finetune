@@ -30,15 +30,15 @@ Changes
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-rlim_t                ScheduleTimeLimit = 0;
-rlim_t                SystemTimeLimit   = RLIM_INFINITY;
-rlim_t                SoftTimeLimit     = RLIM_INFINITY;
-rlim_t                HardTimeLimit     = RLIM_INFINITY;
-sig_atomic_t TimeIsUp          = 0;
-sig_atomic_t TimeLimitIsSoft   = 0;
-sig_atomic_t SigTermCaught     = 0;
+rlim_t ScheduleTimeLimit = 0;
+rlim_t SystemTimeLimit = RLIM_INFINITY;
+rlim_t SoftTimeLimit = RLIM_INFINITY;
+rlim_t HardTimeLimit = RLIM_INFINITY;
+sig_atomic_t TimeIsUp = 0;
+sig_atomic_t TimeLimitIsSoft = 0;
+sig_atomic_t SigTermCaught = 0;
 static sig_atomic_t fatal_error_in_progress = 0;
-bool                  SilentTimeOut     = false;
+bool SilentTimeOut = false;
 
 /*---------------------------------------------------------------------*/
 /*                      Forward Declarations                           */
@@ -100,11 +100,11 @@ void ESignalSetup(int mysignal)
 
 void ESignalHandler(int mysignal)
 {
-   struct rlimit     limit;
+   struct rlimit limit;
 
    switch(mysignal)
    {
-   case SIGXCPU:
+      case SIGXCPU:
          limit.rlim_max = SystemTimeLimit;
          limit.rlim_cur = SystemTimeLimit;
          if(setrlimit(RLIMIT_CPU, &limit))
@@ -133,13 +133,14 @@ void ESignalHandler(int mysignal)
          }
          else
          {
-            WriteStr(GlobalOutFD, "\n"COMCHAR" Failure: Resource limit exceeded (time)\n");
+            WriteStr(GlobalOutFD,
+                     "\n" COMCHAR " Failure: Resource limit exceeded (time)\n");
             TSTPOUTFD(GlobalOutFD, "ResourceOut");
             Error("CPU time limit exceeded, terminating", CPU_LIMIT_ERROR);
          }
          break;
-   case SIGTERM:
-   case SIGINT:
+      case SIGTERM:
+      case SIGINT:
          VERBOSE(WriteStr(GlobalOutFD, "SIGTERM/SIGINT caught.\n"););
          if(fatal_error_in_progress)
          {
@@ -150,7 +151,7 @@ void ESignalHandler(int mysignal)
          TempFileCleanup();
          raise(mysignal);
          break;
-   default:
+      default:
          WriteStr(STDERR_FILENO, "Warning: ");
          WriteStr(STDERR_FILENO, "Unexpected signal caught, continuing");
          break;
@@ -178,7 +179,6 @@ void ESigTermSchedHandler(int mysignal)
       signal(SIGTERM, SIG_DFL);
    }
 }
-
 
 
 

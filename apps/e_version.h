@@ -33,7 +33,7 @@ Contents
 
 /* git tag E-3.5.1 */
 
-#define PVERSION      "3.5.1"
+#define PVERSION "3.5.1"
 
 #include "e_gitcommit.h"
 
@@ -49,26 +49,26 @@ Contents
 #define VERSION PVERSION LFH "-DEBUG"
 #endif
 
-#define E_NICKNAME     "Countess Grey"
+#define E_NICKNAME "Countess Grey"
 
 #define E_URL "http://www.eprover.org"
 
 #define STS_MAIL "schulz@eprover.org"
 #define STS_COPYRIGHT "Copyright 1998-2026 by Stephan Schulz"
 #define CTR_COPYRIGHT "and the E contributors (see DOC/CONTRIBUTORS)."
-#define STS_SNAIL "Stephan Schulz\nDHBW Stuttgart\nFakultaet Technik\nInformatik\nLerchenstrasse 1\n70174 Stuttgart\nGermany\n"
+#define STS_SNAIL                                                              \
+   "Stephan Schulz\nDHBW Stuttgart\nFakultaet Technik\nInformatik\nLerchenstrasse 1\n70174 Stuttgart\nGermany\n"
 #define HO_MAIL "jasmin.blanchette@gmail.com"
 
-#define E_FOOTER \
-STS_COPYRIGHT", " STS_MAIL ",\n\
-"CTR_COPYRIGHT"\n\
+#define E_FOOTER                                                               \
+   STS_COPYRIGHT                                                               \
+   ", " STS_MAIL ",\n\
+" CTR_COPYRIGHT "\n\
 \n\
 This program is a part of the distribution of the equational theorem\n\
 prover E. You can find the latest version of the E distribution\n\
-as well as additional information at\n"\
-E_URL\
-"\n\n"\
-"This program is free software; you can redistribute it and/or modify\n\
+as well as additional information at\n" E_URL "\n\n"                           \
+   "This program is free software; you can redistribute it and/or modify\n\
 it under the terms of the GNU General Public License as published by\n\
 the Free Software Foundation; either version 2 of the License, or\n\
 (at your option) any later version.\n\
@@ -94,9 +94,9 @@ information:\n\
 - The full commandline that lead to the unexpected behaviour\n\
 - The input file(s) that lead to the unexpected behaviour\n\
 \n\
-Most bug reports should be send to <"STS_MAIL">. Bug reports with \n\
+Most bug reports should be send to <" STS_MAIL ">. Bug reports with \n\
 respect to the HO-version should be send to or at least copied to \n\
-<"HO_MAIL">. Please remember that this is an unpaid\n\
+<" HO_MAIL ">. Please remember that this is an unpaid\n\
 volunteer service.\n\
 \n\
 The original copyright holder can be contacted via email or as\n\

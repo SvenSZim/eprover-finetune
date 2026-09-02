@@ -59,18 +59,18 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-void __attribute__ ((noinline)) PStackGrow(PStack_p stack)
+void __attribute__((noinline)) PStackGrow(PStack_p stack)
 {
-      IntOrP *tmp;
-      long   old_size;
+   IntOrP* tmp;
+   long old_size;
 
-      /* Emulate Realloc-Functionality for use of SizeMalloc() */
-      old_size = stack->size;
-      stack->size = stack->size*2;
-      tmp = SizeMalloc(stack->size * sizeof(IntOrP));
-      memcpy(tmp, stack->stack, old_size*sizeof(IntOrP));
-      SizeFree(stack->stack, old_size * sizeof(IntOrP));
-      stack->stack = tmp;
+   /* Emulate Realloc-Functionality for use of SizeMalloc() */
+   old_size = stack->size;
+   stack->size = stack->size * 2;
+   tmp = SizeMalloc(stack->size * sizeof(IntOrP));
+   memcpy(tmp, stack->stack, old_size * sizeof(IntOrP));
+   SizeFree(stack->stack, old_size * sizeof(IntOrP));
+   stack->stack = tmp;
 }
 
 
@@ -118,7 +118,7 @@ IntOrP* PStackTopAddr(PStack_p stack)
 {
    assert(stack->current);
 
-   return &(stack->stack[stack->current-1]);
+   return &(stack->stack[stack->current - 1]);
 }
 
 
@@ -137,15 +137,15 @@ IntOrP* PStackTopAddr(PStack_p stack)
 //
 /----------------------------------------------------------------------*/
 
-double PStackComputeAverage(PStack_p stack, double *deviation)
+double PStackComputeAverage(PStack_p stack, double* deviation)
 {
    PStackPointer i;
    long count = 0;
    double sum = 0, average = 0, variance = 0;
 
-   for(i=0; i<PStackGetSP(stack); i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
-      sum+=PStackElementInt(stack,i);
+      sum += PStackElementInt(stack, i);
       count++;
    }
    if(count)
@@ -159,10 +159,10 @@ double PStackComputeAverage(PStack_p stack, double *deviation)
 
    if(count)
    {
-      for(i=0; i<PStackGetSP(stack); i++)
+      for(i = 0; i < PStackGetSP(stack); i++)
       {
-         variance+= (PStackElementInt(stack,i)-average)
-       *(PStackElementInt(stack,i)-average);
+         variance += (PStackElementInt(stack, i) - average) *
+            (PStackElementInt(stack, i) - average);
       }
       variance = variance / (double)count;
    }
@@ -209,7 +209,8 @@ void PStackSort(PStack_p stack, ComparisonFunctionType cmpfun)
 /----------------------------------------------------------------------*/
 
 PStackPointer PStackBinSearch(PStack_p stack, void* key, PStackPointer lower,
-                              PStackPointer upper, ComparisonFunctionType cmpfun)
+                              PStackPointer upper,
+                              ComparisonFunctionType cmpfun)
 {
    PStackPointer i;
    int cmpres;
@@ -217,17 +218,17 @@ PStackPointer PStackBinSearch(PStack_p stack, void* key, PStackPointer lower,
    while(lower < upper)
    {
       //printf("Upper: %ld Lower: %ld\n", upper, lower);
-      i = (lower+upper)/2;
+      i = (lower + upper) / 2;
       //printf("Pip %ld\n",i);
       cmpres = cmpfun(key, PStackElementP(stack, i));
       //printf("Pup %d\n",cmpres);
       if(cmpres < 0)
       {
-         upper = i-1;
+         upper = i - 1;
       }
       else if(cmpres > 0)
       {
-         lower = i+1;
+         lower = i + 1;
       }
       else
       {
@@ -235,7 +236,7 @@ PStackPointer PStackBinSearch(PStack_p stack, void* key, PStackPointer lower,
       }
    }
    //printf("Regular exit\n");
-   return lower+1;
+   return lower + 1;
 }
 
 
@@ -280,7 +281,7 @@ void PStackMerge(PStack_p st1, PStack_p st2, PStack_p res,
             tmp = PStackPop(st2);
          }
       }
-      if(PStackEmpty(res) || (cmpfun(PStackTopAddr(res), &tmp)!=0))
+      if(PStackEmpty(res) || (cmpfun(PStackTopAddr(res), &tmp) != 0))
       {
          push(res, tmp);
       }
@@ -304,9 +305,9 @@ void PStackPushStack(PStack_p target, PStack_p source)
 {
    PStackPointer i;
 
-   for(i=0; i<PStackGetSP(source); i++)
+   for(i = 0; i < PStackGetSP(source); i++)
    {
-      push(target, PStackElement(source,i));
+      push(target, PStackElement(source, i));
    }
 }
 
@@ -328,7 +329,7 @@ void PStackPrintInt(FILE* out, char* format, PStack_p stack)
 {
    PStackPointer i;
 
-   for(i=0; i<PStackGetSP(stack); i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
       fprintf(out, format, PStackElementInt(stack, i));
    }
@@ -351,7 +352,7 @@ void PStackPrintP(FILE* out, char* format, PStack_p stack)
 {
    PStackPointer i;
 
-   for(i=0; i<PStackGetSP(stack); i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
       fprintf(out, format, PStackElementP(stack, i));
    }

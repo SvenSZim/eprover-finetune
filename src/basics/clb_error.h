@@ -31,7 +31,7 @@
 
 #ifdef HP_UX
 #include <syscall.h>
-#define getrusage(a, b)  syscall(SYS_GETRUSAGE, a, b)
+#define getrusage(a, b) syscall(SYS_GETRUSAGE, a, b)
 #endif
 
 
@@ -42,31 +42,31 @@
 
 typedef int ErrorCodes;
 
-#define NO_ERROR              0
-#define PROOF_FOUND           0
-#define SATISFIABLE           1
-#define OUT_OF_MEMORY         2
-#define SYNTAX_ERROR          3
-#define TYPE_ERROR            4
-#define USAGE_ERROR           5
-#define FILE_ERROR            6
-#define SYS_ERROR             7
-#define CPU_LIMIT_ERROR       8
-#define RESOURCE_OUT          9
+#define NO_ERROR 0
+#define PROOF_FOUND 0
+#define SATISFIABLE 1
+#define OUT_OF_MEMORY 2
+#define SYNTAX_ERROR 3
+#define TYPE_ERROR 4
+#define USAGE_ERROR 5
+#define FILE_ERROR 6
+#define SYS_ERROR 7
+#define CPU_LIMIT_ERROR 8
+#define RESOURCE_OUT 9
 #define INCOMPLETE_PROOFSTATE 10
-#define OTHER_ERROR           11
-#define INPUT_SEMANTIC_ERROR  12
-#define INTERFACE_ERROR       13
-#define PARENT_REQUEST        14
-#define INTERNAL_ERROR        15
+#define OTHER_ERROR 11
+#define INPUT_SEMANTIC_ERROR 12
+#define INTERFACE_ERROR 13
+#define PARENT_REQUEST 14
+#define INTERNAL_ERROR 15
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define MAX_ERRMSG_ADD   512
-#define MAX_ERRMSG_LEN   MAX_ERRMSG_ADD+MAXPATHLEN
+#define MAX_ERRMSG_ADD 512
+#define MAX_ERRMSG_LEN MAX_ERRMSG_ADD + MAXPATHLEN
 
 #ifdef ENABLE_LFHO
 #define LFHO_ASSERT(check) assert(check)
@@ -74,23 +74,22 @@ typedef int ErrorCodes;
 #define LFHO_ASSERT(check) assert(true)
 #endif
 
-extern char  ErrStr[];
-extern int   TmpErrno;
+extern char ErrStr[];
+extern int TmpErrno;
 extern char* ProgName;
 
-void          InitError(char* progname);
-void          Error(char* message, ErrorCodes ret, ...);
-void          SysError(char* message, ErrorCodes ret, ...);
-void          Warning(char* message, ...);
-void          SysWarning(char* message, ...);
-void          ELog(char* message, ...);
-double        GetTotalCPUTime(void);
-double        GetTotalCPUTimeIncludingChildren(void);
-void          PrintRusage(FILE* out);
+void InitError(char* progname);
+void Error(char* message, ErrorCodes ret, ...);
+void SysError(char* message, ErrorCodes ret, ...);
+void Warning(char* message, ...);
+void SysWarning(char* message, ...);
+void ELog(char* message, ...);
+double GetTotalCPUTime(void);
+double GetTotalCPUTimeIncludingChildren(void);
+void PrintRusage(FILE* out);
 
-bool          TestLetterString(char* to_check, char* options);
-void          CheckOptionLetterString(char* to_check, char* options,
-                                      char *option);
+bool TestLetterString(char* to_check, char* options);
+void CheckOptionLetterString(char* to_check, char* options, char* option);
 
 
 

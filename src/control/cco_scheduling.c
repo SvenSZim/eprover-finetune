@@ -54,7 +54,7 @@ Changes
 static inline bool name_in_schedule(const char* name, Schedule_p sched)
 {
    bool ans = false;
-   for(int i=0; sched[i].heu_name && !ans; i++)
+   for(int i = 0; sched[i].heu_name && !ans; i++)
    {
       ans = !strcmp(name, sched[i].heu_name);
    }
@@ -87,22 +87,22 @@ void ScheduleTimesInit(ScheduleCell sched[], double time_used)
    limit = 0;
    if(ScheduleTimeLimit)
    {
-      if(ScheduleTimeLimit>time_used)
+      if(ScheduleTimeLimit > time_used)
       {
-         limit = ScheduleTimeLimit-time_used;
+         limit = ScheduleTimeLimit - time_used;
       }
    }
    else
    {
       if(DEFAULT_SCHED_TIME_LIMIT > time_used)
       {
-         limit = DEFAULT_SCHED_TIME_LIMIT-time_used;
+         limit = DEFAULT_SCHED_TIME_LIMIT - time_used;
       }
    }
 
-   for(i=0; sched[i+1].heu_name; i++)
+   for(i = 0; sched[i + 1].heu_name; i++)
    {
-      tmp = sched[i].time_fraction*(limit/1.1);
+      tmp = sched[i].time_fraction * (limit / 1.1);
       sched[i].time_absolute = tmp;
       sum += tmp;
    }
@@ -140,7 +140,7 @@ void ScheduleTimesInitMultiCore(ScheduleCell sched[], double time_used,
                                 int* cores, bool serialize)
 {
    int i;
-   rlim_t sum=0, tmp, limit, total_limit;
+   rlim_t sum = 0, tmp, limit, total_limit;
    int allocated_cores = 0;
 
    //printf(COMCHAR" ScheduleTimesInitMultiCore(X, time_used=%f, time_limit=%f, "
@@ -152,7 +152,7 @@ void ScheduleTimesInitMultiCore(ScheduleCell sched[], double time_used,
    {
       sched_size++;
    }
-   if (preprocessing_schedule && sched_size > *cores)
+   if(preprocessing_schedule && sched_size > *cores)
    {
       // shortening schedule to the num of cores.
       sched_size = *cores;
@@ -160,24 +160,24 @@ void ScheduleTimesInitMultiCore(ScheduleCell sched[], double time_used,
 
       // rescaling time fractions for lower number of cores.
       double total_ratio = 0;
-      for(int i=0; sched[i].heu_name; i++)
+      for(int i = 0; sched[i].heu_name; i++)
       {
          total_ratio += sched[i].time_fraction;
       }
       double factor = 1 / total_ratio;
-      for(int i=0; sched[i].heu_name; i++)
+      for(int i = 0; sched[i].heu_name; i++)
       {
          sched[i].time_fraction *= factor;
       }
    }
 
-   limit = ceil(time_limit-time_used);
+   limit = ceil(time_limit - time_used);
    total_limit = limit;
    if(preprocessing_schedule)
    {
       if(serialize)
       {
-         for(i=0; sched[i].heu_name; i++)
+         for(i = 0; sched[i].heu_name; i++)
          {
             // error in each step is at most 1 -- so we can
             // add at most sched_size extra cores
@@ -187,44 +187,47 @@ void ScheduleTimesInitMultiCore(ScheduleCell sched[], double time_used,
       }
       else
       {
-         for(i=0; sched[i].heu_name; i++)
+         for(i = 0; sched[i].heu_name; i++)
          {
             // error in each step is at most 1 -- so we can
             // add at most sched_size extra cores
-            sched[i].cores = MAX(ceil(sched[i].time_fraction*(*cores)), 1.0);
+            sched[i].cores = MAX(ceil(sched[i].time_fraction * (*cores)), 1.0);
             allocated_cores += sched[i].cores;
          }
-         int error = allocated_cores-(*cores);
+         int error = allocated_cores - (*cores);
          assert(error <= sched_size);
-         for(i=sched_size-1; error && i >=0; i--)
+         for(i = sched_size - 1; error && i >= 0; i--)
          {
             // fixing the error in allocating cores (starting)
             // from the least important schedule
             // IMPORTANT: we leave at least one core per schedule
-            int to_take = MIN(sched[i].cores-1, error);
-            sched[i].cores -=  to_take;
+            int to_take = MIN(sched[i].cores - 1, error);
+            sched[i].cores -= to_take;
             error -= to_take;
          }
          assert(!error);
       }
    }
 
-   for(i=0; sched[i].heu_name; i++)
+   for(i = 0; sched[i].heu_name; i++)
    {
-      if (!preprocessing_schedule && (sum >= total_limit))
+      if(!preprocessing_schedule && (sum >= total_limit))
       {
          // limiting search schedules from going crazy.
          sched[i].heu_name = NULL;
          break;
       }
 
-      tmp = ceil((preprocessing_schedule && !serialize ? 1.0 : sched[i].time_fraction)
-            *sched[i].cores*total_limit);
-      sched[i].time_absolute = preprocessing_schedule ? tmp :  MIN(tmp, limit-sum);
-      sum = sum+sched[i].time_absolute;
+      tmp = ceil(
+         (preprocessing_schedule && !serialize ? 1.0 : sched[i].time_fraction) *
+         sched[i].cores * total_limit);
+      sched[i].time_absolute =
+         preprocessing_schedule ? tmp : MIN(tmp, limit - sum);
+      sum = sum + sched[i].time_absolute;
    }
    fprintf(GlobalOut,
-           COMCHAR" Scheduled %d strats onto %d cores with %ju seconds (%ju total)\n",
+           COMCHAR
+           " Scheduled %d strats onto %d cores with %ju seconds (%ju total)\n",
            i, *cores, (uintmax_t)limit, (uintmax_t)sum);
 }
 
@@ -242,12 +245,9 @@ void ScheduleTimesInitMultiCore(ScheduleCell sched[], double time_used,
 //
 /----------------------------------------------------------------------*/
 
-int ExecuteScheduleMultiCore(ScheduleCell strats[],
-                             HeuristicParms_p  h_parms,
-                             bool print_rusage,
-                             int wc_time_limit,
-                             int preproc_schedule,
-                             int max_cores,
+int ExecuteScheduleMultiCore(ScheduleCell strats[], HeuristicParms_p h_parms,
+                             bool print_rusage, int wc_time_limit,
+                             int preproc_schedule, int max_cores,
                              bool serialize)
 {
    int i;
@@ -256,19 +256,18 @@ int ExecuteScheduleMultiCore(ScheduleCell strats[],
    EGPCtrlSet_p procs = EGPCtrlSetAlloc();
 
 
-   ScheduleTimesInitMultiCore(strats, run_time, wc_time_limit,
-                              preproc_schedule, &max_cores, serialize);
+   ScheduleTimesInitMultiCore(strats, run_time, wc_time_limit, preproc_schedule,
+                              &max_cores, serialize);
 
-   i=0;
+   i = 0;
 
    signal(SIGTERM, ESigTermSchedHandler);
    do
    {
       while(strats[i].heu_name &&
-            ((max_cores-EGPCtrlSetCoresReserved(procs)) >= strats[i].cores))
+            ((max_cores - EGPCtrlSetCoresReserved(procs)) >= strats[i].cores))
       {
-         handle = EGPCtrlCreate(strats[i].heu_name,
-                                strats[i].cores,
+         handle = EGPCtrlCreate(strats[i].heu_name, strats[i].cores,
                                 strats[i].time_absolute);
          if(!handle)
          { /* Child - get out, do work! */
@@ -294,7 +293,7 @@ int ExecuteScheduleMultiCore(ScheduleCell strats[],
       handle = EGPCtrlSetGetResult(procs);
       if(handle)
       {
-         fprintf(GlobalOut, COMCHAR" Result found by %s\n", handle->name);
+         fprintf(GlobalOut, COMCHAR " Result found by %s\n", handle->name);
          fputs(DStrView(handle->output), GlobalOut);
          fflush(GlobalOut);
          if(print_rusage)
@@ -309,12 +308,12 @@ int ExecuteScheduleMultiCore(ScheduleCell strats[],
          EGPCtrlSetFree(procs, true);
          exit(PARENT_REQUEST);
       }
-   }while(EGPCtrlSetCardinality(procs) || strats[i].heu_name);
+   } while(EGPCtrlSetCardinality(procs) || strats[i].heu_name);
    signal(SIGTERM, SIG_DFL);
 
    EGPCtrlSetFree(procs, true);
 
-   fprintf(GlobalOut, COMCHAR" Schedule exhausted\n");
+   fprintf(GlobalOut, COMCHAR " Schedule exhausted\n");
    if(print_rusage)
    {
       PrintRusage(GlobalOut);
@@ -345,7 +344,7 @@ void InitializePlaceholderSearchSchedule(Schedule_p search_sched,
    const char* PLACEHOLDER = "<placeholder>";
    const double PREPROC_RATIO = 0.1;
    int i;
-   for(i=0; strcmp(search_sched[i].heu_name, PLACEHOLDER); i++)
+   for(i = 0; strcmp(search_sched[i].heu_name, PLACEHOLDER); i++)
    {
       if(force_preproc)
       {
@@ -364,8 +363,8 @@ void InitializePlaceholderSearchSchedule(Schedule_p search_sched,
    {
       search_sched[i].heu_name = preproc_sched->heu_name;
       search_sched[i].time_fraction = PREPROC_RATIO;
-      double rest_multipler = 1-PREPROC_RATIO;
-      for(int j=0; j<i; j++)
+      double rest_multipler = 1 - PREPROC_RATIO;
+      for(int j = 0; j < i; j++)
       {
          search_sched[j].time_fraction *= rest_multipler;
       }
@@ -391,7 +390,7 @@ Schedule_p GetFilteredDefaultSchedule(Schedule_p exhausted_sched)
 {
    Schedule_p default_sch = GetDefaultSchedule();
    int last_filtered = -1;
-   for(int i=0; default_sch[i].heu_name; i++)
+   for(int i = 0; default_sch[i].heu_name; i++)
    {
       if(!name_in_schedule(default_sch[i].heu_name, exhausted_sched))
       {
@@ -400,12 +399,12 @@ Schedule_p GetFilteredDefaultSchedule(Schedule_p exhausted_sched)
       }
    }
 
-   const double ratio = 1.0 / (last_filtered+1);
-   for(int i=0; i<last_filtered; i++)
+   const double ratio = 1.0 / (last_filtered + 1);
+   for(int i = 0; i < last_filtered; i++)
    {
       default_sch[i].time_fraction = ratio;
    }
-   default_sch[last_filtered+1].heu_name = NULL;
+   default_sch[last_filtered + 1].heu_name = NULL;
 
    return default_sch;
 }

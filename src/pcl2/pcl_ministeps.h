@@ -35,17 +35,17 @@ Changes
 
 typedef struct pclministepcell
 {
-   TB_p             bank;
+   TB_p bank;
    long id;
    union
    {
-      MiniClause_p  clause;
-      TFormula_p    formula;
-   }logic;
+      MiniClause_p clause;
+      TFormula_p formula;
+   } logic;
    PCLStepProperties properties;
    PCLExpr_p just;
-   char*     extra;
-}PCLMiniStepCell, *PCLMiniStep_p;
+   char* extra;
+} PCLMiniStepCell, *PCLMiniStep_p;
 
 
 
@@ -54,23 +54,22 @@ typedef struct pclministepcell
 /*---------------------------------------------------------------------*/
 
 
-#define PCLMiniStepCellAlloc() (PCLMiniStepCell*)SizeMalloc(sizeof(PCLMiniStepCell))
-#define PCLMiniStepCellFree(junk)         SizeFree(junk, sizeof(PCLMiniStepCell))
+#define PCLMiniStepCellAlloc()                                                 \
+   (PCLMiniStepCell*)SizeMalloc(sizeof(PCLMiniStepCell))
+#define PCLMiniStepCellFree(junk) SizeFree(junk, sizeof(PCLMiniStepCell))
 
-void          PCLMiniStepFree(PCLMiniStep_p junk);
+void PCLMiniStepFree(PCLMiniStep_p junk);
 
 PCLMiniStep_p PCLMiniStepParse(Scanner_p in, TB_p bank);
-void          PCLMiniStepPrint(FILE* out, PCLMiniStep_p step, TB_p bank);
-void          PCLMiniStepPrintFormat(FILE* out, PCLMiniStep_p step,
-                 TB_p bank, OutputFormatType format);
+void PCLMiniStepPrint(FILE* out, PCLMiniStep_p step, TB_p bank);
+void PCLMiniStepPrintFormat(FILE* out, PCLMiniStep_p step, TB_p bank,
+                            OutputFormatType format);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

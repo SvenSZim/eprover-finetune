@@ -31,14 +31,13 @@
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-char* PermaString(char *str);
-char* PermaStringStore(char *str);
-void  PermaStringsFree(void);
+char* PermaString(char* str);
+char* PermaStringStore(char* str);
+void PermaStringsFree(void);
 
 
 #endif

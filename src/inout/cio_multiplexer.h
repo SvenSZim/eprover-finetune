@@ -35,11 +35,10 @@ Changes
 
 typedef struct tcp_channel_cell
 {
-   int             sock;
-   PQueue_p        in;
-   PQueue_p        out;
-}TCPChannelCell, *TCPChannel_p;
-
+   int sock;
+   PQueue_p in;
+   PQueue_p out;
+} TCPChannelCell, *TCPChannel_p;
 
 
 
@@ -57,20 +56,21 @@ void   XXXFree(XXX_p junk);
 */
 
 
-#define TCPChannelCellAlloc()    (TCPChannelCell*)SizeMalloc(sizeof(TCPChannelCell))
+#define TCPChannelCellAlloc()                                                  \
+   (TCPChannelCell*)SizeMalloc(sizeof(TCPChannelCell))
 #define TCPChannelCellFree(junk) SizeFree(junk, sizeof(TCPChannelCell))
 
-TCPChannel_p  TCPChannelAlloc(int sock);
-void          TCPChannelFree(TCPChannel_p junk);
-void          TCPChannelClose(TCPChannel_p channel);
-#define       TCPChannelHasOutMsg(channel) (!PQueueEmpty(channel->out))
-bool          TCPChannelHasInMsg(TCPChannel_p channel);
-#define       TCPChannelGetInMsg(channel) (PQueueGetNextP((channel)->in))
-void          TCPChannelSendMsg(TCPChannel_p channel, TCPMsg_p msg);
-void          TCPChannelSendStr(TCPChannel_p channel, char* str);
+TCPChannel_p TCPChannelAlloc(int sock);
+void TCPChannelFree(TCPChannel_p junk);
+void TCPChannelClose(TCPChannel_p channel);
+#define TCPChannelHasOutMsg(channel) (!PQueueEmpty(channel->out))
+bool TCPChannelHasInMsg(TCPChannel_p channel);
+#define TCPChannelGetInMsg(channel) (PQueueGetNextP((channel)->in))
+void TCPChannelSendMsg(TCPChannel_p channel, TCPMsg_p msg);
+void TCPChannelSendStr(TCPChannel_p channel, char* str);
 
-MsgStatus     TCPChannelRead(TCPChannel_p channel);
-MsgStatus     TCPChannelWrite(TCPChannel_p channel);
+MsgStatus TCPChannelRead(TCPChannel_p channel);
+MsgStatus TCPChannelWrite(TCPChannel_p channel);
 
 
 
@@ -79,8 +79,6 @@ MsgStatus     TCPChannelWrite(TCPChannel_p channel);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

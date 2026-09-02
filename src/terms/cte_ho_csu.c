@@ -148,8 +148,8 @@ PQueue_p build_new_queue(PQueue_p old, Term_p lhs, Term_p rhs)
 {
    PQueue_p res = PQueueCellAlloc();
    *res = *old; // copy all fields
-   res->queue = SizeMalloc(old->size*sizeof(IntOrP));
-   memcpy(res->queue, old->queue, old->size*sizeof(IntOrP));
+   res->queue = SizeMalloc(old->size * sizeof(IntOrP));
+   memcpy(res->queue, old->queue, old->size * sizeof(IntOrP));
 
    PQueueStoreP(res, rhs);
    PQueueStoreP(res, lhs);
@@ -168,10 +168,12 @@ PQueue_p build_new_queue(PQueue_p old, Term_p lhs, Term_p rhs)
 //
 /----------------------------------------------------------------------*/
 
-void prepare_backtrack(CSUIterator_p iter, Term_p lhs, Term_p rhs, StateTag_t next_state,
-                       Limits_t next_limits, PStackPointer subst_ptr)
+void prepare_backtrack(CSUIterator_p iter, Term_p lhs, Term_p rhs,
+                       StateTag_t next_state, Limits_t next_limits,
+                       PStackPointer subst_ptr)
 {
-   PStackPushP(iter->backtrack_info, build_new_queue(iter->constraints, lhs, rhs));
+   PStackPushP(iter->backtrack_info,
+               build_new_queue(iter->constraints, lhs, rhs));
    PStackPushInt(iter->backtrack_info, next_state);
    PStackPushInt(iter->backtrack_info, next_limits);
    PStackPushInt(iter->backtrack_info, subst_ptr);
@@ -230,7 +232,7 @@ void move_stack(PQueue_p new, PStack_p old, int move_kind)
    {
       Term_p t = PStackPopP(old);
       assert(t);
-      if (move_kind == BURY_KIND)
+      if(move_kind == BURY_KIND)
       {
          PQueueBuryP(new, t);
       }
@@ -257,9 +259,9 @@ void move_stack(PQueue_p new, PStack_p old, int move_kind)
 
 void schedule_args(CSUIterator_p iter, Term_p* l_args, Term_p* r_args, int size)
 {
-   assert(PStackEmpty(iter->tmp_flex) && PStackEmpty(iter->tmp_rigid_diff)
-                                      && PStackEmpty(iter->tmp_rigid_same));
-   for(int i=0; i<size; i++)
+   assert(PStackEmpty(iter->tmp_flex) && PStackEmpty(iter->tmp_rigid_diff) &&
+          PStackEmpty(iter->tmp_rigid_same));
+   for(int i = 0; i < size; i++)
    {
       FunCode l_fc = unroll_fcode(l_args[i]), r_fc = unroll_fcode(r_args[i]);
       if(l_fc < 0 || r_fc < 0)
@@ -361,22 +363,23 @@ bool forward_iter(CSUIterator_p iter)
             {
                res = backtrack_iter(iter);
             }
-            else if (oracle_res == NOT_IN_FRAGMENT)
+            else if(oracle_res == NOT_IN_FRAGMENT)
             {
                iter->steps++; // something is going to be applied to variable
                bool moved_forward;
                Limits_t next_limits = iter->current_limits;
-               StateTag_t next_state =
-                  ComputeNextBinding(lhs, rhs, iter->current_state,
-                                     &next_limits, iter->bank,
-                                     iter->subst, params, &moved_forward);
+               StateTag_t next_state = ComputeNextBinding(
+                  lhs, rhs, iter->current_state, &next_limits, iter->bank,
+                  iter->subst, params, &moved_forward);
                if(moved_forward)
                {
                   assert(next_state != iter->current_state);
                   assert(next_state != DECOMPOSED_VAR);
-                  prepare_backtrack(iter, lhs, rhs, next_state, iter->current_limits, subst_ptr);
+                  prepare_backtrack(iter, lhs, rhs, next_state,
+                                    iter->current_limits, subst_ptr);
                   iter->current_limits = next_limits;
-                  iter->current_state = RIGID_PROCESSED_TAG; // first larger than INIT
+                  iter->current_state =
+                     RIGID_PROCESSED_TAG; // first larger than INIT
                   // return the tasks
                   PQueueStoreP(iter->constraints, rhs);
                   PQueueStoreP(iter->constraints, lhs);
@@ -385,8 +388,10 @@ bool forward_iter(CSUIterator_p iter)
                {
                   assert(lhs->arity == rhs->arity);
                   assert(TermIsPhonyApp(lhs) == TermIsPhonyApp(rhs));
-                  schedule_args(iter, lhs->args+1, rhs->args+1, MAX(0, lhs->arity-1));
-                  iter->current_state = RIGID_PROCESSED_TAG; // first larger than INIT
+                  schedule_args(iter, lhs->args + 1, rhs->args + 1,
+                                MAX(0, lhs->arity - 1));
+                  iter->current_state =
+                     RIGID_PROCESSED_TAG; // first larger than INIT
                   iter->current_limits = next_limits;
                }
                else
@@ -406,7 +411,8 @@ bool forward_iter(CSUIterator_p iter)
                   if(lhs->args[0] == rhs->args[0])
                   {
                      assert(lhs->arity == rhs->arity);
-                     schedule_args(iter, lhs->args+1, rhs->args+1, lhs->arity-1);
+                     schedule_args(iter, lhs->args + 1, rhs->args + 1,
+                                   lhs->arity - 1);
                   }
                   else
                   {
@@ -425,17 +431,16 @@ bool forward_iter(CSUIterator_p iter)
                   res = backtrack_iter(iter);
                }
             }
-            else if (TermIsDBVar(rhs))
+            else if(TermIsDBVar(rhs))
             {
                assert(!TermIsPhonyApp(lhs) && !TermIsDBVar(lhs));
                res = backtrack_iter(iter);
             }
-            else if (lhs->f_code == rhs->f_code)
+            else if(lhs->f_code == rhs->f_code)
             {
                assert(lhs->arity == rhs->arity);
-               if(SigIsPolymorphic(iter->bank->sig, lhs->f_code)
-                  && lhs->arity != 0
-                  && lhs->args[0]->type != rhs->args[0]->type)
+               if(SigIsPolymorphic(iter->bank->sig, lhs->f_code) &&
+                  lhs->arity != 0 && lhs->args[0]->type != rhs->args[0]->type)
                {
                   res = backtrack_iter(iter);
                }
@@ -525,12 +530,11 @@ bool NextCSUElement(CSUIterator_p iter)
    iter->steps = 0;
    if(res)
    {
-      if(((problemType != PROBLEM_HO)||(params->unif_mode == SingleUnif))
-         && iter->unifiers_returned == 0)
+      if(((problemType != PROBLEM_HO) || (params->unif_mode == SingleUnif)) &&
+         iter->unifiers_returned == 0)
       {
          res = SubstMguComplete(PQueueGetLastP(iter->constraints),
-                                PQueueGetLastP(iter->constraints),
-                                iter->subst);
+                                PQueueGetLastP(iter->constraints), iter->subst);
          // on the next call we destroy the iterator
          PStackReset(iter->backtrack_info);
          iter->unifiers_returned = 1;
@@ -609,10 +613,7 @@ CSUIterator_p CSUIterInit(Term_p lhs, Term_p rhs, Subst_p subst, TB_p bank)
 //
 /----------------------------------------------------------------------*/
 
-Subst_p CSUIterGetCurrentSubst(CSUIterator_p iter)
-{
-   return iter->subst;
-}
+Subst_p CSUIterGetCurrentSubst(CSUIterator_p iter) { return iter->subst; }
 
 /*-----------------------------------------------------------------------
 //
@@ -627,10 +628,7 @@ Subst_p CSUIterGetCurrentSubst(CSUIterator_p iter)
 //
 /----------------------------------------------------------------------*/
 
-void InitUnifLimits(HeuristicParms_p p)
-{
-   params = p;
-}
+void InitUnifLimits(HeuristicParms_p p) { params = p; }
 
 /*-----------------------------------------------------------------------
 //
@@ -648,10 +646,10 @@ void InitUnifLimits(HeuristicParms_p p)
 void CSUIterDestroy(CSUIterator_p iter)
 {
    PStackPointer i = PStackGetSP(iter->backtrack_info);
-   while(i>=BT_STEP_SIZE)
+   while(i >= BT_STEP_SIZE)
    {
-      PQueueFree(PStackElementP(iter->backtrack_info, i-4));
-      i-=4;
+      PQueueFree(PStackElementP(iter->backtrack_info, i - 4));
+      i -= 4;
    }
    PStackFree(iter->backtrack_info);
    PQueueFree(iter->constraints);

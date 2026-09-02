@@ -73,7 +73,7 @@ void InitIO(char* progname)
       DStr_p tmpstr = DStrAlloc();
 
       DStrAppendStr(tmpstr, tmp);
-      if(DStrLen(tmpstr) && DStrLastChar(tmpstr)!='/')
+      if(DStrLen(tmpstr) && DStrLastChar(tmpstr) != '/')
       {
          DStrAppendChar(tmpstr, '/');
       }

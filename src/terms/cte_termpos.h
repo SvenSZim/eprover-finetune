@@ -56,7 +56,7 @@ Changes
 
 
 typedef PStackCell TermPosCell;
-typedef PStack_p   TermPos_p;
+typedef PStack_p TermPos_p;
 
 /* How many stack elements does a single position component  take */
 
@@ -67,7 +67,7 @@ typedef PStack_p   TermPos_p;
 /*---------------------------------------------------------------------*/
 
 
-#define TermPosAlloc()    PStackAlloc()
+#define TermPosAlloc() PStackAlloc()
 #define TermPosFree(junk) PStackFree(junk)
 
 #define TermPosIsTopPos(pos) PStackEmpty(pos)
@@ -76,8 +76,8 @@ static inline Term_p TermPosGetSubterm(Term_p term, TermPos_p pos);
 static inline Term_p TermPosFirstLIPosition(Term_p term, TermPos_p pos);
 Term_p TermPosNextLIPosition(TermPos_p pos);
 
-void   TermPosPrint(FILE* out, TermPos_p pos);
-void   TermPosDebugPrint(FILE* out, Sig_p sig, TermPos_p pos);
+void TermPosPrint(FILE* out, TermPos_p pos);
+void TermPosDebugPrint(FILE* out, Sig_p sig, TermPos_p pos);
 
 
 /*---------------------------------------------------------------------*/
@@ -99,7 +99,7 @@ void   TermPosDebugPrint(FILE* out, Sig_p sig, TermPos_p pos);
 static inline Term_p TermPosGetSubterm(Term_p term, TermPos_p pos)
 {
    Term_p super;
-   int    idx;
+   int idx;
 
    assert(term);
 
@@ -107,12 +107,12 @@ static inline Term_p TermPosGetSubterm(Term_p term, TermPos_p pos)
    {
       return term;
    }
-   assert(PStackGetSP(pos)>=2);
+   assert(PStackGetSP(pos) >= 2);
 
    idx = PStackTopInt(pos);
    super = PStackBelowTopP(pos);
 
-   assert(super->arity>idx);
+   assert(super->arity > idx);
 
    return super->args[idx];
 }
@@ -151,8 +151,6 @@ static inline Term_p TermPosFirstLIPosition(Term_p term, TermPos_p pos)
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

@@ -57,10 +57,8 @@
 //
 /----------------------------------------------------------------------*/
 
-void ClauseMoveSimplified(GlobalIndices_p gindices,
-                          Clause_p clause,
-                          ClauseSet_p tmp_set,
-                          ClauseSet_p archive,
+void ClauseMoveSimplified(GlobalIndices_p gindices, Clause_p clause,
+                          ClauseSet_p tmp_set, ClauseSet_p archive,
                           bool lambda_demod)
 {
    Clause_p new_clause;
@@ -89,14 +87,13 @@ void ClauseMoveSimplified(GlobalIndices_p gindices,
 /----------------------------------------------------------------------*/
 
 bool RemoveRewritableClauses(OCB_p ocb, ClauseSet_p from, ClauseSet_p into,
-                             ClauseSet_p archive,
-                             Clause_p new_demod, SysDate nf_date,
-                             GlobalIndices_p gindices,
+                             ClauseSet_p archive, Clause_p new_demod,
+                             SysDate nf_date, GlobalIndices_p gindices,
                              bool lambda_demod)
 {
    PStack_p stack = PStackAlloc();
    Clause_p handle;
-   bool     res;
+   bool res;
 
    res = FindRewritableClauses(ocb, from, stack, new_demod, nf_date);
    while(!PStackEmpty(stack))
@@ -125,16 +122,16 @@ bool RemoveRewritableClauses(OCB_p ocb, ClauseSet_p from, ClauseSet_p into,
 /----------------------------------------------------------------------*/
 
 bool RemoveRewritableClausesIndexed(OCB_p ocb, ClauseSet_p into,
-                                    ClauseSet_p archive,
-                                    Clause_p new_demod, SysDate nf_date,
-                                    GlobalIndices_p gindices, bool lambda_demod)
+                                    ClauseSet_p archive, Clause_p new_demod,
+                                    SysDate nf_date, GlobalIndices_p gindices,
+                                    bool lambda_demod)
 {
    PStack_p stack = PStackAlloc();
    Clause_p handle;
-   bool     res;
+   bool res;
 
-   res = FindRewritableClausesIndexed(ocb, gindices->bw_rw_index,
-                                      stack, new_demod, nf_date);
+   res = FindRewritableClausesIndexed(ocb, gindices->bw_rw_index, stack,
+                                      new_demod, nf_date);
    while(!PStackEmpty(stack))
    {
       handle = PStackPopP(stack);
@@ -167,10 +164,10 @@ long ClauseSetUnitSimplify(ClauseSet_p set, Clause_p simplifier,
                            GlobalIndices_p gindices, bool lambda_demod)
 {
    Clause_p handle, move;
-   long res = 0,tmp;
+   long res = 0, tmp;
 
    handle = set->anchor->succ;
-   while(handle!=set->anchor)
+   while(handle != set->anchor)
    {
       tmp = ClauseUnitSimplifyTest(handle, simplifier);
       move = handle;
@@ -197,12 +194,9 @@ long ClauseSetUnitSimplify(ClauseSet_p set, Clause_p simplifier,
 //
 /----------------------------------------------------------------------*/
 
-long RemoveContextualSRClauses(ClauseSet_p from,
-                               ClauseSet_p into,
-                               ClauseSet_p archive,
-                               Clause_p simplifier,
-                               GlobalIndices_p gindices,
-                               bool lambda_demod)
+long RemoveContextualSRClauses(ClauseSet_p from, ClauseSet_p into,
+                               ClauseSet_p archive, Clause_p simplifier,
+                               GlobalIndices_p gindices, bool lambda_demod)
 {
    PStack_p stack = PStackAlloc();
    long res = 0;

@@ -37,9 +37,9 @@ Changes
 
 typedef struct propsigcell
 {
-   PStack_p  enc_to_name;
+   PStack_p enc_to_name;
    StrTree_p name_to_enc;
-}PropSigCell, *PropSig_p;
+} PropSigCell, *PropSig_p;
 
 
 typedef long PLiteralCode;
@@ -50,19 +50,19 @@ typedef long PLiteralCode;
 /*---------------------------------------------------------------------*/
 
 #define PropSigCellAlloc() (PropSigCell*)SizeMalloc(sizeof(PropSigCell))
-#define PropSigCellFree(junk)            SizeFree(junk, sizeof(PropSigCell))
+#define PropSigCellFree(junk) SizeFree(junk, sizeof(PropSigCell))
 #define PLiteralNoLit 0
-#define PAtomP(code) (code>0)
+#define PAtomP(code) (code > 0)
 
 
 PropSig_p PropSigAlloc(void);
-void      PropSigFree(PropSig_p junk);
+void PropSigFree(PropSig_p junk);
 
 PLiteralCode PropSigGetAtomEnc(PropSig_p psig, char* name);
 PLiteralCode PropSigInsertAtom(PropSig_p psig, char* name);
-char*     PropSigGetAtomName(PropSig_p psig, PLiteralCode atom);
-#define   PropSigAtomNumber(psig) (PStackGetSP((psig)->enc_to_name))
-void      PropSigPrint(FILE* out, PropSig_p sig);
+char* PropSigGetAtomName(PropSig_p psig, PLiteralCode atom);
+#define PropSigAtomNumber(psig) (PStackGetSP((psig)->enc_to_name))
+void PropSigPrint(FILE* out, PropSig_p sig);
 
 
 #endif
@@ -70,8 +70,6 @@ void      PropSigPrint(FILE* out, PropSig_p sig);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

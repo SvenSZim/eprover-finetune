@@ -57,13 +57,13 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-TCPChannel_p  TCPChannelAlloc(int sock)
+TCPChannel_p TCPChannelAlloc(int sock)
 {
    TCPChannel_p handle = TCPChannelCellAlloc();
 
-   handle->sock  = sock;
-   handle->in    = PQueueAlloc();
-   handle->out   = PQueueAlloc();
+   handle->sock = sock;
+   handle->in = PQueueAlloc();
+   handle->out = PQueueAlloc();
 
    return handle;
 }
@@ -98,7 +98,7 @@ void TCPChannelFree(TCPChannel_p junk)
       TCPMsgFree(handle);
    }
    PQueueFree(junk->out);
-   if(junk->sock>=0)
+   if(junk->sock >= 0)
    {
       close(junk->sock);
    }
@@ -119,7 +119,7 @@ void TCPChannelFree(TCPChannel_p junk)
 
 void TCPChannelClose(TCPChannel_p channel)
 {
-   assert(channel->sock>=0);
+   assert(channel->sock >= 0);
    VERBOSE(fprintf(stderr, "Closing channel %d\n", channel->sock););
    close(channel->sock);
    channel->sock = -1;
@@ -185,7 +185,7 @@ void TCPChannelSendMsg(TCPChannel_p channel, TCPMsg_p msg)
 
 void TCPChannelSendStr(TCPChannel_p channel, char* str)
 {
-   TCPMsg_p  msg = TCPMsgPack(str);
+   TCPMsg_p msg = TCPMsgPack(str);
    TCPChannelSendMsg(channel, msg);
 }
 
@@ -205,7 +205,7 @@ void TCPChannelSendStr(TCPChannel_p channel, char* str)
 
 MsgStatus TCPChannelRead(TCPChannel_p channel)
 {
-   TCPMsg_p  current;
+   TCPMsg_p current;
    MsgStatus res;
 
    if(PQueueEmpty(channel->in))
@@ -259,8 +259,6 @@ MsgStatus TCPChannelWrite(TCPChannel_p channel)
    }
    return res;
 }
-
-
 
 
 

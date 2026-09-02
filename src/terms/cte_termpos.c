@@ -62,7 +62,7 @@ Changes
 Term_p TermPosNextLIPosition(TermPos_p pos)
 {
    Term_p super;
-   int    idx;
+   int idx;
 
    if(PStackEmpty(pos))
    {
@@ -70,15 +70,15 @@ Term_p TermPosNextLIPosition(TermPos_p pos)
    }
    idx = PStackPopInt(pos);
    super = PStackPopP(pos);
-   if(idx<super->arity-1)
+   if(idx < super->arity - 1)
    {
       idx++;
       while(super->arity)
       {
-    PStackPushP(pos, super);
-    PStackPushInt(pos, idx);
-    super = super->args[idx];
-    idx = 0;
+         PStackPushP(pos, super);
+         PStackPushInt(pos, idx);
+         super = super->args[idx];
+         idx = 0;
       }
    }
    return super;
@@ -106,9 +106,9 @@ void TermPosPrint(FILE* out, TermPos_p pos)
       return;
    }
    fprintf(out, "%ld", PStackElementInt(pos, 1));
-   for(i=2; i<PStackGetSP(pos); i+=2)
+   for(i = 2; i < PStackGetSP(pos); i += 2)
    {
-      fprintf(out, ".%ld\n", PStackElementInt(pos, i+1));
+      fprintf(out, ".%ld\n", PStackElementInt(pos, i + 1));
    }
 }
 
@@ -131,23 +131,23 @@ void TermPosDebugPrint(FILE* out, Sig_p sig, TermPos_p pos)
 {
    PStackPointer i;
 
-   fprintf(out, COMCHAR" TermPos--\n");
-   for(i=0; i<PStackGetSP(pos); i+=2)
+   fprintf(out, COMCHAR " TermPos--\n");
+   for(i = 0; i < PStackGetSP(pos); i += 2)
    {
-      fprintf(out, COMCHAR" ");
+      fprintf(out, COMCHAR " ");
       if(sig)
       {
-    TermPrint(out, PStackElementP(pos, i), sig, DEREF_NEVER);
-    fprintf(out, "...");
-    TermPrint(out, PStackElementP(pos, i), sig, DEREF_ALWAYS);
+         TermPrint(out, PStackElementP(pos, i), sig, DEREF_NEVER);
+         fprintf(out, "...");
+         TermPrint(out, PStackElementP(pos, i), sig, DEREF_ALWAYS);
       }
       else
       {
-    fprintf(out, "<%p>", PStackElementP(pos, i));
+         fprintf(out, "<%p>", PStackElementP(pos, i));
       }
-      fprintf(out, " Subterm %ld\n", PStackElementInt(pos, i+1));
+      fprintf(out, " Subterm %ld\n", PStackElementInt(pos, i + 1));
    }
-   fprintf(out, COMCHAR" --TermPos\n");
+   fprintf(out, COMCHAR " --TermPos\n");
 }
 
 /*---------------------------------------------------------------------*/

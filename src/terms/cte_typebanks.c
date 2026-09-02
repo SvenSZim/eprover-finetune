@@ -30,21 +30,21 @@ Created: ?
 /*---------------------------------------------------------------------*/
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
-#define REALLOC_STEP       16
+#define REALLOC_STEP 16
 
 
-#define GetNameId(node)       ((node)->val1.i_val)
-#define GetArity(node)        ((node)->val2.i_val)
+#define GetNameId(node) ((node)->val1.i_val)
+#define GetArity(node) ((node)->val2.i_val)
 
 #define type_a0hash(t) ((t)->f_code)
-#define type_a1hash(t) (type_a0hash(t)^(((intptr_t)(t)->args[0])>>3))
-#define type_aritynhash(t) (type_a1hash(t)^(((intptr_t)(t)->args[1])>>4))
+#define type_a1hash(t) (type_a0hash(t) ^ (((intptr_t)(t)->args[0]) >> 3))
+#define type_aritynhash(t) (type_a1hash(t) ^ (((intptr_t)(t)->args[1]) >> 4))
 
-#define hash_type(type)\
-((((type)->arity == 0)?\
-  type_a0hash(type):\
-  (((type)->arity == 1)?type_a1hash(type):type_aritynhash(type)))\
-   &(TYPEBANK_HASH_MASK))
+#define hash_type(type)                                                        \
+   ((((type)->arity == 0) ? type_a0hash(type)                                  \
+                          : (((type)->arity == 1) ? type_a1hash(type)          \
+                                                  : type_aritynhash(type))) &  \
+    (TYPEBANK_HASH_MASK))
 
 
 /*---------------------------------------------------------------------*/
@@ -54,7 +54,7 @@ Created: ?
 typedef struct back_idx_info
 {
    const char* name;
-   int         arity;
+   int arity;
 } back_idx_info;
 
 Type_p parse_single_type(Scanner_p in, TypeBank_p bank);
@@ -79,7 +79,7 @@ FuncSymbType TermParseOperator(Scanner_p in, DStr_p id);
 static inline back_idx_info* bii_alloc(const char* name, int arity)
 {
    back_idx_info* ptr = SizeMalloc(sizeof(back_idx_info));
-   ptr->name  = SecureStrdup(name);
+   ptr->name = SecureStrdup(name);
    ptr->arity = arity;
    return ptr;
 }
@@ -103,7 +103,7 @@ int cmp_types(const void* el1, const void* el2)
    Type_p t1 = (Type_p)el1;
    Type_p t2 = (Type_p)el2;
 
-   return TypesCmp(t1 , t2);
+   return TypesCmp(t1, t2);
 }
 
 
@@ -121,16 +121,16 @@ int cmp_types(const void* el1, const void* el2)
 
 static inline void type_arg_realloc(Type_p** args, int current, int new)
 {
-  Type_p* new_arr = SizeMalloc(new * sizeof(Type_p));
+   Type_p* new_arr = SizeMalloc(new * sizeof(Type_p));
 
-  int min_size = MIN(current, new);
-  for(int i=0; i<min_size; i++)
-  {
-     new_arr[i] = (*args)[i];
-  }
+   int min_size = MIN(current, new);
+   for(int i = 0; i < min_size; i++)
+   {
+      new_arr[i] = (*args)[i];
+   }
 
-  SizeFree(*args, current * sizeof(Type_p));
-  *args = new_arr;
+   SizeFree(*args, current * sizeof(Type_p));
+   *args = new_arr;
 }
 
 /*-----------------------------------------------------------------------
@@ -150,11 +150,12 @@ static inline void force_arg_sharing(TypeBank_p bank, Type_p t)
    assert(bank);
    assert(t);
 
-   for(int i=0; i<t->arity; i++)
+   for(int i = 0; i < t->arity; i++)
    {
       assert(t->args[i]);
-      t->args[i] = t->args[i]->type_uid == INVALID_TYPE_UID ?
-                   TypeBankInsertTypeShared(bank, t->args[i]) : t->args[i];
+      t->args[i] = t->args[i]->type_uid == INVALID_TYPE_UID
+         ? TypeBankInsertTypeShared(bank, t->args[i])
+         : t->args[i];
    }
 }
 
@@ -193,11 +194,11 @@ static inline void ensure_not_kind(Type_p arg, Scanner_p in)
 
 Type_p parse_single_type(Scanner_p in, TypeBank_p bank)
 {
-   DStr_p         id;
-   FuncSymbType   id_type;
-   Type_p         type;
-   Type_p*        typeArgs = NULL;
-   int            arity = 0;
+   DStr_p id;
+   FuncSymbType id_type;
+   Type_p type;
+   Type_p* typeArgs = NULL;
+   int arity = 0;
 
    id = DStrAlloc();
 
@@ -288,10 +289,7 @@ Type_p parse_single_type(Scanner_p in, TypeBank_p bank)
 //
 /----------------------------------------------------------------------*/
 
-void tree_free_fun(void* a)
-{
-   TypeFree((Type_p) a);
-}
+void tree_free_fun(void* a) { TypeFree((Type_p)a); }
 
 /*---------------------------------------------------------------------*/
 /*                         Exported Functions                          */
@@ -325,26 +323,39 @@ TypeBank_p TypeBankAlloc()
    }
 
    TypeConsCode res = TypeBankDefineSimpleSort(handle, "$>_type");
-   UNUSED(res); assert(res == ArrowTypeCons);
+   UNUSED(res);
+   assert(res == ArrowTypeCons);
    res = TypeBankDefineSimpleSort(handle, "$o");
-   UNUSED(res); assert(res == STBool);
+   UNUSED(res);
+   assert(res == STBool);
    res = TypeBankDefineSimpleSort(handle, "$i");
-   UNUSED(res); assert(res == STIndividuals);
+   UNUSED(res);
+   assert(res == STIndividuals);
    res = TypeBankDefineSimpleSort(handle, "$tType");
-   UNUSED(res); assert(res == STKind);
+   UNUSED(res);
+   assert(res == STKind);
    res = TypeBankDefineSimpleSort(handle, "$int");
-   UNUSED(res); assert(res == STInteger);
+   UNUSED(res);
+   assert(res == STInteger);
    res = TypeBankDefineSimpleSort(handle, "$rat");
-   UNUSED(res); assert(res == STRational);
+   UNUSED(res);
+   assert(res == STRational);
    res = TypeBankDefineSimpleSort(handle, "$real");
-   UNUSED(res); assert(res == STReal);
+   UNUSED(res);
+   assert(res == STReal);
 
-   handle->bool_type       = TypeBankInsertTypeShared(handle, AllocSimpleSort(STBool));
-   handle->i_type          = TypeBankInsertTypeShared(handle, AllocSimpleSort(STIndividuals));
-   handle->kind_type       = TypeBankInsertTypeShared(handle, AllocSimpleSort(STKind));
-   handle->integer_type    = TypeBankInsertTypeShared(handle, AllocSimpleSort(STInteger));
-   handle->rational_type   = TypeBankInsertTypeShared(handle, AllocSimpleSort(STRational));
-   handle->real_type       = TypeBankInsertTypeShared(handle, AllocSimpleSort(STReal));
+   handle->bool_type =
+      TypeBankInsertTypeShared(handle, AllocSimpleSort(STBool));
+   handle->i_type =
+      TypeBankInsertTypeShared(handle, AllocSimpleSort(STIndividuals));
+   handle->kind_type =
+      TypeBankInsertTypeShared(handle, AllocSimpleSort(STKind));
+   handle->integer_type =
+      TypeBankInsertTypeShared(handle, AllocSimpleSort(STInteger));
+   handle->rational_type =
+      TypeBankInsertTypeShared(handle, AllocSimpleSort(STRational));
+   handle->real_type =
+      TypeBankInsertTypeShared(handle, AllocSimpleSort(STReal));
 
    handle->default_type = handle->i_type;
    handle->max_predefined_count = handle->types_count;
@@ -367,7 +378,7 @@ TypeBank_p TypeBankAlloc()
 
 void TypeBankFree(TypeBank_p bank)
 {
-   for(int i=0; i<PStackGetSP(bank->back_idx); i++)
+   for(int i = 0; i < PStackGetSP(bank->back_idx); i++)
    {
       back_idx_info* bii = PStackElementP(bank->back_idx, i);
 
@@ -380,7 +391,7 @@ void TypeBankFree(TypeBank_p bank)
    PStackFree(bank->back_idx);
 
    StrTreeFree(bank->name_idx);
-   for(int i=0; i<TYPEBANK_SIZE; i++)
+   for(int i = 0; i < TYPEBANK_SIZE; i++)
    {
       PObjTreeFree(bank->hash_table[i], tree_free_fun);
       bank->hash_table[i] = NULL;
@@ -413,15 +424,16 @@ Type_p TypeBankInsertTypeShared(TypeBank_p bank, Type_p t)
    force_arg_sharing(bank, t);
    if(t->type_uid == INVALID_TYPE_UID)
    {
-      res = (Type_p) PTreeObjStore(&(bank->hash_table[hash_type(t)]), t, cmp_types);
+      res =
+         (Type_p)PTreeObjStore(&(bank->hash_table[hash_type(t)]), t, cmp_types);
 
       if(res == NULL)
       {
          res = t;
          res->type_uid = ++bank->types_count;
-         if (Verbose > 1)
+         if(Verbose > 1)
          {
-            fprintf(stderr, COMCHAR" Type ");
+            fprintf(stderr, COMCHAR " Type ");
             TypePrintTSTP(stderr, bank, t);
             fprintf(stderr, " is inserted.\n");
          }
@@ -469,9 +481,9 @@ TypeConsCode TypeBankDefineTypeConstructor(TypeBank_p bank, const char* name,
          DStrAppendStr(err_msg, "Redefinition of type constructor ");
          DStrAppendStr(err_msg, name);
 
-         if (Verbose > 1)
+         if(Verbose > 1)
          {
-            fprintf(stderr, COMCHAR" previous arity was %ld, now it is %d.\n",
+            fprintf(stderr, COMCHAR " previous arity was %ld, now it is %d.\n",
                     GetArity(node), arity);
          }
 
@@ -481,8 +493,8 @@ TypeConsCode TypeBankDefineTypeConstructor(TypeBank_p bank, const char* name,
    }
    else
    {
-      IntOrP id    = {.i_val = bank->names_count++};
-      IntOrP arity_iop = {.i_val = (long)arity};
+      IntOrP id = { .i_val = bank->names_count++ };
+      IntOrP arity_iop = { .i_val = (long)arity };
       StrTreeStore(&bank->name_idx, (char*)name, id, arity_iop);
       PStackPushP(bank->back_idx, bii_alloc(name, arity));
       assert(PStackGetSP(bank->back_idx) == bank->names_count);
@@ -593,9 +605,9 @@ const char* TypeBankFindTCName(TypeBank_p bank, TypeConsCode tc_code)
 
 Type_p TypeBankParseType(Scanner_p in, TypeBank_p bank)
 {
-   Type_p leftArg    = NULL;
-   Type_p rightArg   = NULL;
-   Type_p res        = NULL;
+   Type_p leftArg = NULL;
+   Type_p rightArg = NULL;
+   Type_p res = NULL;
 
 
    if(problemType == PROBLEM_FO)
@@ -605,7 +617,7 @@ Type_p TypeBankParseType(Scanner_p in, TypeBank_p bank)
       // parentheses in [] are optional
 
       int open_parens = 0;
-      for(; open_parens<2 && TestInpTok(in, OpenBracket); open_parens++)
+      for(; open_parens < 2 && TestInpTok(in, OpenBracket); open_parens++)
       {
          AcceptInpTok(in, OpenBracket);
       }
@@ -659,7 +671,7 @@ Type_p TypeBankParseType(Scanner_p in, TypeBank_p bank)
       if(arity == 1)
       {
          res = args[0];
-         SizeFree(args, arity*sizeof(Type_p));
+         SizeFree(args, arity * sizeof(Type_p));
       }
       else
       {
@@ -681,8 +693,9 @@ Type_p TypeBankParseType(Scanner_p in, TypeBank_p bank)
          leftArg = parse_single_type(in, bank);
       }
 
-      if(TestInpTok(in, CloseBracket | Fullstop | CloseSquare | Comma
-                         | EqualSign | NegEqualSign | FOFBinOp))
+      if(TestInpTok(in,
+                    CloseBracket | Fullstop | CloseSquare | Comma | EqualSign |
+                       NegEqualSign | FOFBinOp))
       {
          res = leftArg;
       }
@@ -698,8 +711,10 @@ Type_p TypeBankParseType(Scanner_p in, TypeBank_p bank)
          {
             if(TestInpTok(in, Mult))
             {
-               AktTokenError(in,"Mixing of first order and higher "
-                                "order syntax is forbidden", true);
+               AktTokenError(in,
+                             "Mixing of first order and higher "
+                             "order syntax is forbidden",
+                             true);
             }
             AcceptInpTok(in, GreaterSign);
             if(TestInpTok(in, OpenBracket))
@@ -722,22 +737,23 @@ Type_p TypeBankParseType(Scanner_p in, TypeBank_p bank)
             }
 
             args[arity++] = rightArg;
-         } while(!(TestInpTok(in, CloseBracket | Fullstop | CloseSquare | Comma)));
+         } while(
+            !(TestInpTok(in, CloseBracket | Fullstop | CloseSquare | Comma)));
 
          if(TypeIsArrow(rightArg))
          {
             // we have to flatten out the rightArg
-            args[arity-1] = rightArg->args[0];
+            args[arity - 1] = rightArg->args[0];
 
             int i;
-            for(i=0; i < rightArg->arity-1; i++)
+            for(i = 0; i < rightArg->arity - 1; i++)
             {
                if(arity == allocated)
                {
                   type_arg_realloc(&args, allocated, allocated + REALLOC_STEP);
                   allocated += REALLOC_STEP;
                }
-               args[arity++] = rightArg->args[i+1];
+               args[arity++] = rightArg->args[i + 1];
             }
          }
 
@@ -770,7 +786,7 @@ void TypePrintTSTP(FILE* out, TypeBank_p bank, Type_p type)
    {
       if(problemType == PROBLEM_FO)
       {
-         int nr_of_args = type->arity -1;
+         int nr_of_args = type->arity - 1;
 
          if(nr_of_args == 1)
          {
@@ -781,20 +797,20 @@ void TypePrintTSTP(FILE* out, TypeBank_p bank, Type_p type)
          else
          {
             fprintf(out, "(");
-            for(int i=0; i<nr_of_args-1; i++)
+            for(int i = 0; i < nr_of_args - 1; i++)
             {
                TypePrintTSTP(out, bank, type->args[i]);
                fprintf(out, " * ");
             }
-            TypePrintTSTP(out, bank, type->args[nr_of_args-1]);
+            TypePrintTSTP(out, bank, type->args[nr_of_args - 1]);
             fprintf(out, ") > ");
 
-            TypePrintTSTP(out, bank, type->args[type->arity-1]);
+            TypePrintTSTP(out, bank, type->args[type->arity - 1]);
          }
       }
       else
       {
-         for(int i=0; i<type->arity-1; i++)
+         for(int i = 0; i < type->arity - 1; i++)
          {
             if(TypeIsArrow(type->args[i]))
             {
@@ -807,7 +823,7 @@ void TypePrintTSTP(FILE* out, TypeBank_p bank, Type_p type)
             }
             fprintf(out, " > ");
          }
-         TypePrintTSTP(out, bank, type->args[type->arity-1]);
+         TypePrintTSTP(out, bank, type->args[type->arity - 1]);
       }
    }
    else
@@ -816,12 +832,12 @@ void TypePrintTSTP(FILE* out, TypeBank_p bank, Type_p type)
       if(type->arity)
       {
          fprintf(out, "(");
-         for(int i=0; i<type->arity-1; i++)
+         for(int i = 0; i < type->arity - 1; i++)
          {
             TypePrintTSTP(out, bank, type->args[i]);
             fprintf(out, ", ");
          }
-         TypePrintTSTP(out, bank, type->args[type->arity-1]);
+         TypePrintTSTP(out, bank, type->args[type->arity - 1]);
          fprintf(out, ")");
       }
    }
@@ -885,7 +901,7 @@ Type_p TypeChangeReturnType(TypeBank_p bank, Type_p type, Type_p new_ret)
    if(TypeIsArrow(type))
    {
       Type_p copy = TypeCopy(type);
-      copy->args[copy->arity-1] = new_ret;
+      copy->args[copy->arity - 1] = new_ret;
       res = TypeBankInsertTypeShared(bank, copy);
    }
    else
@@ -894,7 +910,6 @@ Type_p TypeChangeReturnType(TypeBank_p bank, Type_p type, Type_p new_ret)
    }
 
    return res;
-
 }
 
 
@@ -916,13 +931,13 @@ Type_p TypeChangeReturnType(TypeBank_p bank, Type_p type, Type_p new_ret)
 void TypeBankAppEncodeTypes(FILE* out, TypeBank_p tb, bool print_type_comment)
 {
    int total_types = 0;
-   for(int i=0; i<TYPEBANK_SIZE; i++)
+   for(int i = 0; i < TYPEBANK_SIZE; i++)
    {
       PStack_p iter = PTreeTraverseInit(tb->hash_table[i]);
       PObjTree_p node;
       while((node = (PObjTree_p)PTreeTraverseNext(iter)))
       {
-         Type_p type = (Type_p) node->key;
+         Type_p type = (Type_p)node->key;
          if(TypeIsArrow(type) || SortIsUserDefined(type->f_code))
          {
             total_types++;
@@ -933,8 +948,8 @@ void TypeBankAppEncodeTypes(FILE* out, TypeBank_p tb, bool print_type_comment)
                TypePrintTSTP(out, tb, type);
                fprintf(out, ".\n");
             }
-            fprintf(out, "tff(typedecl%d, type, %s: $tType).\n",
-                    total_types, DStrView(type_name));
+            fprintf(out, "tff(typedecl%d, type, %s: $tType).\n", total_types,
+                    DStrView(type_name));
             DStrFree(type_name);
          }
       }

@@ -68,18 +68,18 @@ RLimResult SetSoftRlimit(int resource, rlim_t limit)
    RLimResult retval = RLimSuccess;
    struct rlimit rlim;
 
-   if(getrlimit(resource, &rlim)==-1)
+   if(getrlimit(resource, &rlim) == -1)
    {
       TmpErrno = errno;
       return RLimFailed;
    }
    if(rlim.rlim_max < limit)
    {
-      retval   = RLimReduced;
+      retval = RLimReduced;
       limit = rlim.rlim_max;
    }
    rlim.rlim_cur = limit;
-   if(setrlimit(resource, &rlim)==-1)
+   if(setrlimit(resource, &rlim) == -1)
    {
       TmpErrno = errno;
       retval = RLimFailed;
@@ -104,7 +104,7 @@ RLimResult SetSoftRlimit(int resource, rlim_t limit)
 
 void SetSoftRlimitErr(int resource, rlim_t limit, char* desc)
 {
-   char* ldesc ="";
+   char* ldesc = "";
    static char message[300];
    RLimResult res;
 
@@ -116,22 +116,22 @@ void SetSoftRlimitErr(int resource, rlim_t limit, char* desc)
 
    switch(res)
    {
-   case RLimFailed:
+      case RLimFailed:
          if(resource != RLIMIT_DATA) // Mask MacOS bug on ARM
          {
-            snprintf(message, 300, "Could not set limit %s to %lld (%s)",
-                     ldesc, (long long)limit, strerror(TmpErrno));
+            snprintf(message, 300, "Could not set limit %s to %lld (%s)", ldesc,
+                     (long long)limit, strerror(TmpErrno));
             Warning(message);
          }
          break;
-   case RLimReduced:
+      case RLimReduced:
          snprintf(message, 300, "Had to reduce limit %s", ldesc);
          Warning(message);
          break;
-   case RLimSuccess:
+      case RLimSuccess:
          /* Nothing to do */
          break;
-   default:
+      default:
          assert(false && "Out of bounds return from SetSoftRlimit()");
          break;
    }
@@ -180,13 +180,12 @@ rlim_t GetSoftRlimit(int resource)
 {
    struct rlimit rlim;
 
-   if(getrlimit(resource, &rlim)==-1)
+   if(getrlimit(resource, &rlim) == -1)
    {
       return 0;
    }
    return rlim.rlim_cur;
 }
-
 
 
 
@@ -269,7 +268,7 @@ long long GetUSecTime(void)
 
    gettimeofday(&tv, NULL);
 
-   return (long long)tv.tv_sec*1000000ll+tv.tv_usec;
+   return (long long)tv.tv_sec * 1000000ll + tv.tv_usec;
 }
 
 /*-----------------------------------------------------------------------
@@ -286,7 +285,7 @@ long long GetUSecTime(void)
 
 long long GetUSecClock(void)
 {
-   long long res = (clock()*1000000ll)/CLOCKS_PER_SEC;
+   long long res = (clock() * 1000000ll) / CLOCKS_PER_SEC;
 
    return res;
 }
@@ -314,8 +313,9 @@ int GetCoreNumber(void)
    res = sysconf(_SC_NPROCESSORS_ONLN);
    if(errno)
    {
-      assert(res==-1);
-      Warning("sysconf(_NPROCESSORS_ONLN) call to get core number failed, assuming 1 core!\n");
+      assert(res == -1);
+      Warning(
+         "sysconf(_NPROCESSORS_ONLN) call to get core number failed, assuming 1 core!\n");
       res = 1;
    }
    return res;
@@ -343,7 +343,7 @@ long GetSystemPageSize(void)
    res = sysconf(_SC_PAGESIZE);
    if(errno)
    {
-      assert(res==-1);
+      assert(res == -1);
       Warning("sysconf() call to get page size failed!\n");
       res = -1;
    }
@@ -370,23 +370,23 @@ long long GetSystemPhysMemory(void)
 {
    long long res = -1;
 
-   long long tmpres = 0, pages=-1, pagesize;
+   long long tmpres = 0, pages = -1, pagesize;
 
    pagesize = GetSystemPageSize();
 #ifdef _SC_PHYS_PAGES
    pages = sysconf(_SC_PHYS_PAGES);
 #endif
-   if((pagesize !=-1) && (pages != -1))
+   if((pagesize != -1) && (pages != -1))
    {
       tmpres = pagesize * pages;
       res = tmpres / MEGA;
    }
-   if(res==-1)
+   if(res == -1)
    {
       FILE* pipe;
       char line[220];
       int limit = strlen(MEM_PHRASE);
-      char *convert;
+      char* convert;
       double resmult = 0.0;
 
       pipe = popen("hostinfo", "r");
@@ -394,12 +394,12 @@ long long GetSystemPhysMemory(void)
       {
          while(fgets(line, 220, pipe))
          {
-            if(strncmp(MEM_PHRASE, line, limit)==0)
+            if(strncmp(MEM_PHRASE, line, limit) == 0)
             {
-               resmult = strtod(line+limit, &convert);
+               resmult = strtod(line + limit, &convert);
                if(strstr(convert, "kilobyte"))
-               {  /* Past-proof, of course */
-                  res = resmult/1024;
+               { /* Past-proof, of course */
+                  res = resmult / 1024;
                }
                else if(strstr(convert, "megabyte"))
                {
@@ -407,11 +407,11 @@ long long GetSystemPhysMemory(void)
                }
                else if(strstr(convert, "gigabyte"))
                {
-                  res = resmult*1024;
+                  res = resmult * 1024;
                }
                else if(strstr(convert, "terabyte"))
                { /* Future-proof */
-                  res = resmult*(1024*1024);
+                  res = resmult * (1024 * 1024);
                }
                else
                {
@@ -454,13 +454,13 @@ void StrideMemory(char* mem, long size)
    {
       e_page_size = GetSystemPageSize();
    }
-   if(e_page_size==-1)
+   if(e_page_size == -1)
    {
       Warning("Could not determine page size, guessing 4096!");
-      e_page_size=4096;
+      e_page_size = 4096;
    }
 
-   for(stride = mem; stride < mem+size; stride+=e_page_size)
+   for(stride = mem; stride < mem + size; stride += e_page_size)
    {
       *stride = 'S'; /* Arbitrary value*/
    }
@@ -487,7 +487,7 @@ FILE* SecureFOpen(char* name, char* mode)
    if(!res)
    {
       TmpErrno = errno;
-      SysError("Cannot open file %s",FILE_ERROR,name);
+      SysError("Cannot open file %s", FILE_ERROR, name);
    }
    return res;
 }
@@ -513,8 +513,6 @@ void SecureFClose(FILE* fp)
       SysWarning("Problem closing file");
    }
 }
-
-
 
 
 

@@ -40,11 +40,11 @@ Changes
 /*                  Data types                                         */
 /*---------------------------------------------------------------------*/
 
-#define NAME         "e_server"
+#define NAME "e_server"
 
 typedef enum
 {
-   OPT_NOOPT=0,
+   OPT_NOOPT = 0,
    OPT_HELP,
    OPT_VERSION,
    OPT_VERBOSE,
@@ -62,7 +62,7 @@ typedef enum
    OPT_TSTP_PARSE,
    OPT_TSTP_FORMAT,
    OPT_DUMMY
-}OptionCodes;
+} OptionCodes;
 
 
 
@@ -71,128 +71,86 @@ typedef enum
 /*---------------------------------------------------------------------*/
 
 
-OptCell opts[] =
-{
-   {OPT_HELP,
-    'h', "help",
-    NoArg, NULL,
-    "Print a short description of program usage and options."},
+OptCell opts[] = {
+   { OPT_HELP, 'h', "help", NoArg, NULL,
+     "Print a short description of program usage and options." },
 
-   {OPT_VERSION,
-    'V', "version",
-    NoArg, NULL,
-    "Print the version number of the prover. Please include this"
-    " with all bug reports (if any)."},
+   { OPT_VERSION, 'V', "version", NoArg, NULL,
+     "Print the version number of the prover. Please include this"
+     " with all bug reports (if any)." },
 
-   {OPT_VERBOSE,
-    'v', "verbose",
-    OptArg, "1",
-    "Verbose comments on the progress of the program. This differs "
-    "from the output level (below) in that technical information is "
-    "printed to stderr, while the output level determines which "
-    "logical manipulations of the clauses are printed to stdout."},
+   { OPT_VERBOSE, 'v', "verbose", OptArg, "1",
+     "Verbose comments on the progress of the program. This differs "
+     "from the output level (below) in that technical information is "
+     "printed to stderr, while the output level determines which "
+     "logical manipulations of the clauses are printed to stdout." },
 
-   {OPT_OUTPUT,
-    'o', "output-file",
-    ReqArg, NULL,
-    "Redirect output into the named file (this affects only some "
-    "output, as most is written to automatically generated files "
-    "based on the input and filter names."},
+   { OPT_OUTPUT, 'o', "output-file", ReqArg, NULL,
+     "Redirect output into the named file (this affects only some "
+     "output, as most is written to automatically generated files "
+     "based on the input and filter names." },
 
-   {OPT_SILENT,
-    's', "silent",
-    NoArg, NULL,
-    "Equivalent to --output-level=0."},
+   { OPT_SILENT, 's', "silent", NoArg, NULL,
+     "Equivalent to --output-level=0." },
 
-   {OPT_OUTPUTLEVEL,
-    'l', "output-level",
-    ReqArg, NULL,
-    "Select an output level, greater values imply more verbose "
-    "output."},
+   { OPT_OUTPUTLEVEL, 'l', "output-level", ReqArg, NULL,
+     "Select an output level, greater values imply more verbose "
+     "output." },
 
-   {OPT_FILTER,
-    'f', "filter",
-    ReqArg, NULL,
-    "Specify the filter definition file. If not set, the system "
-    "will uses the built-in default."},
+   { OPT_FILTER, 'f', "filter", ReqArg, NULL,
+     "Specify the filter definition file. If not set, the system "
+     "will uses the built-in default." },
 
-   {OPT_PROVER,
-    'p', "prover",
-    ReqArg, NULL,
-    "Specify the prover binary to use. The default is 'eprover', "
-    "and initially, only E is supported. This option does accept "
-    "absolute and relative paths."},
+   { OPT_PROVER, 'p', "prover", ReqArg, NULL,
+     "Specify the prover binary to use. The default is 'eprover', "
+     "and initially, only E is supported. This option does accept "
+     "absolute and relative paths." },
 
-   {OPT_SERVICE_PORT,
-    'P', "service-port",
-    ReqArg, NULL,
-    "Specify the port to use for the deduction service."},
+   { OPT_SERVICE_PORT, 'P', "service-port", ReqArg, NULL,
+     "Specify the port to use for the deduction service." },
 
-   {OPT_LOP_PARSE,
-    '\0', "lop-in",
-    NoArg, NULL,
-    "Parse input in E-LOP, not the default TPTP-3 format."},
+   { OPT_LOP_PARSE, '\0', "lop-in", NoArg, NULL,
+     "Parse input in E-LOP, not the default TPTP-3 format." },
 
-   {OPT_LOP_FORMAT,
-    '\0', "lop-format",
-    NoArg, NULL,
-    "Equivalent to --lop-in."},
+   { OPT_LOP_FORMAT, '\0', "lop-format", NoArg, NULL,
+     "Equivalent to --lop-in." },
 
-   {OPT_TPTP_PARSE,
-    '\0', "tptp-in",
-    NoArg, NULL,
-    "Parse TPTP-2 format instead of E-LOP (but note that includes are "
-    "handled according to TPTP-3 semantics)."},
+   { OPT_TPTP_PARSE, '\0', "tptp-in", NoArg, NULL,
+     "Parse TPTP-2 format instead of E-LOP (but note that includes are "
+     "handled according to TPTP-3 semantics)." },
 
-   {OPT_TPTP_FORMAT,
-    '\0', "tptp-format",
-    NoArg, NULL,
-    "Equivalent to --tptp-in."},
+   { OPT_TPTP_FORMAT, '\0', "tptp-format", NoArg, NULL,
+     "Equivalent to --tptp-in." },
 
-   {OPT_TPTP_PARSE,
-    '\0', "tptp2-in",
-    NoArg, NULL,
-    "Synonymous with --tptp-in."},
+   { OPT_TPTP_PARSE, '\0', "tptp2-in", NoArg, NULL,
+     "Synonymous with --tptp-in." },
 
-   {OPT_TPTP_FORMAT,
-    '\0', "tptp2-format",
-    NoArg, NULL,
-    "Synonymous with --tptp-in."},
+   { OPT_TPTP_FORMAT, '\0', "tptp2-format", NoArg, NULL,
+     "Synonymous with --tptp-in." },
 
-   {OPT_TSTP_PARSE,
-    '\0', "tstp-in",
-    NoArg, NULL,
-    "Parse TPTP-3 format instead of E-LOP (Note that TPTP-3 syntax "
-    "is still under development, and the version in E may not be "
-    "fully conforming at all times. E works on all TPTP 4.1.0 input "
-    "files (including includes)."},
+   { OPT_TSTP_PARSE, '\0', "tstp-in", NoArg, NULL,
+     "Parse TPTP-3 format instead of E-LOP (Note that TPTP-3 syntax "
+     "is still under development, and the version in E may not be "
+     "fully conforming at all times. E works on all TPTP 4.1.0 input "
+     "files (including includes)." },
 
-   {OPT_TSTP_FORMAT,
-    '\0', "tstp-format",
-    NoArg, NULL,
-    "Equivalent to --tstp-in."},
+   { OPT_TSTP_FORMAT, '\0', "tstp-format", NoArg, NULL,
+     "Equivalent to --tstp-in." },
 
-   {OPT_TSTP_PARSE,
-    '\0', "tptp3-in",
-    NoArg, NULL,
-    "Synonymous with --tstp-in."},
+   { OPT_TSTP_PARSE, '\0', "tptp3-in", NoArg, NULL,
+     "Synonymous with --tstp-in." },
 
-   {OPT_TSTP_FORMAT,
-    '\0', "tptp3-format",
-    NoArg, NULL,
-    "Synonymous with --tstp-in."},
+   { OPT_TSTP_FORMAT, '\0', "tptp3-format", NoArg, NULL,
+     "Synonymous with --tstp-in." },
 
-   {OPT_NOOPT,
-    '\0', NULL,
-    NoArg, NULL,
-    NULL}
+   { OPT_NOOPT, '\0', NULL, NoArg, NULL, NULL }
 };
 IOFormat parse_format = TSTPFormat;
-char     *outname    = NULL;
-char     *filtername = NULL;
-char     *prover     = "eprover";
-int      port        = 3666;
-bool     app_encode = false;
+char* outname = NULL;
+char* filtername = NULL;
+char* prover = "eprover";
+int port = 3666;
+bool app_encode = false;
 
 
 /*---------------------------------------------------------------------*/
@@ -222,12 +180,12 @@ void print_help(FILE* out);
 
 int main(int argc, char* argv[])
 {
-   CLState_p        state;
-   StructFOFSpec_p  ctrl;
-   PStack_p         prob_names = PStackAlloc();
-   int              i;
-   AxFilterSet_p    filters;
-   Scanner_p        in;
+   CLState_p state;
+   StructFOFSpec_p ctrl;
+   PStack_p prob_names = PStackAlloc();
+   int i;
+   AxFilterSet_p filters;
+   Scanner_p in;
 
    assert(argv[0]);
 
@@ -256,9 +214,9 @@ int main(int argc, char* argv[])
    {
       filters = AxFilterSetCreateInternal(AxFilterDefaultSet);
    }
-   for(i=0; state->argv[i]; i++)
+   for(i = 0; state->argv[i]; i++)
    {
-      PStackPushP(prob_names,  state->argv[i]);
+      PStackPushP(prob_names, state->argv[i]);
    }
 
    ctrl = StructFOFSpecAlloc();
@@ -274,8 +232,8 @@ int main(int argc, char* argv[])
       fd_set rfds, wfds, xfds;
       int res, tmp;
       struct sockaddr addr;
-      socklen_t       addr_len = sizeof(addr);
-      char *msg;
+      socklen_t addr_len = sizeof(addr);
+      char* msg;
       MsgStatus msg_stat;
 
       Listen(sock);
@@ -287,11 +245,11 @@ int main(int argc, char* argv[])
          FD_ZERO(&wfds);
          FD_ZERO(&xfds);
          FD_SET(sock, &rfds);
-         if(conn!=-1)
+         if(conn != -1)
          {
             FD_SET(conn, &rfds);
          }
-         res = select(MAX(sock, conn)+1, &rfds, &wfds, &xfds, NULL);
+         res = select(MAX(sock, conn) + 1, &rfds, &wfds, &xfds, NULL);
          if(res != -1)
          {
             if((conn != -1) && FD_ISSET(conn, &rfds))
@@ -321,7 +279,7 @@ int main(int argc, char* argv[])
             if(FD_ISSET(sock, &rfds))
             {
                tmp = accept(sock, &addr, &addr_len);
-               if(conn==-1)
+               if(conn == -1)
                {
                   printf("Accepted %d\n", tmp);
                   conn = tmp;
@@ -374,41 +332,41 @@ CLState_p process_options(int argc, char* argv[])
 {
    Opt_p handle;
    CLState_p state;
-   char*  arg;
+   char* arg;
 
-   state = CLStateAlloc(argc,argv);
+   state = CLStateAlloc(argc, argv);
 
    while((handle = CLStateGetOpt(state, &arg, opts)))
    {
       switch(handle->option_code)
       {
-      case OPT_VERBOSE:
-       Verbose = CLStateGetIntArg(handle, arg);
-       break;
-      case OPT_HELP:
-       print_help(stdout);
-       exit(NO_ERROR);
-      case OPT_VERSION:
-       fprintf(stdout, "E " VERSION " " E_NICKNAME "\n");
-       exit(NO_ERROR);
-      case OPT_OUTPUT:
-       outname = arg;
-       break;
-      case OPT_SILENT:
-       OutputLevel = 0;
-       break;
-      case OPT_OUTPUTLEVEL:
-       OutputLevel = CLStateGetIntArg(handle, arg);
-       break;
-      case OPT_FILTER:
+         case OPT_VERBOSE:
+            Verbose = CLStateGetIntArg(handle, arg);
+            break;
+         case OPT_HELP:
+            print_help(stdout);
+            exit(NO_ERROR);
+         case OPT_VERSION:
+            fprintf(stdout, "E " VERSION " " E_NICKNAME "\n");
+            exit(NO_ERROR);
+         case OPT_OUTPUT:
+            outname = arg;
+            break;
+         case OPT_SILENT:
+            OutputLevel = 0;
+            break;
+         case OPT_OUTPUTLEVEL:
+            OutputLevel = CLStateGetIntArg(handle, arg);
+            break;
+         case OPT_FILTER:
             filtername = arg;
             break;
-      case OPT_PROVER:
+         case OPT_PROVER:
             prover = arg;
             break;
-      case OPT_SERVICE_PORT:
-            port  = CLStateGetIntArg(handle, arg);
-            if(port<0 || port>65535)
+         case OPT_SERVICE_PORT:
+            port = CLStateGetIntArg(handle, arg);
+            if(port < 0 || port > 65535)
             {
                Error("Port numbers must be between 0 and 65535", USAGE_ERROR);
             }
@@ -418,17 +376,17 @@ CLState_p process_options(int argc, char* argv[])
                        IPPORT_RESERVED);
             }
             break;
-      case OPT_LOP_PARSE:
-      case OPT_LOP_FORMAT:
-       parse_format = LOPFormat;
-       break;
-      case OPT_TSTP_PARSE:
-      case OPT_TSTP_FORMAT:
-       parse_format = TSTPFormat;
-       break;
-      default:
-       assert(false && "Unknown option");
-       break;
+         case OPT_LOP_PARSE:
+         case OPT_LOP_FORMAT:
+            parse_format = LOPFormat;
+            break;
+         case OPT_TSTP_PARSE:
+         case OPT_TSTP_FORMAT:
+            parse_format = TSTPFormat;
+            break;
+         default:
+            assert(false && "Unknown option");
+            break;
       }
    }
    return state;
@@ -450,13 +408,14 @@ to use for proof attemtps, the dervice port, and the binary of the\n\
 prover to use.\n\
 \n");
    PrintOptions(stdout, opts, "Options:\n\n");
-   fprintf(out, "\n\
+   fprintf(
+      out,
+      "\n\
 Copyright (C) 2011 by Stephan Schulz, " STS_MAIL "\n\
 \n\
-You can find the latest version of E and additional information at\n"
-E_URL
-"\n\n"
-"This program is free software; you can redistribute it and/or modify\n\
+You can find the latest version of E and additional information at\n" E_URL
+      "\n\n"
+      "This program is free software; you can redistribute it and/or modify\n\
 it under the terms of the GNU General Public License as published by\n\
 the Free Software Foundation; either version 2 of the License, or\n\
 (at your option) any later version.\n\
@@ -471,12 +430,9 @@ along with this program (it should be contained in the top level\n\
 directory of the distribution in the file COPYING); if not, write to\n\
 the Free Software Foundation, Inc., 59 Temple Place, Suite 330,\n\
 Boston, MA  02111-1307 USA\n"
-"\n\
+      "\n\
 The original copyright holder can be contacted as\n\
-\n"
-STS_SNAIL
-"\n");
-
+\n" STS_SNAIL "\n");
 }
 
 

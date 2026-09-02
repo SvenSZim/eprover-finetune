@@ -54,12 +54,13 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-static bool switch_to_array(long old_min, long old_max, long new_key, long entries)
+static bool switch_to_array(long old_min, long old_max, long new_key,
+                            long entries)
 {
    long max_key = MAX(old_max, new_key);
    long min_key = MIN(old_min, new_key);
 
-   if((entries * MIN_TREE_DENSITY) > (max_key-min_key))
+   if((entries * MIN_TREE_DENSITY) > (max_key - min_key))
    {
       return true;
    }
@@ -80,12 +81,13 @@ static bool switch_to_array(long old_min, long old_max, long new_key, long entri
 //
 /----------------------------------------------------------------------*/
 
-static bool switch_to_tree(long old_min, long old_max, long new_key, long entries)
+static bool switch_to_tree(long old_min, long old_max, long new_key,
+                           long entries)
 {
    long max_key = MAX(old_max, new_key);
    long min_key = MIN(old_min, new_key);
 
-   if((entries * MAX_TREE_DENSITY) < (max_key-min_key))
+   if((entries * MAX_TREE_DENSITY) < (max_key - min_key))
    {
       return true;
    }
@@ -115,7 +117,8 @@ static NumTree_p add_new_tree_node(IntMap_p map, long key, void* val)
    handle->key = key;
    handle->val1.p_val = val;
    check = NumTreeInsert(&(map->values.tree), handle);
-   UNUSED(check); assert(!check);
+   UNUSED(check);
+   assert(!check);
    map->entry_no++;
 
    return handle;
@@ -137,11 +140,11 @@ static NumTree_p add_new_tree_node(IntMap_p map, long key, void* val)
 
 static void array_to_tree(IntMap_p map)
 {
-   PDRangeArr_p  tmp_arr;
-   IntOrP        tmp_val;
-   long          i;
-   long          max_key = map->min_key;
-   long          min_key = map->max_key;
+   PDRangeArr_p tmp_arr;
+   IntOrP tmp_val;
+   long i;
+   long max_key = map->min_key;
+   long min_key = map->max_key;
 
    assert(map->type == IMArray);
 
@@ -150,7 +153,7 @@ static void array_to_tree(IntMap_p map)
    map->type = IMTree;
    map->entry_no = 0;
 
-   for(i=PDRangeArrLowKey(tmp_arr); i<=map->max_key; i++)
+   for(i = PDRangeArrLowKey(tmp_arr); i <= map->max_key; i++)
    {
       tmp_val.p_val = PDRangeArrElementP(tmp_arr, i);
       if(tmp_val.p_val)
@@ -182,11 +185,11 @@ static void array_to_tree(IntMap_p map)
 
 static void tree_to_array(IntMap_p map)
 {
-   PDRangeArr_p  tmp_arr;
-   long          max_key = map->min_key;
-   long          min_key = map->max_key;
-   PStack_p      tree_iterator;
-   NumTree_p     handle;
+   PDRangeArr_p tmp_arr;
+   long max_key = map->min_key;
+   long min_key = map->max_key;
+   PStack_p tree_iterator;
+   NumTree_p handle;
 
    assert(map->type == IMTree);
 
@@ -257,16 +260,16 @@ void IntMapFree(IntMap_p map)
 
    switch(map->type)
    {
-   case IMEmpty:
-   case IMSingle:
+      case IMEmpty:
+      case IMSingle:
          break;
-   case IMArray:
+      case IMArray:
          PDRangeArrFree(map->values.array);
          break;
-   case IMTree:
+      case IMTree:
          NumTreeFree(map->values.tree);
          break;
-   default:
+      default:
          assert(false && "Unknown IntMap type.");
    }
    IntMapCellFree(map);
@@ -296,21 +299,21 @@ void* IntMapGetVal(IntMap_p map, long key)
    }
    switch(map->type)
    {
-   case IMEmpty:
+      case IMEmpty:
          break;
-   case IMSingle:
+      case IMSingle:
          if(map->max_key == key)
          {
             res = map->values.value;
          }
          break;
-   case IMArray:
+      case IMArray:
          if(key <= map->max_key)
          {
             res = PDRangeArrElementP(map->values.array, key);
          }
          break;
-   case IMTree:
+      case IMTree:
          if(key <= map->max_key)
          {
             NumTree_p entry = NumTreeFind(&(map->values.tree), key);
@@ -320,7 +323,7 @@ void* IntMapGetVal(IntMap_p map, long key)
             }
          }
          break;
-   default:
+      default:
          assert(false && "Unknown IntMap type.");
    }
    return res;
@@ -344,8 +347,8 @@ void* IntMapGetVal(IntMap_p map, long key)
 
 void** IntMapGetRef(IntMap_p map, long key)
 {
-   void      **res = NULL;
-   void      *val;
+   void** res = NULL;
+   void* val;
    NumTree_p handle;
    IntOrP tmp;
 
@@ -357,7 +360,7 @@ void** IntMapGetRef(IntMap_p map, long key)
    */
    switch(map->type)
    {
-   case IMEmpty:
+      case IMEmpty:
          map->type = IMSingle;
          map->max_key = key;
          map->min_key = key;
@@ -365,7 +368,7 @@ void** IntMapGetRef(IntMap_p map, long key)
          res = &(map->values.value);
          map->entry_no = 1;
          break;
-   case IMSingle:
+      case IMSingle:
          if(key == map->max_key)
          {
             res = &(map->values.value);
@@ -374,8 +377,8 @@ void** IntMapGetRef(IntMap_p map, long key)
          {
             map->type = IMArray;
             val = map->values.value;
-            map->values.array = PDRangeArrAlloc(MIN(key, map->max_key),
-                                                IM_ARRAY_SIZE);
+            map->values.array =
+               PDRangeArrAlloc(MIN(key, map->max_key), IM_ARRAY_SIZE);
             PDRangeArrAssignP(map->values.array, map->max_key, val);
             PDRangeArrAssignP(map->values.array, key, NULL);
             res = &(PDRangeArrElementP(map->values.array, key));
@@ -395,9 +398,9 @@ void** IntMapGetRef(IntMap_p map, long key)
          map->min_key = MIN(map->min_key, key);
          map->max_key = MAX(key, map->max_key);
          break;
-   case IMArray:
-         if(((key > map->max_key)||(key<map->min_key)) &&
-            switch_to_tree(map->min_key, map->max_key, key, map->entry_no+1))
+      case IMArray:
+         if(((key > map->max_key) || (key < map->min_key)) &&
+            switch_to_tree(map->min_key, map->max_key, key, map->entry_no + 1))
          {
             array_to_tree(map);
             res = IntMapGetRef(map, key);
@@ -410,10 +413,10 @@ void** IntMapGetRef(IntMap_p map, long key)
                map->entry_no++;
             }
          }
-         map->min_key=MIN(map->min_key, key);
-         map->max_key=MAX(map->max_key, key);
+         map->min_key = MIN(map->min_key, key);
+         map->max_key = MAX(map->max_key, key);
          break;
-   case IMTree:
+      case IMTree:
          handle = NumTreeFind(&(map->values.tree), key);
          if(handle)
          {
@@ -421,7 +424,8 @@ void** IntMapGetRef(IntMap_p map, long key)
          }
          else
          {
-            if(switch_to_array(map->min_key, map->max_key, key, map->entry_no+1))
+            if(switch_to_array(map->min_key, map->max_key, key,
+                               map->entry_no + 1))
             {
                tree_to_array(map);
                res = IntMapGetRef(map, key);
@@ -429,13 +433,13 @@ void** IntMapGetRef(IntMap_p map, long key)
             else
             {
                handle = add_new_tree_node(map, key, NULL);
-               map->max_key=MAX(map->max_key, key);
-               map->min_key=MIN(map->min_key, key);
+               map->max_key = MAX(map->max_key, key);
+               map->min_key = MIN(map->min_key, key);
                res = &(handle->val1.p_val);
             }
          }
          break;
-   default:
+      default:
          assert(false && "Unknown IntMap type.");
    }
 
@@ -462,7 +466,7 @@ void IntMapAssign(IntMap_p map, long key, void* value)
 
    assert(map);
 
-   ref  = IntMapGetRef(map, key);
+   ref = IntMapGetRef(map, key);
    *ref = value;
 }
 
@@ -486,16 +490,16 @@ void IntMapAssign(IntMap_p map, long key, void* value)
 void* IntMapDelKey(IntMap_p map, long key)
 {
    void* res = NULL;
-   NumTree_p   handle;
+   NumTree_p handle;
 
    assert(map);
 
    switch(map->type)
    {
-   case IMEmpty:
+      case IMEmpty:
          res = NULL;
          break;
-   case IMSingle:
+      case IMSingle:
          if(key == map->max_key)
          {
             res = map->values.value;
@@ -503,7 +507,7 @@ void* IntMapDelKey(IntMap_p map, long key)
             map->entry_no = 0;
          }
          break;
-   case IMArray:
+      case IMArray:
          if(key > map->max_key)
          {
             res = NULL;
@@ -515,13 +519,14 @@ void* IntMapDelKey(IntMap_p map, long key)
          {
             PDRangeArrAssignP(map->values.array, key, NULL);
             map->entry_no--;
-            if(switch_to_tree(map->min_key, map->max_key, map->max_key, map->entry_no))
+            if(switch_to_tree(map->min_key, map->max_key, map->max_key,
+                              map->entry_no))
             {
                array_to_tree(map);
             }
          }
          break;
-   case IMTree:
+      case IMTree:
          handle = NumTreeExtractEntry(&(map->values.tree), key);
          if(handle)
          {
@@ -537,7 +542,8 @@ void* IntMapDelKey(IntMap_p map, long key)
                {
                   map->max_key = map->min_key;
                }
-               if(switch_to_array(map->min_key, map->max_key, map->max_key, map->entry_no))
+               if(switch_to_array(map->min_key, map->max_key, map->max_key,
+                                  map->entry_no))
                {
                   tree_to_array(map);
                }
@@ -545,7 +551,7 @@ void* IntMapDelKey(IntMap_p map, long key)
             NumTreeCellFree(handle);
          }
          break;
-   default:
+      default:
          assert(false && "Unknown IntMap type.");
          break;
    }
@@ -578,23 +584,23 @@ IntMapIter_p IntMapIterAlloc(IntMap_p map, long lower_key, long upper_key)
 
       switch(map->type)
       {
-      case IMEmpty:
+         case IMEmpty:
             break;
-      case IMSingle:
+         case IMSingle:
             handle->admin_data.seen = true;
             if((map->max_key >= lower_key) && (map->max_key <= upper_key))
             {
                handle->admin_data.seen = false;
             }
             break;
-      case IMArray:
+         case IMArray:
             handle->admin_data.current = lower_key;
             break;
-      case IMTree:
+         case IMTree:
             handle->admin_data.tree_iter =
                NumTreeLimitedTraverseInit(map->values.tree, lower_key);
             break;
-      default:
+         default:
             assert(false && "Unknown IntMap type.");
             break;
       }
@@ -622,14 +628,14 @@ void IntMapIterFree(IntMapIter_p junk)
    {
       switch(junk->map->type)
       {
-      case IMEmpty:
-      case IMSingle:
-      case IMArray:
+         case IMEmpty:
+         case IMSingle:
+         case IMArray:
             break;
-      case IMTree:
+         case IMTree:
             PStackFree(junk->admin_data.tree_iter);
-         break;
-      default:
+            break;
+         default:
             assert(false && "Unknown IntMap type.");
             break;
       }
@@ -655,18 +661,18 @@ void IntMapDebugPrint(FILE* out, IntMap_p map)
 {
    IntMapIter_p iter = IntMapIterAlloc(map, LONG_MIN, LONG_MAX);
    void* val;
-   long  key = 0;
+   long key = 0;
 
-   fprintf(out, COMCHAR" ==== IntMapType %d Size = %ld\n", map->type, IntMapStorage(map));
-   for(val=IntMapIterNext(iter, &key); val; val=IntMapIterNext(iter, &key))
+   fprintf(out, COMCHAR " ==== IntMapType %d Size = %ld\n", map->type,
+           IntMapStorage(map));
+   for(val = IntMapIterNext(iter, &key); val; val = IntMapIterNext(iter, &key))
    {
-      fprintf(out, COMCHAR" %5ld : %p\n", key, val);
+      fprintf(out, COMCHAR " %5ld : %p\n", key, val);
    }
-   fprintf(out, COMCHAR" ==== IntMap End\n");
+   fprintf(out, COMCHAR " ==== IntMap End\n");
 
    IntMapIterFree(iter);
 }
-
 
 
 

@@ -70,16 +70,15 @@ Clause_p ClauseDisEqDecomposition(TB_p terms, Clause_p clause,
 
    inflit = ClauseCPosSplit(clause, &tmppos);
    assert(inflit);
-   assert(tmppos==0);
+   assert(tmppos == 0);
    assert(inflit->lterm->f_code == inflit->rterm->f_code);
    assert(inflit->lterm->arity == inflit->rterm->arity);
 
    lits = EqnListCopyOptExcept(clause->literals, inflit);
-   for(i=0; i<inflit->lterm->arity; i++)
+   for(i = 0; i < inflit->lterm->arity; i++)
    {
-      eqn = EqnAlloc(inflit->lterm->args[i],
-                     inflit->rterm->args[i], terms,
-                     false);
+      eqn =
+         EqnAlloc(inflit->lterm->args[i], inflit->rterm->args[i], terms, false);
       eqn->next = newlits;
       newlits = eqn;
    }

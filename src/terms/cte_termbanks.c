@@ -38,7 +38,7 @@
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-bool TBPrintInternalInfo = false;  /* Print internal information about
+bool TBPrintInternalInfo = false; /* Print internal information about
                                       term nodes, e.g. the flag field */
 bool TBPrintDetails = false;      /* Collect potentially expensive
                                      information (number of nodes,
@@ -69,7 +69,7 @@ typedef Term_p (*TermParseFun)(Scanner_p in, TB_p bank);
 //
 /----------------------------------------------------------------------*/
 
-static void tb_print_dag(FILE *out, NumTree_p in_index, Sig_p sig)
+static void tb_print_dag(FILE* out, NumTree_p in_index, Sig_p sig)
 {
    Term_p term;
 
@@ -92,12 +92,12 @@ static void tb_print_dag(FILE *out, NumTree_p in_index, Sig_p sig)
       {
          int i;
 
-         assert(term->arity>=1);
+         assert(term->arity >= 1);
          assert(term->args);
          putc('(', out);
 
          fprintf(out, "*%ld", TBCellIdent(term->args[0]));
-         for(i=1; i<term->arity; i++)
+         for(i = 1; i < term->arity; i++)
          {
             putc(',', out);
             fprintf(out, "*%ld", TBCellIdent(term->args[i]));
@@ -109,8 +109,7 @@ static void tb_print_dag(FILE *out, NumTree_p in_index, Sig_p sig)
    }
    if(TBPrintInternalInfo)
    {
-      fprintf(out, "\t/*  Properties: %10d */",
-              term->properties);
+      fprintf(out, "\t/*  Properties: %10d */", term->properties);
    }
    fprintf(out, "\n");
    tb_print_dag(out, in_index->rson, sig);
@@ -139,11 +138,12 @@ static Term_p tb_termtop_insert(TB_p bank, Term_p t)
           (t->arity == 2 && TermIsFreeVar(t->args[0])));
    assert(t->f_code != SIG_DB_LAMBDA_CODE ||
           (t->arity == 2 && TermIsDBVar(t->args[0])));
-   assert(!TermIsPhonyApp(t) || TermIsAnyVar(t->args[0]) || TermIsLambda(t->args[0]));
+   assert(!TermIsPhonyApp(t) || TermIsAnyVar(t->args[0]) ||
+          TermIsLambda(t->args[0]));
    assert(!TermIsPhonyApp(t) || t->arity > 1);
 
 #ifndef NDEBUG
-   for(int i=0; i<t->arity; i++)
+   for(int i = 0; i < t->arity; i++)
    {
       assert(TermIsShared(t->args[i]));
    }
@@ -162,16 +162,16 @@ static Term_p tb_termtop_insert(TB_p bank, Term_p t)
    if(new) /* Term node already existed, just add properties */
    {
       assert(!TermIsShared(t));
-      new->properties = (new->properties | t->properties)/*& bank->prop_mask*/;
+      new->properties = (new->properties | t->properties) /*& bank->prop_mask*/;
       TermTopFree(t);
       TermSetBank(t, bank);
       t = new;
    }
    else
    {
-      t->entry_no     = ++(bank->in_count);
+      t->entry_no = ++(bank->in_count);
       TermSetBank(t, bank);
-      TermCellAssignProp(t,TPGarbageFlag, bank->garbage_state);
+      TermCellAssignProp(t, TPGarbageFlag, bank->garbage_state);
       TermCellSetProp(t, TPIsShared); /* Groundness may change below */
       if(TermIsDBVar(t))
       {
@@ -199,42 +199,46 @@ static Term_p tb_termtop_insert(TB_p bank, Term_p t)
       }
       t->v_count = 0;
       t->f_count = !TermIsPhonyApp(t) ? 1 : 0;
-      t->weight = DEFAULT_FWEIGHT*t->f_count;
-      for(int i=0; i<t->arity; i++)
+      t->weight = DEFAULT_FWEIGHT * t->f_count;
+      for(int i = 0; i < t->arity; i++)
       {
-         assert(TermIsShared(t->args[i])||TermIsFreeVar(t->args[i]));
+         assert(TermIsShared(t->args[i]) || TermIsFreeVar(t->args[i]));
          TermCellSetProp(t, TermCellGiveProps(t->args[i], TPIsBetaReducible));
          TermCellSetProp(t, TermCellGiveProps(t->args[i], TPHasDBSubterm));
          TermCellSetProp(t, TermCellGiveProps(t->args[i], TPHasEqNeqSym));
          TermCellSetProp(t, TermCellGiveProps(t->args[i], TPHasBoolSubterm));
          if(TypeIsBool(t->args[i]))
          {
-            TermCellSetProp(t, TPHasBoolSubterm); // vars and dbvars are sometimes not shared.
+            TermCellSetProp(
+               t,
+               TPHasBoolSubterm); // vars and dbvars are sometimes not shared.
          }
          TermCellSetProp(t, TermCellGiveProps(t->args[i], TPHasLambdaSubterm));
-         if(!(TermIsPhonyApp(t) || TermIsLambda(t)) || i!=0)
+         if(!(TermIsPhonyApp(t) || TermIsLambda(t)) || i != 0)
          {
-            TermCellSetProp(t, TermCellGiveProps(t->args[i], TPHasEtaExpandableSubterm));
+            TermCellSetProp(
+               t, TermCellGiveProps(t->args[i], TPHasEtaExpandableSubterm));
          }
          TermCellSetProp(t, TermCellGiveProps(t->args[i], TPHasNonPatternVar));
          TermCellSetProp(t, TermCellGiveProps(t->args[i], TPHasAppVar));
          if(TermIsFreeVar(t->args[i]))
          {
             t->v_count += 1;
-            t->weight  += DEFAULT_VWEIGHT;
+            t->weight += DEFAULT_VWEIGHT;
          }
          else
          {
-            t->v_count +=t->args[i]->v_count;
-            t->f_count +=t->args[i]->f_count;
-            t->weight  +=t->args[i]->weight;
+            t->v_count += t->args[i]->v_count;
+            t->f_count += t->args[i]->f_count;
+            t->weight += t->args[i]->weight;
          }
       }
 
       if(t->f_code == SIG_DB_LAMBDA_CODE)
       {
          t->f_count -= 2; // adjusting for db var and lambda sign
-         t->weight  -= 2*DEFAULT_FWEIGHT; // adjusting  for db var and lambda sign
+         t->weight -=
+            2 * DEFAULT_FWEIGHT; // adjusting  for db var and lambda sign
       }
       if(TermIsAppliedFreeVar(t))
       {
@@ -244,7 +248,7 @@ static Term_p tb_termtop_insert(TB_p bank, Term_p t)
          {
             t->f_count = 0;
             t->v_count = 1;
-            t->weight  = DEFAULT_VWEIGHT;
+            t->weight = DEFAULT_VWEIGHT;
          }
          else
          {
@@ -257,7 +261,8 @@ static Term_p tb_termtop_insert(TB_p bank, Term_p t)
          TermCellSetProp(t, TPIsGround);
       }
 
-      assert(TermWeight(t, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT) == TermWeightCompute(t, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
+      assert(TermWeight(t, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT) ==
+             TermWeightCompute(t, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
       assert((t->v_count == 0) == TermIsGround(t));
       assert(TBFind(bank, t));
       //assert(TermIsGround(t) == TermIsGroundCompute(t));
@@ -282,8 +287,8 @@ static Term_p tb_termtop_insert(TB_p bank, Term_p t)
 
 static Term_p tb_parse_cons_list(Scanner_p in, TB_p bank, bool check_symb_prop)
 {
-   Term_p   handle;
-   Term_p   current;
+   Term_p handle;
+   Term_p current;
    PStack_p stack;
 
    assert(SigSupportLists);
@@ -352,18 +357,18 @@ static void parse_let_typedecl(Scanner_p in, TB_p bank, PStack_p type_decls)
 {
    DStr_p name = DStrAlloc();
    FuncSymbType sym_type = FuncSymbParse(in, name);
-   if (sym_type == FSIdentFreeFun)
+   if(sym_type == FSIdentFreeFun)
    {
       AcceptInpTok(in, Colon);
       Type_p type = TypeBankParseType(in, bank->sig->type_bank);
 
       PStackPushP(type_decls, name);
-      PStackPushInt(type_decls, SigInsertLetId(bank->sig, DStrView(name), type));
+      PStackPushInt(type_decls,
+                    SigInsertLetId(bank->sig, DStrView(name), type));
    }
    else
    {
-      AktTokenError(in, "let declaration expects a function symbol",
-                    true);
+      AktTokenError(in, "let declaration expects a function symbol", true);
    }
 }
 
@@ -388,11 +393,11 @@ static Term_p parse_let_sym_def(Scanner_p in, TB_p bank, PStack_p type_decls)
    DStr_p name = DStrAlloc();
    FuncSymbType sym_type = FuncSymbParse(in, name);
    FunCode id = 0;
-   for(PStackPointer i = 0; !id && i<PStackGetSP(type_decls); i += 2)
+   for(PStackPointer i = 0; !id && i < PStackGetSP(type_decls); i += 2)
    {
       if(!strcmp(DStrView(name), DStrView(PStackElementP(type_decls, i))))
       {
-         id = PStackElementInt(type_decls, i+1);
+         id = PStackElementInt(type_decls, i + 1);
       }
    }
 
@@ -401,13 +406,13 @@ static Term_p parse_let_sym_def(Scanner_p in, TB_p bank, PStack_p type_decls)
       Type_p type = SigGetType(bank->sig, id);
       int arity = TypeGetMaxArity(type);
       Term_p vars[arity]; // Variable length array
-      IntOrP dummy = {0};
+      IntOrP dummy = { 0 };
       if(arity)
       {
          AcceptInpTok(in, OpenBracket);
          StrTree_p prev_vars = NULL;
 
-         for(int i=0; i<arity; i++)
+         for(int i = 0; i < arity; i++)
          {
             DStrReset(name);
             sym_type = FuncSymbParse(in, name);
@@ -425,9 +430,9 @@ static Term_p parse_let_sym_def(Scanner_p in, TB_p bank, PStack_p type_decls)
             Type_p arg_type = type->args[i];
 
             VarBankPushEnv(bank->vars);
-            vars[i] = VarBankExtNameAssertAllocSort(bank->vars,
-                                                    DStrView(name), arg_type);
-            if(i!=arity-1)
+            vars[i] = VarBankExtNameAssertAllocSort(bank->vars, DStrView(name),
+                                                    arg_type);
+            if(i != arity - 1)
             {
                AcceptInpTok(in, Comma);
             }
@@ -441,7 +446,7 @@ static Term_p parse_let_sym_def(Scanner_p in, TB_p bank, PStack_p type_decls)
 
       Term_p rhs = TFormulaTSTPParse(in, bank);
       Term_p lhs = TermTopAlloc(id, arity);
-      for(int i=0; i<arity; i++)
+      for(int i = 0; i < arity; i++)
       {
          lhs->args[i] = vars[i];
          VarBankPopEnv(bank->vars);
@@ -473,7 +478,7 @@ static Term_p parse_let_sym_def(Scanner_p in, TB_p bank, PStack_p type_decls)
 static Term_p make_let(TB_p bank, PStack_p definitions, Term_p body)
 {
    Term_p let_t = TermTopAlloc(SIG_LET_CODE, PStackGetSP(definitions) + 1);
-   for(PStackPointer i=0; i<PStackGetSP(definitions); i++)
+   for(PStackPointer i = 0; i < PStackGetSP(definitions); i++)
    {
       let_t->args[i] = PStackElementP(definitions, i);
    }
@@ -539,19 +544,19 @@ static Term_p tb_subterm_parse(Scanner_p in, TB_p bank)
 //
 /----------------------------------------------------------------------*/
 
-static Term_p choose_subterm_parse_fun(bool check_symb_prop,
-                                              Type_p type, int arg,
-                                              Scanner_p in, TB_p bank)
+static Term_p choose_subterm_parse_fun(bool check_symb_prop, Type_p type,
+                                       int arg, Scanner_p in, TB_p bank)
 {
    Term_p res = NULL;
 
    if(type && arg < TypeGetMaxArity(type) && TypeIsBool(type->args[arg]))
    {
-      res = TFormulaTSTPParse(in,bank);
+      res = TFormulaTSTPParse(in, bank);
    }
    else
    {
-      res = check_symb_prop ? tb_subterm_parse(in, bank) : TBTermParse(in, bank);
+      res =
+         check_symb_prop ? tb_subterm_parse(in, bank) : TBTermParse(in, bank);
    }
 
    return res;
@@ -569,16 +574,17 @@ static Term_p choose_subterm_parse_fun(bool check_symb_prop,
 // Side Effects    : -
 //
 /----------------------------------------------------------------------*/
-Term_p do_tb_insert_no_props_cached(TB_p bank, Term_p term,
-                                    DerefType deref, PObjMap_p* cache)
+Term_p do_tb_insert_no_props_cached(TB_p bank, Term_p term, DerefType deref,
+                                    PObjMap_p* cache)
 {
-   int    i;
+   int i;
    Term_p t;
 
    assert(term);
 
-   term = problemType == PROBLEM_HO && deref == DEREF_ALWAYS ?
-            WHNF_deref(term) : TermDeref(term, &deref);
+   term = problemType == PROBLEM_HO && deref == DEREF_ALWAYS
+      ? WHNF_deref(term)
+      : TermDeref(term, &deref);
    Term_p cached = PObjMapFind(cache, term, PCmpFun);
    if(cached)
    {
@@ -593,23 +599,24 @@ Term_p do_tb_insert_no_props_cached(TB_p bank, Term_p term,
          t = VarBankVarAssertAlloc(bank->vars, term->f_code, term->type);
          TermSetBank(t, bank);
       }
-      else if (TermIsDBVar(term))
+      else if(TermIsDBVar(term))
       {
          t = TBRequestDBVar(bank, term->type, term->f_code);
          TermSetBank(t, bank);
       }
       else
       {
-         t = TermTopCopyWithoutArgs(term); /* This is an unshared term cell at the moment */
+         t = TermTopCopyWithoutArgs(
+            term); /* This is an unshared term cell at the moment */
          t->properties = TPIgnoreProps;
 
          assert(SysDateIsCreationDate(t->rw_data.nf_date[0]));
          assert(SysDateIsCreationDate(t->rw_data.nf_date[1]));
 
-         for(i=0; i<t->arity; i++)
+         for(i = 0; i < t->arity; i++)
          {
-            t->args[i] = do_tb_insert_no_props_cached(bank, term->args[i],
-                                                      CONVERT_DEREF(i, limit, deref), cache);
+            t->args[i] = do_tb_insert_no_props_cached(
+               bank, term->args[i], CONVERT_DEREF(i, limit, deref), cache);
          }
          t = tb_termtop_insert(bank, t);
       }
@@ -636,7 +643,7 @@ static void normalize_boolean_terms(Term_p* term_ref, TB_p bank)
 {
    assert(term_ref && *term_ref);
    Term_p term = *term_ref;
-   Sig_p  sig  = bank->sig;
+   Sig_p sig = bank->sig;
    if(term->f_code == sig->eqn_code)
    {
       if(TermIsFreeVar(term->args[0]) && term->args[1]->f_code == SIG_TRUE_CODE)
@@ -651,8 +658,8 @@ static void normalize_boolean_terms(Term_p* term_ref, TB_p bank)
          *term_ref = term->args[0];
       }
    }
-   else if(term->f_code == sig->neqn_code
-            && term->args[0]->f_code == SIG_TRUE_CODE)
+   else if(term->f_code == sig->neqn_code &&
+           term->args[0]->f_code == SIG_TRUE_CODE)
    {
       assert(term->args[1]->f_code == SIG_TRUE_CODE);
       assert(term->args[0] == bank->true_term);
@@ -678,9 +685,9 @@ static void normalize_boolean_terms(Term_p* term_ref, TB_p bank)
 static Term_p tb_term_parse_arglist(Scanner_p in, TB_p bank,
                                     bool check_symb_prop, Type_p type)
 {
-   Term_p   tmp;
+   Term_p tmp;
    Term_p result;
-   PStackPointer i=0, arity;
+   PStackPointer i = 0, arity;
    PStack_p args;
 
    AcceptInpTok(in, OpenBracket);
@@ -700,7 +707,7 @@ static Term_p tb_term_parse_arglist(Scanner_p in, TB_p bank,
    while(TestInpTok(in, Comma))
    {
       NextToken(in);
-      tmp  = choose_subterm_parse_fun(check_symb_prop, type, i, in, bank);
+      tmp = choose_subterm_parse_fun(check_symb_prop, type, i, in, bank);
       normalize_boolean_terms(&tmp, bank);
       PStackPushP(args, tmp);
       i++;
@@ -710,9 +717,9 @@ static Term_p tb_term_parse_arglist(Scanner_p in, TB_p bank,
    arity = PStackGetSP(args);
    result = TermDefaultCellArityAlloc(arity);
 
-   for(i=0;i<arity;i++)
+   for(i = 0; i < arity; i++)
    {
-      result->args[i] = PStackElementP(args,i);
+      result->args[i] = PStackElementP(args, i);
    }
 
    PStackFree(args);
@@ -749,7 +756,7 @@ TB_p TBAlloc(Sig_p sig)
    handle->in_count = 0;
    handle->insertions = 0;
    handle->recovered = 0;
-   handle->ext_index = PDIntArrayAlloc(1,100000);
+   handle->ext_index = PDIntArrayAlloc(1, 100000);
    handle->garbage_state = TPIgnoreProps;
    handle->gc = GCAdminAlloc();
    handle->sig = sig;
@@ -768,7 +775,7 @@ TB_p TBAlloc(Sig_p sig)
    TermCellSetProp(term, TPPredPos);
    handle->false_term = TBInsert(handle, term, DEREF_NEVER);
    TermFree(term);
-   handle->min_terms   = PDArrayAlloc(16, 0);
+   handle->min_terms = PDArrayAlloc(16, 0);
    //handle->freevarsets = NULL;
    return handle;
 }
@@ -837,9 +844,10 @@ void TBVarSetStoreFree(TB_p bank)
 
 long TBTermNodes(TB_p bank)
 {
-   assert(TermCellStoreNodes(&(bank->term_store))==
+   assert(TermCellStoreNodes(&(bank->term_store)) ==
           TermCellStoreCountNodes(&(bank->term_store)));
-   return TermCellStoreNodes(&(bank->term_store))+VarBankCardinality(bank->vars);
+   return TermCellStoreNodes(&(bank->term_store)) +
+      VarBankCardinality(bank->vars);
 }
 
 
@@ -861,34 +869,36 @@ long TBTermNodes(TB_p bank)
 
 Term_p TBInsert(TB_p bank, Term_p term, DerefType deref)
 {
-   int    i;
+   int i;
    Term_p t;
    const int limit = DEREF_LIMIT(term, deref);
 
    assert(term);
 
-   term = problemType == PROBLEM_HO && deref == DEREF_ALWAYS ?
-            WHNF_deref(term) : TermDeref(term, &deref);
+   term = problemType == PROBLEM_HO && deref == DEREF_ALWAYS
+      ? WHNF_deref(term)
+      : TermDeref(term, &deref);
 
    if(TermIsFreeVar(term))
    {
       t = VarBankVarAssertAlloc(bank->vars, term->f_code, term->type);
    }
-   else if (TermIsDBVar(term))
+   else if(TermIsDBVar(term))
    {
       t = TBRequestDBVar(bank, term->type, term->f_code);
    }
    else
    {
-      t = TermTopCopyWithoutArgs(term); /* This is an unshared term cell at the moment */
+      t = TermTopCopyWithoutArgs(
+         term); /* This is an unshared term cell at the moment */
 
       assert(SysDateIsCreationDate(t->rw_data.nf_date[0]));
       assert(SysDateIsCreationDate(t->rw_data.nf_date[1]));
 
-      for(i=0; i<t->arity; i++)
+      for(i = 0; i < t->arity; i++)
       {
-         t->args[i] = TBInsert(bank, term->args[i],
-                               CONVERT_DEREF(i, limit, deref));
+         t->args[i] =
+            TBInsert(bank, term->args[i], CONVERT_DEREF(i, limit, deref));
       }
       t = tb_termtop_insert(bank, t);
    }
@@ -914,13 +924,14 @@ Term_p TBInsertInstantiatedDeref(TB_p bank, Term_p term, DerefType deref)
    {
       return term;
    }
-   int    i;
+   int i;
    Term_p t;
    const int limit = DEREF_LIMIT(term, deref);
 
    assert(term);
-   term = problemType == PROBLEM_HO && deref == DEREF_ALWAYS ?
-            WHNF_deref(term) : TermDeref(term, &deref);
+   term = problemType == PROBLEM_HO && deref == DEREF_ALWAYS
+      ? WHNF_deref(term)
+      : TermDeref(term, &deref);
 
    if(TermIsAnyVar(term) || TermIsGround(term))
    {
@@ -928,13 +939,14 @@ Term_p TBInsertInstantiatedDeref(TB_p bank, Term_p term, DerefType deref)
    }
    else
    {
-      t = TermTopCopyWithoutArgs(term); /* This is an unshared term cell at the moment */
+      t = TermTopCopyWithoutArgs(
+         term); /* This is an unshared term cell at the moment */
 
-      for(i=0; i<t->arity; i++)
+      for(i = 0; i < t->arity; i++)
       {
-         t->args[i] =
-            TBInsertInstantiatedDeref(bank ? bank : TermGetBank(term),
-                                      term->args[i], CONVERT_DEREF(i, limit, deref));
+         t->args[i] = TBInsertInstantiatedDeref(bank ? bank : TermGetBank(term),
+                                                term->args[i],
+                                                CONVERT_DEREF(i, limit, deref));
       }
       t = tb_termtop_insert(bank, t);
    }
@@ -958,14 +970,15 @@ Term_p TBInsertInstantiatedDeref(TB_p bank, Term_p term, DerefType deref)
 
 Term_p TBInsertIgnoreVar(TB_p bank, Term_p term, DerefType deref)
 {
-   int    i;
+   int i;
    Term_p t;
    const int limit = DEREF_LIMIT(term, deref);
 
    assert(term);
 
-   term = problemType == PROBLEM_HO && deref == DEREF_ALWAYS ?
-            WHNF_deref(term) : TermDeref(term, &deref);
+   term = problemType == PROBLEM_HO && deref == DEREF_ALWAYS
+      ? WHNF_deref(term)
+      : TermDeref(term, &deref);
 
    if(TermIsAnyVar(term))
    {
@@ -973,15 +986,16 @@ Term_p TBInsertIgnoreVar(TB_p bank, Term_p term, DerefType deref)
    }
    else
    {
-      t = TermTopCopyWithoutArgs(term); /* This is an unshared term cell at the moment */
+      t = TermTopCopyWithoutArgs(
+         term); /* This is an unshared term cell at the moment */
 
       assert(SysDateIsCreationDate(t->rw_data.nf_date[0]));
       assert(SysDateIsCreationDate(t->rw_data.nf_date[1]));
 
-      for(i=0; i<t->arity; i++)
+      for(i = 0; i < t->arity; i++)
       {
          t->args[i] = TBInsertIgnoreVar(bank, term->args[i],
-                               CONVERT_DEREF(i, limit, deref));
+                                        CONVERT_DEREF(i, limit, deref));
       }
       t = tb_termtop_insert(bank, t);
    }
@@ -1004,7 +1018,7 @@ Term_p TBInsertIgnoreVar(TB_p bank, Term_p term, DerefType deref)
 
 Term_p TBInsertNoProps(TB_p bank, Term_p term, DerefType deref)
 {
-   int    i;
+   int i;
    Term_p t;
    TB_p tmp_bank = TermGetBank(term);
 
@@ -1013,8 +1027,9 @@ Term_p TBInsertNoProps(TB_p bank, Term_p term, DerefType deref)
    TermSetBank(term, bank); //Cheat because WHNF_deref() needs it, God
                             //knows for what!
    const int limit = DEREF_LIMIT(term, deref);
-   t = problemType == PROBLEM_HO && deref == DEREF_ALWAYS ?
-      WHNF_deref(term) : TermDeref(term, &deref);
+   t = problemType == PROBLEM_HO && deref == DEREF_ALWAYS
+      ? WHNF_deref(term)
+      : TermDeref(term, &deref);
    TermSetBank(term, tmp_bank);
 #ifdef ENABLE_LFHO
    // Clear WHNF cache if WHNF_deref set it using the temporary bank (cross-bank
@@ -1032,19 +1047,20 @@ Term_p TBInsertNoProps(TB_p bank, Term_p term, DerefType deref)
    {
       t = VarBankVarAssertAlloc(bank->vars, term->f_code, term->type);
    }
-   else if (TermIsDBVar(term))
+   else if(TermIsDBVar(term))
    {
       t = TBRequestDBVar(bank, term->type, term->f_code);
    }
    else
    {
-      t = TermTopCopyWithoutArgs(term); /* This is an unshared term cell at the moment */
+      t = TermTopCopyWithoutArgs(
+         term); /* This is an unshared term cell at the moment */
       t->properties = TPIgnoreProps;
 
       assert(SysDateIsCreationDate(t->rw_data.nf_date[0]));
       assert(SysDateIsCreationDate(t->rw_data.nf_date[1]));
 
-      for(i=0; i<t->arity; i++)
+      for(i = 0; i < t->arity; i++)
       {
          t->args[i] = TBInsertNoProps(bank, term->args[i],
                                       CONVERT_DEREF(i, limit, deref));
@@ -1098,9 +1114,10 @@ Term_p TBInsertNoPropsCached(TB_p bank, Term_p term, DerefType deref)
 //
 /----------------------------------------------------------------------*/
 
-Term_p  TBInsertRepl(TB_p bank, Term_p term, DerefType deref, Term_p old, Term_p repl)
+Term_p TBInsertRepl(TB_p bank, Term_p term, DerefType deref, Term_p old,
+                    Term_p repl)
 {
-   int    i;
+   int i;
    Term_p t;
 
    assert(term);
@@ -1112,26 +1129,28 @@ Term_p  TBInsertRepl(TB_p bank, Term_p term, DerefType deref, Term_p old, Term_p
    }
 
    const int limit = DEREF_LIMIT(term, deref);
-   term = problemType == PROBLEM_HO && deref == DEREF_ALWAYS ?
-            WHNF_deref(term) : TermDeref(term, &deref);
+   term = problemType == PROBLEM_HO && deref == DEREF_ALWAYS
+      ? WHNF_deref(term)
+      : TermDeref(term, &deref);
 
    if(TermIsFreeVar(term))
    {
       t = VarBankVarAssertAlloc(bank->vars, term->f_code, term->type);
    }
-   else if (TermIsDBVar(term))
+   else if(TermIsDBVar(term))
    {
       t = TBRequestDBVar(bank, term->type, term->f_code);
    }
    else
    {
-      t = TermTopCopyWithoutArgs(term); /* This is an unshared term cell at the moment */
+      t = TermTopCopyWithoutArgs(
+         term); /* This is an unshared term cell at the moment */
       t->properties = TPIgnoreProps;
 
       assert(SysDateIsCreationDate(t->rw_data.nf_date[0]));
       assert(SysDateIsCreationDate(t->rw_data.nf_date[1]));
 
-      for(i=0; i<t->arity; i++)
+      for(i = 0; i < t->arity; i++)
       {
          t->args[i] = TBInsertRepl(bank, term->args[i],
                                    CONVERT_DEREF(i, limit, deref), old, repl);
@@ -1155,9 +1174,9 @@ Term_p  TBInsertRepl(TB_p bank, Term_p term, DerefType deref, Term_p old, Term_p
 
 Term_p TBInsertReplPlain(TB_p bank, Term_p term, Term_p old, Term_p repl)
 {
-   int    i;
+   int i;
    Term_p t;
-   bool   changed = false;
+   bool changed = false;
 
    assert(term);
 
@@ -1176,17 +1195,17 @@ Term_p TBInsertReplPlain(TB_p bank, Term_p term, Term_p old, Term_p repl)
    }
    else
    {
-      t = TermTopCopyWithoutArgs(term); /* This is an unshared term cell at the moment */
+      t = TermTopCopyWithoutArgs(
+         term); /* This is an unshared term cell at the moment */
       t->properties = TPIgnoreProps;
 
       assert(SysDateIsCreationDate(t->rw_data.nf_date[0]));
       assert(SysDateIsCreationDate(t->rw_data.nf_date[1]));
 
-      for(i=0; i<t->arity; i++)
+      for(i = 0; i < t->arity; i++)
       {
-         t->args[i] = TBInsertReplPlain(bank, term->args[i],
-                                        old, repl);
-         if(t->args[i]!=term->args[i])
+         t->args[i] = TBInsertReplPlain(bank, term->args[i], old, repl);
+         if(t->args[i] != term->args[i])
          {
             changed = true;
          }
@@ -1203,7 +1222,6 @@ Term_p TBInsertReplPlain(TB_p bank, Term_p term, Term_p old, Term_p repl)
    }
    return t;
 }
-
 
 
 
@@ -1226,7 +1244,7 @@ Term_p TBInsertReplPlain(TB_p bank, Term_p term, Term_p old, Term_p repl)
 
 Term_p TBInsertInstantiatedFO(TB_p bank, Term_p term)
 {
-   int    i;
+   int i;
    Term_p t;
 
    assert(term);
@@ -1247,19 +1265,20 @@ Term_p TBInsertInstantiatedFO(TB_p bank, Term_p term)
    {
       t = VarBankVarAssertAlloc(bank->vars, term->f_code, term->type);
    }
-   else if (TermIsDBVar(term))
+   else if(TermIsDBVar(term))
    {
       t = TBRequestDBVar(bank, term->type, term->f_code);
    }
    else
    {
-      t = TermTopCopyWithoutArgs(term); /* This is an unshared term cell at the moment */
-      t->properties    = TPIgnoreProps;
+      t = TermTopCopyWithoutArgs(
+         term); /* This is an unshared term cell at the moment */
+      t->properties = TPIgnoreProps;
 
       assert(SysDateIsCreationDate(t->rw_data.nf_date[0]));
       assert(SysDateIsCreationDate(t->rw_data.nf_date[1]));
 
-      for(i=0; i<t->arity; i++)
+      for(i = 0; i < t->arity; i++)
       {
          t->args[i] = TBInsertInstantiatedFO(bank, term->args[i]);
       }
@@ -1284,7 +1303,7 @@ Term_p TBInsertInstantiatedFO(TB_p bank, Term_p term)
 
 Term_p TBInsertInstantiatedHO(TB_p bank, Term_p term, bool follow_bind)
 {
-   int    i;
+   int i;
    Term_p t;
 
    assert(term);
@@ -1300,7 +1319,7 @@ Term_p TBInsertInstantiatedHO(TB_p bank, Term_p term, bool follow_bind)
       TermSetBank(t, bank);
       return t;
    }
-   else if (TermIsDBVar(term))
+   else if(TermIsDBVar(term))
    {
       t = TBRequestDBVar(bank, term->type, term->f_code);
       return t;
@@ -1310,8 +1329,9 @@ Term_p TBInsertInstantiatedHO(TB_p bank, Term_p term, bool follow_bind)
    if(TermIsAppliedFreeVar(term) && term->args[0]->binding && follow_bind)
    {
       Term_p binding = term->args[0]->binding;
-      ignore_args =
-         TermIsLambda(binding) ? 1 : (binding->arity + (TermIsFreeVar(binding) ? 1 : 0));
+      ignore_args = TermIsLambda(binding)
+         ? 1
+         : (binding->arity + (TermIsFreeVar(binding) ? 1 : 0));
       DerefType d = DEREF_ONCE;
       term = TermDeref(term, &d);
    }
@@ -1322,15 +1342,17 @@ Term_p TBInsertInstantiatedHO(TB_p bank, Term_p term, bool follow_bind)
    }
    else
    {
-      t = TermTopCopyWithoutArgs(term); /* This is an unshared term cell at the moment */
-      t->properties    = TPIgnoreProps;
+      t = TermTopCopyWithoutArgs(
+         term); /* This is an unshared term cell at the moment */
+      t->properties = TPIgnoreProps;
 
       assert(SysDateIsCreationDate(t->rw_data.nf_date[0]));
       assert(SysDateIsCreationDate(t->rw_data.nf_date[1]));
 
-      for(i=0; i<t->arity; i++)
+      for(i = 0; i < t->arity; i++)
       {
-         t->args[i] = TBInsertInstantiatedHO(bank, term->args[i], follow_bind && (i >= ignore_args));
+         t->args[i] = TBInsertInstantiatedHO(bank, term->args[i],
+                                             follow_bind && (i >= ignore_args));
       }
       t = tb_termtop_insert(bank, t);
    }
@@ -1379,14 +1401,15 @@ __inline__ Term_p TBInsertInstantiated(TB_p bank, Term_p term)
 
 Term_p TBInsertOpt(TB_p bank, Term_p term, DerefType deref)
 {
-   int    i;
+   int i;
    Term_p t;
 
    assert(term);
 
    const int limit = DEREF_LIMIT(term, deref);
-   term = problemType == PROBLEM_HO && deref == DEREF_ALWAYS ?
-            WHNF_deref(term) : TermDeref(term, &deref);
+   term = problemType == PROBLEM_HO && deref == DEREF_ALWAYS
+      ? WHNF_deref(term)
+      : TermDeref(term, &deref);
 
    if(TermIsGround(term))
    {
@@ -1398,20 +1421,22 @@ Term_p TBInsertOpt(TB_p bank, Term_p term, DerefType deref)
    {
       t = VarBankVarAssertAlloc(bank->vars, term->f_code, term->type);
    }
-   else if (TermIsDBVar(term))
+   else if(TermIsDBVar(term))
    {
       t = TBRequestDBVar(bank, term->type, term->f_code);
    }
    else
    {
-      t = TermTopCopyWithoutArgs(term); /* This is an unshared term cell at the moment */
+      t = TermTopCopyWithoutArgs(
+         term); /* This is an unshared term cell at the moment */
 
       assert(SysDateIsCreationDate(t->rw_data.nf_date[0]));
       assert(SysDateIsCreationDate(t->rw_data.nf_date[1]));
 
-      for(i=0; i<t->arity; i++)
+      for(i = 0; i < t->arity; i++)
       {
-         t->args[i] = TBInsertOpt(bank, term->args[i], CONVERT_DEREF(i, limit, deref));
+         t->args[i] =
+            TBInsertOpt(bank, term->args[i], CONVERT_DEREF(i, limit, deref));
       }
       t = tb_termtop_insert(bank, t);
    }
@@ -1433,9 +1458,9 @@ Term_p TBInsertOpt(TB_p bank, Term_p term, DerefType deref)
 //
 /----------------------------------------------------------------------*/
 
-Term_p  TBInsertDisjoint(TB_p bank, Term_p term)
+Term_p TBInsertDisjoint(TB_p bank, Term_p term)
 {
-   int    i;
+   int i;
    Term_p t;
 
    assert(term);
@@ -1451,18 +1476,19 @@ Term_p  TBInsertDisjoint(TB_p bank, Term_p term)
       t = VarBankGetAltVar(bank->vars, term);
       // t = VarBankVarAssertAlloc(bank->vars, term->f_code+1, term->sort);
    }
-   else if (TermIsDBVar(term))
+   else if(TermIsDBVar(term))
    {
       t = TBRequestDBVar(bank, term->type, term->f_code);
    }
    else
    {
-      t = TermTopCopyWithoutArgs(term); /* This is an unshared term cell at the moment */
+      t = TermTopCopyWithoutArgs(
+         term); /* This is an unshared term cell at the moment */
 
       assert(SysDateIsCreationDate(t->rw_data.nf_date[0]));
       assert(SysDateIsCreationDate(t->rw_data.nf_date[1]));
 
-      for(i=0; i<t->arity; i++)
+      for(i = 0; i < t->arity; i++)
       {
          t->args[i] = TBInsertDisjoint(bank, term->args[i]);
       }
@@ -1488,7 +1514,7 @@ Term_p  TBInsertDisjoint(TB_p bank, Term_p term)
 
 Term_p TBTermTopInsert(TB_p bank, Term_p t)
 {
-   return tb_termtop_insert(bank,t);
+   return tb_termtop_insert(bank, t);
 }
 
 
@@ -1535,7 +1561,7 @@ Term_p TBFind(TB_p bank, Term_p term)
    {
       return VarBankFCodeFind(bank->vars, term->f_code);
    }
-   else if (TermIsDBVar(term))
+   else if(TermIsDBVar(term))
    {
       return TBRequestDBVar(bank, term->type, term->f_code);
    }
@@ -1560,16 +1586,16 @@ void TBPrintBankInOrder(FILE* out, TB_p bank)
    NumTree_p tree = NULL;
    long i;
    PStack_p stack;
-   Term_p   cell;
-   IntOrP   dummy;
+   Term_p cell;
+   IntOrP dummy;
 
-   for(i=0; i<TERM_STORE_HASH_SIZE; i++)
+   for(i = 0; i < TERM_STORE_HASH_SIZE; i++)
    {
       stack = TermTreeTraverseInit(bank->term_store.store[i]);
       while((cell = TermTreeTraverseNext(stack)))
       {
          dummy.p_val = cell;
-         NumTreeStore(&tree, cell->entry_no,dummy, dummy);
+         NumTreeStore(&tree, cell->entry_no, dummy, dummy);
       }
       TermTreeTraverseExit(stack);
    }
@@ -1615,15 +1641,15 @@ void TBPrintTermCompact(FILE* out, TB_p bank, Term_p term)
          fputs(SigFindName(bank->sig, term->f_code), out);
          if(!TermIsConst(term))
          {
-            fputc('(',out);
-            assert(term->arity>0);
+            fputc('(', out);
+            assert(term->arity > 0);
             TBPrintTermCompact(out, bank, term->args[0]);
-            for(i=1;i<term->arity;i++)
+            for(i = 1; i < term->arity; i++)
             {
                fputc(',', out);
                TBPrintTermCompact(out, bank, term->args[i]);
             }
-            fputc(')',out);
+            fputc(')', out);
          }
       }
    }
@@ -1674,7 +1700,7 @@ void TBPrintBankTerms(FILE* out, TB_p bank)
    Term_p term;
    int i;
 
-   for(i=0; i<TERM_STORE_HASH_SIZE; i++)
+   for(i = 0; i < TERM_STORE_HASH_SIZE; i++)
    {
       PStackPushP(stack, bank->term_store.store[i]);
 
@@ -1715,13 +1741,13 @@ void TBPrintBankTerms(FILE* out, TB_p bank)
 
 Term_p TBTermParseReal(Scanner_p in, TB_p bank, bool check_symb_prop)
 {
-   Term_p        handle;
-   DStr_p        id;
-   FuncSymbType  id_type;
-   DStr_p        source_name;
-   Type_p        type;
-   long          line, column;
-   StreamType    type_stream;
+   Term_p handle;
+   DStr_p id;
+   FuncSymbType id_type;
+   DStr_p source_name;
+   Type_p type;
+   long line, column;
+   StreamType type_stream;
 
    source_name = DStrGetRef(AktToken(in)->source);
    type_stream = AktToken(in)->stream_type;
@@ -1733,7 +1759,7 @@ Term_p TBTermParseReal(Scanner_p in, TB_p bank, bool check_symb_prop)
 
    if(SigSupportLists && TestInpTok(in, OpenSquare))
    {
-      handle =  tb_parse_cons_list(in, bank, check_symb_prop);
+      handle = tb_parse_cons_list(in, bank, check_symb_prop);
    }
    else
    {
@@ -1747,15 +1773,15 @@ Term_p TBTermParseReal(Scanner_p in, TB_p bank, bool check_symb_prop)
       {
          handle = ParseIte(in, bank);
       }
-      else if((id_type=TermParseOperator(in, id))==FSIdentVar)
+      else if((id_type = TermParseOperator(in, id)) == FSIdentVar)
       {
          /* A variable may be annotated with a sort */
          if(TestInpTok(in, Colon))
          {
             AcceptInpTok(in, Colon);
             type = TypeBankParseType(in, bank->sig->type_bank);
-            handle = VarBankExtNameAssertAllocSort(bank->vars,
-                                                   DStrView(id), type);
+            handle =
+               VarBankExtNameAssertAllocSort(bank->vars, DStrView(id), type);
          }
          else
          {
@@ -1768,32 +1794,32 @@ Term_p TBTermParseReal(Scanner_p in, TB_p bank, bool check_symb_prop)
 
          if(TestInpTok(in, OpenBracket))
          {
-            if((id_type == FSIdentInt)
-               &&(bank->sig->distinct_props & FPIsInteger))
+            if((id_type == FSIdentInt) &&
+               (bank->sig->distinct_props & FPIsInteger))
             {
                AktTokenError(in,
                              "Number cannot have argument list "
                              "(consider --free-numbers)",
                              false);
             }
-            if((id_type == FSIdentFloat)
-               &&(bank->sig->distinct_props & FPIsFloat))
+            if((id_type == FSIdentFloat) &&
+               (bank->sig->distinct_props & FPIsFloat))
             {
                AktTokenError(in,
                              "Floating point number cannot have argument list "
                              "(consider --free-numbers)",
                              false);
             }
-            if((id_type == FSIdentRational)
-               &&(bank->sig->distinct_props & FPIsRational))
+            if((id_type == FSIdentRational) &&
+               (bank->sig->distinct_props & FPIsRational))
             {
                AktTokenError(in,
                              "Rational number cannot have argument list "
                              "(consider --free-numbers)",
                              false);
             }
-            if((id_type == FSIdentObject)
-               &&(bank->sig->distinct_props & FPIsObject))
+            if((id_type == FSIdentObject) &&
+               (bank->sig->distinct_props & FPIsObject))
             {
                AktTokenError(in,
                              "Object cannot have argument list "
@@ -1805,26 +1831,24 @@ Term_p TBTermParseReal(Scanner_p in, TB_p bank, bool check_symb_prop)
             // thus, if we have a formula at the argument, symbol with name
             // id already has a type declared with $o in appropriate places
             FunCode sym_code = SigFindFCode(bank->sig, DStrView(id));
-            Type_p  sym_type = sym_code ? SigGetType(bank->sig, sym_code) : NULL;
+            Type_p sym_type = sym_code ? SigGetType(bank->sig, sym_code) : NULL;
 
-            handle = tb_term_parse_arglist(in, bank,
-                                           check_symb_prop, sym_type);
+            handle = tb_term_parse_arglist(in, bank, check_symb_prop, sym_type);
          }
          else
          {
             handle = TermDefaultCellAlloc();
             handle->arity = 0;
          }
-         handle->f_code = TermSigInsert(bank->sig, DStrView(id),
-                                        handle->arity, false, id_type);
+         handle->f_code = TermSigInsert(bank->sig, DStrView(id), handle->arity,
+                                        false, id_type);
          if(!handle->f_code)
          {
-            Error("%s %s used with arity %d but registered with arity %d",
-                  TYPE_ERROR,
-                  PosRep(type_stream, source_name, line, column),
-                  DStrView(id),
-                  handle->arity,
-                  SigFindArity(bank->sig, SigFindFCode(bank->sig, DStrView(id))));
+            Error(
+               "%s %s used with arity %d but registered with arity %d",
+               TYPE_ERROR, PosRep(type_stream, source_name, line, column),
+               DStrView(id), handle->arity,
+               SigFindArity(bank->sig, SigFindFCode(bank->sig, DStrView(id))));
          }
          handle = tb_termtop_insert(bank, handle);
       }
@@ -1850,13 +1874,13 @@ Term_p TBTermParseReal(Scanner_p in, TB_p bank, bool check_symb_prop)
 
 Term_p TBTermParseSimple(Scanner_p in, TB_p bank)
 {
-   Term_p        handle;
-   DStr_p        id;
-   FuncSymbType  id_type;
-   DStr_p        source_name;
-   Type_p        type;
-   long          line, column;
-   StreamType    type_stream;
+   Term_p handle;
+   DStr_p id;
+   FuncSymbType id_type;
+   DStr_p source_name;
+   Type_p type;
+   long line, column;
+   StreamType type_stream;
 
    source_name = DStrGetRef(AktToken(in)->source);
    type_stream = AktToken(in)->stream_type;
@@ -1867,15 +1891,14 @@ Term_p TBTermParseSimple(Scanner_p in, TB_p bank)
       syntax */
    id = DStrAlloc();
 
-   if((id_type=TermParseOperator(in, id))==FSIdentVar)
+   if((id_type = TermParseOperator(in, id)) == FSIdentVar)
    {
       /* A variable may be annotated with a sort */
       if(TestInpTok(in, Colon))
       {
          AcceptInpTok(in, Colon);
          type = TypeBankParseType(in, bank->sig->type_bank);
-         handle = VarBankExtNameAssertAllocSort(bank->vars,
-                                                DStrView(id), type);
+         handle = VarBankExtNameAssertAllocSort(bank->vars, DStrView(id), type);
       }
       else
       {
@@ -1895,7 +1918,7 @@ Term_p TBTermParseSimple(Scanner_p in, TB_p bank)
          else
          {
             PStack_p args = PStackAlloc();
-            int i=0;
+            int i = 0;
 
             PStackPushP(args, TBTermParseSimple(in, bank));
             i++;
@@ -1911,9 +1934,9 @@ Term_p TBTermParseSimple(Scanner_p in, TB_p bank)
             int arity = PStackGetSP(args);
             handle = TermDefaultCellArityAlloc(arity);
 
-            for(i=0;i<arity;i++)
+            for(i = 0; i < arity; i++)
             {
-               handle->args[i] = PStackElementP(args,i);
+               handle->args[i] = PStackElementP(args, i);
             }
 
             PStackFree(args);
@@ -1924,17 +1947,14 @@ Term_p TBTermParseSimple(Scanner_p in, TB_p bank)
          handle = TermDefaultCellAlloc();
          handle->arity = 0;
       }
-      handle->f_code = TermSigInsert(bank->sig, DStrView(id),
-                                       handle->arity, false, id_type);
+      handle->f_code =
+         TermSigInsert(bank->sig, DStrView(id), handle->arity, false, id_type);
       if(!handle->f_code)
       {
          Error("%s %s used with arity %d but registered with arity %d",
-               TYPE_ERROR,
-               PosRep(type_stream, source_name, line, column),
-               DStrView(id),
-               handle->arity,
+               TYPE_ERROR, PosRep(type_stream, source_name, line, column),
+               DStrView(id), handle->arity,
                SigFindArity(bank->sig, SigFindFCode(bank->sig, DStrView(id))));
-
       }
       handle = tb_termtop_insert(bank, handle);
    }
@@ -1964,7 +1984,7 @@ void TBRefSetProp(TB_p bank, TermRef ref, TermProperties prop)
    assert(!TermIsAnyVar(*ref));
 
    term = *ref;
-   if(TermCellQueryProp(term, prop)||TermIsAnyVar(term))
+   if(TermCellQueryProp(term, prop) || TermIsAnyVar(term))
    {
       return;
    }
@@ -1996,7 +2016,7 @@ void TBRefDelProp(TB_p bank, TermRef ref, TermProperties prop)
    Term_p term, new;
 
    term = *ref;
-   if(!TermCellIsAnyPropSet(term, prop)||TermIsAnyVar(term))
+   if(!TermCellIsAnyPropSet(term, prop) || TermIsAnyVar(term))
    {
       return;
    }
@@ -2035,7 +2055,7 @@ long TBTermDelPropCount(Term_p term, TermProperties prop)
       {
          TermCellDelProp(term, prop);
          count++;
-         for(i=0; i<term->arity; i++)
+         for(i = 0; i < term->arity; i++)
          {
             PStackPushP(stack, term->args[i]);
          }
@@ -2073,7 +2093,7 @@ long TBTermSetPropCount(Term_p term, TermProperties prop)
       {
          TermCellSetProp(term, prop);
          count++;
-         for(i=0; i<term->arity; i++)
+         for(i = 0; i < term->arity; i++)
          {
             PStackPushP(stack, term->args[i]);
          }
@@ -2082,7 +2102,6 @@ long TBTermSetPropCount(Term_p term, TermProperties prop)
    PStackFree(stack);
    return count;
 }
-
 
 
 
@@ -2110,10 +2129,10 @@ void TBGCMarkTerm(TB_p bank, Term_p term)
    while(!PStackEmpty(stack))
    {
       term = PStackPopP(stack);
-      if(!TBTermCellIsMarked(bank,term))
+      if(!TBTermCellIsMarked(bank, term))
       {
          TermCellFlipProp(term, TPGarbageFlag);
-         for(i=0; i<term->arity; i++)
+         for(i = 0; i < term->arity; i++)
          {
             PStackPushP(stack, term->args[i]);
          }
@@ -2156,7 +2175,7 @@ long TBGCSweep(TB_p bank)
    TBGCMarkTerm(bank, bank->true_term);
    TBGCMarkTerm(bank, bank->false_term);
 
-   for(i=0; i< bank->min_terms->size; i++)
+   for(i = 0; i < bank->min_terms->size; i++)
    {
       t = PDArrayElementP(bank->min_terms, i);
 
@@ -2166,21 +2185,21 @@ long TBGCSweep(TB_p bank)
       }
    }
    VERBOUT("Garbage collection started.\n");
-   recovered = TermCellStoreGCSweep(&(bank->term_store),
-                                    bank->garbage_state);
-   VERBOSE(fprintf(stderr, "Garbage collection reclaimed %ld unused term cells.\n",recovered););
+   recovered = TermCellStoreGCSweep(&(bank->term_store), bank->garbage_state);
+   VERBOSE(fprintf(stderr,
+                   "Garbage collection reclaimed %ld unused term cells.\n",
+                   recovered););
 /* #ifdef PRINT_SOMEERRORS_STDOUT */
 #ifdef NEVER_DEFINED
    if(OutputLevel)
    {
       fprintf(GlobalOut,
-              COMCHAR" Garbage collection reclaimed %ld unused term cells.\n",
+              COMCHAR " Garbage collection reclaimed %ld unused term cells.\n",
               recovered);
    }
 #endif
-   bank->garbage_state =
-      bank->garbage_state?TPIgnoreProps:TPGarbageFlag;
-   bank->recovered+=recovered;
+   bank->garbage_state = bank->garbage_state ? TPIgnoreProps : TPGarbageFlag;
+   bank->recovered += recovered;
    return recovered;
 }
 
@@ -2199,8 +2218,7 @@ long TBGCSweep(TB_p bank)
 
 Term_p TBCreateConstTerm(TB_p bank, FunCode fconst)
 {
-   Term_p res,
-      t = TermConstCellAlloc(fconst);
+   Term_p res, t = TermConstCellAlloc(fconst);
 
    res = TBInsert(bank, t, DEREF_NEVER);
    TermFree(t);
@@ -2264,7 +2282,7 @@ long TBTermCollectSubterms(Term_p term, PStack_p collector)
       res = 1;
       TermCellSetProp(term, TPOpFlag);
       PStackPushP(collector, term);
-      for(i=0; i<term->arity; i++)
+      for(i = 0; i < term->arity; i++)
       {
          res += TBTermCollectSubterms(term->args[i], collector);
       }
@@ -2291,13 +2309,13 @@ Term_p TBFindRepr(TB_p bank, Term_p term)
    Term_p work;
    Term_p repr;
 
-   if (TermIsAnyVar(term) || TermIsConst(term))
+   if(TermIsAnyVar(term) || TermIsConst(term))
    {
       return TBFind(bank, term);
    }
 
    work = TermTopCopy(term);
-   for (i=0; i<work->arity; i++)
+   for(i = 0; i < work->arity; i++)
    {
       work->args[i] = TBFindRepr(bank, term->args[i]);
    }
@@ -2323,7 +2341,7 @@ Term_p TBFindRepr(TB_p bank, Term_p term)
 Term_p TBGetFirstConstTerm(TB_p bank, Type_p type)
 {
    PStack_p cand_stack = PStackAlloc();
-   Term_p   res = NULL;
+   Term_p res = NULL;
 
    SigCollectSortConsts(bank->sig, type, cand_stack);
    if(!PStackEmpty(cand_stack))
@@ -2350,12 +2368,11 @@ Term_p TBGetFirstConstTerm(TB_p bank, Type_p type)
 //
 /----------------------------------------------------------------------*/
 
-Term_p TBGetFreqConstTerm(TB_p terms, Type_p type,
-                          long* conj_dist_array,
+Term_p TBGetFreqConstTerm(TB_p terms, Type_p type, long* conj_dist_array,
                           long* dist_array, FunConstCmpFunType is_better)
 {
    Term_p res = NULL;
-   long   cand_no;
+   long cand_no;
    PStackPointer i;
    FunCode f = 0, cand;
 
@@ -2365,7 +2382,7 @@ Term_p TBGetFreqConstTerm(TB_p terms, Type_p type,
    if(cand_no)
    {
       f = PStackElementInt(candidates, 0);
-      for(i=1; i<PStackGetSP(candidates); i++)
+      for(i = 1; i < PStackGetSP(candidates); i++)
       {
          cand = PStackElementInt(candidates, i);
 
@@ -2407,7 +2424,7 @@ Term_p TermMap(TB_p bank, Term_p t, TermMapper f)
    {
       s = t;
    }
-   else if (s!=t)
+   else if(s != t)
    {
       s = TermMap(bank, s, f);
    }
@@ -2415,10 +2432,11 @@ Term_p TermMap(TB_p bank, Term_p t, TermMapper f)
    {
       bool changed = false;
       s = TermTopCopyWithoutArgs(t);
-      for(int i=0; i < t->arity; i++)
+      for(int i = 0; i < t->arity; i++)
       {
          s->args[i] = TermMap(bank, t->args[i], f);
-         assert(TermIsShared(s->args[i]) && s->args[i]->type == t->args[i]->type);
+         assert(TermIsShared(s->args[i]) &&
+                s->args[i]->type == t->args[i]->type);
          changed = changed || (s->args[i] != t->args[i]);
       }
 
@@ -2577,7 +2595,7 @@ Term_p NormalizePatternAppVar(TB_p bank, Term_p s)
 
    s = LambdaEtaReduceDB(bank, s);
    bool all_dbs = true;
-   for(long i=1; i<s->arity && all_dbs; i++)
+   for(long i = 1; i < s->arity && all_dbs; i++)
    {
       all_dbs = TermIsDBVar(s->args[i]);
    }

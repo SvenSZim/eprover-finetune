@@ -63,7 +63,7 @@ static void print_shell_pcl_warning(FILE* out, PCLStep_p step)
    {
       Warning("Shell PCL step encountered where "
               "full PCL step was required");
-      fprintf(out, COMCHAR" Step ");
+      fprintf(out, COMCHAR " Step ");
       PCLIdPrint(out, step->id);
       fprintf(out, " omitted (Shell)\n");
    }
@@ -208,7 +208,7 @@ PCLStep_p PCLStepParse(Scanner_p in, TB_p bank)
    if(TestInpTok(in, Colon))
    {
       NextToken(in);
-      CheckInpTok(in, SQString|Name|PosInt);
+      CheckInpTok(in, SQString | Name | PosInt);
       handle->extra = DStrCopy(AktToken(in)->literal);
       NextToken(in);
    }
@@ -238,9 +238,9 @@ PCLStep_p PCLStepParse(Scanner_p in, TB_p bank)
 
 void PCLPrintExternalType(FILE* out, PCLStepProperties props)
 {
-   char *prepend="";
+   char* prepend = "";
 
-   if(props&PCLIsLemma)
+   if(props & PCLIsLemma)
    {
       fputs("lemma", out);
       prepend = ",";
@@ -248,19 +248,19 @@ void PCLPrintExternalType(FILE* out, PCLStepProperties props)
    props = props & PCLTypeMask;
    switch(props)
    {
-   case PCLTypeNegConjecture:
+      case PCLTypeNegConjecture:
          fputs(prepend, out);
          fputs("neg", out);
          break;
-   case PCLTypeConjecture:
+      case PCLTypeConjecture:
          fputs(prepend, out);
          fputs("conj", out);
          break;
-   case PCLTypeQuestion:
+      case PCLTypeQuestion:
          fputs(prepend, out);
          fputs("que", out);
          break;
-   default:
+      default:
          break;
    }
 }
@@ -315,21 +315,14 @@ void PCLStepPrintExtra(FILE* out, PCLStep_p step, bool data)
    {
 #ifdef NEVER_DEFINED
       fprintf(out, " /* %#8X %6ld %6ld %3ld %3ld %3ld %3ld %4.3f */",
-         step->properties,
-         step->proof_dag_size,
-         step->proof_tree_size,
-         step->active_pm_refs,
-         step->other_generating_refs,
-         step->active_simpl_refs,
-         step->passive_simpl_refs,
-         step->lemma_quality);
+              step->properties, step->proof_dag_size, step->proof_tree_size,
+              step->active_pm_refs, step->other_generating_refs,
+              step->active_simpl_refs, step->passive_simpl_refs,
+              step->lemma_quality);
 #endif
-       fprintf(out, " /* %3ld %3ld %3ld %3ld %3ld  */",
-         step->contrib_simpl_refs,
-         step->contrib_gen_refs,
-         step->useless_simpl_refs,
-         step->useless_gen_refs,
-         step->proof_distance);
+      fprintf(out, " /* %3ld %3ld %3ld %3ld %3ld  */", step->contrib_simpl_refs,
+              step->contrib_gen_refs, step->useless_simpl_refs,
+              step->useless_gen_refs, step->proof_distance);
    }
 }
 
@@ -347,24 +340,24 @@ void PCLStepPrintExtra(FILE* out, PCLStep_p step, bool data)
 //
 /----------------------------------------------------------------------*/
 
-char * PCLPropToTSTPType(PCLStepProperties props)
+char* PCLPropToTSTPType(PCLStepProperties props)
 {
    switch(props & PCLTypeMask)
    {
-   case PCLTypeConjecture:
+      case PCLTypeConjecture:
          return "conjecture";
-   case PCLTypeQuestion:
+      case PCLTypeQuestion:
          return "question";
-   case PCLTypeNegConjecture:
+      case PCLTypeNegConjecture:
          return "negated_conjecture";
-   default:
-         if(props&PCLIsLemma)
+      default:
+         if(props & PCLIsLemma)
          {
             return "lemma";
          }
          else
          {
-            if(props&PCLIsInitial)
+            if(props & PCLIsInitial)
             {
                return "axiom";
             }
@@ -422,7 +415,6 @@ void PCLStepPrintTSTP(FILE* out, PCLStep_p step)
       {
          TFormulaTPTPPrint(out, step->bank, step->logic.formula, true, true);
       }
-
    }
    fputc(',', out);
    PCLExprPrintTSTP(out, step->just, false);
@@ -473,7 +465,7 @@ void PCLStepPrintTPTP(FILE* out, PCLStep_p step)
          fputs(PCLPropToTSTPType(step->properties), out);
          fputc(',', out);
          TFormulaTPTPPrint(out, step->bank, step->logic.formula, true, true);
-         fputc(')',out);
+         fputc(')', out);
       }
    }
 }
@@ -526,25 +518,25 @@ void PCLStepPrintLOP(FILE* out, PCLStep_p step)
 /----------------------------------------------------------------------*/
 
 void PCLStepPrintFormat(FILE* out, PCLStep_p step, bool data,
-         OutputFormatType format)
+                        OutputFormatType format)
 {
    switch(format)
    {
-   case pcl_format:
-    PCLStepPrintExtra(out, step, data);
-    break;
-   case lop_format:
-    PCLStepPrintLOP(out, step);
-    break;
-   case tptp_format:
-    PCLStepPrintTPTP(out, step);
-    break;
-   case tstp_format:
-    PCLStepPrintTSTP(out, step);
-    break;
-   default:
-    assert(false);
-    break;
+      case pcl_format:
+         PCLStepPrintExtra(out, step, data);
+         break;
+      case lop_format:
+         PCLStepPrintLOP(out, step);
+         break;
+      case tptp_format:
+         PCLStepPrintTPTP(out, step);
+         break;
+      case tstp_format:
+         PCLStepPrintTSTP(out, step);
+         break;
+      default:
+         assert(false);
+         break;
    }
 }
 
@@ -568,10 +560,10 @@ void PCLStepPrintFormat(FILE* out, PCLStep_p step, bool data,
 //
 /----------------------------------------------------------------------*/
 
-void PCLStepPrintExample(FILE* out, PCLStep_p step, long id,
-                        long proof_steps, long total_steps)
+void PCLStepPrintExample(FILE* out, PCLStep_p step, long id, long proof_steps,
+                         long total_steps)
 {
-   assert(!PCLStepQueryProp(step,PCLIsFOFStep));
+   assert(!PCLStepQueryProp(step, PCLIsFOFStep));
 
    if(PCLStepIsShell(step))
    {
@@ -579,13 +571,11 @@ void PCLStepPrintExample(FILE* out, PCLStep_p step, long id,
    }
    else
    {
-      fprintf(out, "%4ld:(%ld, %f,%f,%f,%f):",
-              id,
-              step->proof_distance,
-              step->contrib_simpl_refs/(float)(proof_steps+1),
-              step->useless_simpl_refs/(float)(total_steps-proof_steps+1),
-              step->contrib_gen_refs/(float)(proof_steps+1),
-              step->useless_gen_refs/(float)(total_steps-proof_steps+1));
+      fprintf(out, "%4ld:(%ld, %f,%f,%f,%f):", id, step->proof_distance,
+              step->contrib_simpl_refs / (float)(proof_steps + 1),
+              step->useless_simpl_refs / (float)(total_steps - proof_steps + 1),
+              step->contrib_gen_refs / (float)(proof_steps + 1),
+              step->useless_gen_refs / (float)(total_steps - proof_steps + 1));
       ClausePrint(out, step->logic.clause, true);
    }
 }
@@ -626,22 +616,22 @@ int PCLStepIdCompare(const void* s1, const void* s2)
 
 void PCLStepResetTreeData(PCLStep_p step, bool just_weights)
 {
-   step->proof_dag_size        = PCLNoWeight;
-   step->proof_tree_size       = PCLNoWeight;
+   step->proof_dag_size = PCLNoWeight;
+   step->proof_tree_size = PCLNoWeight;
    if(!just_weights)
    {
-      step->active_pm_refs        = 0;
+      step->active_pm_refs = 0;
       step->other_generating_refs = 0;
-      step->active_simpl_refs     = 0;
-      step->passive_simpl_refs    = 0;
-      step->pure_quote_refs       = 0;
-      step->lemma_quality         = 0.0;
-      step->contrib_simpl_refs    = 0;
-      step->contrib_gen_refs      = 0;
-      step->useless_simpl_refs    = 0;
-      step->useless_gen_refs      = 0;
-      step->proof_distance        = PCL_PROOF_DIST_UNKNOWN;
-      PCLStepDelProp(step,PCLIsLemma|PCLIsMarked);
+      step->active_simpl_refs = 0;
+      step->passive_simpl_refs = 0;
+      step->pure_quote_refs = 0;
+      step->lemma_quality = 0.0;
+      step->contrib_simpl_refs = 0;
+      step->contrib_gen_refs = 0;
+      step->useless_simpl_refs = 0;
+      step->useless_gen_refs = 0;
+      step->proof_distance = PCL_PROOF_DIST_UNKNOWN;
+      PCLStepDelProp(step, PCLIsLemma | PCLIsMarked);
    }
 }
 

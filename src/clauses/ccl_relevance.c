@@ -60,10 +60,9 @@ void find_level_fcodes(Relevance_p reldata, long level)
    PStack_p collector = PStackAlloc();
    Clause_p clause;
    WFormula_p form;
-   FunCode   f;
+   FunCode f;
 
-   for(handle = reldata->clauses_core->succ;
-       handle != reldata->clauses_core;
+   for(handle = reldata->clauses_core->succ; handle != reldata->clauses_core;
        handle = handle->succ)
    {
       clause = handle->key.p_val;
@@ -82,8 +81,7 @@ void find_level_fcodes(Relevance_p reldata, long level)
       }
    }
 
-   for(handle = reldata->formulas_core->succ;
-       handle != reldata->formulas_core;
+   for(handle = reldata->formulas_core->succ; handle != reldata->formulas_core;
        handle = handle->succ)
    {
       form = handle->key.p_val;
@@ -164,9 +162,7 @@ static void move_clauses(PList_p from, ClauseSet_p to)
    PList_p handle;
    Clause_p clause;
 
-   for(handle = from->succ;
-       handle != from;
-       handle = handle->succ)
+   for(handle = from->succ; handle != from; handle = handle->succ)
    {
       clause = handle->key.p_val;
       ClauseSetExtractEntry(clause);
@@ -191,9 +187,7 @@ static void move_formulas(PList_p from, FormulaSet_p to)
    PList_p handle;
    WFormula_p form;
 
-   for(handle = from->succ;
-       handle != from;
-       handle = handle->succ)
+   for(handle = from->succ; handle != from; handle = handle->succ)
    {
       form = handle->key.p_val;
       FormulaSetExtractEntry(form);
@@ -215,21 +209,20 @@ static void move_formulas(PList_p from, FormulaSet_p to)
 //
 /----------------------------------------------------------------------*/
 
-static void proofstate_rel_prune(ProofState_p state,
-                                  Relevance_p reldata,
-                                  long level)
+static void proofstate_rel_prune(ProofState_p state, Relevance_p reldata,
+                                 long level)
 {
-   ClauseSet_p  new_ax  = ClauseSetAlloc();
+   ClauseSet_p new_ax = ClauseSetAlloc();
    FormulaSet_p new_fax = FormulaSetAlloc();
    PStackPointer i, base;
-   PList_p       set;
+   PList_p set;
 
    TBGCDeregisterFormulaSet(state->terms, state->f_axioms);
    TBGCDeregisterClauseSet(state->terms, state->axioms);
 
-   for(i=0; i<level; i++)
+   for(i = 0; i < level; i++)
    {
-      base = 2*i;
+      base = 2 * i;
       if(base >= PStackGetSP(reldata->relevance_levels))
       {
          /* Not enough levels to fullfil the request, add the
@@ -241,12 +234,12 @@ static void proofstate_rel_prune(ProofState_p state,
       set = PStackElementP(reldata->relevance_levels, base);
       move_clauses(set, new_ax);
 
-      set = PStackElementP(reldata->relevance_levels, base+1);
+      set = PStackElementP(reldata->relevance_levels, base + 1);
       move_formulas(set, new_fax);
    }
    ClauseSetFree(state->axioms);
    FormulaSetFree(state->f_axioms);
-   state->axioms   = new_ax;
+   state->axioms = new_ax;
    state->f_axioms = new_fax;
 
    TBGCRegisterFormulaSet(state->terms, state->f_axioms);
@@ -257,7 +250,6 @@ static void proofstate_rel_prune(ProofState_p state,
 /*---------------------------------------------------------------------*/
 /*                         Exported Functions                          */
 /*---------------------------------------------------------------------*/
-
 
 
 
@@ -283,20 +275,20 @@ Relevance_p RelevanceAlloc(void)
 {
    Relevance_p handle = RelevanceCellAlloc();
 
-   handle->sig              = NULL;
+   handle->sig = NULL;
 
-   handle->clauses_core     = PListAlloc();
-   handle->formulas_core    = PListAlloc();
+   handle->clauses_core = PListAlloc();
+   handle->formulas_core = PListAlloc();
 
-   handle->clauses_rest     = PListAlloc();
-   handle->formulas_rest    = PListAlloc();
+   handle->clauses_rest = PListAlloc();
+   handle->formulas_rest = PListAlloc();
 
-   handle->clauses_index    = FIndexAlloc();
-   handle->formulas_index   = FIndexAlloc();
+   handle->clauses_index = FIndexAlloc();
+   handle->formulas_index = FIndexAlloc();
 
-   handle->fcode_relevance  = PDArrayAlloc(100, 0);
-   handle->new_codes        = PStackAlloc();
-   handle->relevance_levels =  PStackAlloc();
+   handle->fcode_relevance = PDArrayAlloc(100, 0);
+   handle->new_codes = PStackAlloc();
+   handle->relevance_levels = PStackAlloc();
    return handle;
 }
 
@@ -339,7 +331,6 @@ void RelevanceFree(Relevance_p junk)
 
 
 
-
 /*-----------------------------------------------------------------------
 //
 // Function: ClausePListPrint()
@@ -354,12 +345,10 @@ void RelevanceFree(Relevance_p junk)
 
 void ClausePListPrint(FILE* out, PList_p list)
 {
-   PList_p  handle;
+   PList_p handle;
    Clause_p clause;
 
-   for(handle=list->succ;
-       handle != list;
-       handle = handle->succ)
+   for(handle = list->succ; handle != list; handle = handle->succ)
    {
       clause = handle->key.p_val;
       ClausePrint(out, clause, true);
@@ -381,19 +370,16 @@ void ClausePListPrint(FILE* out, PList_p list)
 
 void FormulaPListPrint(FILE* out, PList_p list)
 {
-   PList_p    handle;
+   PList_p handle;
    WFormula_p form;
 
-   for(handle=list->succ;
-       handle != list;
-       handle = handle->succ)
+   for(handle = list->succ; handle != list; handle = handle->succ)
    {
       form = handle->key.p_val;
       WFormulaPrint(out, form, true);
       fputc('\n', out);
    }
 }
-
 
 
 
@@ -416,12 +402,10 @@ long RelevanceDataInit(ProofState_p state, Relevance_p data)
 
    data->sig = state->signature;
 
-   res += ClauseSetSplitConjectures(state->axioms,
-                                    data->clauses_core,
+   res += ClauseSetSplitConjectures(state->axioms, data->clauses_core,
                                     data->clauses_rest);
-   res += FormulaSetSplitConjectures(state->f_axioms,
-                                    data->formulas_core,
-                                    data->formulas_rest);
+   res += FormulaSetSplitConjectures(state->f_axioms, data->formulas_core,
+                                     data->formulas_rest);
 
    FIndexAddPLClauseSet(data->clauses_index, data->clauses_rest);
    FIndexAddPLFormulaSet(data->formulas_index, data->formulas_rest);
@@ -449,8 +433,8 @@ Relevance_p RelevanceDataCompute(ProofState_p state)
 
    (void)RelevanceDataInit(state, handle);
 
-   while(!(PListEmpty(handle->clauses_core) &&
-           PListEmpty(handle->formulas_core)))
+   while(
+      !(PListEmpty(handle->clauses_core) && PListEmpty(handle->formulas_core)))
    {
       /*
       printf("Level %ld core:\n", level);
@@ -463,11 +447,11 @@ Relevance_p RelevanceDataCompute(ProofState_p state)
       PStackPushP(handle->relevance_levels, handle->clauses_core);
       PStackPushP(handle->relevance_levels, handle->formulas_core);
 
-      handle->clauses_core  = PListAlloc();
+      handle->clauses_core = PListAlloc();
       handle->formulas_core = PListAlloc();
 
       extract_new_core(handle);
-      level = level+1;
+      level = level + 1;
    }
    handle->max_level = level;
 
@@ -508,7 +492,7 @@ long ProofStateRelevancyProcess(ProofState_p state, long level)
    RelevanceFree(reldata);
    VERBOUT("Relevance extraction done.\n");
 
-  return old_axno-new_axno;
+   return old_axno - new_axno;
 }
 
 

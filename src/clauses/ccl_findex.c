@@ -54,7 +54,7 @@ Changes
 
 static void findex_add_instance(FIndex_p index, FunCode i, void* inst)
 {
-   void *tmp;
+   void* tmp;
 
    tmp = &(PDArrayElementP(index->index, i));
    PTreeStore(tmp, inst);
@@ -75,7 +75,7 @@ static void findex_add_instance(FIndex_p index, FunCode i, void* inst)
 
 static void findex_remove_instance(FIndex_p index, FunCode i, void* inst)
 {
-   void *tmp;
+   void* tmp;
 
    tmp = &(PDArrayElementP(index->index, i));
    PTreeDeleteEntry(tmp, inst);
@@ -104,7 +104,7 @@ FIndex_p FIndexAlloc(void)
 {
    FIndex_p handle = FIndexCellAlloc();
 
-   handle->index = PDArrayAlloc(100,0);
+   handle->index = PDArrayAlloc(100, 0);
 
    return handle;
 }
@@ -127,7 +127,7 @@ void FIndexFree(FIndex_p junk)
    long i;
    PTree_p tmp;
 
-   for(i = 0; i<junk->index->size; i++)
+   for(i = 0; i < junk->index->size; i++)
    {
       tmp = PDArrayElementP(junk->index, i);
       PTreeFree(tmp);
@@ -157,7 +157,7 @@ void FIndexAddClause(FIndex_p index, Clause_p clause)
 
    ClauseReturnFCodes(clause, f_codes);
 
-   for(i=0; i<PStackGetSP(f_codes); i++)
+   for(i = 0; i < PStackGetSP(f_codes); i++)
    {
       f = PStackElementInt(f_codes, i);
       findex_add_instance(index, f, clause);
@@ -185,7 +185,7 @@ void FIndexRemoveClause(FIndex_p index, Clause_p clause)
 
    ClauseReturnFCodes(clause, f_codes);
 
-   for(i=0; i<PStackGetSP(f_codes); i++)
+   for(i = 0; i < PStackGetSP(f_codes); i++)
    {
       f = PStackElementInt(f_codes, i);
       findex_remove_instance(index, f, clause);
@@ -211,9 +211,7 @@ void FIndexAddClauseSet(FIndex_p index, ClauseSet_p set)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ;
-       handle!=set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       FIndexAddClause(index, handle);
    }
@@ -240,13 +238,12 @@ void FIndexAddPLClause(FIndex_p index, PList_p lclause)
 
    ClauseReturnFCodes(lclause->key.p_val, f_codes);
 
-   for(i=0; i<PStackGetSP(f_codes); i++)
+   for(i = 0; i < PStackGetSP(f_codes); i++)
    {
       f = PStackElementInt(f_codes, i);
       findex_add_instance(index, f, lclause);
    }
    PStackFree(f_codes);
-
 }
 
 
@@ -263,7 +260,7 @@ void FIndexAddPLClause(FIndex_p index, PList_p lclause)
 //
 /----------------------------------------------------------------------*/
 
-void FIndexRemovePLClause(FIndex_p index,  PList_p lclause)
+void FIndexRemovePLClause(FIndex_p index, PList_p lclause)
 {
    PStack_p f_codes = PStackAlloc();
    long i;
@@ -271,7 +268,7 @@ void FIndexRemovePLClause(FIndex_p index,  PList_p lclause)
 
    ClauseReturnFCodes(lclause->key.p_val, f_codes);
 
-   for(i=0; i<PStackGetSP(f_codes); i++)
+   for(i = 0; i < PStackGetSP(f_codes); i++)
    {
       f = PStackElementInt(f_codes, i);
       findex_remove_instance(index, f, lclause);
@@ -297,14 +294,11 @@ void FIndexAddPLClauseSet(FIndex_p index, PList_p set)
 {
    PList_p handle;
 
-   for(handle = set->succ;
-       handle!=set;
-       handle = handle->succ)
+   for(handle = set->succ; handle != set; handle = handle->succ)
    {
       FIndexAddPLClause(index, handle);
    }
 }
-
 
 
 
@@ -328,13 +322,12 @@ void FIndexAddPLFormula(FIndex_p index, PList_p lformula)
 
    WFormulaReturnFCodes(lformula->key.p_val, f_codes);
 
-   for(i=0; i<PStackGetSP(f_codes); i++)
+   for(i = 0; i < PStackGetSP(f_codes); i++)
    {
       f = PStackElementInt(f_codes, i);
       findex_add_instance(index, f, lformula);
    }
    PStackFree(f_codes);
-
 }
 
 
@@ -351,7 +344,7 @@ void FIndexAddPLFormula(FIndex_p index, PList_p lformula)
 //
 /----------------------------------------------------------------------*/
 
-void FIndexRemovePLFormula(FIndex_p index,  PList_p lformula)
+void FIndexRemovePLFormula(FIndex_p index, PList_p lformula)
 {
    PStack_p f_codes = PStackAlloc();
    long i;
@@ -359,7 +352,7 @@ void FIndexRemovePLFormula(FIndex_p index,  PList_p lformula)
 
    WFormulaReturnFCodes(lformula->key.p_val, f_codes);
 
-   for(i=0; i<PStackGetSP(f_codes); i++)
+   for(i = 0; i < PStackGetSP(f_codes); i++)
    {
       f = PStackElementInt(f_codes, i);
       findex_remove_instance(index, f, lformula);
@@ -385,9 +378,7 @@ void FIndexAddPLFormulaSet(FIndex_p index, PList_p set)
 {
    PList_p handle;
 
-   for(handle = set->succ;
-       handle!=set;
-       handle = handle->succ)
+   for(handle = set->succ; handle != set; handle = handle->succ)
    {
       FIndexAddPLFormula(index, handle);
    }

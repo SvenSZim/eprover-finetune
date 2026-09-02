@@ -48,25 +48,25 @@ Changes
 
 void dpll_form_add_atom_space(DPLLFormula_p form)
 {
-   long old_limit, new_limit,i;
+   long old_limit, new_limit, i;
 
    old_limit = form->atom_no;
    if(old_limit)
    {
-      new_limit=old_limit*ATOM_GROWTH_FACTOR;
+      new_limit = old_limit * ATOM_GROWTH_FACTOR;
    }
    else
    {
       new_limit = DEFAULT_ATOM_NUMBER;
    }
 
-   form->atoms = SecureRealloc(form->atoms, new_limit*sizeof(AtomCell));
-   for(i=old_limit; i<new_limit; i++)
+   form->atoms = SecureRealloc(form->atoms, new_limit * sizeof(AtomCell));
+   for(i = old_limit; i < new_limit; i++)
    {
       form->atoms[i].pos_occur = 0;
       form->atoms[i].neg_occur = 0;
-      form->atoms[i].pos_active= NULL;
-      form->atoms[i].neg_active= NULL;
+      form->atoms[i].pos_active = NULL;
+      form->atoms[i].neg_active = NULL;
    }
    form->atom_no = new_limit;
 }
@@ -122,7 +122,7 @@ void DPLLFormulaFree(DPLLFormula_p junk)
 {
    int i;
 
-   for(i=0; i<junk->atom_no; i++)
+   for(i = 0; i < junk->atom_no; i++)
    {
       PTreeFree(junk->atoms[i].pos_active);
       PTreeFree(junk->atoms[i].neg_active);
@@ -151,38 +151,37 @@ void DPLLFormulaFree(DPLLFormula_p junk)
 //
 /----------------------------------------------------------------------*/
 
-void DPLLFormulaPrint(FILE* out,DPLLFormula_p form, DPLLOutputFormat format,
-            bool print_atoms)
+void DPLLFormulaPrint(FILE* out, DPLLFormula_p form, DPLLOutputFormat format,
+                      bool print_atoms)
 {
    long i;
 
    if(print_atoms)
    {
       PropSigPrint(out, form->sig);
-      for(i=0; i<form->atom_no; i++)
+      for(i = 0; i < form->atom_no; i++)
       {
-    if(form->atoms[i].pos_occur || form->atoms[i].neg_occur)
-    {
-       fprintf(out, COMCHAR" %4ld: %4ld %4ld\n", i,
-          form->atoms[i].pos_occur,
-          form->atoms[i].pos_occur);
-    }
+         if(form->atoms[i].pos_occur || form->atoms[i].neg_occur)
+         {
+            fprintf(out, COMCHAR " %4ld: %4ld %4ld\n", i,
+                    form->atoms[i].pos_occur, form->atoms[i].pos_occur);
+         }
       }
    }
-   for(i=0; i<PStackGetSP(form->clauses);i++)
+   for(i = 0; i < PStackGetSP(form->clauses); i++)
    {
       switch(format)
       {
-      case DPLLOutLOP:
-    DPLLClausePrintLOP(out, form->sig,
-             PStackElementP(form->clauses,i));
-    fputc('\n',out);
-    break;
-      case DPLLOutDimacs:
-    DPLLClausePrintDimacs(out, PStackElementP(form->clauses,i));
-    break;
-      default:
-       assert(false && "Not a valid DPLLOutputFormat");
+         case DPLLOutLOP:
+            DPLLClausePrintLOP(out, form->sig,
+                               PStackElementP(form->clauses, i));
+            fputc('\n', out);
+            break;
+         case DPLLOutDimacs:
+            DPLLClausePrintDimacs(out, PStackElementP(form->clauses, i));
+            break;
+         default:
+            assert(false && "Not a valid DPLLOutputFormat");
       }
    }
 }
@@ -199,28 +198,29 @@ void DPLLFormulaPrint(FILE* out,DPLLFormula_p form, DPLLOutputFormat format,
 //
 /----------------------------------------------------------------------*/
 
-void DPLLRegisterClauseLiteral(DPLLFormula_p form,
-                DPLLClause_p clause,
-                PLiteralCode lit)
+void DPLLRegisterClauseLiteral(DPLLFormula_p form, DPLLClause_p clause,
+                               PLiteralCode lit)
 {
    PLiteralCode atom = ABS(lit);
    bool res;
 
-   while(form->atom_no<=lit)
+   while(form->atom_no <= lit)
    {
       dpll_form_add_atom_space(form);
    }
-   if(lit>0)
+   if(lit > 0)
    {
       form->atoms[atom].pos_occur++;
       res = PTreeStore(&(form->atoms[atom].pos_active), clause);
-      UNUSED(res); assert(res && "Duplicate entry of a clause!");
+      UNUSED(res);
+      assert(res && "Duplicate entry of a clause!");
    }
    else
    {
       form->atoms[atom].neg_occur++;
       res = PTreeStore(&(form->atoms[atom].neg_active), clause);
-      UNUSED(res); assert(res && "Duplicate entry of a clause!");
+      UNUSED(res);
+      assert(res && "Duplicate entry of a clause!");
    }
 }
 
@@ -246,7 +246,7 @@ void DPLLFormulaInsertClause(DPLLFormula_p form, DPLLClause_p clause)
    unsigned int i;
 
    PStackPushP(form->clauses, clause);
-   for(i=0; i<clause->lit_no; i++)
+   for(i = 0; i < clause->lit_no; i++)
    {
       DPLLRegisterClauseLiteral(form, clause, clause->literals[i]);
    }
@@ -280,9 +280,9 @@ void DPLLFormulaParseLOP(Scanner_p in, Sig_p sig, DPLLFormula_p form)
       DPLLClausePrintLOP(GlobalOut, form->sig, pclause);
       if(DPLLClauseNormalize(pclause))
       {
-    fprintf(GlobalOut, "...discarded (tautology)\n");
-    DPLLClauseFree(pclause);
-    continue;
+         fprintf(GlobalOut, "...discarded (tautology)\n");
+         DPLLClauseFree(pclause);
+         continue;
       }
       DPLLFormulaInsertClause(form, pclause);
       fprintf(GlobalOut, "...accepted\n");

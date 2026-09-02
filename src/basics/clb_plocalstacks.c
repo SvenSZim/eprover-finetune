@@ -33,10 +33,11 @@ Contents
 //
 /----------------------------------------------------------------------*/
 
-__attribute__ ((noinline)) size_t PLocalStackGrow(void** *data, size_t size, size_t space)
+__attribute__((noinline)) size_t PLocalStackGrow(void*** data, size_t size,
+                                                 size_t space)
 {
    size_t old_size = size;
-   while(size <= (old_size+space))
+   while(size <= (old_size + space))
    {
       size *= 2;
    }

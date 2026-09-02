@@ -37,24 +37,21 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-void     TempFileCleanup(void);
-void     TempFileRegister(char *name);
-char*    TempFileName(void);
-char*    TempFileCreate(FILE* source);
-void     TempFileRemove(char* name);
+void TempFileCleanup(void);
+void TempFileRegister(char* name);
+char* TempFileName(void);
+char* TempFileCreate(FILE* source);
+void TempFileRemove(char* name);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

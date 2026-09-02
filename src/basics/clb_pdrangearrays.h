@@ -41,21 +41,22 @@ Changes
 
 typedef struct pdrangearrcell
 {
-   bool   integer; /* true->it maps to integers, false it maps to
+   bool integer; /* true->it maps to integers, false it maps to
                       pointers */
-   long   offset; /* Indices go from offset (inclusive) to offset+size
+   long offset;  /* Indices go from offset (inclusive) to offset+size
                      (exclusive) */
-   long   size;
-   long   grow;
-   IntOrP *array;
-}PDRangeArrCell, *PDRangeArr_p;
+   long size;
+   long grow;
+   IntOrP* array;
+} PDRangeArrCell, *PDRangeArr_p;
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define PDRangeArrCellAlloc() (PDRangeArrCell*)SizeMalloc(sizeof(PDRangeArrCell))
+#define PDRangeArrCellAlloc()                                                  \
+   (PDRangeArrCell*)SizeMalloc(sizeof(PDRangeArrCell))
 #define PDRangeArrCellFree(junk) SizeFree(junk, sizeof(PDRangeArrCell))
 
 #ifdef CONSTANT_MEM_ESTIMATE
@@ -63,40 +64,40 @@ typedef struct pdrangearrcell
 #else
 #define PDRANGEARR_MEM MEMSIZE(PDRangeArrCell)
 #endif
-#define PDRangeArrStorage(arr) (PDRANGEARRL_MEM+INTORP_MEM+((arr)->size*INTORP_MEM))
+#define PDRangeArrStorage(arr)                                                 \
+   (PDRANGEARRL_MEM + INTORP_MEM + ((arr)->size * INTORP_MEM))
 
 PDRangeArr_p PDRangeArrAlloc(long idx, long grow);
 PDRangeArr_p PDIntRangeArrAlloc(long idx, long grow);
-void         PDRangeArrFree(PDRangeArr_p junk);
-void         PDRangeArrEnlarge(PDRangeArr_p array, long idx);
+void PDRangeArrFree(PDRangeArr_p junk);
+void PDRangeArrEnlarge(PDRangeArr_p array, long idx);
 PDRangeArr_p PDRangeArrCopy(PDRangeArr_p array);
 
-static inline IntOrP*   PDRangeArrElementRef(PDRangeArr_p array, long idx);
+static inline IntOrP* PDRangeArrElementRef(PDRangeArr_p array, long idx);
 
-void      PDRangeArrElementDeleteP(PDRangeArr_p array, long idx);
-void      PDRangeArrElementDeleteInt(PDRangeArr_p array, long idx);
+void PDRangeArrElementDeleteP(PDRangeArr_p array, long idx);
+void PDRangeArrElementDeleteInt(PDRangeArr_p array, long idx);
 
-#define   PDRangeArrAssign(array, idx, value) \
-         *PDRangeArrElementRef((array), (idx)) = (value)
-#define   PDRangeArrAssignP(array, idx, value) \
-          PDRangeArrElementRef((array), (idx))->p_val = (value)
-#define   PDRangeArrAssignInt(array, idx, value) \
-          PDRangeArrElementRef((array), (idx))->i_val = (value)
+#define PDRangeArrAssign(array, idx, value)                                    \
+   *PDRangeArrElementRef((array), (idx)) = (value)
+#define PDRangeArrAssignP(array, idx, value)                                   \
+   PDRangeArrElementRef((array), (idx))->p_val = (value)
+#define PDRangeArrAssignInt(array, idx, value)                                 \
+   PDRangeArrElementRef((array), (idx))->i_val = (value)
 
-#define   PDRangeArrElement(array, idx) \
-     *PDRangeArrElementRef((array), (idx))
-#define   PDRangeArrElementP(array, idx) \
-     (PDRangeArrElementRef((array), (idx))->p_val)
-#define   PDRangeArrElementInt(array, idx) \
-     (PDRangeArrElementRef((array), (idx))->i_val)
+#define PDRangeArrElement(array, idx) *PDRangeArrElementRef((array), (idx))
+#define PDRangeArrElementP(array, idx)                                         \
+   (PDRangeArrElementRef((array), (idx))->p_val)
+#define PDRangeArrElementInt(array, idx)                                       \
+   (PDRangeArrElementRef((array), (idx))->i_val)
 
-#define   PDRangeArrLowKey(array) ((array)->offset)
-#define   PDRangeArrLimitKey(array) ((array)->offset+(array)->size)
+#define PDRangeArrLowKey(array) ((array)->offset)
+#define PDRangeArrLimitKey(array) ((array)->offset + (array)->size)
 
-#define   PDRangeArrIndexIsCovered(array, idx) \
-   (((idx)>=PDRangeArrLowKey(array))&&(((idx)<PDRangeArrLimitKey(array))))
+#define PDRangeArrIndexIsCovered(array, idx)                                   \
+   (((idx) >= PDRangeArrLowKey(array)) && (((idx) < PDRangeArrLimitKey(array))))
 
-long      PDRangeArrElementIncInt(PDRangeArr_p array, long idx, long value);
+long PDRangeArrElementIncInt(PDRangeArr_p array, long idx, long value);
 
 /*---------------------------------------------------------------------*/
 /*                     Inline functions                                */
@@ -128,9 +129,9 @@ static inline IntOrP* PDRangeArrElementRef(PDRangeArr_p array, long idx)
       PDRangeArrEnlarge(array, idx);
    }
    assert(PDRangeArrIndexIsCovered(array, idx));
-   assert(idx>=array->offset);
-   assert((idx-array->offset)<array->size);
-   return &(array->array[idx-(array->offset)]);
+   assert(idx >= array->offset);
+   assert((idx - array->offset) < array->size);
+   return &(array->array[idx - (array->offset)]);
 }
 
 

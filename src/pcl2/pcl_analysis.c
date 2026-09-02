@@ -57,8 +57,8 @@ Changes
 
 int pcl_example_cmp(const void* ex1, const void* ex2)
 {
-   const IntOrP* e1 = (const IntOrP*) ex1;
-   const IntOrP* e2 = (const IntOrP*) ex2;
+   const IntOrP* e1 = (const IntOrP*)ex1;
+   const IntOrP* e2 = (const IntOrP*)ex2;
    PCLStep_p s1, s2;
    double w1, w2;
 
@@ -79,13 +79,13 @@ int pcl_example_cmp(const void* ex1, const void* ex2)
    }
    assert(!PCLStepQueryProp(s2, PCLIsProofStep));
    assert(!PCLStepQueryProp(s1, PCLIsProofStep));
-   w1 = s1->useless_gen_refs/(float)(s1->useless_simpl_refs+1);
-   w2 = s2->useless_gen_refs/(float)(s2->useless_simpl_refs+1);
-   if(w1<w2)
+   w1 = s1->useless_gen_refs / (float)(s1->useless_simpl_refs + 1);
+   w2 = s2->useless_gen_refs / (float)(s2->useless_simpl_refs + 1);
+   if(w1 < w2)
    {
       return 1;
    }
-   if(w1>w2)
+   if(w1 > w2)
    {
       return -1;
    }
@@ -121,27 +121,27 @@ long PCLExprProofDistance(PCLProt_p prot, PCLExpr_p expr)
 
    switch(expr->op)
    {
-   case PCLOpNoOp:
-    assert(false);
-    break;
-   case PCLOpInitial:
+      case PCLOpNoOp:
+         assert(false);
+         break;
+      case PCLOpInitial:
          res = PCL_PROOF_DIST_DEFAULT;
-    break;
-   case PCLOpQuote:
-    step = PCLProtFindStep(prot,PCLExprArg(expr,0));
+         break;
+      case PCLOpQuote:
+         step = PCLProtFindStep(prot, PCLExprArg(expr, 0));
          res = PCLStepProofDistance(prot, step);
-    break;
-   default:
-    for(i=0; i<expr->arg_no; i++)
-    {
-            tmp = PCLExprProofDistance(prot, PCLExprArg(expr,i));
-       res = MAX(res,tmp);
-    }
-         if(res!=PCL_PROOF_DIST_INFINITY)
+         break;
+      default:
+         for(i = 0; i < expr->arg_no; i++)
+         {
+            tmp = PCLExprProofDistance(prot, PCLExprArg(expr, i));
+            res = MAX(res, tmp);
+         }
+         if(res != PCL_PROOF_DIST_INFINITY)
          {
             res++;
          }
-    break;
+         break;
    }
    return res;
 }
@@ -168,13 +168,13 @@ long PCLStepProofDistance(PCLProt_p prot, PCLStep_p step)
 {
    if(step->proof_distance == PCL_PROOF_DIST_UNKNOWN)
    {
-      if(PCLStepQueryProp(step,PCLIsProofStep))
+      if(PCLStepQueryProp(step, PCLIsProofStep))
       {
          step->proof_distance = 0;
       }
       else
       {
-         step->proof_distance = PCLExprProofDistance(prot,step->just);
+         step->proof_distance = PCLExprProofDistance(prot, step->just);
       }
    }
    return step->proof_distance;
@@ -202,7 +202,7 @@ void PCLProtProofDistance(PCLProt_p prot)
 
    PCLProtSerialize(prot);
 
-   for(i=0; i<PStackGetSP(prot->in_order); i++)
+   for(i = 0; i < PStackGetSP(prot->in_order); i++)
    {
       step = PStackElementP(prot->in_order, i);
       PCLStepProofDistance(prot, step);
@@ -230,18 +230,18 @@ void PCLExprUpdateGRefs(PCLProt_p prot, PCLExpr_p expr, bool proofstep)
 
    switch(expr->op)
    {
-   case PCLOpInitial:
-   case PCLOpQuote:
-   case PCLOpClauseNormalize:
+      case PCLOpInitial:
+      case PCLOpQuote:
+      case PCLOpClauseNormalize:
          break;
-   case PCLOpParamod:
-   case PCLOpSimParamod:
-   case PCLOpEResolution:
-   case PCLOpEFactoring:
-   case PCLOpSplitClause:
-         for(i=0; i<expr->arg_no; i++)
-    {
-            parent = PCLExprGetQuotedArg(prot,expr, i);
+      case PCLOpParamod:
+      case PCLOpSimParamod:
+      case PCLOpEResolution:
+      case PCLOpEFactoring:
+      case PCLOpSplitClause:
+         for(i = 0; i < expr->arg_no; i++)
+         {
+            parent = PCLExprGetQuotedArg(prot, expr, i);
             if(parent)
             {
                if(proofstep)
@@ -255,19 +255,19 @@ void PCLExprUpdateGRefs(PCLProt_p prot, PCLExpr_p expr, bool proofstep)
             }
             else
             {
-               PCLExprUpdateGRefs(prot, PCLExprArg(expr,i), proofstep);
+               PCLExprUpdateGRefs(prot, PCLExprArg(expr, i), proofstep);
             }
          }
          break;
-   case PCLOpSimplifyReflect:
-   case PCLOpContextSimplifyReflect:
-   case PCLOpRewrite:
-   case PCLOpURewrite:
-   case PCLOpACResolution:
-         PCLExprUpdateGRefs(prot, PCLExprArg(expr,0), proofstep);
-         for(i=1; i<expr->arg_no; i++)
-    {
-            parent = PCLExprGetQuotedArg(prot,expr, i);
+      case PCLOpSimplifyReflect:
+      case PCLOpContextSimplifyReflect:
+      case PCLOpRewrite:
+      case PCLOpURewrite:
+      case PCLOpACResolution:
+         PCLExprUpdateGRefs(prot, PCLExprArg(expr, 0), proofstep);
+         for(i = 1; i < expr->arg_no; i++)
+         {
+            parent = PCLExprGetQuotedArg(prot, expr, i);
             if(parent)
             {
                if(proofstep)
@@ -281,11 +281,11 @@ void PCLExprUpdateGRefs(PCLProt_p prot, PCLExpr_p expr, bool proofstep)
             }
             else
             {
-               PCLExprUpdateGRefs(prot, PCLExprArg(expr,i), proofstep);
+               PCLExprUpdateGRefs(prot, PCLExprArg(expr, i), proofstep);
             }
          }
          break;
-   default:
+      default:
          /* These are unknown inferences (typcally FOF), we ignore
             them. */
          break;
@@ -314,7 +314,7 @@ void PCLProtUpdateGRefs(PCLProt_p prot)
 
    PCLProtSerialize(prot);
 
-   for(i=0; i<PStackGetSP(prot->in_order); i++)
+   for(i = 0; i < PStackGetSP(prot->in_order); i++)
    {
       step = PStackElementP(prot->in_order, i);
       PCLStepUpdateGRefs(prot, step);
@@ -346,11 +346,9 @@ long PCLProtSelectExamples(PCLProt_p prot, long neg_examples)
 
    PCLProtSerialize(prot); /* Ensure its all on the stack */
    prot->is_ordered = false;
-   qsort(prot->in_order->stack,
-         PStackGetSP(prot->in_order),
-         sizeof(IntOrP),
+   qsort(prot->in_order->stack, PStackGetSP(prot->in_order), sizeof(IntOrP),
          pcl_example_cmp);
-   for(i=0; (i<PStackGetSP(prot->in_order))&&(neg_examples>0); i++)
+   for(i = 0; (i < PStackGetSP(prot->in_order)) && (neg_examples > 0); i++)
    {
       step = PStackElementP(prot->in_order, i);
       if(PCLStepQueryProp(step, PCLIsFOFStep))
