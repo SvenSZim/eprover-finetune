@@ -53,11 +53,21 @@ typedef struct termcellstore
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define tcs_arity0hash(term) ((term)->f_code)
+/* The hash of a term is computed from f_code and the deterministic ids of
+   the (already shared) arguments -- NOT from their addresses. Hashing
+   addresses made the bucket order (and thereby every traversal of the term
+   store) depend on the memory layout of the binary and on malloc's history,
+   so the search could differ between otherwise identical builds and even
+   between runs with different problem file names. Variables carry their
+   f_code in entry_no, see TBCellIdent(). */
+#define TCS_ARG_ID(term) ((unsigned long)((term)->entry_no))
+#define TCS_MIX(id) (((id) * 0x9E3779B97F4A7C15UL) >> 40)
+
+#define tcs_arity0hash(term) ((unsigned long)(term)->f_code)
 #define tcs_arity1hash(term)                                                   \
-   (tcs_arity0hash(term) ^ (((intptr_t)(term)->args[0]) >> 3))
+   (tcs_arity0hash(term) ^ TCS_MIX(TCS_ARG_ID((term)->args[0])))
 #define tcs_aritynhash(term)                                                   \
-   (tcs_arity1hash(term) ^ (((intptr_t)(term)->args[1]) >> 4))
+   (tcs_arity1hash(term) ^ (TCS_MIX(TCS_ARG_ID((term)->args[1])) << 1))
 
 #define TermCellHash(term)                                                     \
    ((((term)->arity == 0) ? tcs_arity0hash(term)                               \

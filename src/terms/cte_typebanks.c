@@ -36,9 +36,13 @@ Created: ?
 #define GetNameId(node) ((node)->val1.i_val)
 #define GetArity(node) ((node)->val2.i_val)
 
-#define type_a0hash(t) ((t)->f_code)
-#define type_a1hash(t) (type_a0hash(t) ^ (((intptr_t)(t)->args[0]) >> 3))
-#define type_aritynhash(t) (type_a1hash(t) ^ (((intptr_t)(t)->args[1]) >> 4))
+/* Hash from the deterministic type_uid of the (already canonical) arguments,
+   not from their addresses; see the comment at TermCellHash(). */
+#define type_a0hash(t) ((unsigned long)(t)->f_code)
+#define TYPE_MIX(id) (((unsigned long)(id) * 0x9E3779B97F4A7C15UL) >> 40)
+#define type_a1hash(t) (type_a0hash(t) ^ TYPE_MIX((t)->args[0]->type_uid))
+#define type_aritynhash(t)                                                     \
+   (type_a1hash(t) ^ (TYPE_MIX((t)->args[1]->type_uid) << 1))
 
 #define hash_type(type)                                                        \
    ((((type)->arity == 0) ? type_a0hash(type)                                  \
