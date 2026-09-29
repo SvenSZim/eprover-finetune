@@ -12,7 +12,7 @@
      "cacheVariables": {"E_ASSERTIONS": "OFF", "E_MEMORY_DEBUG": "OFF", "E_OPT_FLAGS": "-O3;-fno-common;-fomit-frame-pointer"}},
     {"name": "asan", "displayName": "ASan + UBSan", "inherits": "dev",
      "binaryDir": "${sourceDir}/build/asan",
-     "cacheVariables": {"E_SANITIZE": "address,undefined", "E_OPT_FLAGS": "-O1;-g;-fno-common"}}
+     "cacheVariables": {"E_SANITIZE": "address,undefined", "E_OPT_FLAGS": "-O1;-g;-fno-common", "E_DETERMINISTIC_MEMORY": "OFF"}}
   ],
   "buildPresets": [
     {"name": "dev", "configurePreset": "dev"},

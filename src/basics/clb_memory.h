@@ -107,12 +107,22 @@ static inline void SizeFreeReal(void* junk, size_t size);
 #endif
 
 void MemFlushFreeList(void);
+#ifdef DETERMINISTIC_MEM
+void* MemArenaAlloc(size_t size);
+bool MemInArena(const void* ptr);
+#endif
 void* SecureMalloc(size_t size);
 void* SecureRealloc(void* ptr, size_t size);
 char* SecureStrdup(const char* source);
 char* SecureStrndup(const char* source, size_t n);
+#ifdef DETERMINISTIC_MEM
+#define ASSERT_NOT_ARENA(junk) assert(!MemInArena(junk))
+#else
+#define ASSERT_NOT_ARENA(junk) ((void)0)
+#endif
 #define FREE(junk)                                                             \
    assert(junk);                                                               \
+   ASSERT_NOT_ARENA(junk);                                                     \
    free(junk);                                                                 \
    junk = NULL
 
@@ -135,6 +145,7 @@ void MemFreeListPrint(FILE* out);
 #undef FREE
 #define FREE(junk)                                                             \
    assert(junk);                                                               \
+   ASSERT_NOT_ARENA(junk);                                                     \
    clb_free_count++;                                                           \
    free(junk);                                                                 \
    junk = NULL
@@ -146,6 +157,7 @@ void MemFreeListPrint(FILE* out);
    assert(junk);                                                               \
    clb_free_count++;                                                           \
    printf("\nBlock %p F:\n", junk);                                            \
+   ASSERT_NOT_ARENA(junk);                                                     \
    free(junk);                                                                 \
    junk = NULL
 #endif
@@ -189,7 +201,17 @@ static inline void* SizeMallocReal(size_t size)
    }
    else
    {
+#ifdef DETERMINISTIC_MEM
+      /* Blocks that will live on the free lists come from a private arena,
+         so that their relative addresses (which E's pointer-ordered trees
+         turn into search behaviour) depend only on E's own allocation
+         sequence, not on malloc's state. See MemArenaAlloc(). */
+      handle = (size >= MEM_ARR_MIN_INDEX && size < MEM_ARR_SIZE)
+         ? MemArenaAlloc(size)
+         : SecureMalloc(size);
+#else
       handle = SecureMalloc(size);
+#endif
 #ifndef NDEBUG
       if(size >= MEM_ARR_MIN_INDEX && size < MEM_ARR_SIZE)
       {

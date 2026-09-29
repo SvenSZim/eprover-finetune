@@ -10,6 +10,7 @@ option(E_ENABLE_HO        "Build the higher-order version (binary: eprover-ho)" 
 option(E_UNIX_COMMENTS    "Use # instead of % as comment sign in the output"    OFF)
 option(E_ASSERTIONS       "Keep assertions (off: -DNDEBUG -DFAST_EXIT)"         ON)
 option(E_MEMORY_DEBUG     "Enable -DCLB_MEMORY_DEBUG (needs assertions)"        ON)
+option(E_DETERMINISTIC_MEMORY "Serve E's small objects from a private arena so that the search does not depend on malloc's address layout" ON)
 option(E_BUILD_EXTRA_APPS "Also build SIMPLE_APPS and EXTERNAL programs"        ON)
 option(E_BUILD_TESTS      "Register the regression suite with ctest"            ON)
 set(E_SANITIZE "" CACHE STRING "Sanitizers, e.g. address,undefined")
@@ -35,6 +36,9 @@ if(E_ENABLE_HO)
   set(E_PROVER_NAME eprover-ho)
 else()
   set(E_PROVER_NAME eprover)
+endif()
+if(E_DETERMINISTIC_MEMORY)
+  add_compile_definitions(DETERMINISTIC_MEM)
 endif()
 if(E_UNIX_COMMENTS)
   add_compile_definitions(UNIX_COMMENTS)
@@ -174,6 +178,9 @@ if(E_BUILD_TESTS)
   if(Python3_FOUND)
     add_test(NAME regression
              COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/regression/run.py
+                     --binary $<TARGET_FILE:${E_PROVER_NAME}>)
+    add_test(NAME determinism
+             COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/tests/regression/determinism.py
                      --binary $<TARGET_FILE:${E_PROVER_NAME}>)
   endif()
 endif()
