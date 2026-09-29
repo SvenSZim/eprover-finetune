@@ -26,54 +26,60 @@
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-static TokenRepCell token_print_rep[] =
-{
-   {NoToken,      "No token (probably EOF)"},
-   {WhiteSpace,   "White space (spaces, tabs, newlines...)"},
-   {Comment,      "Comment"},
-   {Ident,        "Identifier not terminating in a number"},
-   {Idnum,        "Identifier terminating in a number"},
-   {SemIdent,     "Interpreted function/predicate name ('$name')"},
-   {String,       "String enclosed in double quotes (\"\")"},
-   {SQString,     "String enclosed in single quote ('')"},
-   {PosInt,       "Integer (sequence of decimal digits) "
-    "convertible to an 'unsigned long'"},
+static TokenRepCell token_print_rep[] = {
+   { NoToken, "No token (probably EOF)" },
+   { WhiteSpace, "White space (spaces, tabs, newlines...)" },
+   { Comment, "Comment" },
+   { Ident, "Identifier not terminating in a number" },
+   { Idnum, "Identifier terminating in a number" },
+   { SemIdent, "Interpreted function/predicate name ('$name')" },
+   { String, "String enclosed in double quotes (\"\")" },
+   { SQString, "String enclosed in single quote ('')" },
+   { PosInt,
+     "Integer (sequence of decimal digits) "
+     "convertible to an 'unsigned long'" },
    /* May need LargePosInt here... */
-   {OpenBracket,  "Opening bracket ('(')"},
-   {CloseBracket, "Closing bracket (')')"},
-   {OpenCurly,    "Opening curly brace ('{')"},
-   {CloseCurly,   "Closing curly brace ('}')"},
-   {OpenSquare,   "Opening square brace ('[')"},
-   {CloseSquare,  "Closing square brace (']')"},
-   {LesserSign,   "\"Lesser than\" sign ('<')"},
-   {GreaterSign,  "\"Greater than\" sign ('>')"},
-   {EqualSign,    "Equal Predicate/Sign ('=')"},
-   {NegEqualSign, "Negated Equal Predicate ('!=')"},
-   {TildeSign,    "Tilde ('~')"},
-   {Exclamation,  "Exclamation mark ('!')"},
-   {QuestionMark, "Question mark ('?')"},
-   {Comma,        "Comma (',')"},
-   {Semicolon,    "Semicolon (';')"},
-   {Colon,        "Colon (':')"},
-   {Hyphen,       "Hyphen ('-')"},
-   {Plus,         "Plus sign ('+')"},
-   {Mult,         "Multiplication sign ('*')"},
-   {Fullstop,     "Fullstop ('.')"},
-   {Dollar,       "Dollar sign ('$')"},
-   {Slash,        "Slash ('/')"},
-   {Pipe,         "Vertical bar ('|')"},
-   {Ampersand,    "Ampersand ('&')"},
-   {FOFLRImpl,    "Implication/LRArrow ('=>')"},
-   {FOFRLImpl,    "Back Implicatin/RLArrow ('<=')"},
-   {FOFEquiv,     "Equivalence/Double arrow ('<=>')"},
-   {FOFXor,       "Negated Equivalence/Xor ('<~>')"},
-   {FOFNand,      "Nand ('~&')"},
-   {FOFNor,       "Nor ('~|')"},
-   {Application,  "Application ('@')",},
-   {LambdaQuantor,"Lambda ('^')",},
-   {LetToken,     "Let ('$let')"},
-   {IteToken,     "Ite ('$ite')"},
-   {NoToken,      NULL}
+   { OpenBracket, "Opening bracket ('(')" },
+   { CloseBracket, "Closing bracket (')')" },
+   { OpenCurly, "Opening curly brace ('{')" },
+   { CloseCurly, "Closing curly brace ('}')" },
+   { OpenSquare, "Opening square brace ('[')" },
+   { CloseSquare, "Closing square brace (']')" },
+   { LesserSign, "\"Lesser than\" sign ('<')" },
+   { GreaterSign, "\"Greater than\" sign ('>')" },
+   { EqualSign, "Equal Predicate/Sign ('=')" },
+   { NegEqualSign, "Negated Equal Predicate ('!=')" },
+   { TildeSign, "Tilde ('~')" },
+   { Exclamation, "Exclamation mark ('!')" },
+   { QuestionMark, "Question mark ('?')" },
+   { Comma, "Comma (',')" },
+   { Semicolon, "Semicolon (';')" },
+   { Colon, "Colon (':')" },
+   { Hyphen, "Hyphen ('-')" },
+   { Plus, "Plus sign ('+')" },
+   { Mult, "Multiplication sign ('*')" },
+   { Fullstop, "Fullstop ('.')" },
+   { Dollar, "Dollar sign ('$')" },
+   { Slash, "Slash ('/')" },
+   { Pipe, "Vertical bar ('|')" },
+   { Ampersand, "Ampersand ('&')" },
+   { FOFLRImpl, "Implication/LRArrow ('=>')" },
+   { FOFRLImpl, "Back Implicatin/RLArrow ('<=')" },
+   { FOFEquiv, "Equivalence/Double arrow ('<=>')" },
+   { FOFXor, "Negated Equivalence/Xor ('<~>')" },
+   { FOFNand, "Nand ('~&')" },
+   { FOFNor, "Nor ('~|')" },
+   {
+      Application,
+      "Application ('@')",
+   },
+   {
+      LambdaQuantor,
+      "Lambda ('^')",
+   },
+   { LetToken, "Let ('$let')" },
+   { IteToken, "Ite ('$ite')" },
+   { NoToken, NULL }
 
 };
 
@@ -126,10 +132,9 @@ static void scan_white(Scanner_p in)
 
 static void scan_ident(Scanner_p in)
 {
-   long numstart = 0,
-      i;
+   long numstart = 0, i;
 
-   for(i=0; isidchar(CurrChar(in)); i++)
+   for(i = 0; isidchar(CurrChar(in)); i++)
    {
       if(!numstart && isdigit(CurrChar(in)))
       {
@@ -146,7 +151,7 @@ static void scan_ident(Scanner_p in)
    {
       AktToken(in)->tok = Idnum;
       AktToken(in)->numval =
-         strtol(DStrView(AktToken(in)->literal)+numstart, NULL, 10);
+         strtol(DStrView(AktToken(in)->literal) + numstart, NULL, 10);
       /* Errors are intentionally ignored to allow arbitrary
          identifiers */
    }
@@ -183,8 +188,7 @@ static void scan_int(Scanner_p in)
       NextChar(in);
    }
    errno = 0;
-   AktToken(in)->numval =
-      strtoumax(DStrView(AktToken(in)->literal), NULL, 10);
+   AktToken(in)->numval = strtoumax(DStrView(AktToken(in)->literal), NULL, 10);
 
    if(errno)
    {
@@ -192,7 +196,9 @@ static void scan_int(Scanner_p in)
       //char* term=strncpy(buff, DStrView(AktToken(in)->literal), 29);
       //*term = '\0';
       //strtol(buff, NULL, 10);
-      Warning("Number truncated while reading %s. If this happens on 32 bit systems while parsing internal strings, it is harmless and can be ignored",  DStrView(AktToken(in)->literal));
+      Warning(
+         "Number truncated while reading %s. If this happens on 32 bit systems while parsing internal strings, it is harmless and can be ignored",
+         DStrView(AktToken(in)->literal));
    }
 }
 
@@ -213,7 +219,7 @@ static void scan_line_comment(Scanner_p in)
 {
    AktToken(in)->tok = Comment;
 
-   while((CurrChar(in)) != '\n' && (CurrChar(in)!=EOF))
+   while((CurrChar(in)) != '\n' && (CurrChar(in) != EOF))
    {
       DStrAppendChar(AktToken(in)->literal, CurrChar(in));
       NextChar(in);
@@ -239,7 +245,7 @@ static void scan_C_comment(Scanner_p in)
 {
    AktToken(in)->tok = Comment;
 
-   while(!((CurrChar(in) == '*') && (LookChar(in,1) == '/')))
+   while(!((CurrChar(in) == '*') && (LookChar(in, 1) == '/')))
    {
       DStrAppendChar(AktToken(in)->literal, CurrChar(in));
       NextChar(in);
@@ -268,19 +274,17 @@ static void scan_string(Scanner_p in, char delim)
    bool escape = false;
    int curr;
 
-   AktToken(in)->tok = (delim=='\'')?SQString:String;
+   AktToken(in)->tok = (delim == '\'') ? SQString : String;
 
    DStrAppendChar(AktToken(in)->literal, CurrChar(in));
    NextChar(in);
    while(escape || ((curr = CurrChar(in)) != delim))
    {
-      if(!isprint(curr) && curr<=127)
+      if(!isprint(curr) && curr <= 127)
       {
-         AktTokenError(in,
-                       "Non-printable character in string constant",
-                       false);
+         AktTokenError(in, "Non-printable character in string constant", false);
       }
-      if(curr=='\\')
+      if(curr == '\\')
       {
          escape = !escape;
       }
@@ -319,10 +323,10 @@ static Token_p scan_token(Scanner_p in)
    DStrReset(AktToken(in)->literal);
    DStrReleaseRef(AktToken(in)->source);
 
-   AktToken(in)->source      = DStrGetRef(Source(in));
+   AktToken(in)->source = DStrGetRef(Source(in));
    AktToken(in)->stream_type = SourceType(in);
-   AktToken(in)->line        = CurrLine(in);
-   AktToken(in)->column      = CurrColumn(in);
+   AktToken(in)->line = CurrLine(in);
+   AktToken(in)->column = CurrColumn(in);
 
    if(!ischar(CurrChar(in)))
    {
@@ -344,15 +348,15 @@ static Token_p scan_token(Scanner_p in)
    {
       scan_line_comment(in);
    }
-   else if(CurrChar(in)=='/' && LookChar(in,1) == '*')
+   else if(CurrChar(in) == '/' && LookChar(in, 1) == '*')
    {
       scan_C_comment(in);
    }
-   else if((CurrChar(in)=='"') || (CurrChar(in)=='\''))
+   else if((CurrChar(in) == '"') || (CurrChar(in) == '\''))
    {
       scan_string(in, CurrChar(in));
    }
-   else if((CurrChar(in)=='$') && isidchar(LookChar(in,1)))
+   else if((CurrChar(in) == '$') && isidchar(LookChar(in, 1)))
    {
       DStrAppendChar(AktToken(in)->literal, CurrChar(in));
       NextChar(in);
@@ -374,26 +378,26 @@ static Token_p scan_token(Scanner_p in)
    {
       switch(CurrChar(in))
       {
-      case '(':
+         case '(':
             AktToken(in)->tok = OpenBracket;
             break;
-      case ')':
+         case ')':
             AktToken(in)->tok = CloseBracket;
             break;
-      case '{':
+         case '{':
             AktToken(in)->tok = OpenCurly;
             break;
-      case '}':
+         case '}':
             AktToken(in)->tok = CloseCurly;
             break;
-      case '[':
+         case '[':
             AktToken(in)->tok = OpenSquare;
             break;
-      case ']':
+         case ']':
             AktToken(in)->tok = CloseSquare;
             break;
-      case '<':
-            if((LookChar(in,1) == '~' && (LookChar(in,2) == '>')))
+         case '<':
+            if((LookChar(in, 1) == '~' && (LookChar(in, 2) == '>')))
             {
                DStrAppendChar(AktToken(in)->literal, CurrChar(in));
                NextChar(in);
@@ -401,11 +405,11 @@ static Token_p scan_token(Scanner_p in)
                NextChar(in);
                AktToken(in)->tok = FOFXor;
             }
-            else if(LookChar(in,1) == '=')
+            else if(LookChar(in, 1) == '=')
             {
                DStrAppendChar(AktToken(in)->literal, CurrChar(in));
                NextChar(in);
-               if(LookChar(in,1) == '>')
+               if(LookChar(in, 1) == '>')
                {
                   DStrAppendChar(AktToken(in)->literal, CurrChar(in));
                   NextChar(in);
@@ -422,11 +426,11 @@ static Token_p scan_token(Scanner_p in)
                break;
             }
             break;
-      case '>':
+         case '>':
             AktToken(in)->tok = GreaterSign;
             break;
-      case '=':
-            if(LookChar(in,1) == '>')
+         case '=':
+            if(LookChar(in, 1) == '>')
             {
                DStrAppendChar(AktToken(in)->literal, CurrChar(in));
                NextChar(in);
@@ -437,27 +441,27 @@ static Token_p scan_token(Scanner_p in)
                AktToken(in)->tok = EqualSign;
             }
             break;
-      case '~':
-            switch(LookChar(in,1))
+         case '~':
+            switch(LookChar(in, 1))
             {
-            case '|':
+               case '|':
                   DStrAppendChar(AktToken(in)->literal, CurrChar(in));
                   NextChar(in);
                   AktToken(in)->tok = FOFNor;
                   break;
-            case '&':
+               case '&':
                   DStrAppendChar(AktToken(in)->literal, CurrChar(in));
                   NextChar(in);
                   AktToken(in)->tok = FOFNand;
                   break;
 
-            default:
+               default:
                   AktToken(in)->tok = TildeSign;
                   break;
             }
             break;
-      case '!':
-            if(LookChar(in,1) == '=')
+         case '!':
+            if(LookChar(in, 1) == '=')
             {
                DStrAppendChar(AktToken(in)->literal, CurrChar(in));
                NextChar(in);
@@ -468,49 +472,49 @@ static Token_p scan_token(Scanner_p in)
                AktToken(in)->tok = Exclamation;
             }
             break;
-      case '?':
+         case '?':
             AktToken(in)->tok = QuestionMark;
             break;
-      case ',':
+         case ',':
             AktToken(in)->tok = Comma;
             break;
-      case ';':
+         case ';':
             AktToken(in)->tok = Semicolon;
             break;
-      case ':':
+         case ':':
             AktToken(in)->tok = Colon;
             break;
-      case '-':
+         case '-':
             AktToken(in)->tok = Hyphen;
             break;
-      case '+':
+         case '+':
             AktToken(in)->tok = Plus;
             break;
-      case '*':
+         case '*':
             AktToken(in)->tok = Mult;
             break;
-      case '.':
+         case '.':
             AktToken(in)->tok = Fullstop;
             break;
-      case '|':
+         case '|':
             AktToken(in)->tok = Pipe;
             break;
-      case '/':
+         case '/':
             AktToken(in)->tok = Slash;
             break;
-      case '&':
+         case '&':
             AktToken(in)->tok = Ampersand;
             break;
-      case '$':
+         case '$':
             AktToken(in)->tok = Dollar;
             break;
-      case '@':
+         case '@':
             AktToken(in)->tok = Application;
             break;
-      case '^':
+         case '^':
             AktToken(in)->tok = Carret;
             break;
-      default:
+         default:
             DStrAppendChar(AktToken(in)->literal, CurrChar(in));
             AktTokenError(in, "Illegal character", false);
             break;
@@ -541,33 +545,32 @@ Token_p scan_token_follow_includes(Scanner_p in)
    if(in->include_key && (TestInpId(in, in->include_key)))
    {
       DStr_p name = DStrAlloc();
-      char*  tptp_source;
+      char* tptp_source;
 
       tptp_source = getenv("TPTP");
       if(tptp_source)
       {
          DStrAppendStr(name, tptp_source);
-         if(DStrLen(name) && (DStrView(name)[DStrLen(name)-1] !='/'))
+         if(DStrLen(name) && (DStrView(name)[DStrLen(name) - 1] != '/'))
          {
-            DStrAppendChar(name,'/');
+            DStrAppendChar(name, '/');
          }
       }
 
       scan_token(in);
       CheckInpTok(in, OpenBracket);
       scan_token(in);
-      CheckInpTok(in, Identifier|String|SQString);
+      CheckInpTok(in, Identifier | String | SQString);
       if(TestInpTok(in, Identifier))
       {
          DStrAppendDStr(name, AktToken(in)->literal);
       }
       else
       {
-         DStrAppendStr(name, DStrView(AktToken(in)->literal)+1);
+         DStrAppendStr(name, DStrView(AktToken(in)->literal) + 1);
          DStrDeleteLastChar(name);
       }
-      OpenStackedInput(&(in->source), StreamTypeFile,
-                       DStrView(name), true);
+      OpenStackedInput(&(in->source), StreamTypeFile, DStrView(name), true);
       DStrFree(name);
       scan_token_follow_includes(in);
    }
@@ -661,10 +664,10 @@ bool str_n_element(char* str, char* ids, int len)
 {
    //printf(COMCHAR" str_n_element(%s, %s) = ", str, ids);
 
-   if(strncmp(str, ids, len)==0)
+   if(strncmp(str, ids, len) == 0)
    {
-      ids+=len;
-      if(!*ids || (*ids=='|'))
+      ids += len;
+      if(!*ids || (*ids == '|'))
       {
          //printf("true\n");
          return true;
@@ -705,24 +708,23 @@ bool str_n_element(char* str, char* ids, int len)
 
 char* PosRep(StreamType type, DStr_p source, long line, long column)
 {
-   char        tmp_str[MAX_ERRMSG_LEN];
-   static char buff[MAX_ERRMSG_LEN+128]; // make place for numbers
+   char tmp_str[MAX_ERRMSG_LEN];
+   static char buff[MAX_ERRMSG_LEN + 128]; // make place for numbers
 
 
    if(type == StreamTypeFile)
    {
-      assert(strlen(DStrView(source))<=MAXPATHLEN);
+      assert(strlen(DStrView(source)) <= MAXPATHLEN);
 
-      sprintf(buff, "%s:%ld:(Column %ld):",
-              DStrView(source), line, column);
+      sprintf(buff, "%s:%ld:(Column %ld):", DStrView(source), line, column);
    }
    else
    {
       tmp_str[0] = '\0';
       strcat(tmp_str, type);
       strcat(tmp_str, ": \"");
-      strncat(tmp_str, DStrView(source), MAXPATHLEN-4);
-      if(strlen(DStrView(source))>MAXPATHLEN-4)
+      strncat(tmp_str, DStrView(source), MAXPATHLEN - 4);
+      if(strlen(DStrView(source)) > MAXPATHLEN - 4)
       {
          strcat(tmp_str, "...");
       }
@@ -750,8 +752,7 @@ char* PosRep(StreamType type, DStr_p source, long line, long column)
 
 char* TokenPosRep(Token_p token)
 {
-   return PosRep(token->stream_type, token->source, token->line,
-                 token->column);
+   return PosRep(token->stream_type, token->source, token->line, token->column);
 }
 
 
@@ -770,12 +771,12 @@ char* TokenPosRep(Token_p token)
 
 char* DescribeToken(TokenType tok)
 {
-   char*  help;
-   int    i;
+   char* help;
+   int i;
    DStr_p res = DStrAlloc();
-   bool   found = false;
+   bool found = false;
 
-   for(i=0; token_print_rep[i].rep; i++)
+   for(i = 0; token_print_rep[i].rep; i++)
    {
       if(tok & token_print_rep[i].key)
       {
@@ -814,7 +815,8 @@ void PrintToken(FILE* out, Token_p token)
    fprintf(out, "Token:    %d = %s\n", (int)token->tok, handle);
    FREE(handle);
    fprintf(out, "Position: %s   ", TokenPosRep(token));
-   fprintf(out, "Literal:  %s\n", token->literal?DStrView(token->literal):"");
+   fprintf(out, "Literal:  %s\n",
+           token->literal ? DStrView(token->literal) : "");
    fprintf(out, "Numval:   %6" PRIuMAX "   Skipped:  %s\n", token->numval,
            token->skipped ? "true" : "false");
    fprintf(out, "Comment:  %s\n", DStrView(token->comment));
@@ -834,12 +836,12 @@ void PrintToken(FILE* out, Token_p token)
 //
 /----------------------------------------------------------------------*/
 
-Scanner_p CreateScanner(StreamType type, char *name, bool
-                        ignore_comments, char *default_dir, bool fail)
+Scanner_p CreateScanner(StreamType type, char* name, bool ignore_comments,
+                        char* default_dir, bool fail)
 {
    Scanner_p handle;
-   Stream_p  stream;
-   char      *tmp_name;
+   Stream_p stream;
+   char* tmp_name;
 
    handle = ScannerCellAlloc();
    handle->source = NULL;
@@ -852,7 +854,7 @@ Scanner_p CreateScanner(StreamType type, char *name, bool
    //printf(COMCHAR" CreateScanner(%s, %s, %d, %s, %d)\n", type, name,
    //ignore_comments, default_dir, fail);
 
-   if((type == StreamTypeFile && strcmp(name,"-")==0)||
+   if((type == StreamTypeFile && strcmp(name, "-") == 0) ||
       (type != StreamTypeFile))
    {
       stream = OpenStackedInput(&handle->source, type, name, true);
@@ -876,24 +878,22 @@ Scanner_p CreateScanner(StreamType type, char *name, bool
          if(default_dir)
          {
             DStrAppendStr(handle->default_dir, default_dir);
-            assert(!DStrLen(handle->default_dir)||
-                   DStrLastChar(handle->default_dir) =='/');
+            assert(!DStrLen(handle->default_dir) ||
+                   DStrLastChar(handle->default_dir) == '/');
          }
          tmp_name = FileNameDirName(name);
          DStrAppendStr(handle->default_dir, tmp_name);
-         assert(DStrLen(handle->default_dir)==0 ||
-                DStrLastChar(handle->default_dir) =='/');
+         assert(DStrLen(handle->default_dir) == 0 ||
+                DStrLastChar(handle->default_dir) == '/');
          FREE(tmp_name);
          tmp_name = FileNameBaseName(name);
-         DStrAppendStr(full_file_name,
-                       DStrView(handle->default_dir));
-         DStrAppendStr(full_file_name,
-                       tmp_name);
+         DStrAppendStr(full_file_name, DStrView(handle->default_dir));
+         DStrAppendStr(full_file_name, tmp_name);
          FREE(tmp_name);
          stream = OpenStackedInput(&handle->source, type,
-                                   DStrView(full_file_name), fail&&!TPTP_dir);
+                                   DStrView(full_file_name), fail && !TPTP_dir);
          fflush(stdout);
-         if(!stream&&TPTP_dir)
+         if(!stream && TPTP_dir)
          {
             assert(TPTP_dir);
             DStrSet(handle->default_dir, TPTP_dir);
@@ -901,10 +901,8 @@ Scanner_p CreateScanner(StreamType type, char *name, bool
             DStrAppendStr(handle->default_dir, tmp_name);
             FREE(tmp_name);
             tmp_name = FileNameBaseName(name);
-            DStrSet(full_file_name,
-                    DStrView(handle->default_dir));
-            DStrAppendStr(full_file_name,
-                          tmp_name);
+            DStrSet(full_file_name, DStrView(handle->default_dir));
+            DStrAppendStr(full_file_name, tmp_name);
             FREE(tmp_name);
             stream = OpenStackedInput(&handle->source, type,
                                       DStrView(full_file_name), fail);
@@ -926,7 +924,7 @@ Scanner_p CreateScanner(StreamType type, char *name, bool
       handle->tok_sequence[handle->current].tok = NoToken;
       handle->tok_sequence[handle->current].literal = DStrAlloc();
       handle->tok_sequence[handle->current].comment = DStrAlloc();
-      handle->tok_sequence[handle->current].source      = NULL;
+      handle->tok_sequence[handle->current].source = NULL;
       handle->tok_sequence[handle->current].stream_type = NULL;
       scan_real_token(handle);
    }
@@ -949,11 +947,10 @@ Scanner_p CreateScanner(StreamType type, char *name, bool
 //
 /----------------------------------------------------------------------*/
 
-void DestroyScanner(Scanner_p  junk)
+void DestroyScanner(Scanner_p junk)
 {
    assert(junk);
-   for(junk->current = 0; junk->current < MAXTOKENLOOKAHEAD;
-       junk->current++)
+   for(junk->current = 0; junk->current < MAXTOKENLOOKAHEAD; junk->current++)
    {
       DStrFree(junk->tok_sequence[junk->current].literal);
       DStrFree(junk->tok_sequence[junk->current].comment);
@@ -1026,7 +1023,7 @@ void ScannerSetFormat(Scanner_p scanner, IOFormat fmt)
 bool TestTok(Token_p akt, TokenType toks)
 {
    /* PrintToken(stdout, akt); */
-   return (akt->tok & toks)!=0;
+   return (akt->tok & toks) != 0;
 }
 
 /*-----------------------------------------------------------------------
@@ -1046,12 +1043,11 @@ bool TestTok(Token_p akt, TokenType toks)
 
 bool TestId(Token_p akt, char* ids)
 {
-   if(!TestTok(akt, Identifier|SemIdent))
+   if(!TestTok(akt, Identifier | SemIdent))
    {
       return false;
    }
-   return str_n_element(DStrView(akt->literal), ids,
-                        DStrLen(akt->literal));
+   return str_n_element(DStrView(akt->literal), ids, DStrLen(akt->literal));
 }
 
 
@@ -1069,14 +1065,14 @@ bool TestId(Token_p akt, char* ids)
 
 bool TestIdnum(Token_p akt, char* ids)
 {
-   int  i, len=0;
+   int i, len = 0;
    char c;
 
    if(!TestTok(akt, Idnum))
    {
       return false;
    }
-   for(i=0; (c=DStrView(akt->literal)[i]); i++)
+   for(i = 0; (c = DStrView(akt->literal)[i]); i++)
    {
       if(!len && isdigit(DStrView(akt->literal)[i]))
       {
@@ -1258,7 +1254,7 @@ void CheckInpId(Scanner_p in, char* ids)
 void NextToken(Scanner_p in)
 {
    scan_real_token(in);
-   in->current = TOKENREALPOS(in->current+1);
+   in->current = TOKENREALPOS(in->current + 1);
 
    /*printf("Current token:\n");
    PrintToken(stdout, AktToken(in));
@@ -1285,8 +1281,8 @@ void NextToken(Scanner_p in)
 //
 /----------------------------------------------------------------------*/
 
-Scanner_p ScannerParseInclude(Scanner_p in, StrTree_p *name_selector,
-                              StrTree_p *skip_includes)
+Scanner_p ScannerParseInclude(Scanner_p in, StrTree_p* name_selector,
+                              StrTree_p* skip_includes)
 {
    Scanner_p new_scanner = NULL;
    char* name;
@@ -1300,10 +1296,8 @@ Scanner_p ScannerParseInclude(Scanner_p in, StrTree_p *name_selector,
 
    if(!StrTreeFind(skip_includes, name))
    {
-      new_scanner = CreateScanner(StreamTypeFile, name,
-                                  in->ignore_comments,
-                                  ScannerGetDefaultDir(in),
-                                  true);
+      new_scanner = CreateScanner(StreamTypeFile, name, in->ignore_comments,
+                                  ScannerGetDefaultDir(in), true);
       ScannerSetFormat(new_scanner, ScannerGetFormat(in));
       new_scanner->include_pos = pos_rep;
    }
@@ -1320,12 +1314,12 @@ Scanner_p ScannerParseInclude(Scanner_p in, StrTree_p *name_selector,
 
       dummy.i_val = 0;
       NextToken(in);
-      CheckInpTok(in, Name|PosInt|OpenSquare);
+      CheckInpTok(in, Name | PosInt | OpenSquare);
 
-      if(TestInpTok(in, Name|PosInt))
+      if(TestInpTok(in, Name | PosInt))
       {
-         StrTreeStore(name_selector, DStrView(AktToken(in)->literal),
-                      dummy, dummy);
+         StrTreeStore(name_selector, DStrView(AktToken(in)->literal), dummy,
+                      dummy);
          NextToken(in);
       }
       else
@@ -1333,23 +1327,21 @@ Scanner_p ScannerParseInclude(Scanner_p in, StrTree_p *name_selector,
          AcceptInpTok(in, OpenSquare);
          if(!TestInpTok(in, CloseSquare))
          {
-            StrTreeStore(name_selector, DStrView(AktToken(in)->literal),
-                         dummy, dummy);
-            AcceptInpTok(in, Name|PosInt);
+            StrTreeStore(name_selector, DStrView(AktToken(in)->literal), dummy,
+                         dummy);
+            AcceptInpTok(in, Name | PosInt);
             while(TestInpTok(in, Comma))
             {
                NextToken(in);
                StrTreeStore(name_selector, DStrView(AktToken(in)->literal),
                             dummy, dummy);
-               AcceptInpTok(in, Name|PosInt);
+               AcceptInpTok(in, Name | PosInt);
             }
          }
          else /* Empty list - insert full dummy */
          {
             dummy.i_val = 1;
-            StrTreeStore(name_selector, "** Not a legal name**",
-                         dummy, dummy);
-
+            StrTreeStore(name_selector, "** Not a legal name**", dummy, dummy);
          }
          AcceptInpTok(in, CloseSquare);
       }

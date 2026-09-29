@@ -38,24 +38,24 @@ typedef struct gc_admin_cell
 {
    PTree_p clause_sets;
    PTree_p formula_sets;
-}GCAdminCell, *GCAdmin_p;
+} GCAdminCell, *GCAdmin_p;
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define GCAdminCellAlloc()    (GCAdminCell*)SizeMalloc(sizeof(GCAdminCell))
+#define GCAdminCellAlloc() (GCAdminCell*)SizeMalloc(sizeof(GCAdminCell))
 #define GCAdminCellFree(junk) SizeFree(junk, sizeof(GCAdminCell))
 
 
 
 GCAdmin_p GCAdminAlloc();
-void      GCAdminFree(GCAdmin_p junk);
-void      GCRegisterFormulaSet(GCAdmin_p gc, void* set);
-void      GCRegisterClauseSet(GCAdmin_p gc, void* set);
-void      GCDeregisterFormulaSet(GCAdmin_p gc, void *set);
-void      GCDeregisterClauseSet(GCAdmin_p gc, void* set);
+void GCAdminFree(GCAdmin_p junk);
+void GCRegisterFormulaSet(GCAdmin_p gc, void* set);
+void GCRegisterClauseSet(GCAdmin_p gc, void* set);
+void GCDeregisterFormulaSet(GCAdmin_p gc, void* set);
+void GCDeregisterClauseSet(GCAdmin_p gc, void* set);
 
 //long      GCCollect(GCAdmin_p gc);
 

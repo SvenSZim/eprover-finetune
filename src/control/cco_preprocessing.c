@@ -58,8 +58,7 @@
 //
 /----------------------------------------------------------------------*/
 
-long ProofStateClausalPreproc(ProofState_p proofstate,
-                              HeuristicParms_p h_parms)
+long ProofStateClausalPreproc(ProofState_p proofstate, HeuristicParms_p h_parms)
 {
    long preproc_removed = 0;
 
@@ -67,28 +66,21 @@ long ProofStateClausalPreproc(ProofState_p proofstate,
    if(!h_parms->no_preproc)
    {
       VERBOUT("Clausal preprocessing started.\n");
-      preproc_removed = ClauseSetPreprocess(proofstate->axioms,
-                                            proofstate->watchlist,
-                                            proofstate->archive,
-                                            proofstate->tmp_terms,
-                                            proofstate->terms,
-                                            h_parms->replace_inj_defs,
-                                            h_parms->eqdef_incrlimit,
-                                            h_parms->eqdef_maxclauses);
+      preproc_removed = ClauseSetPreprocess(
+         proofstate->axioms, proofstate->watchlist, proofstate->archive,
+         proofstate->tmp_terms, proofstate->terms, h_parms->replace_inj_defs,
+         h_parms->eqdef_incrlimit, h_parms->eqdef_maxclauses);
       VERBOUT("Clausal preprocessing complete.\n");
    }
 
-   preproc_removed += ClauseSetUnfoldEqDefNormalize(proofstate->axioms,
-                                                    proofstate->watchlist,
-                                                    proofstate->archive,
-                                                    proofstate->tmp_terms,
-                                                    h_parms->eqdef_incrlimit,
-                                                    h_parms->eqdef_maxclauses);
+   preproc_removed += ClauseSetUnfoldEqDefNormalize(
+      proofstate->axioms, proofstate->watchlist, proofstate->archive,
+      proofstate->tmp_terms, h_parms->eqdef_incrlimit,
+      h_parms->eqdef_maxclauses);
 
    if(problemType == PROBLEM_HO && h_parms->inst_choice_max_depth >= 0)
    {
-      ClauseSetRecognizeChoice(proofstate->choice_opcodes,
-                               proofstate->axioms,
+      ClauseSetRecognizeChoice(proofstate->choice_opcodes, proofstate->axioms,
                                proofstate->archive);
    }
 
@@ -102,24 +94,21 @@ long ProofStateClausalPreproc(ProofState_p proofstate,
    {
       // todo: eventually check if the problem in HO syntax is FO.
       EliminateBlockedClauses(proofstate->axioms, proofstate->archive,
-                              h_parms->bce_max_occs,
-                              proofstate->tmp_terms);
+                              h_parms->bce_max_occs, proofstate->tmp_terms);
    }
 
    if(problemType == PROBLEM_FO && h_parms->pred_elim)
    {
       // todo: eventually check if the problem in HO syntax is FO.
-      PredicateElimination(proofstate->axioms, proofstate->archive,
-                           h_parms, proofstate->terms,
-                           proofstate->tmp_terms, proofstate->freshvars);
+      PredicateElimination(proofstate->axioms, proofstate->archive, h_parms,
+                           proofstate->terms, proofstate->tmp_terms,
+                           proofstate->freshvars);
    }
    if(h_parms->add_goal_defs_pos || h_parms->add_goal_defs_neg)
    {
-      ClauseSetGDTransform(proofstate->terms,
-                           proofstate->axioms,
-                           h_parms->add_goal_defs_pos,
-                           h_parms->add_goal_defs_neg,
-                           h_parms->add_goal_defs_subterms);
+      ClauseSetGDTransform(
+         proofstate->terms, proofstate->axioms, h_parms->add_goal_defs_pos,
+         h_parms->add_goal_defs_neg, h_parms->add_goal_defs_subterms);
    }
    return preproc_removed;
 }

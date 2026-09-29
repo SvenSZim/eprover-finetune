@@ -45,8 +45,8 @@
 typedef union int_or_p
 {
    long i_val;
-   void *p_val;
-}IntOrP;
+   void* p_val;
+} IntOrP;
 
 #ifdef CONSTANT_MEM_ESTIMATE
 #define INTORP_MEM 4
@@ -83,30 +83,45 @@ typedef int (*ComparisonFunctionType)(const void*, const void*);
 
 
 #undef MAX
-#define MAX(x,y) ({ __typeof__ (x) _x = (x);    \
-         __typeof__ (y) _y = (y);               \
-         _x > _y ? _x : _y; })
+#define MAX(x, y)                                                              \
+   ({                                                                          \
+      __typeof__(x) _x = (x);                                                  \
+      __typeof__(y) _y = (y);                                                  \
+      _x > _y ? _x : _y;                                                       \
+   })
 
 #undef MIN
-#define MIN(x,y) ({ __typeof__ (x) _x = (x);    \
-         __typeof__ (y) _y = (y);               \
-         _x < _y ? _x : _y; })
+#define MIN(x, y)                                                              \
+   ({                                                                          \
+      __typeof__(x) _x = (x);                                                  \
+      __typeof__(y) _y = (y);                                                  \
+      _x < _y ? _x : _y;                                                       \
+   })
 
-#define CMP(x,y) ({ __typeof__ (x) _x = (x);    \
-         __typeof__ (y) _y = (y);               \
-         (_x > _y) - (_x < _y); })
+#define CMP(x, y)                                                              \
+   ({                                                                          \
+      __typeof__(x) _x = (x);                                                  \
+      __typeof__(y) _y = (y);                                                  \
+      (_x > _y) - (_x < _y);                                                   \
+   })
 
 #undef ABS
-#define ABS(x) ((x)>0?(x):-(x))
+#define ABS(x) ((x) > 0 ? (x) : -(x))
 
 #undef XOR
-#define XOR(x,y) (!(x)!=!(y))
+#define XOR(x, y) (!(x) != !(y))
 
 #undef EQUIV
-#define EQUIV(x,y) (!(x)==!(y))
+#define EQUIV(x, y) (!(x) == !(y))
 
 #undef SWAP
-#define SWAP(x,y) do{ __typeof__ (x) tmp =(x); (x)=(y); (y)=(tmp);}while(0)
+#define SWAP(x, y)                                                             \
+   do                                                                          \
+   {                                                                           \
+      __typeof__(x) tmp = (x);                                                 \
+      (x) = (y);                                                               \
+      (y) = (tmp);                                                             \
+   } while(0)
 
 
 #define LIKELY(x) __builtin_expect(!!(x), 1)
@@ -115,7 +130,7 @@ typedef int (*ComparisonFunctionType)(const void*, const void*);
 #define UNUSED(x) (void)(x)
 
 #define KILO 1024
-#define MEGA (1024*1024)
+#define MEGA (1024 * 1024)
 
 #ifdef ENABLE_LFHO
 #define LFHO(x) x
@@ -128,27 +143,31 @@ static inline size_t WriteStr(int fd, const char* msg);
 
 
 #ifdef PRINT_TSTP_STATUS
-#define TSTPOUT(file,msg) fprintf(file, COMCHAR" SZS status %s\n", msg); fflush(file)
-#define TSTPOUTFD(fd,msg) do{                                   \
-      WriteStr(fd, COMCHAR" SZS status ");                            \
-      WriteStr(fd, msg);                                        \
-      WriteStr(fd, "\n");                                       \
-   }while(0)
+#define TSTPOUT(file, msg)                                                     \
+   fprintf(file, COMCHAR " SZS status %s\n", msg);                             \
+   fflush(file)
+#define TSTPOUTFD(fd, msg)                                                     \
+   do                                                                          \
+   {                                                                           \
+      WriteStr(fd, COMCHAR " SZS status ");                                    \
+      WriteStr(fd, msg);                                                       \
+      WriteStr(fd, "\n");                                                      \
+   } while(0)
 #else
-#define TSTPOUT(file,msg)
-#define TSTPOUTFD(fd,msg)
+#define TSTPOUT(file, msg)
+#define TSTPOUTFD(fd, msg)
 #endif
 
 
 #if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
-#define GCC_DIAGNOSTIC_POP  _Pragma("GCC diagnostic pop")
+#define GCC_DIAGNOSTIC_POP _Pragma("GCC diagnostic pop")
 #define GCC_DIAGNOSTIC_PUSH _Pragma("GCC diagnostic push")
 #else
 #define GCC_DIAGNOSTIC_POP
 #define GCC_DIAGNOSTIC_PUSH
 #endif
 
-#define BOOL2STR(val) (val)?"true":"false"
+#define BOOL2STR(val) (val) ? "true" : "false"
 
 /*-----------------------------------------------------------------------
 //
@@ -168,7 +187,8 @@ static inline size_t WriteStr(int fd, const char* msg);
 //
 /----------------------------------------------------------------------*/
 
-static inline size_t WriteStr(int fd, const char* msg){
+static inline size_t WriteStr(int fd, const char* msg)
+{
    return write(fd, msg, strlen(msg));
 }
 

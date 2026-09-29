@@ -37,12 +37,12 @@ Changes
 
 typedef struct clauseposcell
 {
-   Clause_p  clause;
-   Eqn_p     literal;
-   EqnSide   side;
+   Clause_p clause;
+   Eqn_p literal;
+   EqnSide side;
    TermPos_p pos;
-   void*     data;
-}ClausePosCell, *ClausePos_p;
+   void* data;
+} ClausePosCell, *ClausePos_p;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
@@ -52,8 +52,8 @@ typedef void (*Deleter)(void*);
 
 
 #define ClausePosCellAlloc() (ClausePosCell*)SizeMalloc(sizeof(ClausePosCell))
-#define ClausePosCellFree(junk)         SizeFree(junk, sizeof(ClausePosCell))
-static inline void    ClausePosCellFreeWDeleter(ClausePos_p junk, Deleter del);
+#define ClausePosCellFree(junk) SizeFree(junk, sizeof(ClausePosCell))
+static inline void ClausePosCellFreeWDeleter(ClausePos_p junk, Deleter del);
 
 #ifdef CONSTANT_MEM_ESTIMATE
 #define CLAUSEPOSCELL_MEM 20
@@ -62,25 +62,25 @@ static inline void    ClausePosCellFreeWDeleter(ClausePos_p junk, Deleter del);
 #endif
 
 static inline ClausePos_p ClausePosAlloc(void);
-static inline void        ClausePosFreeWDeleter(ClausePos_p junk, Deleter deleter);
+static inline void ClausePosFreeWDeleter(ClausePos_p junk, Deleter deleter);
 #define ClausePosFree(junk) ClausePosFreeWDeleter(junk, NULL)
 
-static inline Term_p   ClausePosGetSide(ClausePos_p pos);
-static inline Term_p   ClausePosGetOtherSide(ClausePos_p pos);
-static inline Term_p   ClausePosGetSubterm(ClausePos_p pos);
+static inline Term_p ClausePosGetSide(ClausePos_p pos);
+static inline Term_p ClausePosGetOtherSide(ClausePos_p pos);
+static inline Term_p ClausePosGetSubterm(ClausePos_p pos);
 #define ClausePosIsTop(position) ((PStackEmpty((position)->pos)))
 
 
-void     ClausePosPrint(FILE* out, ClausePos_p pos);
-Eqn_p    ClausePosFindPosLiteral(ClausePos_p pos, bool maximal);
-Eqn_p    ClausePosFindMaxLiteral(ClausePos_p pos, bool positive);
-Term_p   ClausePosFindFirstMaximalSide(ClausePos_p pos, bool positive);
-Term_p   ClausePosFindNextMaximalSide(ClausePos_p pos, bool positive);
-Term_p   ClausePosFindFirstMaximalSubterm(ClausePos_p pos);
-Term_p   ClausePosFindNextMaximalSubterm(ClausePos_p pos);
+void ClausePosPrint(FILE* out, ClausePos_p pos);
+Eqn_p ClausePosFindPosLiteral(ClausePos_p pos, bool maximal);
+Eqn_p ClausePosFindMaxLiteral(ClausePos_p pos, bool positive);
+Term_p ClausePosFindFirstMaximalSide(ClausePos_p pos, bool positive);
+Term_p ClausePosFindNextMaximalSide(ClausePos_p pos, bool positive);
+Term_p ClausePosFindFirstMaximalSubterm(ClausePos_p pos);
+Term_p ClausePosFindNextMaximalSubterm(ClausePos_p pos);
 
-bool     TermComputeRWSequence(PStack_p stack, Term_p from, Term_p to,
-                               int inject_op);
+bool TermComputeRWSequence(PStack_p stack, Term_p from, Term_p to,
+                           int inject_op);
 
 
 /*---------------------------------------------------------------------*/
@@ -105,8 +105,8 @@ static inline ClausePos_p ClausePosAlloc(void)
    ClausePos_p handle = ClausePosCellAlloc();
 
    handle->literal = NULL;
-   handle->side    = LeftSide;
-   handle->pos     = TermPosAlloc();
+   handle->side = LeftSide;
+   handle->pos = TermPosAlloc();
 
    return handle;
 }
@@ -231,8 +231,6 @@ static inline Term_p ClausePosGetSubterm(ClausePos_p pos)
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

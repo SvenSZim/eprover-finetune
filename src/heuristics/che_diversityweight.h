@@ -34,18 +34,18 @@
 
 typedef struct diversityweightparamcell
 {
-   OCB_p  ocb;
+   OCB_p ocb;
    double max_term_multiplier;
    double max_literal_multiplier;
    double pos_multiplier;
    double app_var_mult;
-   long   vweight;
-   long   fweight;
+   long vweight;
+   long fweight;
    double fdiff1weight;
    double fdiff2weight;
    double vdiff1weight;
    double vdiff2weight;
-}DiversityWeightParamCell, *DiversityWeightParam_p;
+} DiversityWeightParamCell, *DiversityWeightParam_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -53,28 +53,23 @@ typedef struct diversityweightparamcell
 /*---------------------------------------------------------------------*/
 
 
-#define DiversityWeightParamCellAlloc() (DiversityWeightParamCell*) \
-        SizeMalloc(sizeof(DiversityWeightParamCell))
-#define DiversityWeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(DiversityWeightParamCell))
+#define DiversityWeightParamCellAlloc()                                        \
+   (DiversityWeightParamCell*)SizeMalloc(sizeof(DiversityWeightParamCell))
+#define DiversityWeightParamCellFree(junk)                                     \
+   SizeFree(junk, sizeof(DiversityWeightParamCell))
 
-WFCB_p DiversityWeightInit(ClausePrioFun prio_fun, int fweight,
-                           int vweight, OCB_p ocb,
-                           double max_term_multiplier,
-                           double max_literal_multiplier,
-                           double pos_multiplier,
-                           double fdiff1weight,
-                           double fdiff2weight,
-                           double vdiff1weight,
-                           double vdiff2weight,
+WFCB_p DiversityWeightInit(ClausePrioFun prio_fun, int fweight, int vweight,
+                           OCB_p ocb, double max_term_multiplier,
+                           double max_literal_multiplier, double pos_multiplier,
+                           double fdiff1weight, double fdiff2weight,
+                           double vdiff1weight, double vdiff2weight,
                            double app_var_mult);
 
-WFCB_p DiversityWeightParse(Scanner_p in, OCB_p ocb, ProofState_p
-                            state);
+WFCB_p DiversityWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double DiversityWeightCompute(void* data, Clause_p clause);
 
-void   DiversityWeightExit(void* data);
+void DiversityWeightExit(void* data);
 
 
 #endif

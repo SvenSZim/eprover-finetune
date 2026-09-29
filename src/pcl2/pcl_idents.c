@@ -61,21 +61,21 @@ Changes
 PCLId_p PCLIdParse(Scanner_p in)
 {
    PCLId_p id;
-   long    i;
+   long i;
 
 
    CheckInpTok(in, PosInt);
    id = PCLIdAlloc();
-   i=0;
-   PDArrayAssignInt(id,i++,AktToken(in)->numval);
+   i = 0;
+   PDArrayAssignInt(id, i++, AktToken(in)->numval);
    NextToken(in);
    while(TestInpTok(in, Fullstop))
    {
       AcceptInpTok(in, Fullstop);
-      PDArrayAssignInt(id,i++,AktToken(in)->numval);
+      PDArrayAssignInt(id, i++, AktToken(in)->numval);
       AcceptInpTok(in, PosInt);
    }
-   PDArrayAssignInt(id,i,NO_PCL_ID_ELEMENT);
+   PDArrayAssignInt(id, i, NO_PCL_ID_ELEMENT);
    return id;
 }
 
@@ -97,14 +97,14 @@ void PCLIdPrintFormatted(FILE* out, PCLId_p id, bool formatted)
    long i;
 
    assert(id);
-   assert(PDArrayElementInt(id,0)>=0);
-   assert(PDArrayElementInt(id,0)!=NO_PCL_ID_ELEMENT); /* Redundant,
+   assert(PDArrayElementInt(id, 0) >= 0);
+   assert(PDArrayElementInt(id, 0) != NO_PCL_ID_ELEMENT); /* Redundant,
                        bute
                        well...erm...*/
-   fprintf(out, formatted?"%7ld":"%ld", PDArrayElementInt(id,0));
-   for(i=1;PDArrayElementInt(id,i)!=NO_PCL_ID_ELEMENT;i++)
+   fprintf(out, formatted ? "%7ld" : "%ld", PDArrayElementInt(id, 0));
+   for(i = 1; PDArrayElementInt(id, i) != NO_PCL_ID_ELEMENT; i++)
    {
-      fprintf(out, ".%ld", PDArrayElementInt(id,i));
+      fprintf(out, ".%ld", PDArrayElementInt(id, i));
    }
 }
 
@@ -127,21 +127,21 @@ void PCLIdPrintTSTP(FILE* out, PCLId_p id)
    long i;
 
    assert(id);
-   assert(PDArrayElementInt(id,0)>=0);
-   assert(PDArrayElementInt(id,0)!=NO_PCL_ID_ELEMENT); /* Redundant,
+   assert(PDArrayElementInt(id, 0) >= 0);
+   assert(PDArrayElementInt(id, 0) != NO_PCL_ID_ELEMENT); /* Redundant,
                        but
                        well...erm...*/
 
-   if(PDArrayElementInt(id,1)==NO_PCL_ID_ELEMENT)
+   if(PDArrayElementInt(id, 1) == NO_PCL_ID_ELEMENT)
    {
-      fprintf(out, "%ld", PDArrayElementInt(id,0));
+      fprintf(out, "%ld", PDArrayElementInt(id, 0));
    }
    else
    {
-      fprintf(out, "pclid%ld", PDArrayElementInt(id,0));
-      for(i=1;PDArrayElementInt(id,i)!=NO_PCL_ID_ELEMENT;i++)
+      fprintf(out, "pclid%ld", PDArrayElementInt(id, 0));
+      for(i = 1; PDArrayElementInt(id, i) != NO_PCL_ID_ELEMENT; i++)
       {
-    fprintf(out, "_%ld", PDArrayElementInt(id,i));
+         fprintf(out, "_%ld", PDArrayElementInt(id, i));
       }
    }
 }
@@ -161,21 +161,21 @@ void PCLIdPrintTSTP(FILE* out, PCLId_p id)
 
 int PCLIdCompare(PCLId_p id1, PCLId_p id2)
 {
-   long i, e1,e2;
-   long res=0;
+   long i, e1, e2;
+   long res = 0;
 
-   assert(id1&&id2);
+   assert(id1 && id2);
 
-   for(i=0; !res; i++)
+   for(i = 0; !res; i++)
    {
-      e1 = PDArrayElementInt(id1,i);
-      e2 = PDArrayElementInt(id2,i);
-      if((e1==NO_PCL_ID_ELEMENT) && (e2==NO_PCL_ID_ELEMENT))
+      e1 = PDArrayElementInt(id1, i);
+      e2 = PDArrayElementInt(id2, i);
+      if((e1 == NO_PCL_ID_ELEMENT) && (e2 == NO_PCL_ID_ELEMENT))
       {
-    assert(res==0);
-    break;
+         assert(res == 0);
+         break;
       }
-      res = e1-e2;
+      res = e1 - e2;
    }
    return (int)res;
 }

@@ -35,24 +35,24 @@ Changes
 
 typedef struct flatannotermcell
 {
-   Term_p                  term;       /* Usually shared, but no
+   Term_p term; /* Usually shared, but no
                  reference */
-   double                  eval;
-   double                  eval_weight;  /* How much is this annotation
+   double eval;
+   double eval_weight; /* How much is this annotation
                    worth at each subterm node?
                    This takes the place of the
                    sources field, and is
                    normalized by dividing it
                    through the term size */
-   long                    sources;
-   struct flatannotermcell *next;
-}FlatAnnoTermCell, *FlatAnnoTerm_p;
+   long sources;
+   struct flatannotermcell* next;
+} FlatAnnoTermCell, *FlatAnnoTerm_p;
 
 typedef struct flatannosetcell
 {
-   NumTree_p      set;   /* Of FlatAnnoTerms, indexed by
+   NumTree_p set; /* Of FlatAnnoTerms, indexed by
              term->entry_no */
-}FlatAnnoSetCell, *FlatAnnoSet_p;
+} FlatAnnoSetCell, *FlatAnnoSet_p;
 
 
 
@@ -61,30 +61,27 @@ typedef struct flatannosetcell
 /*---------------------------------------------------------------------*/
 
 
-#define FlatAnnoTermCellAlloc() \
-        (FlatAnnoTermCell*)SizeMalloc(sizeof(FlatAnnoTermCell))
-#define FlatAnnoTermCellFree(junk) \
-        SizeFree(junk, sizeof(FlatAnnoTermCell))
+#define FlatAnnoTermCellAlloc()                                                \
+   (FlatAnnoTermCell*)SizeMalloc(sizeof(FlatAnnoTermCell))
+#define FlatAnnoTermCellFree(junk) SizeFree(junk, sizeof(FlatAnnoTermCell))
 
-FlatAnnoTerm_p FlatAnnoTermAlloc(Term_p term, double eval, double
-             eval_weight, long sources);
+FlatAnnoTerm_p FlatAnnoTermAlloc(Term_p term, double eval, double eval_weight,
+                                 long sources);
 
-#define         FlatAnnoTermFree(junk) FlatAnnoTermCellFree(junk)
+#define FlatAnnoTermFree(junk) FlatAnnoTermCellFree(junk)
 
-#define FlatAnnoSetCellAlloc() \
-        (FlatAnnoSetCell*)SizeMalloc(sizeof(FlatAnnoSetCell))
-#define FlatAnnoSetCellFree(junk) \
-        SizeFree(junk, sizeof(FlatAnnoSetCell))
+#define FlatAnnoSetCellAlloc()                                                 \
+   (FlatAnnoSetCell*)SizeMalloc(sizeof(FlatAnnoSetCell))
+#define FlatAnnoSetCellFree(junk) SizeFree(junk, sizeof(FlatAnnoSetCell))
 
 void FlatAnnoTermPrint(FILE* out, FlatAnnoTerm_p term, Sig_p sig);
 
 FlatAnnoSet_p FlatAnnoSetAlloc(void);
-void          FlatAnnoSetFree(FlatAnnoSet_p junk);
-bool          FlatAnnoSetAddTerm(FlatAnnoSet_p set, FlatAnnoTerm_p
-             term);
+void FlatAnnoSetFree(FlatAnnoSet_p junk);
+bool FlatAnnoSetAddTerm(FlatAnnoSet_p set, FlatAnnoTerm_p term);
 void FlatAnnoSetPrint(FILE* out, FlatAnnoSet_p set, Sig_p sig);
-long FlatAnnoSetTranslate(FlatAnnoSet_p flatset, AnnoSet_p set, double
-           weights[]);
+long FlatAnnoSetTranslate(FlatAnnoSet_p flatset, AnnoSet_p set,
+                          double weights[]);
 
 long FlatAnnoSetSize(FlatAnnoSet_p fset);
 
@@ -99,8 +96,6 @@ double FlatAnnoSetEvalWeightedAverage(FlatAnnoSet_p set);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

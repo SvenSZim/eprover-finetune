@@ -53,12 +53,12 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-static long term_depth_info_add(Term_p term, long* depthmax, long*
-            depthsum, long* count)
+static long term_depth_info_add(Term_p term, long* depthmax, long* depthsum,
+                                long* count)
 {
    long depth = TermDepth(term);
 
-   (*depthsum)+=depth;
+   (*depthsum) += depth;
    (*count)++;
    if(depth > *depthmax)
    {
@@ -82,8 +82,8 @@ static long term_depth_info_add(Term_p term, long* depthmax, long*
 //
 /----------------------------------------------------------------------*/
 
-static long eqn_tptp_depth_info_add(Eqn_p eqn, long* depthmax, long*
-                depthsum, long* count)
+static long eqn_tptp_depth_info_add(Eqn_p eqn, long* depthmax, long* depthsum,
+                                    long* count)
 {
    if(EqnIsEquLit(eqn))
    {
@@ -93,10 +93,9 @@ static long eqn_tptp_depth_info_add(Eqn_p eqn, long* depthmax, long*
    else
    {
       int i;
-      for(i=0; i<eqn->lterm->arity; i++)
+      for(i = 0; i < eqn->lterm->arity; i++)
       {
-    term_depth_info_add(eqn->lterm->args[i], depthmax, depthsum,
-              count);
+         term_depth_info_add(eqn->lterm->args[i], depthmax, depthsum, count);
       }
    }
    return *depthmax;
@@ -123,24 +122,24 @@ static long eqn_tptp_depth_info_add(Eqn_p eqn, long* depthmax, long*
 
 int ClauseCountExtSymbols(Clause_p clause, Sig_p sig, long min_arity)
 {
-   long *dist_array = SizeMalloc((sig->f_count+1)*sizeof(long));
+   long* dist_array = SizeMalloc((sig->f_count + 1) * sizeof(long));
    FunCode i;
-   int  res =0;
+   int res = 0;
 
-   for(i=0; i<=sig->f_count; i++)
+   for(i = 0; i <= sig->f_count; i++)
    {
       dist_array[i] = 0;
    }
    ClauseAddSymbolDistribution(clause, dist_array);
 
-   for(i=sig->internal_symbols+1; i<=sig->f_count; i++)
+   for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
-      if((SigFindArity(sig, i)>=min_arity) && dist_array[i])
+      if((SigFindArity(sig, i) >= min_arity) && dist_array[i])
       {
-    res++;
+         res++;
       }
    }
-   SizeFree(dist_array, (sig->f_count+1)*sizeof(long));
+   SizeFree(dist_array, (sig->f_count + 1) * sizeof(long));
 
    return res;
 }
@@ -161,8 +160,8 @@ int ClauseCountExtSymbols(Clause_p clause, Sig_p sig, long min_arity)
 FunCode TermAddVarDistribution(Term_p term, PDArray_p dist_array)
 {
    PStack_p stack = PStackAlloc();
-   long     count;
-   FunCode  max_var = 0;
+   long count;
+   FunCode max_var = 0;
    assert(term);
 
    PStackPushP(stack, term);
@@ -177,7 +176,7 @@ FunCode TermAddVarDistribution(Term_p term, PDArray_p dist_array)
 
          assert(term->f_code > 0);
 
-         for(i=0; i<term->arity; i++)
+         for(i = 0; i < term->arity; i++)
          {
             assert(term->args);
             PStackPushP(stack, term->args[i]);
@@ -261,13 +260,13 @@ FunCode EqnListAddVarDistribution(Eqn_p list, PDArray_p dist_array)
 
 long ClauseCountVariableSet(Clause_p clause)
 {
-   PDArray_p dist_array = PDIntArrayAlloc(20,20);
-   FunCode max_var,i;
+   PDArray_p dist_array = PDIntArrayAlloc(20, 20);
+   FunCode max_var, i;
    long res = 0;
 
    max_var = ClauseAddVarDistribution(clause, dist_array);
 
-   for(i=1; i<=max_var; i++)
+   for(i = 1; i <= max_var; i++)
    {
       if(PDArrayElementInt(dist_array, i))
       {
@@ -294,15 +293,15 @@ long ClauseCountVariableSet(Clause_p clause)
 
 long ClauseCountSingletonSet(Clause_p clause)
 {
-   PDArray_p dist_array = PDIntArrayAlloc(20,20);
-   FunCode max_var,i;
+   PDArray_p dist_array = PDIntArrayAlloc(20, 20);
+   FunCode max_var, i;
    long res = 0;
 
    max_var = ClauseAddVarDistribution(clause, dist_array);
 
-   for(i=1; i<=max_var; i++)
+   for(i = 1; i <= max_var; i++)
    {
-      if(PDArrayElementInt(dist_array, i)==1)
+      if(PDArrayElementInt(dist_array, i) == 1)
       {
          res++;
       }
@@ -328,13 +327,13 @@ long ClauseCountSingletonSet(Clause_p clause)
 long ClauseCountMaximalTerms(Clause_p clause)
 {
    Eqn_p handle;
-   long  res = 0;
+   long res = 0;
 
-   for(handle=clause->literals; handle; handle = handle->next)
+   for(handle = clause->literals; handle; handle = handle->next)
    {
       if(EqnIsMaximal(handle))
       {
-    res+=EqnCountMaximalLiterals(handle);
+         res += EqnCountMaximalLiterals(handle);
       }
    }
    return res;
@@ -356,13 +355,13 @@ long ClauseCountMaximalTerms(Clause_p clause)
 long ClauseCountMaximalLiterals(Clause_p clause)
 {
    Eqn_p handle;
-   long  res = 0;
+   long res = 0;
 
-   for(handle=clause->literals; handle; handle = handle->next)
+   for(handle = clause->literals; handle; handle = handle->next)
    {
       if(EqnIsMaximal(handle))
       {
-    res++;
+         res++;
       }
    }
    return res;
@@ -384,13 +383,13 @@ long ClauseCountMaximalLiterals(Clause_p clause)
 long ClauseCountUnorientableLiterals(Clause_p clause)
 {
    Eqn_p handle;
-   long  res = 0;
+   long res = 0;
 
-   for(handle=clause->literals; handle; handle = handle->next)
+   for(handle = clause->literals; handle; handle = handle->next)
    {
       if(!EqnIsOriented(handle))
       {
-    res++;
+         res++;
       }
    }
    return res;
@@ -410,12 +409,12 @@ long ClauseCountUnorientableLiterals(Clause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-long ClauseTPTPDepthInfoAdd(Clause_p clause, long* depthmax, long*
-             depthsum, long* count)
+long ClauseTPTPDepthInfoAdd(Clause_p clause, long* depthmax, long* depthsum,
+                            long* count)
 {
    Eqn_p handle;
 
-   for(handle = clause->literals; handle; handle=handle->next)
+   for(handle = clause->literals; handle; handle = handle->next)
    {
       eqn_tptp_depth_info_add(handle, depthmax, depthsum, count);
    }
@@ -446,15 +445,12 @@ long ClauseTPTPDepthInfoAdd(Clause_p clause, long* depthmax, long*
 
 void ClauseInfoPrint(FILE* out, Clause_p clause)
 {
-   fprintf(out, "info(%ld, %ld, %ld, %ld, %ld, %d, %ld, %ld)",
-      clause->ident,
-      clause->proof_depth,
-      clause->proof_size,
-      (long)ClauseWeight(clause, 1, 1, 1, 1, 1, 1, false),
-      ClauseDepth(clause),
-      ClauseLiteralNumber(clause),
-      (long)ClauseWeight(clause, 0, 1, 1, 1, 1, 1, false),
-      ClauseCountVariableSet(clause));
+   fprintf(out, "info(%ld, %ld, %ld, %ld, %ld, %d, %ld, %ld)", clause->ident,
+           clause->proof_depth, clause->proof_size,
+           (long)ClauseWeight(clause, 1, 1, 1, 1, 1, 1, false),
+           ClauseDepth(clause), ClauseLiteralNumber(clause),
+           (long)ClauseWeight(clause, 0, 1, 1, 1, 1, 1, false),
+           ClauseCountVariableSet(clause));
 }
 
 
@@ -475,7 +471,7 @@ void ClauseLinePrint(FILE* out, Clause_p clause, bool printinfo)
    ClausePrint(out, clause, true);
    if(printinfo)
    {
-      fputs(" "COMCHARRAW" ", out);
+      fputs(" " COMCHARRAW " ", out);
       ClauseInfoPrint(out, clause);
    }
    fputc('\n', out);
@@ -499,30 +495,23 @@ void ClausePropInfoPrint(FILE* out, Clause_p clause)
 {
    assert(clause);
 
-   fprintf(out, COMCHAR" ");
+   fprintf(out, COMCHAR " ");
    ClausePCLPrint(out, clause, true);
    fprintf(out,
-      "\n"
-      COMCHAR" Standardweight: %6ld\n"
-      COMCHAR" Symbol count  : %6ld\n"
-      COMCHAR"    F. symbols : %6ld\n"
-      COMCHAR"    Variables  : %6ld\n"
-      COMCHAR"    Constants  : %6ld\n"
-      COMCHAR"    P. symbols : %6ld\n"
-      COMCHAR" Depth         : %6ld\n"
-           COMCHAR" Literals      : %6d\n"
-           COMCHAR"    ...positive: %6d\n"
-           COMCHAR"    ...negative: %6d\n",
-      (long)ClauseStandardWeight(clause),
-      (long)ClauseSymTypeWeight(clause, 1,1,1,1,1,1,1,1),
-      (long)ClauseSymTypeWeight(clause, 1,1,1,0,1,0,0,1),
-      (long)ClauseSymTypeWeight(clause, 1,1,1,1,0,0,0,1),
-      (long)ClauseSymTypeWeight(clause, 1,1,1,0,0,1,0,1),
-      (long)ClauseSymTypeWeight(clause, 1,1,1,0,0,0,1,1),
-      ClauseDepth(clause),
-      ClauseLiteralNumber(clause),
-      clause->pos_lit_no,
-      clause->neg_lit_no);
+           "\n" COMCHAR " Standardweight: %6ld\n" COMCHAR
+           " Symbol count  : %6ld\n" COMCHAR "    F. symbols : %6ld\n" COMCHAR
+           "    Variables  : %6ld\n" COMCHAR "    Constants  : %6ld\n" COMCHAR
+           "    P. symbols : %6ld\n" COMCHAR " Depth         : %6ld\n" COMCHAR
+           " Literals      : %6d\n" COMCHAR "    ...positive: %6d\n" COMCHAR
+           "    ...negative: %6d\n",
+           (long)ClauseStandardWeight(clause),
+           (long)ClauseSymTypeWeight(clause, 1, 1, 1, 1, 1, 1, 1, 1),
+           (long)ClauseSymTypeWeight(clause, 1, 1, 1, 0, 1, 0, 0, 1),
+           (long)ClauseSymTypeWeight(clause, 1, 1, 1, 1, 0, 0, 0, 1),
+           (long)ClauseSymTypeWeight(clause, 1, 1, 1, 0, 0, 1, 0, 1),
+           (long)ClauseSymTypeWeight(clause, 1, 1, 1, 0, 0, 0, 1, 1),
+           ClauseDepth(clause), ClauseLiteralNumber(clause), clause->pos_lit_no,
+           clause->neg_lit_no);
 }
 
 

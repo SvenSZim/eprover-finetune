@@ -26,21 +26,27 @@
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-char* help_message = "\
-"COMCHAR" Note : Block commands that are of the form of \"COMMAND <NAME> ... GO\"\n\
-"COMCHAR" should have the \"COMMAND <NAME>\" and GO each on a separate line of\n\
-"COMCHAR" their own. The block should be in between these two.\n\
-"COMCHAR"\n\
-"COMCHAR"- ADD <NAME> ... GO : Uploads a new axiom set with the name <NAME>.\n\
-"COMCHAR"- LOAD <NAME>       : Loads a server-side axiom set with the name <NAME>. \n\
-"COMCHAR"- STAGE <NAME>      : Stages the axiom set <NAME>.\n\
-"COMCHAR"- UNSTAGE <NAME>    : Unstages the axiom set <NAME>.\n\
-"COMCHAR"- REMOVE <NAME>     : Removes the axiom set <NAME> from the memory.\n\
-"COMCHAR"- DOWNLOAD <NAME>   : Prints the axiom set <NAME>.\n\
-"COMCHAR"- RUN <NAME> ... GO : Runs a job with the name <NAME>.\n\
-"COMCHAR"- LIST              : Prints the status of the axiom sets.\n\
-"COMCHAR"- HELP              : Prints the help message.\n\
-"COMCHAR"- QUIT              : Closes the connection with the server.\n";
+char* help_message =
+   "\
+" COMCHAR
+   " Note : Block commands that are of the form of \"COMMAND <NAME> ... GO\"\n\
+" COMCHAR
+   " should have the \"COMMAND <NAME>\" and GO each on a separate line of\n\
+" COMCHAR " their own. The block should be in between these two.\n\
+" COMCHAR "\n\
+" COMCHAR
+   "- ADD <NAME> ... GO : Uploads a new axiom set with the name <NAME>.\n\
+" COMCHAR
+   "- LOAD <NAME>       : Loads a server-side axiom set with the name <NAME>. \n\
+" COMCHAR "- STAGE <NAME>      : Stages the axiom set <NAME>.\n\
+" COMCHAR "- UNSTAGE <NAME>    : Unstages the axiom set <NAME>.\n\
+" COMCHAR
+   "- REMOVE <NAME>     : Removes the axiom set <NAME> from the memory.\n\
+" COMCHAR "- DOWNLOAD <NAME>   : Prints the axiom set <NAME>.\n\
+" COMCHAR "- RUN <NAME> ... GO : Runs a job with the name <NAME>.\n\
+" COMCHAR "- LIST              : Prints the status of the axiom sets.\n\
+" COMCHAR "- HELP              : Prints the help message.\n\
+" COMCHAR "- QUIT              : Closes the connection with the server.\n";
 
 
 // Defining commands used
@@ -69,15 +75,20 @@ char* help_message = "\
 #define ERR_ERROR_MESSAGE "499 Err : Something went wrong\n"
 #define ERR_AXIOM_SET_NAME_TAKEN_MESSAGE "401 Err : axiom set name is taken\n"
 #define ERR_SYNTAX_ERROR_MESSAGE "402 Err : syntax error\n"
-#define ERR_AXIOM_SET_IS_STAGED_MESSAGE "403 Err : axiom set is staged, please unstage it first\n"
+#define ERR_AXIOM_SET_IS_STAGED_MESSAGE                                        \
+   "403 Err : axiom set is staged, please unstage it first\n"
 #define ERR_UNKNOWN_AXIOM_SET_MESSAGE "404 Err : unknown axiom set\n"
-#define ERR_AXIOM_SET_IS_ALREADY_STAGED_MESSAGE "405 Err : axiom set is already staged\n"
-#define ERR_AXIOM_SET_IS_ALREADY_UNSTAGED_MESSAGE "406 Err : axiom set is already unstaged\n"
+#define ERR_AXIOM_SET_IS_ALREADY_STAGED_MESSAGE                                \
+   "405 Err : axiom set is already staged\n"
+#define ERR_AXIOM_SET_IS_ALREADY_UNSTAGED_MESSAGE                              \
+   "406 Err : axiom set is already unstaged\n"
 #define ERR_UNKNOWN_COMMAND_MESSAGE "407 Err : unknown command\n"
-#define ERR_NO_AXIOM_LIBRARY_ON_SERVER_MESSAGE "408 Err : no axioms library on server\n"
-#define ERR_CANNOT_READ_SERVER_LIBRARY_MESSAGE "409 Err : cannot read server library\n"
+#define ERR_NO_AXIOM_LIBRARY_ON_SERVER_MESSAGE                                 \
+   "408 Err : no axioms library on server\n"
+#define ERR_CANNOT_READ_SERVER_LIBRARY_MESSAGE                                 \
+   "409 Err : cannot read server library\n"
 
-#define AXIOM_SET_NAME_TOKENS String|Name|PosInt|Fullstop|Plus|Hyphen
+#define AXIOM_SET_NAME_TOKENS String | Name | PosInt | Fullstop | Plus | Hyphen
 
 /*---------------------------------------------------------------------*/
 /*                      Forward Declarations                           */
@@ -86,15 +97,13 @@ char* help_message = "\
 void print_to_outstream(char* message, FILE* fp, int sock_fd);
 PStack_p get_directory_listings(DStr_p dir);
 void AcceptAxiomSetName(Scanner_p in, DStr_p dest);
-char* run_command(InteractiveSpec_p interactive,
-                  DStr_p jobname,
+char* run_command(InteractiveSpec_p interactive, DStr_p jobname,
                   DStr_p input_axioms);
-char* add_command(InteractiveSpec_p interactive,
-                  DStr_p axiomsname,
+char* add_command(InteractiveSpec_p interactive, DStr_p axiomsname,
                   DStr_p input_axioms);
 char* stage_command(InteractiveSpec_p interactive, DStr_p axiom_set);
 char* list_command(InteractiveSpec_p interactive);
-void  quit_command(InteractiveSpec_p interactive);
+void quit_command(InteractiveSpec_p interactive);
 char* remove_command(InteractiveSpec_p interactive, DStr_p axiom_set);
 char* download_command(InteractiveSpec_p interactive, DStr_p axiom_set);
 char* unstage_command(InteractiveSpec_p interactive, DStr_p axiom_set);
@@ -117,8 +126,7 @@ char* load_command(InteractiveSpec_p interactive, DStr_p filename);
 //
 /----------------------------------------------------------------------*/
 
-char* run_command(InteractiveSpec_p interactive,
-                  DStr_p jobname,
+char* run_command(InteractiveSpec_p interactive, DStr_p jobname,
                   DStr_p input_axioms)
 {
 
@@ -127,10 +135,10 @@ char* run_command(InteractiveSpec_p interactive,
    FormulaSet_p fset;
    char* message;
    char buffer[256];
-   long wct_limit=30;
+   long wct_limit = 30;
    int pid;
 
-   if ((pid = fork()) == -1)
+   if((pid = fork()) == -1)
    {
       return ERR_ERROR_MESSAGE;
    }
@@ -149,34 +157,28 @@ char* run_command(InteractiveSpec_p interactive,
       fprintf(stdout, "%s", DStrView(jobname));
       fflush(stdout);
 
-      sprintf(buffer, "\n"COMCHAR" Processing started for %s\n", DStrView(jobname));
+      sprintf(buffer, "\n" COMCHAR " Processing started for %s\n",
+              DStrView(jobname));
       message = buffer;
 
       print_to_outstream(message, interactive->fp, interactive->sock_fd);
 
-      job_scanner = CreateScanner(StreamTypeUserString,
-                                  DStrView(input_axioms),
-                                  true,
-                                  NULL, true);
+      job_scanner = CreateScanner(StreamTypeUserString, DStrView(input_axioms),
+                                  true, NULL, true);
       ScannerSetFormat(job_scanner, TSTPFormat);
       dummy = ClauseSetAlloc();
       fset = FormulaSetAlloc();
-      FormulaAndClauseSetParse(job_scanner, fset, dummy, interactive->ctrl->terms,
-                               NULL,
+      FormulaAndClauseSetParse(job_scanner, fset, dummy,
+                               interactive->ctrl->terms, NULL,
                                &(interactive->ctrl->parsed_includes));
 
       // cset and fset are handed over to BatchProcessProblem and are
       // freed there (via StructFOFSpecBacktrackToSpec()).
-      (void)BatchProcessProblem(interactive->spec,
-                                wct_limit,
-                                interactive->ctrl,
-                                DStrView(jobname),
-                                dummy,
-                                fset,
-                                interactive->fp,
-                                interactive->sock_fd,
-                                true);
-      sprintf(buffer, "\n"COMCHAR" Processing finished for %s\n\n", DStrView(jobname));
+      (void)BatchProcessProblem(interactive->spec, wct_limit, interactive->ctrl,
+                                DStrView(jobname), dummy, fset, interactive->fp,
+                                interactive->sock_fd, true);
+      sprintf(buffer, "\n" COMCHAR " Processing finished for %s\n\n",
+              DStrView(jobname));
       message = buffer;
       print_to_outstream(message, interactive->fp, interactive->sock_fd);
 
@@ -198,8 +200,7 @@ char* run_command(InteractiveSpec_p interactive,
 //
 /----------------------------------------------------------------------*/
 
-char* add_command(InteractiveSpec_p interactive,
-                  DStr_p axiomsname,
+char* add_command(InteractiveSpec_p interactive, DStr_p axiomsname,
                   DStr_p input_axioms)
 {
 
@@ -208,24 +209,21 @@ char* add_command(InteractiveSpec_p interactive,
    FormulaSet_p fset;
    AxiomSet_p axiom_set;
    PStackPointer i;
-   AxiomSet_p    handle;
-   char *file;
-   FILE *fp;
+   AxiomSet_p handle;
+   char* file;
+   FILE* fp;
 
    file = TempFileName();
-   fp   = SecureFOpen(file, "w");
+   fp = SecureFOpen(file, "w");
    fprintf(fp, "%s", DStrView(input_axioms));
    SecureFClose(fp);
 
-   axioms_scanner = CreateScanner(StreamTypeFile,
-                                  file,
-                                  true,
-                                  NULL, true);
+   axioms_scanner = CreateScanner(StreamTypeFile, file, true, NULL, true);
    ScannerSetFormat(axioms_scanner, TSTPFormat);
    dummy = ClauseSetAlloc();
    fset = FormulaSetAlloc();
-   FormulaAndClauseSetParse(axioms_scanner, fset, dummy, interactive->ctrl->terms,
-                            NULL,
+   FormulaAndClauseSetParse(axioms_scanner, fset, dummy,
+                            interactive->ctrl->terms, NULL,
                             &(interactive->ctrl->parsed_includes));
    DestroyScanner(axioms_scanner);
    DStrAppendDStr(dummy->identifier, axiomsname);
@@ -234,10 +232,10 @@ char* add_command(InteractiveSpec_p interactive,
    axiom_set = AxiomSetAlloc(dummy, fset, input_axioms, 0);
 
    int name_taken = 0;
-   for(i=0; i<PStackGetSP(interactive->axiom_sets); i++)
+   for(i = 0; i < PStackGetSP(interactive->axiom_sets); i++)
    {
       handle = PStackElementP(interactive->axiom_sets, i);
-      if(strcmp( DStrView(axiomsname), DStrView(handle->cset->identifier)) == 0 )
+      if(strcmp(DStrView(axiomsname), DStrView(handle->cset->identifier)) == 0)
       {
          name_taken = 1;
          break;
@@ -270,22 +268,24 @@ char* add_command(InteractiveSpec_p interactive,
 char* stage_command(InteractiveSpec_p interactive, DStr_p axiom_set)
 {
    PStackPointer i;
-   AxiomSet_p    handle;
+   AxiomSet_p handle;
 
-   for(i=0; i<PStackGetSP(interactive->axiom_sets); i++)
+   for(i = 0; i < PStackGetSP(interactive->axiom_sets); i++)
    {
       handle = PStackElementP(interactive->axiom_sets, i);
-      if(strcmp( DStrView(axiom_set), DStrView(handle->cset->identifier)) == 0 )
+      if(strcmp(DStrView(axiom_set), DStrView(handle->cset->identifier)) == 0)
       {
-         if( handle->staged )
+         if(handle->staged)
          {
             return ERR_AXIOM_SET_IS_ALREADY_STAGED_MESSAGE;
          }
          else
          {
-            StructFOFSpecAddProblem(interactive->ctrl, handle->cset, handle->fset, false);
+            StructFOFSpecAddProblem(interactive->ctrl, handle->cset,
+                                    handle->fset, false);
             handle->staged = 1;
-            interactive->ctrl->shared_ax_sp = PStackGetSP(interactive->ctrl->clause_sets);
+            interactive->ctrl->shared_ax_sp =
+               PStackGetSP(interactive->ctrl->clause_sets);
             return OK_STAGED_MESSAGE;
          }
       }
@@ -309,7 +309,7 @@ char* stage_command(InteractiveSpec_p interactive, DStr_p axiom_set)
 char* list_command(InteractiveSpec_p interactive)
 {
    PStackPointer i;
-   AxiomSet_p    handle;
+   AxiomSet_p handle;
    PStack_p staged, unstaged;
    char buffer[256];
    PStack_p files;
@@ -318,7 +318,7 @@ char* list_command(InteractiveSpec_p interactive)
    staged = PStackAlloc();
    unstaged = PStackAlloc();
 
-   for(i=0; i<PStackGetSP(interactive->axiom_sets); i++)
+   for(i = 0; i < PStackGetSP(interactive->axiom_sets); i++)
    {
       handle = PStackElementP(interactive->axiom_sets, i);
       if(handle->staged)
@@ -331,27 +331,29 @@ char* list_command(InteractiveSpec_p interactive)
       }
    }
 
-   if( PStackGetSP(staged) > 0 )
+   if(PStackGetSP(staged) > 0)
    {
       print_to_outstream("Staged :\n", interactive->fp, interactive->sock_fd);
-      for(i=0; i<PStackGetSP(staged); i++){
+      for(i = 0; i < PStackGetSP(staged); i++)
+      {
          handle = PStackElementP(staged, i);
          sprintf(buffer, "  %s\n", DStrView(handle->cset->identifier));
          print_to_outstream(buffer, interactive->fp, interactive->sock_fd);
       }
    }
 
-   if( PStackGetSP(unstaged) > 0 )
+   if(PStackGetSP(unstaged) > 0)
    {
       print_to_outstream("Unstaged :\n", interactive->fp, interactive->sock_fd);
-      for(i=0; i<PStackGetSP(unstaged); i++){
+      for(i = 0; i < PStackGetSP(unstaged); i++)
+      {
          handle = PStackElementP(unstaged, i);
          sprintf(buffer, "  %s\n", DStrView(handle->cset->identifier));
          print_to_outstream(buffer, interactive->fp, interactive->sock_fd);
       }
    }
 
-   if( PStackGetSP(staged) == 0 && PStackGetSP(unstaged) == 0 )
+   if(PStackGetSP(staged) == 0 && PStackGetSP(unstaged) == 0)
    {
       print_to_outstream("No Axiom Sets currently in memory.\n",
                          interactive->fp, interactive->sock_fd);
@@ -363,7 +365,7 @@ char* list_command(InteractiveSpec_p interactive)
    if(DStrLen(interactive->server_lib))
    {
       files = get_directory_listings(interactive->server_lib);
-      if (files == NULL)
+      if(files == NULL)
       {
          print_to_outstream("\tCould not open current directory.\n",
                             interactive->fp, interactive->sock_fd);
@@ -382,8 +384,9 @@ char* list_command(InteractiveSpec_p interactive)
    }
    else
    {
-      print_to_outstream("\tNo axioms directory was specified on server startup.\n",
-                         interactive->fp, interactive->sock_fd);
+      print_to_outstream(
+         "\tNo axioms directory was specified on server startup.\n",
+         interactive->fp, interactive->sock_fd);
    }
    return OK_SUCCESS_MESSAGE;
 }
@@ -403,15 +406,15 @@ char* list_command(InteractiveSpec_p interactive)
 void quit_command(InteractiveSpec_p interactive)
 {
    PStack_p spare_stack;
-   AxiomSet_p    axiom_set_handle;
+   AxiomSet_p axiom_set_handle;
    PStackPointer i;
    DStr_p dummy;
 
    spare_stack = PStackAlloc();
-   for(i=0; i < PStackGetSP(interactive->axiom_sets); i++)
+   for(i = 0; i < PStackGetSP(interactive->axiom_sets); i++)
    {
       axiom_set_handle = PStackElementP(interactive->axiom_sets, i);
-      if( axiom_set_handle->staged )
+      if(axiom_set_handle->staged)
       {
          PStackPushP(spare_stack, axiom_set_handle->cset->identifier);
       }
@@ -439,7 +442,7 @@ void quit_command(InteractiveSpec_p interactive)
 
 char* remove_command(InteractiveSpec_p interactive, DStr_p axiom_set)
 {
-   AxiomSet_p    handle;
+   AxiomSet_p handle;
    PStack_p spare_stack;
    spare_stack = PStackAlloc();
    handle = NULL;
@@ -448,9 +451,9 @@ char* remove_command(InteractiveSpec_p interactive, DStr_p axiom_set)
    while(!PStackEmpty(interactive->axiom_sets))
    {
       handle = PStackPopP(interactive->axiom_sets);
-      if(strcmp( DStrView(axiom_set), DStrView(handle->cset->identifier)) == 0 )
+      if(strcmp(DStrView(axiom_set), DStrView(handle->cset->identifier)) == 0)
       {
-         if( handle->staged )
+         if(handle->staged)
          {
             return ERR_AXIOM_SET_IS_STAGED_MESSAGE;
          }
@@ -472,7 +475,7 @@ char* remove_command(InteractiveSpec_p interactive, DStr_p axiom_set)
       PStackPushP(interactive->axiom_sets, handle);
    }
    PStackFree(spare_stack);
-   if( !found )
+   if(!found)
    {
       return ERR_UNKNOWN_AXIOM_SET_MESSAGE;
    }
@@ -498,15 +501,15 @@ char* remove_command(InteractiveSpec_p interactive, DStr_p axiom_set)
 char* download_command(InteractiveSpec_p interactive, DStr_p axiom_set)
 {
    PStackPointer i;
-   AxiomSet_p    handle;
+   AxiomSet_p handle;
 
-   for(i=0; i < PStackGetSP(interactive->axiom_sets); i++)
+   for(i = 0; i < PStackGetSP(interactive->axiom_sets); i++)
    {
       handle = PStackElementP(interactive->axiom_sets, i);
-      if(strcmp( DStrView(axiom_set), DStrView(handle->cset->identifier)) == 0 )
+      if(strcmp(DStrView(axiom_set), DStrView(handle->cset->identifier)) == 0)
       {
-         print_to_outstream(DStrView(handle->raw_data),
-                            interactive->fp, interactive->sock_fd);
+         print_to_outstream(DStrView(handle->raw_data), interactive->fp,
+                            interactive->sock_fd);
          return OK_DOWNLOADED_MESSAGE;
       }
    }
@@ -530,7 +533,7 @@ char* download_command(InteractiveSpec_p interactive, DStr_p axiom_set)
 char* unstage_command(InteractiveSpec_p interactive, DStr_p axiom_set)
 {
    PStackPointer i;
-   AxiomSet_p    axiom_set_handle;
+   AxiomSet_p axiom_set_handle;
    PStack_p cspare_stack, fspare_stack;
    fspare_stack = PStackAlloc();
    cspare_stack = PStackAlloc();
@@ -538,12 +541,13 @@ char* unstage_command(InteractiveSpec_p interactive, DStr_p axiom_set)
    ClauseSet_p chandle;
    int found = 0;
 
-   for(i=0; i < PStackGetSP(interactive->axiom_sets); i++)
+   for(i = 0; i < PStackGetSP(interactive->axiom_sets); i++)
    {
       axiom_set_handle = PStackElementP(interactive->axiom_sets, i);
-      if(strcmp( DStrView(axiom_set), DStrView(axiom_set_handle->cset->identifier)) == 0 )
+      if(strcmp(DStrView(axiom_set),
+                DStrView(axiom_set_handle->cset->identifier)) == 0)
       {
-         if( !axiom_set_handle->staged )
+         if(!axiom_set_handle->staged)
          {
             return ERR_AXIOM_SET_IS_ALREADY_UNSTAGED_MESSAGE;
          }
@@ -555,24 +559,26 @@ char* unstage_command(InteractiveSpec_p interactive, DStr_p axiom_set)
       }
    }
 
-   if( !found )
+   if(!found)
    {
       return ERR_UNKNOWN_AXIOM_SET_MESSAGE;
    }
 
-   assert( PStackGetSP(interactive->ctrl->clause_sets) ==
-           PStackGetSP(interactive->ctrl->formula_sets) );
+   assert(PStackGetSP(interactive->ctrl->clause_sets) ==
+          PStackGetSP(interactive->ctrl->formula_sets));
    found = 0;
 
    while(!PStackEmpty(interactive->ctrl->clause_sets))
    {
       chandle = PStackPopP(interactive->ctrl->clause_sets);
       fhandle = PStackPopP(interactive->ctrl->formula_sets);
-      assert( strcmp( DStrView(chandle->identifier), DStrView(fhandle->identifier)) == 0 );
+      assert(strcmp(DStrView(chandle->identifier),
+                    DStrView(fhandle->identifier)) == 0);
 
-      if(strcmp( DStrView(axiom_set), DStrView(chandle->identifier)) == 0 )
+      if(strcmp(DStrView(axiom_set), DStrView(chandle->identifier)) == 0)
       {
-         GenDistribAddFormulaSet(interactive->ctrl->f_distrib, fhandle, false, -1);
+         GenDistribAddFormulaSet(interactive->ctrl->f_distrib, fhandle, false,
+                                 -1);
          GenDistribAddClauseSet(interactive->ctrl->f_distrib, chandle, -1);
          found = 1;
          break;
@@ -591,11 +597,12 @@ char* unstage_command(InteractiveSpec_p interactive, DStr_p axiom_set)
       PStackPushP(interactive->ctrl->formula_sets, fhandle);
       PStackPushP(interactive->ctrl->clause_sets, chandle);
    }
-   interactive->ctrl->shared_ax_sp = PStackGetSP(interactive->ctrl->clause_sets);
+   interactive->ctrl->shared_ax_sp =
+      PStackGetSP(interactive->ctrl->clause_sets);
    PStackFree(fspare_stack);
    PStackFree(cspare_stack);
 
-   if( !found )
+   if(!found)
    {
       return ERR_UNKNOWN_AXIOM_SET_MESSAGE;
    }
@@ -621,7 +628,7 @@ char* load_command(InteractiveSpec_p interactive, DStr_p filename)
 {
    PStack_p files;
    DStr_p handle, file_content;
-   char *ret;
+   char* ret;
    int found;
 
    if(DStrLen(interactive->server_lib))
@@ -654,7 +661,7 @@ char* load_command(InteractiveSpec_p interactive, DStr_p filename)
             FileLoad(DStrView(handle), file_content);
             DStrFree(handle);
             ret = add_command(interactive, filename, file_content);
-            if( strcmp(ret, OK_ADDED_MESSAGE) == 0 )
+            if(strcmp(ret, OK_ADDED_MESSAGE) == 0)
             {
                ret = OK_LOADED_MESSAGE;
             }
@@ -666,7 +673,6 @@ char* load_command(InteractiveSpec_p interactive, DStr_p filename)
             return ERR_UNKNOWN_AXIOM_SET_MESSAGE;
          }
       }
-
    }
    else
    {
@@ -718,16 +724,16 @@ void print_to_outstream(char* message, FILE* fp, int sock_fd)
 PStack_p get_directory_listings(DStr_p dirname)
 {
    PStack_p files;
-   struct dirent *de;
+   struct dirent* de;
    DStr_p file_name;
-   DIR *dir;
+   DIR* dir;
 #ifdef __sun
    char path[PATH_MAX];
    struct stat buf;
    int len;
 
-   if (strlcpy(path, DStrView(dirname), sizeof(path)) < sizeof(path)
-       && strlcat(path, "/", sizeof(path)) < sizeof(path))
+   if(strlcpy(path, DStrView(dirname), sizeof(path)) < sizeof(path) &&
+      strlcat(path, "/", sizeof(path)) < sizeof(path))
    {
       len = strlen(path);
    }
@@ -740,30 +746,30 @@ PStack_p get_directory_listings(DStr_p dirname)
    files = PStackAlloc();
 
    dir = opendir(DStrView(dirname));
-   if (dir == NULL)
+   if(dir == NULL)
    {
       return NULL;
    }
    else
    {
-      while ((de = readdir(dir)) != NULL)
+      while((de = readdir(dir)) != NULL)
       {
-         if( strcmp(de->d_name,".") == 0 || strcmp(de->d_name,"..") == 0)
+         if(strcmp(de->d_name, ".") == 0 || strcmp(de->d_name, "..") == 0)
          {
             continue;
          }
 #ifdef __sun
          path[len] = '\0';
-         if (strlcat(path, de->d_name, sizeof(path)) >= sizeof(path))
+         if(strlcat(path, de->d_name, sizeof(path)) >= sizeof(path))
          {
             continue;
          }
-         if (stat(path, &buf) != 0 || !S_ISREG(buf.st_mode))
+         if(stat(path, &buf) != 0 || !S_ISREG(buf.st_mode))
          {
             continue;
          }
 #else
-         if (de->d_type != DT_REG)
+         if(de->d_type != DT_REG)
          {
             continue;
          }
@@ -796,7 +802,8 @@ PStack_p get_directory_listings(DStr_p dirname)
 //
 /----------------------------------------------------------------------*/
 
-void AcceptAxiomSetName(Scanner_p in, DStr_p dest){
+void AcceptAxiomSetName(Scanner_p in, DStr_p dest)
+{
    while(TestInpTok(in, AXIOM_SET_NAME_TOKENS))
    {
       DStrAppendDStr(dest, AktToken(in)->literal);
@@ -817,10 +824,8 @@ void AcceptAxiomSetName(Scanner_p in, DStr_p dest){
 //
 /----------------------------------------------------------------------*/
 
-InteractiveSpec_p InteractiveSpecAlloc(BatchSpec_p spec,
-                                       StructFOFSpec_p ctrl,
-                                       FILE* fp,
-                                       int sock_fd)
+InteractiveSpec_p InteractiveSpecAlloc(BatchSpec_p spec, StructFOFSpec_p ctrl,
+                                       FILE* fp, int sock_fd)
 {
    InteractiveSpec_p handle = InteractiveSpecCellAlloc();
    handle->spec = spec;
@@ -848,9 +853,9 @@ InteractiveSpec_p InteractiveSpecAlloc(BatchSpec_p spec,
 void InteractiveSpecFree(InteractiveSpec_p spec)
 {
    PStackPointer i;
-   AxiomSet_p   handle;
+   AxiomSet_p handle;
 
-   for(i=0; i<PStackGetSP(spec->axiom_sets); i++)
+   for(i = 0; i < PStackGetSP(spec->axiom_sets); i++)
    {
       handle = PStackElementP(spec->axiom_sets, i);
       AxiomSetFree(handle);
@@ -873,9 +878,7 @@ void InteractiveSpecFree(InteractiveSpec_p spec)
 //
 /----------------------------------------------------------------------*/
 
-AxiomSet_p AxiomSetAlloc(ClauseSet_p cset,
-                         FormulaSet_p fset,
-                         DStr_p raw_data,
+AxiomSet_p AxiomSetAlloc(ClauseSet_p cset, FormulaSet_p fset, DStr_p raw_data,
                          int staged)
 {
    AxiomSet_p handle = AxiomSetCellAlloc();
@@ -922,13 +925,10 @@ void AxiomSetFree(AxiomSet_p axiom_set)
 //
 /----------------------------------------------------------------------*/
 
-void StartDeductionServer(BatchSpec_p spec,
-                          StructFOFSpec_p ctrl,
-                          char* server_lib,
-                          FILE* fp,
-                          int sock_fd)
+void StartDeductionServer(BatchSpec_p spec, StructFOFSpec_p ctrl,
+                          char* server_lib, FILE* fp, int sock_fd)
 {
-   DStr_p input   = DStrAlloc();
+   DStr_p input = DStrAlloc();
    DStr_p dummyStr = DStrAlloc();
    InteractiveSpec_p interactive;
    bool done = false;
@@ -940,7 +940,7 @@ void StartDeductionServer(BatchSpec_p spec,
    interactive = InteractiveSpecAlloc(spec, ctrl, fp, sock_fd);
    if(server_lib)
    {
-      DStrAppendStr(interactive->server_lib,server_lib);
+      DStrAppendStr(interactive->server_lib, server_lib);
    }
 
    while(!done)
@@ -949,7 +949,7 @@ void StartDeductionServer(BatchSpec_p spec,
       DStrReset(input_command);
       /*message = "";*/
       /*print_to_outstream(message, fp, sock_fd);*/
-      if( sock_fd != -1)
+      if(sock_fd != -1)
       {
          dummy = TCPStringRecvX(sock_fd);
          DStrAppendBuffer(input, dummy, strlen(dummy));
@@ -958,17 +958,16 @@ void StartDeductionServer(BatchSpec_p spec,
       else
       {
          print_to_outstream("e_deduction_server: Server mode not implemented "
-                            "yet for stdout\n", fp, sock_fd);
+                            "yet for stdout\n",
+                            fp, sock_fd);
          break;
          //char line[256];
          //fgets(line, 254, stdin);
          //DStrAppendBuffer(input, line, strlen(line)-1);
       }
 
-      in = CreateScanner(StreamTypeUserString,
-                         DStrView(input),
-                         true,
-                         NULL, true);
+      in =
+         CreateScanner(StreamTypeUserString, DStrView(input), true, NULL, true);
       ScannerSetFormat(in, TSTPFormat);
 
       if(TestInpId(in, STAGE_COMMAND))
@@ -983,7 +982,8 @@ void StartDeductionServer(BatchSpec_p spec,
          AcceptInpId(in, UNSTAGE_COMMAND);
          DStrReset(dummyStr);
          AcceptAxiomSetName(in, dummyStr);
-         print_to_outstream(unstage_command(interactive, dummyStr), fp, sock_fd);
+         print_to_outstream(unstage_command(interactive, dummyStr), fp,
+                            sock_fd);
       }
       else if(TestInpId(in, REMOVE_COMMAND))
       {
@@ -997,7 +997,8 @@ void StartDeductionServer(BatchSpec_p spec,
          AcceptInpId(in, DOWNLOAD_COMMAND);
          DStrReset(dummyStr);
          AcceptAxiomSetName(in, dummyStr);
-         print_to_outstream(download_command(interactive, dummyStr), fp, sock_fd);
+         print_to_outstream(download_command(interactive, dummyStr), fp,
+                            sock_fd);
       }
       else if(TestInpId(in, LOAD_COMMAND))
       {
@@ -1021,7 +1022,8 @@ void StartDeductionServer(BatchSpec_p spec,
             ReadTextBlock(input, stdin, END_OF_BLOCK_TOKEN);
          }
 
-         print_to_outstream(add_command(interactive, dummyStr, input), fp, sock_fd);
+         print_to_outstream(add_command(interactive, dummyStr, input), fp,
+                            sock_fd);
       }
       else if(TestInpId(in, RUN_COMMAND))
       {
@@ -1038,7 +1040,8 @@ void StartDeductionServer(BatchSpec_p spec,
          {
             ReadTextBlock(input, stdin, END_OF_BLOCK_TOKEN);
          }
-         print_to_outstream(run_command(interactive, dummyStr, input), fp, sock_fd);
+         print_to_outstream(run_command(interactive, dummyStr, input), fp,
+                            sock_fd);
       }
       else if(TestInpId(in, LIST_COMMAND))
       {

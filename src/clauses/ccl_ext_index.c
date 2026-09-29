@@ -60,7 +60,8 @@ void delete_idx(ExtIndex_p idx, Clause_p cl, PStack_p collected_pos)
       UNUSED(PStackPopInt(collected_pos));
       fc = PStackPopInt(collected_pos);
 
-      ClauseTPosTreeDeleteClause(((ClauseTPosTree_p *)IntMapGetRef(idx, fc)), cl);
+      ClauseTPosTreeDeleteClause(((ClauseTPosTree_p*)IntMapGetRef(idx, fc)),
+                                 cl);
    }
 }
 
@@ -87,7 +88,8 @@ void insert_idx(ExtIndex_p idx, Clause_p cl, PStack_p collected_pos)
       pos = PStackPopInt(collected_pos);
       fc = PStackPopInt(collected_pos);
 
-      ClauseTPosTreeInsertPos(((ClauseTPosTree_p *)IntMapGetRef(idx, fc)), cl, pos);
+      ClauseTPosTreeInsertPos(((ClauseTPosTree_p*)IntMapGetRef(idx, fc)), cl,
+                              pos);
    }
 }
 
@@ -109,17 +111,17 @@ void collect_into_pos_term(Term_p t, CompactPos pos, PStack_p stack)
 {
    PStackPointer old_top = PStackGetSP(stack);
    bool has_func_subterm = false;
-   
+
    Term_p normalized_pattern = MAYBE_NORMALIZE_APP_VAR(t);
    if(!TermIsLambda(t) && !normalized_pattern)
    {
-      CompactPos new_pos = pos + DEFAULT_FWEIGHT*(TermIsPhonyApp(t) ? 0 : 1);
-      for(int i=0; i < t->arity; i++)
+      CompactPos new_pos = pos + DEFAULT_FWEIGHT * (TermIsPhonyApp(t) ? 0 : 1);
+      for(int i = 0; i < t->arity; i++)
       {
          Term_p arg = t->args[i];
          collect_into_pos_term(arg, new_pos, stack);
-         has_func_subterm = has_func_subterm || 
-                           (TYPE_EXT_ELIGIBLE(arg->type) && !TermIsTopLevelAnyVar(arg));
+         has_func_subterm = has_func_subterm ||
+            (TYPE_EXT_ELIGIBLE(arg->type) && !TermIsTopLevelAnyVar(arg));
          new_pos += TermStandardWeight(arg);
       }
    }
@@ -215,11 +217,12 @@ void handle_from_idx(ExtIndex_p into_index, Clause_p cl, IdxOperator op)
 bool TermHasExtEligSubterm(Term_p t)
 {
    bool ans = false;
-   for(int i=0; !ans && i < t->arity; i++)
+   for(int i = 0; !ans && i < t->arity; i++)
    {
-      ans = ans || (TYPE_EXT_ELIGIBLE(t->args[i]->type)
-                    && !TermIsTopLevelAnyVar(t->args[i]))
-                || TermHasExtEligSubterm(t->args[i]);
+      ans = ans ||
+         (TYPE_EXT_ELIGIBLE(t->args[i]->type) &&
+          !TermIsTopLevelAnyVar(t->args[i])) ||
+         TermHasExtEligSubterm(t->args[i]);
    }
    return ans;
 }
@@ -347,14 +350,16 @@ void CollectExtSupFromPos(Clause_p cl, PStack_p pos_stack)
    {
       if(!TypeIsArrow(handle->lterm) && EqnIsPositive(handle))
       {
-         if(!TermIsTopLevelFreeVar(handle->lterm) && !MAYBE_NORMALIZE_APP_VAR(handle->lterm) &&
+         if(!TermIsTopLevelFreeVar(handle->lterm) &&
+            !MAYBE_NORMALIZE_APP_VAR(handle->lterm) &&
             TermHasExtEligSubterm(handle->lterm))
          {
             PStackPushInt(pos_stack, handle->lterm->f_code);
             PStackPushInt(pos_stack, pos);
          }
          pos += TermStandardWeight(handle->lterm);
-         if(!TermIsTopLevelFreeVar(handle->rterm) && !MAYBE_NORMALIZE_APP_VAR(handle->lterm) &&
+         if(!TermIsTopLevelFreeVar(handle->rterm) &&
+            !MAYBE_NORMALIZE_APP_VAR(handle->lterm) &&
             TermHasExtEligSubterm(handle->rterm))
          {
             PStackPushInt(pos_stack, handle->rterm->f_code);
@@ -367,7 +372,6 @@ void CollectExtSupFromPos(Clause_p cl, PStack_p pos_stack)
          pos += EqnStandardWeight(handle);
       }
    }
-
 }
 
 /*-----------------------------------------------------------------------

@@ -60,10 +60,7 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-void SysDatePrint(FILE* out, SysDate date)
-{
-   fprintf(out, "%5lu", date);
-}
+void SysDatePrint(FILE* out, SysDate date) { fprintf(out, "%5lu", date); }
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */

@@ -33,7 +33,7 @@ Changes
 /*---------------------------------------------------------------------*/
 
 #ifdef MEASURE_UNIFICATION
-long UnifAttempts  = 0;
+long UnifAttempts = 0;
 long UnifSuccesses = 0;
 #endif
 
@@ -44,7 +44,11 @@ PERF_CTR_DEFINE(MguTimer);
 const UnificationResult UNIF_FAILED = false;
 const UnificationResult UNIF_SUCC = true;
 
-#define FAIL_AND_BREAK(res, val) { (res) = (val); break; }
+#define FAIL_AND_BREAK(res, val)                                               \
+   {                                                                           \
+      (res) = (val);                                                           \
+      break;                                                                   \
+   }
 
 //#undef ENABLE_MATCHING_OPTIMIZATION
 
@@ -71,9 +75,9 @@ const UnificationResult UNIF_SUCC = true;
 /----------------------------------------------------------------------*/
 static __inline__ bool reorientation_needed(Term_p t1, Term_p t2)
 {
-   return (TermIsTopLevelFreeVar(t2) && !TermIsTopLevelFreeVar(t1))
-          || (TermIsTopLevelFreeVar(t1) && TermIsTopLevelFreeVar(t2)
-              && t1->arity > t2->arity);
+   return (TermIsTopLevelFreeVar(t2) && !TermIsTopLevelFreeVar(t1)) ||
+      (TermIsTopLevelFreeVar(t1) && TermIsTopLevelFreeVar(t2) &&
+       t1->arity > t2->arity);
 }
 
 
@@ -99,7 +103,7 @@ bool OccurCheck(restrict Term_p term, restrict Term_p var)
       return true;
    }
 
-   for(int i=0; i < term->arity; i++)
+   for(int i = 0; i < term->arity; i++)
    {
       if(OccurCheck(term->args[i], var))
       {
@@ -138,7 +142,7 @@ int PartiallyMatchVar(Term_p var_matcher, Term_p to_match, Sig_p sig,
 
    int args_to_eat = MATCH_FAILED;
    Type_p term_head_type = GetHeadType(sig, to_match);
-   Type_p matcher_type   = var_matcher->type;
+   Type_p matcher_type = var_matcher->type;
 
    if(!term_head_type || TermIsTopLevelDBVar(to_match))
    {
@@ -152,14 +156,14 @@ int PartiallyMatchVar(Term_p var_matcher, Term_p to_match, Sig_p sig,
    {
       args_to_eat = ARG_NUM(to_match);
    }
-   else if(TypeIsArrow(term_head_type) && TypeIsArrow(matcher_type)
-               && matcher_type->arity <= term_head_type->arity)
+   else if(TypeIsArrow(term_head_type) && TypeIsArrow(matcher_type) &&
+           matcher_type->arity <= term_head_type->arity)
    {
       int start_idx = term_head_type->arity - matcher_type->arity;
 
-      for(int i=start_idx; i<term_head_type->arity; i++)
+      for(int i = start_idx; i < term_head_type->arity; i++)
       {
-         if(matcher_type->args[i-start_idx] != term_head_type->args[i])
+         if(matcher_type->args[i - start_idx] != term_head_type->args[i])
          {
             return MATCH_FAILED;
          }
@@ -177,7 +181,7 @@ int PartiallyMatchVar(Term_p var_matcher, Term_p to_match, Sig_p sig,
       return MATCH_FAILED;
    }
 
-   for(int i=0; i<args_to_eat + TermIsAppliedAnyVar(to_match) ? 1 : 0; i++)
+   for(int i = 0; i < args_to_eat + TermIsAppliedAnyVar(to_match) ? 1 : 0; i++)
    {
       if(!TermIsDBClosed(to_match->args[i]) ||
          (perform_occur_check && OccurCheck(to_match->args[i], var_matcher)))
@@ -213,13 +217,16 @@ int PartiallyMatchVar(Term_p var_matcher, Term_p to_match, Sig_p sig,
 bool SubstComputeMatch(Term_p matcher, Term_p to_match, Subst_p subst)
 {
    assert(problemType == PROBLEM_FO);
-   long matcher_weight  = TermStandardWeight(matcher);
+   long matcher_weight = TermStandardWeight(matcher);
    long to_match_weight = TermStandardWeight(to_match);
 
-   assert(TermStandardWeight(matcher)  == TermWeight(matcher, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
-   assert(TermStandardWeight(to_match) == TermWeight(to_match, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
+   assert(TermStandardWeight(matcher) ==
+          TermWeight(matcher, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
+   assert(TermStandardWeight(to_match) ==
+          TermWeight(to_match, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
 
-   if((matcher_weight > to_match_weight) || (TermCellQueryProp(to_match, TPPredPos) && TermIsFreeVar(matcher)))
+   if((matcher_weight > to_match_weight) ||
+      (TermCellQueryProp(to_match, TPPredPos) && TermIsFreeVar(matcher)))
    {
       return false;
    }
@@ -233,8 +240,8 @@ bool SubstComputeMatch(Term_p matcher, Term_p to_match, Subst_p subst)
 
    while(!PLocalStackEmpty(jobs))
    {
-      to_match =  PLocalStackPop(jobs);
-      matcher  =  PLocalStackPop(jobs);
+      to_match = PLocalStackPop(jobs);
+      matcher = PLocalStackPop(jobs);
 
       if(TermIsFreeVar(matcher))
       {
@@ -275,8 +282,8 @@ bool SubstComputeMatch(Term_p matcher, Term_p to_match, Subst_p subst)
          }
          else
          {
-            PLocalStackEnsureSpace(jobs, 2*matcher->arity);
-            for(int i=matcher->arity-1; i>=0; i--)
+            PLocalStackEnsureSpace(jobs, 2 * matcher->arity);
+            for(int i = matcher->arity - 1; i >= 0; i--)
             {
                PLocalStackPush(jobs, matcher->args[i]);
                PLocalStackPush(jobs, to_match->args[i]);
@@ -288,7 +295,7 @@ bool SubstComputeMatch(Term_p matcher, Term_p to_match, Subst_p subst)
    PLocalStackFree(jobs);
    if(!res)
    {
-      SubstBacktrackToPos(subst,backtrack);
+      SubstBacktrackToPos(subst, backtrack);
    }
    return res;
 }
@@ -310,15 +317,18 @@ bool SubstComputeMatch(Term_p matcher, Term_p to_match, Subst_p subst)
 int SubstComputeMatchHO(Term_p matcher, Term_p to_match, Subst_p subst)
 {
    assert(problemType == PROBLEM_HO);
-   long matcher_weight  = TermStandardWeight(matcher);
+   long matcher_weight = TermStandardWeight(matcher);
    long to_match_weight = TermStandardWeight(to_match);
-   TB_p bank = TermGetBank(matcher) ? TermGetBank(matcher) : TermGetBank(to_match);
+   TB_p bank =
+      TermGetBank(matcher) ? TermGetBank(matcher) : TermGetBank(to_match);
    assert(bank || TermIsAnyVar(matcher) || TermIsAnyVar(to_match));
-   assert(!(TermGetBank(matcher) && TermGetBank(to_match))
-            || TermGetBank(matcher) == TermGetBank(to_match));
+   assert(!(TermGetBank(matcher) && TermGetBank(to_match)) ||
+          TermGetBank(matcher) == TermGetBank(to_match));
 
-   assert(TermStandardWeight(matcher)  == TermWeight(matcher, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
-   assert(TermStandardWeight(to_match) == TermWeight(to_match, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
+   assert(TermStandardWeight(matcher) ==
+          TermWeight(matcher, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
+   assert(TermStandardWeight(to_match) ==
+          TermWeight(to_match, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
 
 #ifndef NDEBUG
    Term_p s = matcher;
@@ -326,8 +336,7 @@ int SubstComputeMatchHO(Term_p matcher, Term_p to_match, Subst_p subst)
 #endif
 
    int res = MATCH_SUCC;
-   if(matcher_weight > to_match_weight ||
-      matcher->type != to_match->type)
+   if(matcher_weight > to_match_weight || matcher->type != to_match->type)
    {
       return MATCH_FAILED;
    }
@@ -344,13 +353,14 @@ int SubstComputeMatchHO(Term_p matcher, Term_p to_match, Subst_p subst)
 
    while(!PLocalStackEmpty(jobs))
    {
-      to_match =  PLocalStackPop(jobs);
-      matcher  =  PLocalStackPop(jobs);
+      to_match = PLocalStackPop(jobs);
+      matcher = PLocalStackPop(jobs);
       PruneLambdaPrefix(bank, &matcher, &to_match);
 
       if(TermIsTopLevelFreeVar(matcher))
       {
-         Term_p var = TermIsAppliedFreeVar(matcher) ? matcher->args[0] : matcher;
+         Term_p var =
+            TermIsAppliedFreeVar(matcher) ? matcher->args[0] : matcher;
 
          if(var->binding)
          {
@@ -358,10 +368,12 @@ int SubstComputeMatchHO(Term_p matcher, Term_p to_match, Subst_p subst)
             // called. Because of complications with E's dereferencing mechanism of
             // mathching variables -- we currently do no support binding terms
             // to lambdas in this algorithm.
-            if(!TermIsLambda(var->binding) && TermIsPrefix(var->binding, to_match))
+            if(!TermIsLambda(var->binding) &&
+               TermIsPrefix(var->binding, to_match))
             {
                start_idx = ARG_NUM(var->binding);
-               matcher_weight += TermStandardWeight(var->binding) - DEFAULT_VWEIGHT;
+               matcher_weight +=
+                  TermStandardWeight(var->binding) - DEFAULT_VWEIGHT;
                if(matcher_weight > to_match_weight)
                {
                   FAIL_AND_BREAK(res, MATCH_FAILED);
@@ -386,7 +398,8 @@ int SubstComputeMatchHO(Term_p matcher, Term_p to_match, Subst_p subst)
                SubstBindAppVar(subst, var, to_match, args_eaten, bank);
                start_idx = args_eaten;
 
-               matcher_weight += TermStandardWeight(var->binding) - DEFAULT_VWEIGHT;
+               matcher_weight +=
+                  TermStandardWeight(var->binding) - DEFAULT_VWEIGHT;
                if(matcher_weight > to_match_weight)
                {
                   FAIL_AND_BREAK(res, MATCH_FAILED);
@@ -398,19 +411,19 @@ int SubstComputeMatchHO(Term_p matcher, Term_p to_match, Subst_p subst)
       }
       else
       {
-         if(TermIsDBVar(matcher) != TermIsDBVar(to_match)
-            || TermIsAppliedDBVar(matcher) != TermIsAppliedDBVar(to_match)
-            || matcher->arity != to_match->arity)
+         if(TermIsDBVar(matcher) != TermIsDBVar(to_match) ||
+            TermIsAppliedDBVar(matcher) != TermIsAppliedDBVar(to_match) ||
+            matcher->arity != to_match->arity)
          {
             FAIL_AND_BREAK(res, MATCH_FAILED);
          }
 
 
          if(matcher->f_code != to_match->f_code ||
-            (!TermIsTopLevelDBVar(matcher)
-              && SigIsPolymorphic(bank->sig, matcher->f_code)
-              && matcher->arity != 0
-              && matcher->args[0]->type != to_match->args[0]->type))
+            (!TermIsTopLevelDBVar(matcher) &&
+             SigIsPolymorphic(bank->sig, matcher->f_code) &&
+             matcher->arity != 0 &&
+             matcher->args[0]->type != to_match->args[0]->type))
          {
             FAIL_AND_BREAK(res, MATCH_FAILED);
          }
@@ -422,11 +435,17 @@ int SubstComputeMatchHO(Term_p matcher, Term_p to_match, Subst_p subst)
          }
       }
 
-      PLocalStackEnsureSpace(jobs, 2*(matcher->arity-(TermIsAppliedFreeVar(matcher)?1:0)));
-      for(int i=0; i<matcher->arity-(TermIsAppliedFreeVar(matcher)?1:0); i++)
+      PLocalStackEnsureSpace(
+         jobs, 2 * (matcher->arity - (TermIsAppliedFreeVar(matcher) ? 1 : 0)));
+      for(int i = 0;
+          i < matcher->arity - (TermIsAppliedFreeVar(matcher) ? 1 : 0); i++)
       {
-         PLocalStackPush(jobs, matcher->args[i+(TermIsAppliedFreeVar(matcher)?1:0)]);
-         PLocalStackPush(jobs, to_match->args[i+start_idx+(TermIsAppliedFreeVar(to_match)?1:0)]);
+         PLocalStackPush(
+            jobs, matcher->args[i + (TermIsAppliedFreeVar(matcher) ? 1 : 0)]);
+         PLocalStackPush(
+            jobs,
+            to_match->args[i + start_idx +
+                           (TermIsAppliedFreeVar(to_match) ? 1 : 0)]);
       }
    }
 
@@ -437,7 +456,7 @@ int SubstComputeMatchHO(Term_p matcher, Term_p to_match, Subst_p subst)
 
    PLocalStackFree(jobs);
    assert(res == MATCH_FAILED ||
-            TermStructPrefixEqual(s, t, DEREF_ONCE, DEREF_NEVER, res, sig));
+          TermStructPrefixEqual(s, t, DEREF_ONCE, DEREF_NEVER, res, sig));
    return res;
 }
 
@@ -464,18 +483,17 @@ bool SubstComputeMgu(Term_p t1, Term_p t2, Subst_p subst)
 {
    //printf("Unify %lu %lu\n", t1->entry_no, t2->entry_no);
    assert(problemType == PROBLEM_FO);
-   #ifdef MEASURE_UNIFICATION
-      UnifAttempts++;
-   #endif
+#ifdef MEASURE_UNIFICATION
+   UnifAttempts++;
+#endif
 
    PERF_CTR_ENTRY(MguTimer);
 
-   if((TermCellQueryProp(t1, TPPredPos) && TermIsFreeVar(t2))||
+   if((TermCellQueryProp(t1, TPPredPos) && TermIsFreeVar(t2)) ||
       (TermCellQueryProp(t2, TPPredPos) && TermIsFreeVar(t1)))
    {
       PERF_CTR_EXIT(MguTimer);
       return false;
-
    }
    PStackPointer backtrack = PStackGetSP(subst); /* For backtracking */
 
@@ -487,8 +505,8 @@ bool SubstComputeMgu(Term_p t1, Term_p t2, Subst_p subst)
 
    while(!PQueueEmpty(jobs))
    {
-      t2 =  TermDerefAlways(PQueueGetLastP(jobs));
-      t1 =  TermDerefAlways(PQueueGetLastP(jobs));
+      t2 = TermDerefAlways(PQueueGetLastP(jobs));
+      t1 = TermDerefAlways(PQueueGetLastP(jobs));
 
       if(TermIsFreeVar(t2))
       {
@@ -525,7 +543,7 @@ bool SubstComputeMgu(Term_p t1, Term_p t2, Subst_p subst)
             assert(t1->type);
             assert(t2->type);
             assert(t1->type == t2->type);
-            for(int i=t1->arity-1; i>=0; i--)
+            for(int i = t1->arity - 1; i >= 0; i--)
             {
                /* Delay variable bindings */
                if(TermIsFreeVar(t1->args[i]) || TermIsFreeVar(t2->args[i]))
@@ -546,13 +564,13 @@ bool SubstComputeMgu(Term_p t1, Term_p t2, Subst_p subst)
 
    if(!res)
    {
-      SubstBacktrackToPos(subst,backtrack);
+      SubstBacktrackToPos(subst, backtrack);
    }
    else
    {
-      #ifdef MEASURE_UNIFICATION
-         UnifSuccesses++;
-      #endif
+#ifdef MEASURE_UNIFICATION
+      UnifSuccesses++;
+#endif
    }
 
    PERF_CTR_EXIT(MguTimer);
@@ -577,9 +595,9 @@ bool SubstComputeMgu(Term_p t1, Term_p t2, Subst_p subst)
 
 UnificationResult SubstComputeMguHO(Term_p t1, Term_p t2, Subst_p subst)
 {
-   #ifdef MEASURE_UNIFICATION
-      UnifAttempts++;
-   #endif
+#ifdef MEASURE_UNIFICATION
+   UnifAttempts++;
+#endif
    PERF_CTR_ENTRY(MguTimer);
    assert(problemType == PROBLEM_HO);
    if(t1->type != t2->type)
@@ -587,7 +605,7 @@ UnificationResult SubstComputeMguHO(Term_p t1, Term_p t2, Subst_p subst)
       return UNIF_FAILED;
    }
 
-   PStackPointer backtrack = PStackGetSP(subst);  //For backtracking
+   PStackPointer backtrack = PStackGetSP(subst); //For backtracking
 
    PQueue_p jobs = PQueueAlloc();
    UnificationResult res = UNIF_SUCC;
@@ -608,8 +626,8 @@ UnificationResult SubstComputeMguHO(Term_p t1, Term_p t2, Subst_p subst)
 
    while(!PQueueEmpty(jobs))
    {
-      t2 =  WHNF_deref(PQueueGetLastP(jobs));
-      t1 =  WHNF_deref(PQueueGetLastP(jobs));
+      t2 = WHNF_deref(PQueueGetLastP(jobs));
+      t1 = WHNF_deref(PQueueGetLastP(jobs));
       // trying to deal with cases X = LAM xyz. complicated term,
       // which cannot be dealt with otherwise.
       if(TermIsFreeVar(t1) && TermIsDBClosed(t2) && (!OccurCheck(t2, t1)))
@@ -654,30 +672,30 @@ UnificationResult SubstComputeMguHO(Term_p t1, Term_p t2, Subst_p subst)
       }
       else
       {
-         args_eaten=0;
+         args_eaten = 0;
          assert(!TermIsTopLevelFreeVar(t1) && !TermIsTopLevelFreeVar(t2));
 
-         if(TermIsDBVar(t1) != TermIsDBVar(t2)
-            || TermIsAppliedDBVar(t1) != TermIsAppliedDBVar(t2)
-            || t1->arity != t2->arity)
+         if(TermIsDBVar(t1) != TermIsDBVar(t2) ||
+            TermIsAppliedDBVar(t1) != TermIsAppliedDBVar(t2) ||
+            t1->arity != t2->arity)
          {
             FAIL_AND_BREAK(res, UNIF_FAILED);
          }
 
          if(t1->f_code != t2->f_code ||
-            (!TermIsTopLevelDBVar(t1)
-              && SigIsPolymorphic(bank->sig, t1->f_code)
-              && t1->arity != 0
-              && t1->args[0]->type != t2->args[0]->type))
+            (!TermIsTopLevelDBVar(t1) &&
+             SigIsPolymorphic(bank->sig, t1->f_code) && t1->arity != 0 &&
+             t1->args[0]->type != t2->args[0]->type))
          {
             FAIL_AND_BREAK(res, UNIF_FAILED);
          }
       }
 
-      for(int i=0; i<t1->arity-(TermIsAppliedFreeVar(t1)?1:0); i++)
+      for(int i = 0; i < t1->arity - (TermIsAppliedFreeVar(t1) ? 1 : 0); i++)
       {
-         Term_p arg_t = t1->args[i+(TermIsAppliedFreeVar(t1)?1:0)] ,
-                arg_s = t2->args[i+args_eaten+(TermIsAppliedFreeVar(t2)?1:0)];
+         Term_p arg_t = t1->args[i + (TermIsAppliedFreeVar(t1) ? 1 : 0)],
+                arg_s = t2->args[i + args_eaten +
+                                 (TermIsAppliedFreeVar(t2) ? 1 : 0)];
 
          if(TermIsTopLevelFreeVar(arg_t) || TermIsTopLevelFreeVar(arg_s))
          {
@@ -694,15 +712,16 @@ UnificationResult SubstComputeMguHO(Term_p t1, Term_p t2, Subst_p subst)
 
    if(UnifFailed(res))
    {
-      SubstBacktrackToPos(subst,backtrack);
+      SubstBacktrackToPos(subst, backtrack);
    }
    else
    {
-      #ifdef MEASURE_UNIFICATION
-         UnifSuccesses++;
-      #endif
+#ifdef MEASURE_UNIFICATION
+      UnifSuccesses++;
+#endif
 
-      assert(TermStructPrefixEqual(debug_t1, debug_t2, DEREF_ALWAYS, DEREF_ALWAYS, 0, sig));
+      assert(TermStructPrefixEqual(debug_t1, debug_t2, DEREF_ALWAYS,
+                                   DEREF_ALWAYS, 0, sig));
    }
 
    PQueueFree(jobs);
@@ -744,17 +763,19 @@ __inline__ bool SubstMatchComplete(Term_p pattern, Term_p target, Subst_p subst)
              reduced_t = LambdaEtaReduceDB(TermGetBank(target), target);
       int res_i = SubstComputeMatchHO(reduced_p, reduced_t, subst);
 
-      if(res_i != 0 && TermIsNonFOPattern(pattern) && TermIsNonFOPattern(target))
+      if(res_i != 0 && TermIsNonFOPattern(pattern) &&
+         TermIsNonFOPattern(target))
       {
          SubstBacktrackToPos(subst, backtrack);
-         res_i = SubstComputeMatchPattern(pattern, target, subst) == UNIFIABLE ?
-                 0 : MATCH_FAILED;
+         res_i = SubstComputeMatchPattern(pattern, target, subst) == UNIFIABLE
+            ? 0
+            : MATCH_FAILED;
          if(res_i != 0)
          {
             SubstBacktrackToPos(subst, backtrack);
          }
       }
-      res = res_i == 0;  // are no arguments of s remaining after the match?
+      res = res_i == 0; // are no arguments of s remaining after the match?
    }
 
    return res;

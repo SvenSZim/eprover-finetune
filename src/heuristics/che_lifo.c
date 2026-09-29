@@ -47,7 +47,6 @@ Changes
 
 
 
-
 /*-----------------------------------------------------------------------
 //
 // Function: LIFOEvalInit()
@@ -62,7 +61,7 @@ Changes
 
 WFCB_p LIFOEvalInit(ClausePrioFun prio_fun)
 {
-   double *data;
+   double* data;
 
    data = SizeMalloc(sizeof(double));
    *data = 0.0;
@@ -108,9 +107,9 @@ WFCB_p LIFOEvalParse(Scanner_p in, OCB_p ocb, ProofState_p state)
 
 double LIFOEvalCompute(void* data, Clause_p clause)
 {
-   double *local = data;
+   double* local = data;
 
-   *local = (*local)-1.0;
+   *local = (*local) - 1.0;
 
    return *local;
 }
@@ -128,10 +127,7 @@ double LIFOEvalCompute(void* data, Clause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-void LIFOEvalExit(void* data)
-{
-   SizeFree(data, sizeof(double));
-}
+void LIFOEvalExit(void* data) { SizeFree(data, sizeof(double)); }
 
 
 /*---------------------------------------------------------------------*/

@@ -60,23 +60,23 @@ CompactPos PackTermPos(TermPos_p pos)
    CompactPos res = 0;
    PStackPointer sp;
    Term_p t;
-   int    p,i;
+   int p, i;
 
    assert(pos);
 
-   for(sp = 0; sp< PStackGetSP(pos); sp+=2)
+   for(sp = 0; sp < PStackGetSP(pos); sp += 2)
    {
       t = PStackElementP(pos, sp);
-      p = PStackElementInt(pos, sp+1);
+      p = PStackElementInt(pos, sp + 1);
 
       assert(!TermIsFreeVar(t));
       assert(!TermIsLambda(t));
       assert(p < t->arity);
 
-                                    // future proofing.
+      // future proofing.
       res += ((TermIsPhonyApp(t) || TermIsLambda(t)) ? 0 : DEFAULT_FWEIGHT);
 
-      for(i=TermIsLambda(t) ? 1 : 0; i<p; i++)
+      for(i = TermIsLambda(t) ? 1 : 0; i < p; i++)
       {
          res += TermStandardWeight(t->args[i]);
       }
@@ -146,11 +146,12 @@ void UnpackTermPos(TermPos_p pos, Term_p t, CompactPos cpos)
    while(cpos > 0)
    {
       assert(!TermIsFreeVar(t));
-      cpos -= DEFAULT_FWEIGHT*((TermIsPhonyApp(t) || TermIsLambda(t)) ? 0 : 1);
-      assert(cpos>=0);
+      cpos -=
+         DEFAULT_FWEIGHT * ((TermIsPhonyApp(t) || TermIsLambda(t)) ? 0 : 1);
+      assert(cpos >= 0);
 
       PStackPushP(pos, t);
-      for(i=0; i< t->arity; i++)
+      for(i = 0; i < t->arity; i++)
       {
          if(cpos < TermStandardWeight(t->args[i]))
          {
@@ -159,7 +160,7 @@ void UnpackTermPos(TermPos_p pos, Term_p t, CompactPos cpos)
             break;
          }
          cpos -= TermStandardWeight(t->args[i]);
-         assert(cpos>=0);
+         assert(cpos >= 0);
       }
    }
 }
@@ -178,8 +179,7 @@ void UnpackTermPos(TermPos_p pos, Term_p t, CompactPos cpos)
 //
 /----------------------------------------------------------------------*/
 
-void UnpackClausePosInto(CompactPos cpos, Clause_p clause,
-                         ClausePos_p pos)
+void UnpackClausePosInto(CompactPos cpos, Clause_p clause, ClausePos_p pos)
 {
    Eqn_p handle;
    Term_p t;
@@ -247,7 +247,7 @@ ClausePos_p UnpackClausePos(CompactPos cpos, Clause_p clause)
 
 Term_p ClauseCPosGetSubterm(Clause_p clause, CompactPos cpos)
 {
-   Term_p      res;
+   Term_p res;
    ClausePos_p pos = UnpackClausePos(cpos, clause);
 
    res = ClausePosGetSubterm(pos);
@@ -269,11 +269,11 @@ Term_p ClauseCPosGetSubterm(Clause_p clause, CompactPos cpos)
 //
 /----------------------------------------------------------------------*/
 
-Eqn_p ClauseCPosFirstLit(Clause_p clause, CompactPos *cpos)
+Eqn_p ClauseCPosFirstLit(Clause_p clause, CompactPos* cpos)
 {
    *cpos = 0;
 
-   return clause->literals ? clause->literals:NULL;
+   return clause->literals ? clause->literals : NULL;
 }
 
 
@@ -291,7 +291,7 @@ Eqn_p ClauseCPosFirstLit(Clause_p clause, CompactPos *cpos)
 //
 /----------------------------------------------------------------------*/
 
-Eqn_p ClauseCPosNextLit(Eqn_p lit, CompactPos *cpos)
+Eqn_p ClauseCPosNextLit(Eqn_p lit, CompactPos* cpos)
 {
    if(lit->next)
    {
@@ -317,7 +317,7 @@ Eqn_p ClauseCPosNextLit(Eqn_p lit, CompactPos *cpos)
 //
 /----------------------------------------------------------------------*/
 
-Eqn_p ClauseCPosSplit(Clause_p clause, CompactPos *cpos)
+Eqn_p ClauseCPosSplit(Clause_p clause, CompactPos* cpos)
 {
    Eqn_p handle = clause->literals;
 

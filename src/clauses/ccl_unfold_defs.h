@@ -50,21 +50,21 @@
 /* We'll not export term and clause versions, because we need the
    clause information for proof output anyways */
 
-bool ClauseUnfoldEqDef(Clause_p clause, ClausePos_p demod, Term_p lside, Term_p rside);
+bool ClauseUnfoldEqDef(Clause_p clause, ClausePos_p demod, Term_p lside,
+                       Term_p rside);
 bool ClauseSetUnfoldEqDef(ClauseSet_p set, ClausePos_p demod);
 long ClauseSetUnfoldAllEqDefs(ClauseSet_p set, ClauseSet_p passive,
-                              ClauseSet_p archive,
-                              int min_arity, long eqdef_incrlimit);
+                              ClauseSet_p archive, int min_arity,
+                              long eqdef_incrlimit);
 
 long ClauseSetPreprocess(ClauseSet_p set, ClauseSet_p passive,
                          ClauseSet_p archive, TB_p tmp_terms, TB_p terms,
-                         bool replace_inj_defs,
-                         int eqdef_incrlimit, long eqdef_maxclauses);
+                         bool replace_inj_defs, int eqdef_incrlimit,
+                         long eqdef_maxclauses);
 
 long ClauseSetUnfoldEqDefNormalize(ClauseSet_p set, ClauseSet_p passive,
                                    ClauseSet_p archive, TB_p tmp_terms,
-                                   long eqdef_incrlimit,
-                                   long eqdef_maxclauses);
+                                   long eqdef_incrlimit, long eqdef_maxclauses);
 
 
 #endif

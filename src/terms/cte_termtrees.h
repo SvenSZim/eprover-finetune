@@ -43,20 +43,19 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-void   TermTreeFree(Term_p junk);
-long   TermTopCompare(Term_p t1, Term_p t2);
-Term_p TermTreeFind(Term_p *root, Term_p term);
-Term_p TermTreeInsert(Term_p *root, Term_p term);
-Term_p TermTreeExtract(Term_p *root, Term_p term);
-bool   TermTreeDelete(Term_p *root, Term_p term);
-void   TermTreeSetProp(Term_p root, TermProperties props);
-void   TermTreeDelProp(Term_p root, TermProperties props);
-long   TermTreeNodes(Term_p root);
+void TermTreeFree(Term_p junk);
+long TermTopCompare(Term_p t1, Term_p t2);
+Term_p TermTreeFind(Term_p* root, Term_p term);
+Term_p TermTreeInsert(Term_p* root, Term_p term);
+Term_p TermTreeExtract(Term_p* root, Term_p term);
+bool TermTreeDelete(Term_p* root, Term_p term);
+void TermTreeSetProp(Term_p root, TermProperties props);
+void TermTreeDelProp(Term_p root, TermProperties props);
+long TermTreeNodes(Term_p root);
 
 AVL_TRAVERSE_DECLARATION(TermTree, Term_p)
 #define TermTreeTraverseExit(stack) PStackFree(stack)
@@ -67,8 +66,6 @@ AVL_TRAVERSE_DECLARATION(TermTree, Term_p)
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

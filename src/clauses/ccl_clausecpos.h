@@ -38,19 +38,18 @@ typedef long CompactPos;
 /*---------------------------------------------------------------------*/
 
 
-CompactPos  PackTermPos(TermPos_p pos);
-CompactPos  PackClausePos(ClausePos_p pos);
+CompactPos PackTermPos(TermPos_p pos);
+CompactPos PackClausePos(ClausePos_p pos);
 
-void        UnpackTermPos(TermPos_p pos, Term_p t, CompactPos cpos);
-void        UnpackClausePosInto(CompactPos cpos, Clause_p clause,
-                          ClausePos_p pos);
+void UnpackTermPos(TermPos_p pos, Term_p t, CompactPos cpos);
+void UnpackClausePosInto(CompactPos cpos, Clause_p clause, ClausePos_p pos);
 ClausePos_p UnpackClausePos(CompactPos cpos, Clause_p clause);
 
-Term_p      ClauseCPosGetSubterm(Clause_p clause, CompactPos cpos);
+Term_p ClauseCPosGetSubterm(Clause_p clause, CompactPos cpos);
 
-Eqn_p       ClauseCPosFirstLit(Clause_p clause, CompactPos *cpos);
-Eqn_p       ClauseCPosNextLit(Eqn_p lit, CompactPos *cpos);
-Eqn_p       ClauseCPosSplit(Clause_p clause, CompactPos *cpos);
+Eqn_p ClauseCPosFirstLit(Clause_p clause, CompactPos* cpos);
+Eqn_p ClauseCPosNextLit(Eqn_p lit, CompactPos* cpos);
+Eqn_p ClauseCPosSplit(Clause_p clause, CompactPos* cpos);
 
 #endif
 

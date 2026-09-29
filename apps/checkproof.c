@@ -34,11 +34,11 @@ Changes
 /*                  Data types                                         */
 /*---------------------------------------------------------------------*/
 
-#define NAME    "checkproof"
+#define NAME "checkproof"
 
 typedef enum
 {
-   OPT_NOOPT=0,
+   OPT_NOOPT = 0,
    OPT_HELP,
    OPT_VERSION,
    OPT_VERBOSE,
@@ -48,7 +48,7 @@ typedef enum
    OPT_PROVERTYPE,
    OPT_EXECUTABLE,
    OPT_TIME_LIMIT
-}OptionCodes;
+} OptionCodes;
 
 
 
@@ -56,78 +56,56 @@ typedef enum
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-OptCell opts[] =
-{
-   {OPT_HELP,
-    'h', "help",
-    NoArg, NULL,
-    "Print a short description of program usage and options."},
+OptCell opts[] = {
+   { OPT_HELP, 'h', "help", NoArg, NULL,
+     "Print a short description of program usage and options." },
 
-   {OPT_VERSION,
-    '\0', "version",
-    NoArg, NULL,
-    "Print the version number of the program."},
+   { OPT_VERSION, '\0', "version", NoArg, NULL,
+     "Print the version number of the program." },
 
-   {OPT_VERBOSE,
-    'v', "verbose",
-    OptArg, "1",
-    "Verbose comments on the progress of the program."},
+   { OPT_VERBOSE, 'v', "verbose", OptArg, "1",
+     "Verbose comments on the progress of the program." },
 
-   {OPT_OUTPUT,
-    'o', "output-file",
-    ReqArg, NULL,
-   "Redirect output into the named file."},
+   { OPT_OUTPUT, 'o', "output-file", ReqArg, NULL,
+     "Redirect output into the named file." },
 
-   {OPT_SILENT,
-    's', "silent",
-    NoArg, NULL,
-    "Equivalent to --output-level=0."},
+   { OPT_SILENT, 's', "silent", NoArg, NULL,
+     "Equivalent to --output-level=0." },
 
-   {OPT_OUTPUTLEVEL,
-    'l', "output-level",
-    ReqArg, NULL,
-    "Select an output level, greater values imply more verbose"
-    " output. At the moment, level 0 only prints the result, level 1"
-    " prints inference steps as they are verified, level 2 prints"
-    " prover commands issued, and level 3 prints all prover output"
-    " (which may be very little)"},
+   { OPT_OUTPUTLEVEL, 'l', "output-level", ReqArg, NULL,
+     "Select an output level, greater values imply more verbose"
+     " output. At the moment, level 0 only prints the result, level 1"
+     " prints inference steps as they are verified, level 2 prints"
+     " prover commands issued, and level 3 prints all prover output"
+     " (which may be very little)" },
 
-   {OPT_PROVERTYPE,
-    'p', "prover-type",
-    ReqArg, NULL,
-    "Set the type of the prover to use for proof"
-    " verification. Determines problem syntax, options, and check for"
-    " success. Supported options at are  'E' (the"
-    " default),'Otter' 'SPASS', and 'scheme-setheo' (not yet"
-    " implemented). SPASS support is only tested with SPASS"
-    " 0.55 and may fail if the problem contains identifiers reserved "
-    "by SPASS. There have been some supple syntax changes, so more"
-    " recent SPASS versions will probably fail as well."},
+   { OPT_PROVERTYPE, 'p', "prover-type", ReqArg, NULL,
+     "Set the type of the prover to use for proof"
+     " verification. Determines problem syntax, options, and check for"
+     " success. Supported options at are  'E' (the"
+     " default),'Otter' 'SPASS', and 'scheme-setheo' (not yet"
+     " implemented). SPASS support is only tested with SPASS"
+     " 0.55 and may fail if the problem contains identifiers reserved "
+     "by SPASS. There have been some supple syntax changes, so more"
+     " recent SPASS versions will probably fail as well." },
 
-   {OPT_EXECUTABLE,
-    'x', "executable",
-    ReqArg, NULL,
-    "Give the name under which the prover can be called. If no"
-    " executable is given, checkproof will guess a name based on the"
-    " type of the prover. This guess may be way off!"},
+   { OPT_EXECUTABLE, 'x', "executable", ReqArg, NULL,
+     "Give the name under which the prover can be called. If no"
+     " executable is given, checkproof will guess a name based on the"
+     " type of the prover. This guess may be way off!" },
 
-   {OPT_TIME_LIMIT,
-    't', "prover-cpu-limit",
-    ReqArg, NULL,
-    "Limit the CPU time prover may spend on a single step. Default is"
-    " 10 seconds."},
+   { OPT_TIME_LIMIT, 't', "prover-cpu-limit", ReqArg, NULL,
+     "Limit the CPU time prover may spend on a single step. Default is"
+     " 10 seconds." },
 
-   {OPT_NOOPT,
-    '\0', NULL,
-    NoArg, NULL,
-    NULL}
+   { OPT_NOOPT, '\0', NULL, NoArg, NULL, NULL }
 };
 
-char       *outname    = NULL;
-long       time_limit  = 10;
-char       *executable = NULL;
-ProverType prover      = EProver;
-bool       app_encode  = false;
+char* outname = NULL;
+long time_limit = 10;
+char* executable = NULL;
+ProverType prover = EProver;
+bool app_encode = false;
 
 
 /*---------------------------------------------------------------------*/
@@ -144,11 +122,11 @@ void print_help(FILE* out);
 
 int main(int argc, char* argv[])
 {
-   CLState_p   state;
-   Scanner_p   in;
-   PCLProt_p   prot;
-   long        steps,res,unchecked;
-   int         i;
+   CLState_p state;
+   Scanner_p in;
+   PCLProt_p prot;
+   long steps, res, unchecked;
+   int i;
 
    assert(argv[0]);
 
@@ -168,39 +146,38 @@ int main(int argc, char* argv[])
    OpenGlobalOut(outname);
    prot = PCLProtAlloc();
 
-   if(state->argc ==  0)
+   if(state->argc == 0)
    {
       CLStateInsertArg(state, "-");
    }
    steps = 0;
-   for(i=0; state->argv[i]; i++)
+   for(i = 0; state->argv[i]; i++)
    {
       in = CreateScanner(StreamTypeFile, state->argv[i], true, NULL, true);
       ScannerSetFormat(in, TPTPFormat);
-      steps+=PCLProtParse(in, prot);
+      steps += PCLProtParse(in, prot);
       CheckInpTok(in, NoToken);
       DestroyScanner(in);
    }
    VERBOUT2("PCL input read\n");
 
-   res = PCLProtCheck(prot,prover,executable,time_limit, &unchecked);
+   res = PCLProtCheck(prot, prover, executable, time_limit, &unchecked);
 
    fprintf(GlobalOut,
-         COMCHAR" Successfully checked %ld of %ld steps (%ld unchecked): ",
-         res, steps, unchecked);
+           COMCHAR " Successfully checked %ld of %ld steps (%ld unchecked): ",
+           res, steps, unchecked);
 
-   if(res==steps)
+   if(res == steps)
    {
       fprintf(GlobalOut, " Proof verified!\n");
    }
-   else if((res+unchecked) == steps)
+   else if((res + unchecked) == steps)
    {
       fprintf(GlobalOut, " Proof partially verified!\n");
    }
    else
    {
-      fprintf(GlobalOut,
-         " Failed to verify proof!\n");
+      fprintf(GlobalOut, " Failed to verify proof!\n");
    }
 
    PCLProtFree(prot);
@@ -238,69 +215,69 @@ CLState_p process_options(int argc, char* argv[])
 {
    Opt_p handle;
    CLState_p state;
-   char*  arg;
+   char* arg;
 
-   state = CLStateAlloc(argc,argv);
+   state = CLStateAlloc(argc, argv);
 
    while((handle = CLStateGetOpt(state, &arg, opts)))
    {
       switch(handle->option_code)
       {
-      case OPT_VERBOSE:
-       Verbose = CLStateGetIntArg(handle, arg);
-       break;
-      case OPT_HELP:
-       print_help(stdout);
-       exit(NO_ERROR);
-      case OPT_VERSION:
-       printf(NAME " " VERSION "\n");
-       exit(NO_ERROR);
-      case OPT_OUTPUT:
-       outname = arg;
-       break;
-      case OPT_SILENT:
-       OutputLevel = 0;
-       break;
-      case OPT_OUTPUTLEVEL:
-       OutputLevel = CLStateGetIntArg(handle, arg);
-       break;
-      case OPT_PROVERTYPE:
-       if(strcmp(arg, "E")==0)
-       {
-          prover = EProver;
-       }
-       else if(strcmp(arg, "Otter")==0)
-       {
-          prover = Otter;
-          OutputFormat = LOPFormat;
-          EqnUseInfix = false;
-       }
-       else if(strcmp(arg, "SPASS")==0)
-       {
-          prover = Spass;
-          OutputFormat = LOPFormat;
-          EqnUseInfix = false;
-       }
-       else if(strcmp(arg, "scheme-setheo")==0)
-       {
-          prover = Setheo;
-       }
-       else
-       {
-          Error("Option -p (--prover-type) requires E, "
-           "Otter, SPASS or scheme-setheo as an argument",
-           USAGE_ERROR);
-       }
-       break;
-      case OPT_EXECUTABLE:
-       executable = arg;
-       break;
-      case OPT_TIME_LIMIT:
-       time_limit = CLStateGetIntArg(handle, arg);
-       break;
-      default:
-    assert(false);
-    break;
+         case OPT_VERBOSE:
+            Verbose = CLStateGetIntArg(handle, arg);
+            break;
+         case OPT_HELP:
+            print_help(stdout);
+            exit(NO_ERROR);
+         case OPT_VERSION:
+            printf(NAME " " VERSION "\n");
+            exit(NO_ERROR);
+         case OPT_OUTPUT:
+            outname = arg;
+            break;
+         case OPT_SILENT:
+            OutputLevel = 0;
+            break;
+         case OPT_OUTPUTLEVEL:
+            OutputLevel = CLStateGetIntArg(handle, arg);
+            break;
+         case OPT_PROVERTYPE:
+            if(strcmp(arg, "E") == 0)
+            {
+               prover = EProver;
+            }
+            else if(strcmp(arg, "Otter") == 0)
+            {
+               prover = Otter;
+               OutputFormat = LOPFormat;
+               EqnUseInfix = false;
+            }
+            else if(strcmp(arg, "SPASS") == 0)
+            {
+               prover = Spass;
+               OutputFormat = LOPFormat;
+               EqnUseInfix = false;
+            }
+            else if(strcmp(arg, "scheme-setheo") == 0)
+            {
+               prover = Setheo;
+            }
+            else
+            {
+               Error("Option -p (--prover-type) requires E, "
+                     "Otter, SPASS or scheme-setheo as an argument",
+                     USAGE_ERROR);
+            }
+            break;
+         case OPT_EXECUTABLE:
+            executable = arg;
+            break;
+         case OPT_TIME_LIMIT:
+            time_limit = CLStateGetIntArg(handle, arg);
+            break;
+         default:
+            assert(false);
+            break;
       }
    }
    return state;
@@ -309,8 +286,7 @@ CLState_p process_options(int argc, char* argv[])
 void print_help(FILE* out)
 {
    fprintf(out, "\n\
-\n"
-NAME " " VERSION "\n\
+\n" NAME " " VERSION "\n\
 \n\
 Usage: " NAME " [options] [files]\n\
 \n\

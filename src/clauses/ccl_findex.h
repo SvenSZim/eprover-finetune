@@ -37,8 +37,7 @@ typedef struct findex_cell
 {
    PDArray_p index; /* We cheat a bit by knowing that FunCodes are
                      * long ints and can be used as indices here. */
-}FIndexCell, *FIndex_p;
-
+} FIndexCell, *FIndex_p;
 
 
 
@@ -47,11 +46,11 @@ typedef struct findex_cell
 /*---------------------------------------------------------------------*/
 
 
-#define FIndexCellAlloc()    (FIndexCell*)SizeMalloc(sizeof(FIndexCell))
+#define FIndexCellAlloc() (FIndexCell*)SizeMalloc(sizeof(FIndexCell))
 #define FIndexCellFree(junk) SizeFree(junk, sizeof(FIndexCell))
 
 FIndex_p FIndexAlloc(void);
-void     FIndexFree(FIndex_p junk);
+void FIndexFree(FIndex_p junk);
 
 void FIndexAddClause(FIndex_p index, Clause_p clause);
 void FindexRemoveClause(FIndex_p index, Clause_p clause);
@@ -71,8 +70,6 @@ void FIndexAddPLFormulaSet(FIndex_p index, PList_p set);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

@@ -34,14 +34,14 @@ typedef struct min_heap_cell
    PStack_p arr;
    CmpFun cmp;
    SetIndexFun setter;
-}MinHeapCell, *MinHeap_p;
+} MinHeapCell, *MinHeap_p;
 
 
 
 MinHeap_p MinHeapAllocWithIndex(CmpFun, SetIndexFun);
-#define  MinHeapAlloc(f) (MinHeapAllocWithIndex(f, NULL))
+#define MinHeapAlloc(f) (MinHeapAllocWithIndex(f, NULL))
 
-long   MinHeapSize(MinHeap_p);
+long MinHeapSize(MinHeap_p);
 
 void MinHeapAddP(MinHeap_p, void*);
 void MinHeapAddInt(MinHeap_p, long);

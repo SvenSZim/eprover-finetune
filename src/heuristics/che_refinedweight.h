@@ -36,14 +36,14 @@ Changes
 
 typedef struct refinedweightparamcell
 {
-   OCB_p  ocb;
+   OCB_p ocb;
    double max_term_multiplier;
    double max_literal_multiplier;
    double pos_multiplier;
    double app_var_mult;
-   long   vweight;
-   long   fweight;
-}RefinedWeightParamCell, *RefinedWeightParam_p;
+   long vweight;
+   long fweight;
+} RefinedWeightParamCell, *RefinedWeightParam_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -51,28 +51,25 @@ typedef struct refinedweightparamcell
 /*---------------------------------------------------------------------*/
 
 
-#define RefinedWeightParamCellAlloc() (RefinedWeightParamCell*) \
-        SizeMalloc(sizeof(RefinedWeightParamCell))
-#define RefinedWeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(RefinedWeightParamCell))
+#define RefinedWeightParamCellAlloc()                                          \
+   (RefinedWeightParamCell*)SizeMalloc(sizeof(RefinedWeightParamCell))
+#define RefinedWeightParamCellFree(junk)                                       \
+   SizeFree(junk, sizeof(RefinedWeightParamCell))
 
-WFCB_p ClauseRefinedWeightInit(ClausePrioFun prio_fun, int fweight,
-                int vweight, OCB_p ocb, double
-                max_term_multiplier, double
-                max_literal_multiplier, double
-                pos_multiplier, double app_var_mult);
+WFCB_p ClauseRefinedWeightInit(ClausePrioFun prio_fun, int fweight, int vweight,
+                               OCB_p ocb, double max_term_multiplier,
+                               double max_literal_multiplier,
+                               double pos_multiplier, double app_var_mult);
 
-WFCB_p ClauseRefinedWeightParse(Scanner_p in, OCB_p ocb, ProofState_p
-            state);
+WFCB_p ClauseRefinedWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double ClauseRefinedWeightCompute(void* data, Clause_p clause);
 
-WFCB_p ClauseRefinedWeight2Parse(Scanner_p in, OCB_p ocb, ProofState_p
-            state);
+WFCB_p ClauseRefinedWeight2Parse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double ClauseRefinedWeight2Compute(void* data, Clause_p clause);
 
-void   ClauseRefinedWeightExit(void* data);
+void ClauseRefinedWeightExit(void* data);
 
 
 #endif
@@ -80,8 +77,6 @@ void   ClauseRefinedWeightExit(void* data);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

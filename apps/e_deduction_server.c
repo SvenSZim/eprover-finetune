@@ -35,11 +35,11 @@
 /*                  Data types                                         */
 /*---------------------------------------------------------------------*/
 
-#define NAME         "e_deduction_server"
+#define NAME "e_deduction_server"
 
 typedef enum
 {
-   OPT_NOOPT=0,
+   OPT_NOOPT = 0,
    OPT_HELP,
    OPT_VERSION,
    OPT_VERBOSE,
@@ -50,7 +50,7 @@ typedef enum
    OPT_GLOBAL_WTCLIMIT,
    OPT_SERVER_LIB,
    OPT_DUMMY
-}OptionCodes;
+} OptionCodes;
 
 
 
@@ -59,71 +59,51 @@ typedef enum
 /*---------------------------------------------------------------------*/
 
 
-OptCell opts[] =
-{
-   {OPT_HELP,
-    'h', "help",
-    NoArg, NULL,
-    "Print a short description of program usage and options."},
+OptCell opts[] = {
+   { OPT_HELP, 'h', "help", NoArg, NULL,
+     "Print a short description of program usage and options." },
 
-   {OPT_VERSION,
-    'V', "version",
-    NoArg, NULL,
-    "Print the version number of the prover. Please include this"
-    " with all bug reports (if any)."},
+   { OPT_VERSION, 'V', "version", NoArg, NULL,
+     "Print the version number of the prover. Please include this"
+     " with all bug reports (if any)." },
 
-   {OPT_VERBOSE,
-    'v', "verbose",
-    OptArg, "1",
-    "Verbose comments on the progress of the program. This differs "
-    "from the output level (below) in that technical information is "
-    "printed to stderr, while the output level determines which "
-    "logical manipulations of the clauses are printed to stdout."},
+   { OPT_VERBOSE, 'v', "verbose", OptArg, "1",
+     "Verbose comments on the progress of the program. This differs "
+     "from the output level (below) in that technical information is "
+     "printed to stderr, while the output level determines which "
+     "logical manipulations of the clauses are printed to stdout." },
 
-   {OPT_PORT,
-    'p', "port",
-    ReqArg, NULL,
-    "The port on which the server will receive connections. Only effective "
-    "when interactive mode is on. If not given stdin/stdout will be used."},
+   { OPT_PORT, 'p', "port", ReqArg, NULL,
+     "The port on which the server will receive connections. Only effective "
+     "when interactive mode is on. If not given stdin/stdout will be used." },
 
-   {OPT_SILENT,
-    's', "silent",
-    NoArg, NULL,
-    "Equivalent to --output-level=0."},
+   { OPT_SILENT, 's', "silent", NoArg, NULL,
+     "Equivalent to --output-level=0." },
 
-   {OPT_OUTPUTLEVEL,
-    'l', "output-level",
-    ReqArg, NULL,
-    "Select an output level, greater values imply more verbose "
-    "output. Level 0 produces "
-    "nearly no output, level 1 will output each clause as it is "
-    "processed, level 2 will output generating inferences, "
-    "level 3 will give a full protocol including rewrite steps and "
-    "level 4 will include some internal clause renamings. Levels >= 2"
-    " also imply PCL2 or TSTP formats (which can be post-processed"
-    " with suitable tools)."},
+   { OPT_OUTPUTLEVEL, 'l', "output-level", ReqArg, NULL,
+     "Select an output level, greater values imply more verbose "
+     "output. Level 0 produces "
+     "nearly no output, level 1 will output each clause as it is "
+     "processed, level 2 will output generating inferences, "
+     "level 3 will give a full protocol including rewrite steps and "
+     "level 4 will include some internal clause renamings. Levels >= 2"
+     " also imply PCL2 or TSTP formats (which can be post-processed"
+     " with suitable tools)." },
 
-   {OPT_GLOBAL_WTCLIMIT,
-    'w', "wtc-limit",
-    ReqArg, NULL,
-    "Set the global wall-clock limit for each batch (if any)."},
+   { OPT_GLOBAL_WTCLIMIT, 'w', "wtc-limit", ReqArg, NULL,
+     "Set the global wall-clock limit for each batch (if any)." },
 
-   {OPT_SERVER_LIB,
-    'L', "lib",
-    ReqArg, NULL,
-    "Set the axioms library directory of the server."},
+   { OPT_SERVER_LIB, 'L', "lib", ReqArg, NULL,
+     "Set the axioms library directory of the server." },
 
-   {OPT_NOOPT,
-    '\0', NULL,
-    NoArg, NULL,
-    NULL}
+   { OPT_NOOPT, '\0', NULL, NoArg, NULL, NULL }
 };
 
-char              *outname        = NULL;
-char              *server_lib     = NULL;
-long              total_wtc_limit = 0;
-int               port            = -1;
-bool              app_encode      = false;
+char* outname = NULL;
+char* server_lib = NULL;
+long total_wtc_limit = 0;
+int port = -1;
+bool app_encode = false;
 
 /*---------------------------------------------------------------------*/
 /*                      Forward Declarations                           */
@@ -138,17 +118,17 @@ void print_help(FILE* out);
 
 int main(int argc, char* argv[])
 {
-   CLState_p        state;
-   BatchSpec_p      spec;
-   StructFOFSpec_p   ctrl;
-   char             *prover    = "eprover";
-   int oldsock,sock_fd,pid;
+   CLState_p state;
+   BatchSpec_p spec;
+   StructFOFSpec_p ctrl;
+   char* prover = "eprover";
+   int oldsock, sock_fd, pid;
 
    assert(argv[0]);
 
 
    // TODO Set a default problem time limit
-   if( !total_wtc_limit )
+   if(!total_wtc_limit)
       total_wtc_limit = 30;
 
    InitIO(NAME);
@@ -176,21 +156,21 @@ int main(int argc, char* argv[])
    if(port != -1)
    {
       struct sockaddr cli_addr;
-      socklen_t       cli_len = sizeof(cli_addr);
+      socklen_t cli_len = sizeof(cli_addr);
       oldsock = CreateServerSock(port);
       Listen(oldsock);
       while(1)
       {
          sock_fd = accept(oldsock, &cli_addr, &cli_len);
-         if (sock_fd == -1)
+         if(sock_fd == -1)
          {
             TmpErrno = errno;
-            if (TmpErrno == ECONNABORTED || TmpErrno == EINTR)
+            if(TmpErrno == ECONNABORTED || TmpErrno == EINTR)
                continue;
             // all other errors indicate a more severe problem - no retry
             SysError("Unable to listen on socket %d", SYS_ERROR, oldsock);
          }
-         if ((pid = fork()) == -1)
+         if((pid = fork()) == -1)
          {
             close(sock_fd);
             continue;
@@ -249,41 +229,41 @@ CLState_p process_options(int argc, char* argv[])
 {
    Opt_p handle;
    CLState_p state;
-   char*  arg;
+   char* arg;
 
-   state = CLStateAlloc(argc,argv);
+   state = CLStateAlloc(argc, argv);
 
    while((handle = CLStateGetOpt(state, &arg, opts)))
    {
       switch(handle->option_code)
       {
-      case OPT_VERBOSE:
+         case OPT_VERBOSE:
             Verbose = CLStateGetIntArg(handle, arg);
             break;
-      case OPT_HELP:
+         case OPT_HELP:
             print_help(stdout);
             exit(NO_ERROR);
             break;
-      case OPT_VERSION:
+         case OPT_VERSION:
             fprintf(stdout, NAME " " VERSION " " E_NICKNAME "\n");
             exit(NO_ERROR);
             break;
-      case OPT_PORT:
+         case OPT_PORT:
             port = CLStateGetIntArg(handle, arg);
             break;
-      case OPT_SILENT:
+         case OPT_SILENT:
             OutputLevel = 0;
             break;
-      case OPT_OUTPUTLEVEL:
+         case OPT_OUTPUTLEVEL:
             OutputLevel = CLStateGetIntArg(handle, arg);
             break;
-      case OPT_GLOBAL_WTCLIMIT:
+         case OPT_GLOBAL_WTCLIMIT:
             total_wtc_limit = CLStateGetIntArg(handle, arg);
             break;
-      case OPT_SERVER_LIB:
+         case OPT_SERVER_LIB:
             server_lib = arg;
             break;
-      default:
+         default:
             assert(false && "Unknown option");
             break;
       }
@@ -293,8 +273,7 @@ CLState_p process_options(int argc, char* argv[])
 
 void print_help(FILE* out)
 {
-   fprintf(out, "\n"
-           NAME " " VERSION " \"" E_NICKNAME "\"\n\
+   fprintf(out, "\n" NAME " " VERSION " \"" E_NICKNAME "\"\n\
 \n\
 Usage: " NAME " -p <port> [options] [files]\n\
 \n\

@@ -36,15 +36,14 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-bool          D_LPOGreater(OCB_p ocb, Term_p s, Term_p t,
-          DerefType deref_s, DerefType deref_t);
-CompareResult D_LPOCompare(OCB_p ocb, Term_p s, Term_p t,
-          DerefType deref_s, DerefType deref_t);
+bool D_LPOGreater(OCB_p ocb, Term_p s, Term_p t, DerefType deref_s,
+                  DerefType deref_t);
+CompareResult D_LPOCompare(OCB_p ocb, Term_p s, Term_p t, DerefType deref_s,
+                           DerefType deref_t);
 
 CompareResult D_LPOCompareVars(Term_p, Term_p, DerefType, DerefType);
 

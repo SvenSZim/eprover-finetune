@@ -49,10 +49,10 @@
 
 static PTree_p splay_ptree(PTree_p tree, void* key)
 {
-   PTree_p   left, right, tmp;
+   PTree_p left, right, tmp;
    PTreeCell newnode;
 
-   if (!tree)
+   if(!tree)
    {
       return tree;
    }
@@ -62,7 +62,7 @@ static PTree_p splay_ptree(PTree_p tree, void* key)
    left = &newnode;
    right = &newnode;
 
-   for (;;)
+   for(;;)
    {
       if(PLesser(key, tree->key))
       {
@@ -76,7 +76,7 @@ static PTree_p splay_ptree(PTree_p tree, void* key)
             tree->lson = tmp->rson;
             tmp->rson = tree;
             tree = tmp;
-            if (!tree->lson)
+            if(!tree->lson)
             {
                break;
             }
@@ -87,7 +87,7 @@ static PTree_p splay_ptree(PTree_p tree, void* key)
       }
       else if(PGreater(key, tree->key))
       {
-         if (!tree->rson)
+         if(!tree->rson)
          {
             break;
          }
@@ -97,7 +97,7 @@ static PTree_p splay_ptree(PTree_p tree, void* key)
             tree->rson = tmp->lson;
             tmp->lson = tree;
             tree = tmp;
-            if (!tree->rson)
+            if(!tree->rson)
             {
                break;
             }
@@ -118,7 +118,6 @@ static PTree_p splay_ptree(PTree_p tree, void* key)
 
    return tree;
 }
-
 
 
 
@@ -205,7 +204,7 @@ void PTreeFree(PTree_p junk)
 //
 /----------------------------------------------------------------------*/
 
-PTree_p PTreeInsert(PTree_p *root, PTree_p newnode)
+PTree_p PTreeInsert(PTree_p* root, PTree_p newnode)
 {
    if(!*root)
    {
@@ -236,7 +235,6 @@ PTree_p PTreeInsert(PTree_p *root, PTree_p newnode)
 
 
 
-
 /*-----------------------------------------------------------------------
 //
 // Function: PTreeStore()
@@ -250,7 +248,7 @@ PTree_p PTreeInsert(PTree_p *root, PTree_p newnode)
 //
 /----------------------------------------------------------------------*/
 
-bool PTreeStore(PTree_p *root, void* key)
+bool PTreeStore(PTree_p* root, void* key)
 {
    PTree_p handle, newnode;
 
@@ -282,7 +280,7 @@ bool PTreeStore(PTree_p *root, void* key)
 //
 /----------------------------------------------------------------------*/
 
-PTree_p PTreeFind(PTree_p *root, void* key)
+PTree_p PTreeFind(PTree_p* root, void* key)
 {
    if(*root)
    {
@@ -346,18 +344,18 @@ PTree_p PTreeFindBinary(PTree_p root, void* key)
 /----------------------------------------------------------------------*/
 
 
-PTree_p PTreeExtractEntry(PTree_p *root, void* key)
+PTree_p PTreeExtractEntry(PTree_p* root, void* key)
 {
    PTree_p x, cell;
 
-   if (!(*root))
+   if(!(*root))
    {
       return NULL;
    }
    *root = splay_ptree(*root, key);
    if(PEqual(key, (*root)->key))
    {
-      if (!(*root)->lson)
+      if(!(*root)->lson)
       {
          x = (*root)->rson;
       }
@@ -388,10 +386,10 @@ PTree_p PTreeExtractEntry(PTree_p *root, void* key)
 //
 /----------------------------------------------------------------------*/
 
-void* PTreeExtractKey(PTree_p *root, void* key)
+void* PTreeExtractKey(PTree_p* root, void* key)
 {
    PTree_p handle;
-   void*   res = NULL;
+   void* res = NULL;
 
    handle = PTreeExtractEntry(root, key);
    if(handle)
@@ -415,7 +413,7 @@ void* PTreeExtractKey(PTree_p *root, void* key)
 //
 /----------------------------------------------------------------------*/
 
-void* PTreeExtractRootKey(PTree_p *root)
+void* PTreeExtractRootKey(PTree_p* root)
 {
    if(*root)
    {
@@ -437,7 +435,7 @@ void* PTreeExtractRootKey(PTree_p *root)
 //
 /----------------------------------------------------------------------*/
 
-bool PTreeDeleteEntry(PTree_p *root, void* key)
+bool PTreeDeleteEntry(PTree_p* root, void* key)
 {
    PTree_p cell;
 
@@ -465,11 +463,11 @@ bool PTreeDeleteEntry(PTree_p *root, void* key)
 //
 /----------------------------------------------------------------------*/
 
-bool PTreeMerge(PTree_p *root, PTree_p add)
+bool PTreeMerge(PTree_p* root, PTree_p add)
 {
    PStack_p stack = PStackAlloc();
-   PTree_p  tmp;
-   bool     res = false;
+   PTree_p tmp;
+   bool res = false;
 
    //printf("Allocated %p\n", stack);
    PStackPushP(stack, add);
@@ -511,7 +509,7 @@ bool PTreeMerge(PTree_p *root, PTree_p add)
 //
 /----------------------------------------------------------------------*/
 
-void PTreeInsertTree(PTree_p *root, PTree_p add)
+void PTreeInsertTree(PTree_p* root, PTree_p add)
 {
    PStack_p stack = PStackAlloc();
 
@@ -546,7 +544,7 @@ void PTreeInsertTree(PTree_p *root, PTree_p add)
 long PTreeNodes(PTree_p root)
 {
    PStack_p stack = PStackAlloc();
-   long     res   = 0;
+   long res = 0;
 
    PStackPushP(stack, root);
 
@@ -582,7 +580,7 @@ long PTreeNodes(PTree_p root)
 long PTreeDebugPrint(FILE* out, PTree_p root)
 {
    PStack_p stack = PStackAlloc();
-   long     res   = 0;
+   long res = 0;
 
    PStackPushP(stack, root);
 
@@ -593,7 +591,7 @@ long PTreeDebugPrint(FILE* out, PTree_p root)
       {
          if(res % 10 == 0)
          {
-            fprintf(out, "\n"COMCHAR);
+            fprintf(out, "\n" COMCHAR);
          }
          fprintf(out, " %7p", root->key);
          PStackPushP(stack, root->lson);
@@ -622,14 +620,14 @@ long PTreeDebugPrint(FILE* out, PTree_p root)
 //
 /----------------------------------------------------------------------*/
 
-long PStackToPTree(PTree_p *root, PStack_p stack)
+long PStackToPTree(PTree_p* root, PStack_p stack)
 {
    PStackPointer i;
-   long          res = 0;
+   long res = 0;
 
-   for(i=0; i<PStackGetSP(stack); i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
-      if(PTreeStore(root, PStackElementP(stack,i)))
+      if(PTreeStore(root, PStackElementP(stack, i)))
       {
          res++;
       }
@@ -666,8 +664,8 @@ long PTreeToPStack(PStack_p target_stack, PTree_p root)
       {
          PStackPushP(target_stack, handle->key);
          res++;
-         PStackPushP(stack,handle->lson);
-         PStackPushP(stack,handle->rson);
+         PStackPushP(stack, handle->lson);
+         PStackPushP(stack, handle->rson);
       }
    }
    PStackFree(stack);
@@ -691,7 +689,7 @@ long PTreeToPStack(PStack_p target_stack, PTree_p root)
 //
 /----------------------------------------------------------------------*/
 
-void* PTreeSharedElement(PTree_p *tree1, PTree_p tree2)
+void* PTreeSharedElement(PTree_p* tree1, PTree_p tree2)
 {
    PStack_p stack = PStackAlloc();
    PTree_p handle, tmp;
@@ -710,8 +708,8 @@ void* PTreeSharedElement(PTree_p *tree1, PTree_p tree2)
             res = tmp->key;
             break;
          }
-         PStackPushP(stack,handle->lson);
-         PStackPushP(stack,handle->rson);
+         PStackPushP(stack, handle->lson);
+         PStackPushP(stack, handle->rson);
       }
    }
    PStackFree(stack);
@@ -734,7 +732,7 @@ void* PTreeSharedElement(PTree_p *tree1, PTree_p tree2)
 PTree_p PTreeIntersection(PTree_p tree1, PTree_p tree2)
 {
    PStack_p stack = PStackAlloc();
-   PTree_p handle, tmp, res=NULL;
+   PTree_p handle, tmp, res = NULL;
 
    PStackPushP(stack, tree2);
 
@@ -748,8 +746,8 @@ PTree_p PTreeIntersection(PTree_p tree1, PTree_p tree2)
          {
             PTreeStore(&res, handle->key);
          }
-         PStackPushP(stack,handle->lson);
-         PStackPushP(stack,handle->rson);
+         PStackPushP(stack, handle->lson);
+         PStackPushP(stack, handle->rson);
       }
    }
    PStackFree(stack);
@@ -769,7 +767,7 @@ PTree_p PTreeIntersection(PTree_p tree1, PTree_p tree2)
 //
 /----------------------------------------------------------------------*/
 
-long PTreeDestrIntersection(PTree_p *tree1, PTree_p tree2)
+long PTreeDestrIntersection(PTree_p* tree1, PTree_p tree2)
 {
    PTree_p tmp = NULL;
    void* key;
@@ -818,8 +816,8 @@ PTree_p PTreeCopy(PTree_p tree)
       if(handle)
       {
          PTreeStore(&res, handle->key);
-         PStackPushP(stack,handle->lson);
-         PStackPushP(stack,handle->rson);
+         PStackPushP(stack, handle->lson);
+         PStackPushP(stack, handle->rson);
       }
    }
    PStackFree(stack);
@@ -841,11 +839,11 @@ PTree_p PTreeCopy(PTree_p tree)
 
 bool PTreeEquiv(PTree_p t1, PTree_p t2)
 {
-   bool res =  true;
+   bool res = true;
    PStack_p iter1 = PTreeTraverseInit(t1);
    PStack_p iter2 = PTreeTraverseInit(t2);
 
-   PTree_p  handle1, handle2;
+   PTree_p handle1, handle2;
 
    while((handle1 = PTreeTraverseNext(iter1)))
    {
@@ -858,7 +856,7 @@ bool PTreeEquiv(PTree_p t1, PTree_p t2)
    }
    if(!handle1)
    {
-      handle2= PTreeTraverseNext(iter2);
+      handle2 = PTreeTraverseNext(iter2);
       if(handle2)
       {
          res = false;
@@ -882,12 +880,12 @@ bool PTreeEquiv(PTree_p t1, PTree_p t2)
 //
 /----------------------------------------------------------------------*/
 
-bool PTreeIsSubset(PTree_p sub, PTree_p *super)
+bool PTreeIsSubset(PTree_p sub, PTree_p* super)
 {
-   bool res =  true;
+   bool res = true;
    PStack_p iter = PTreeTraverseInit(sub);
 
-   PTree_p  handle;
+   PTree_p handle;
 
    while((handle = PTreeTraverseNext(iter)))
    {
@@ -920,7 +918,7 @@ bool PTreeIsSubset(PTree_p sub, PTree_p *super)
 void PTreeVisitInOrder(PTree_p t, void (*visitor)(void*, void*), void* arg)
 {
    PStack_p iter = PTreeTraverseInit(t);
-   PTree_p  handle = NULL;
+   PTree_p handle = NULL;
 
    while((handle = PTreeTraverseNext(iter)))
    {

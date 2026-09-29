@@ -27,19 +27,10 @@
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-char* IndexFunNames[] =
-{
-   "IndexNoIndex",
-   "IndexDynamic",
-   "IndexArity",
-   "IndexSymbol",
-   "IndexTop",
-   "IndexAltTop",
-   "IndexCSTop",
-   "IndexESTop",
-   "IndexIdentity",
-   "IndexEmpty",
-   NULL
+char* IndexFunNames[] = {
+   "IndexNoIndex",  "IndexDynamic", "IndexArity", "IndexSymbol",
+   "IndexTop",      "IndexAltTop",  "IndexCSTop", "IndexESTop",
+   "IndexIdentity", "IndexEmpty",   NULL
 };
 
 
@@ -73,19 +64,19 @@ static Term_p any_term_top(IndexType type, Term_p term, int depth,
 
    switch(type)
    {
-   case IndexTop:
+      case IndexTop:
          result = TermTop(term, depth, freshvars);
          break;
-   case IndexAltTop:
+      case IndexAltTop:
          result = AltTermTop(term, depth, freshvars);
          break;
-   case IndexCSTop:
+      case IndexCSTop:
          result = CSTermTop(term, depth, freshvars);
          break;
-   case IndexESTop:
+      case IndexESTop:
          result = ESTermTop(term, depth, freshvars);
          break;
-   default:
+      default:
          assert(false && "Wrong index type!");
          result = NULL; /* Stiffle warning */
          break;
@@ -120,10 +111,10 @@ int GetIndexType(char* name)
    }
    if(position == 1)
    {
-      return IndexArity | IndexSymbol | IndexTop | IndexAltTop |
-         IndexCSTop | IndexESTop | IndexIdentity;
+      return IndexArity | IndexSymbol | IndexTop | IndexAltTop | IndexCSTop |
+         IndexESTop | IndexIdentity;
    }
-   return 1 << (position-2);
+   return 1 << (position - 2);
 }
 
 
@@ -143,25 +134,25 @@ char* GetIndexName(IndexType type)
 {
    switch(type)
    {
-   case IndexNoIndex:
+      case IndexNoIndex:
          return IndexFunNames[0];
-   case IndexArity:
+      case IndexArity:
          return IndexFunNames[2];
-   case IndexSymbol:
+      case IndexSymbol:
          return IndexFunNames[3];
-   case IndexTop:
+      case IndexTop:
          return IndexFunNames[4];
-   case IndexAltTop:
+      case IndexAltTop:
          return IndexFunNames[5];
-   case IndexCSTop:
+      case IndexCSTop:
          return IndexFunNames[6];
-   case IndexESTop:
+      case IndexESTop:
          return IndexFunNames[7];
-   case IndexIdentity:
+      case IndexIdentity:
          return IndexFunNames[8];
-   case IndexEmpty:
+      case IndexEmpty:
          return IndexFunNames[9];
-   default:
+      default:
          return IndexFunNames[1];
    }
 }
@@ -179,8 +170,7 @@ char* GetIndexName(IndexType type)
 //
 /----------------------------------------------------------------------*/
 
-IndexTerm_p IndexTermAlloc(Term_p term, PatternSubst_p subst, long
-                           key)
+IndexTerm_p IndexTermAlloc(Term_p term, PatternSubst_p subst, long key)
 {
    IndexTerm_p handle = IndexTermCellAlloc();
 
@@ -227,25 +217,24 @@ void IndexTermFree(IndexTerm_p junk, TB_p bank)
 
 int IndexTermCompareFun(const void* term1, const void* term2)
 {
-   const IndexTerm_p t1 = (const IndexTerm_p) term1;
-   const IndexTerm_p t2 = (const IndexTerm_p) term2;
+   const IndexTerm_p t1 = (const IndexTerm_p)term1;
+   const IndexTerm_p t2 = (const IndexTerm_p)term2;
    int res = 0;
 
-   switch(PatternTermCompare(t1->subst, t1->term, t2->subst,
-                             t2->term))
+   switch(PatternTermCompare(t1->subst, t1->term, t2->subst, t2->term))
    {
-   case to_uncomparable:
+      case to_uncomparable:
          assert(false && "Only total substitutions expected here!");
          break;
-   case to_equal:
+      case to_equal:
          break;
-   case to_greater:
+      case to_greater:
          res = 1;
          break;
-   case to_lesser:
+      case to_lesser:
          res = -1;
          break;
-   default:
+      default:
          assert(false && "Unknown comparison result (?!?)");
          break;
    }
@@ -281,29 +270,29 @@ TSMIndex_p TSMIndexAlloc(IndexType type, int depth, TB_p bank,
 
    switch(type)
    {
-   case IndexArity:
+      case IndexArity:
          break;
-   case IndexSymbol:
+      case IndexSymbol:
          assert(subst);
          handle->tree.n_index = NULL;
          break;
-   case IndexTop:
-   case IndexAltTop:
-   case IndexCSTop:
-   case IndexESTop:
+      case IndexTop:
+      case IndexAltTop:
+      case IndexCSTop:
+      case IndexESTop:
          assert(depth > 0);
          assert(bank);
          assert(subst);
          handle->tree.t_index = NULL;
          break;
-   case IndexIdentity:
+      case IndexIdentity:
          assert(bank);
          assert(subst);
          handle->tree.t_index = NULL;
          break;
-   case IndexEmpty:
+      case IndexEmpty:
          break;
-   default:
+      default:
          assert(false && "Unknown index type");
          break;
    }
@@ -326,21 +315,21 @@ TSMIndex_p TSMIndexAlloc(IndexType type, int depth, TB_p bank,
 void TSMIndexFree(TSMIndex_p junk)
 {
    PStack_p stack;
-   PTree_p  cell;
+   PTree_p cell;
    assert(junk);
 
    switch(junk->type)
    {
-   case IndexArity:
+      case IndexArity:
          break;
-   case IndexSymbol:
+      case IndexSymbol:
          NumTreeFree(junk->tree.n_index);
          break;
-   case IndexTop:
-   case IndexAltTop:
-   case IndexCSTop:
-   case IndexESTop:
-   case IndexIdentity:
+      case IndexTop:
+      case IndexAltTop:
+      case IndexCSTop:
+      case IndexESTop:
+      case IndexIdentity:
          stack = PTreeTraverseInit(junk->tree.t_index);
          while((cell = PTreeTraverseNext(stack)))
          {
@@ -349,9 +338,9 @@ void TSMIndexFree(TSMIndex_p junk)
          PTreeTraverseExit(stack);
          PTreeFree(junk->tree.t_index);
          break;
-   case IndexEmpty:
+      case IndexEmpty:
          break;
-   default:
+      default:
          assert(false && "Unknown index type");
          break;
    }
@@ -373,19 +362,19 @@ void TSMIndexFree(TSMIndex_p junk)
 
 long TSMIndexFind(TSMIndex_p index, Term_p term, PatternSubst_p subst)
 {
-   long          res = -1, key;
+   long res = -1, key;
    IndexTermCell query;
-   IndexTerm_p   found;
-   NumTree_p     cell1;
-   PTree_p       cell2;
+   IndexTerm_p found;
+   NumTree_p cell1;
+   PTree_p cell2;
 
    switch(index->type)
    {
-   case IndexArity:
+      case IndexArity:
          res = term->arity;
-         index->count = MAX(index->count, res+1);
+         index->count = MAX(index->count, res + 1);
          break;
-   case IndexSymbol:
+      case IndexSymbol:
          /* printf("=Find in %ld =\n", index->ident);
             TermPrint(stdout, term, index->bank->sig, DEREF_NEVER);
             printf("\n");
@@ -407,15 +396,15 @@ long TSMIndexFind(TSMIndex_p index, Term_p term, PatternSubst_p subst)
          }
          /* printf("\n===Key: %ld Res: %ld\n", key, res);  */
          break;
-   case IndexTop:
-   case IndexAltTop:
-   case IndexCSTop:
-   case IndexESTop:
-         query.term  = any_term_top(index->type, term, index->depth,
-                                    index->bank->vars);
+      case IndexTop:
+      case IndexAltTop:
+      case IndexCSTop:
+      case IndexESTop:
+         query.term =
+            any_term_top(index->type, term, index->depth, index->bank->vars);
          query.subst = subst;
-         cell2 = PTreeObjFind(&(index->tree.t_index), &query,
-                              IndexTermCompareFun);
+         cell2 =
+            PTreeObjFind(&(index->tree.t_index), &query, IndexTermCompareFun);
          if(cell2)
          {
             found = cell2->key;
@@ -423,20 +412,20 @@ long TSMIndexFind(TSMIndex_p index, Term_p term, PatternSubst_p subst)
          }
          TermFree(query.term);
          break;
-   case IndexIdentity:
-         query.term  = term;
+      case IndexIdentity:
+         query.term = term;
          query.subst = subst;
-         cell2 = PTreeObjFind(&(index->tree.t_index), &query,
-                              IndexTermCompareFun);
+         cell2 =
+            PTreeObjFind(&(index->tree.t_index), &query, IndexTermCompareFun);
          if(cell2)
          {
             found = cell2->key;
             res = found->key;
          }
          break;
-   case IndexEmpty:
+      case IndexEmpty:
          break;
-   default:
+      default:
          assert(false && "Unknown index type");
          break;
    }
@@ -462,20 +451,20 @@ long TSMIndexFind(TSMIndex_p index, Term_p term, PatternSubst_p subst)
 
 long TSMIndexInsert(TSMIndex_p index, Term_p term)
 {
-   long          res=-1, key;
+   long res = -1, key;
    IndexTermCell query;
-   IndexTerm_p   entry;
-   PTree_p       cell2;
-   Term_p        shared;
-   NumTree_p     cell, old;
+   IndexTerm_p entry;
+   PTree_p cell2;
+   Term_p shared;
+   NumTree_p cell, old;
 
    switch(index->type)
    {
-   case IndexArity:
+      case IndexArity:
          res = term->arity;
-         index->count = MAX(index->count, res+1);
+         index->count = MAX(index->count, res + 1);
          break;
-   case IndexSymbol:
+      case IndexSymbol:
          /* printf("\n=Insert in %ld - term %ld=\n", index->ident, term->entry_no);
             TermPrint(stdout, term, index->bank->sig, DEREF_NEVER);
             printf("\n");
@@ -507,15 +496,15 @@ long TSMIndexInsert(TSMIndex_p index, Term_p term)
          }
          /* printf("\n===Key: %ld Res: %ld\n", key, res); */
          break;
-   case IndexTop:
-   case IndexAltTop:
-   case IndexCSTop:
-   case IndexESTop:
-         query.term  = any_term_top(index->type, term, index->depth,
-                                    index->bank->vars);
+      case IndexTop:
+      case IndexAltTop:
+      case IndexCSTop:
+      case IndexESTop:
+         query.term =
+            any_term_top(index->type, term, index->depth, index->bank->vars);
          query.subst = index->subst;
-         cell2 = PTreeObjFind(&(index->tree.t_index), &query,
-                              IndexTermCompareFun);
+         cell2 =
+            PTreeObjFind(&(index->tree.t_index), &query, IndexTermCompareFun);
          if(cell2)
          {
             entry = cell2->key;
@@ -524,8 +513,7 @@ long TSMIndexInsert(TSMIndex_p index, Term_p term)
          else
          {
             shared = TBInsert(index->bank, query.term, DEREF_NEVER);
-            entry = IndexTermAlloc(shared, index->subst,
-                                   index->count);
+            entry = IndexTermAlloc(shared, index->subst, index->count);
             res = index->count++;
             entry = PTreeObjStore(&(index->tree.t_index), entry,
                                   IndexTermCompareFun);
@@ -533,11 +521,11 @@ long TSMIndexInsert(TSMIndex_p index, Term_p term)
          }
          TermFree(query.term);
          break;
-   case IndexIdentity:
-         query.term  = term;
+      case IndexIdentity:
+         query.term = term;
          query.subst = index->subst;
-         cell2 = PTreeObjFind(&(index->tree.t_index), &query,
-                              IndexTermCompareFun);
+         cell2 =
+            PTreeObjFind(&(index->tree.t_index), &query, IndexTermCompareFun);
          if(cell2)
          {
             entry = cell2->key;
@@ -546,18 +534,17 @@ long TSMIndexInsert(TSMIndex_p index, Term_p term)
          else
          {
             shared = TBInsert(index->bank, query.term, DEREF_NEVER);
-            entry = IndexTermAlloc(shared, index->subst,
-                                   index->count);
+            entry = IndexTermAlloc(shared, index->subst, index->count);
             res = index->count++;
             entry = PTreeObjStore(&(index->tree.t_index), entry,
                                   IndexTermCompareFun);
             assert(!entry);
          }
          break;
-   case IndexEmpty:
+      case IndexEmpty:
          assert(false && "Cannot insert term into IndexEmpty index!");
          break;
-   default:
+      default:
          assert(false && "Unknown index type");
          res = 0; /* Stiffle warnings */
          break;
@@ -582,70 +569,71 @@ void TSMIndexPrint(FILE* out, TSMIndex_p index, int depth)
 {
    PStack_p stack;
    NumTree_p ncell;
-   PTree_p   pcell;
+   PTree_p pcell;
    IndexTerm_p current;
    long i;
    long f_code;
    char pattern[10];
    char pattern2[70];
 
-   sprintf(pattern, "%%%ds", 3*depth);
+   sprintf(pattern, "%%%ds", 3 * depth);
    sprintf(pattern2, pattern, "");
 
    switch(index->type)
    {
-   case IndexArity:
-         fprintf(out, COMCHAR" %sIndex %ld is arity index!\n", pattern2, index->ident);
+      case IndexArity:
+         fprintf(out, COMCHAR " %sIndex %ld is arity index!\n", pattern2,
+                 index->ident);
          break;
-   case IndexSymbol:
-         fprintf(out, COMCHAR" %sIndex %ld is symbol index!\n",
-                 pattern2,index->ident);
-         fprintf(out, COMCHAR" %sPSymbol         Index  FCode     (Symbol)\n", pattern2);
+      case IndexSymbol:
+         fprintf(out, COMCHAR " %sIndex %ld is symbol index!\n", pattern2,
+                 index->ident);
+         fprintf(out, COMCHAR " %sPSymbol         Index  FCode     (Symbol)\n",
+                 pattern2);
          stack = NumTreeTraverseInit(index->tree.n_index);
-         i=0;
+         i = 0;
          while((ncell = NumTreeTraverseNext(stack)))
          {
-            f_code = PatternSubstGetOriginalSymbol(index->subst,
-                                                   ncell->key);
+            f_code = PatternSubstGetOriginalSymbol(index->subst, ncell->key);
 
-            fprintf(out, COMCHAR" %s#%10ld :%7ld  %7ld     %s\n", pattern2,
-                    ncell->key,
-                    ncell->val1.i_val,
-                    f_code,
-                    ((f_code > 0))&&(f_code<=index->bank->sig->f_count)?
-                    SigFindName(index->bank->sig, f_code):"variable");
+            fprintf(out, COMCHAR " %s#%10ld :%7ld  %7ld     %s\n", pattern2,
+                    ncell->key, ncell->val1.i_val, f_code,
+                    ((f_code > 0)) && (f_code <= index->bank->sig->f_count)
+                       ? SigFindName(index->bank->sig, f_code)
+                       : "variable");
             i++;
          }
          NumTreeTraverseExit(stack);
-         fprintf(out, COMCHAR" %s%ld alternatives in the index\n",
-                 pattern2, i);
+         fprintf(out, COMCHAR " %s%ld alternatives in the index\n", pattern2,
+                 i);
          break;
-   case IndexTop:
-   case IndexAltTop:
-   case IndexCSTop:
-   case IndexESTop:
-   case IndexIdentity:
-         fprintf(out, COMCHAR" Index is %s index!\n",
+      case IndexTop:
+      case IndexAltTop:
+      case IndexCSTop:
+      case IndexESTop:
+      case IndexIdentity:
+         fprintf(out, COMCHAR " Index is %s index!\n",
                  GetIndexName(index->type));
          stack = PTreeTraverseInit(index->tree.t_index);
-         i=0;
+         i = 0;
          while((pcell = PTreeTraverseNext(stack)))
          {
             current = pcell->key;
-            fprintf(out, COMCHAR" %3ld : ", current->key);
-            PatternTermPrint(out, index->subst, current->term, index->bank->sig);
+            fprintf(out, COMCHAR " %3ld : ", current->key);
+            PatternTermPrint(out, index->subst, current->term,
+                             index->bank->sig);
             /* TermPrint(out, current->term, index->bank->sig,
                DEREF_NEVER); */
             fputc('\n', out);
             i++;
          }
          PTreeTraverseExit(stack);
-         fprintf(out, COMCHAR" %ld alternatives in the index\n", i);
+         fprintf(out, COMCHAR " %ld alternatives in the index\n", i);
          break;
-   case IndexEmpty:
-         fprintf(out, COMCHAR" Index is empty index!\n");
+      case IndexEmpty:
+         fprintf(out, COMCHAR " Index is empty index!\n");
          break;
-   default:
+      default:
          assert(false && "Unknown index type");
          break;
    }

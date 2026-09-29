@@ -189,8 +189,8 @@ PList_p PListExtract(PList_p element)
 {
    assert(element->pred);
    assert(element->succ);
-   assert(element->pred!=element);
-   assert(element->succ!=element);
+   assert(element->pred != element);
+   assert(element->succ != element);
 
    element->pred->succ = element->succ;
    element->succ->pred = element->pred;

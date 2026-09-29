@@ -36,7 +36,6 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
@@ -44,8 +43,8 @@ Changes
 
 FunCode DetectCommutativity(Clause_p clause);
 FunCode DetectAssociativity(Clause_p clause);
-bool    ClauseScanAC(Sig_p sig, Clause_p clause);
-bool    ClauseSetScanAC(Sig_p sig, ClauseSet_p set);
+bool ClauseScanAC(Sig_p sig, Clause_p clause);
+bool ClauseSetScanAC(Sig_p sig, ClauseSet_p set);
 
 
 #endif
@@ -53,9 +52,6 @@ bool    ClauseSetScanAC(Sig_p sig, ClauseSet_p set);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
-
 
 
 

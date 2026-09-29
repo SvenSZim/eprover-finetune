@@ -93,18 +93,17 @@ intmax_t ParseIntMax(Scanner_p in)
    {
       NextToken(in);
       CheckInpTokNoSkip(in, PosInt);
-      value = - strtoimax(DStrView(AktToken(in)->literal), NULL, 10);
+      value = -strtoimax(DStrView(AktToken(in)->literal), NULL, 10);
    }
    else
    {
       CheckInpTok(in, PosInt);
-      value = - strtoimax(DStrView(AktToken(in)->literal), NULL, 10);
+      value = -strtoimax(DStrView(AktToken(in)->literal), NULL, 10);
    }
    NextToken(in);
 
    return value;
 }
-
 
 
 
@@ -130,7 +129,7 @@ long ParseIntLimited(Scanner_p in, long lower, long upper)
    {
       NextToken(in);
       CheckInpTokNoSkip(in, PosInt);
-      if((AktToken(in)->numval-1) > LONG_MAX)
+      if((AktToken(in)->numval - 1) > LONG_MAX)
       {
          AktTokenError(in, "Long integer underflow", false);
       }
@@ -170,10 +169,7 @@ long ParseIntLimited(Scanner_p in, long lower, long upper)
 //
 /----------------------------------------------------------------------*/
 
-long ParseInt(Scanner_p in)
-{
-   return ParseIntLimited(in, LONG_MIN, LONG_MAX);
-}
+long ParseInt(Scanner_p in) { return ParseIntLimited(in, LONG_MIN, LONG_MAX); }
 
 
 
@@ -218,7 +214,7 @@ uintmax_t ParseUIntMax(Scanner_p in)
 #ifndef ALLOW_COMMA_AS_DECIMAL_DOT
 #define DECIMAL_DOT Fullstop
 #else
-#define DECIMAL_DOT Fullstop|Comma
+#define DECIMAL_DOT Fullstop | Comma
 #endif
 
 double ParseFloat(Scanner_p in)
@@ -227,7 +223,7 @@ double ParseFloat(Scanner_p in)
 
    DStrReset(in->accu);
 
-   if(TestInpTok(in, Hyphen|Plus))
+   if(TestInpTok(in, Hyphen | Plus))
    {
       DStrAppendDStr(in->accu, AktToken(in)->literal);
       NextToken(in);
@@ -242,23 +238,23 @@ double ParseFloat(Scanner_p in)
 
    /* Parsed [-]123 so far */
 
-   if(TestInpNoSkip(in)&&TestInpTok(in, DECIMAL_DOT))
+   if(TestInpNoSkip(in) && TestInpTok(in, DECIMAL_DOT))
    {
       DStrAppendChar(in->accu, '.');
       AcceptInpTokNoSkip(in, DECIMAL_DOT);
-      DStrAppendDStr(in->accu,  AktToken(in)->literal);
+      DStrAppendDStr(in->accu, AktToken(in)->literal);
       AcceptInpTokNoSkip(in, PosInt);
    }
 
    /* Parsed -123.1123 so far */
 
-   if(TestInpNoSkip(in)&&TestInpId(in, "e|E"))
+   if(TestInpNoSkip(in) && TestInpId(in, "e|E"))
    {
-      DStrAppendDStr(in->accu,  AktToken(in)->literal);
+      DStrAppendDStr(in->accu, AktToken(in)->literal);
       NextToken(in); /* Skip E */
-      DStrAppendDStr(in->accu,  AktToken(in)->literal);
-      AcceptInpTokNoSkip(in, Hyphen|Plus); /* Eat - */
-      DStrAppendDStr(in->accu,  AktToken(in)->literal);
+      DStrAppendDStr(in->accu, AktToken(in)->literal);
+      AcceptInpTokNoSkip(in, Hyphen | Plus); /* Eat - */
+      DStrAppendDStr(in->accu, AktToken(in)->literal);
       AcceptInpTokNoSkip(in, PosInt);
    }
    errno = 0;
@@ -296,7 +292,7 @@ StrNumType ParseNumString(Scanner_p in)
 
    DStrReset(accumulator);
 
-   if(TestInpTok(in, Hyphen|Plus))
+   if(TestInpTok(in, Hyphen | Plus))
    {
       DStrAppendDStr(accumulator, AktToken(in)->literal);
       NextToken(in);
@@ -314,7 +310,7 @@ StrNumType ParseNumString(Scanner_p in)
       DStrAppendChar(accumulator, '/');
       NextToken(in);
 
-      if(TestInpTok(in, Hyphen|Plus))
+      if(TestInpTok(in, Hyphen | Plus))
       {
          DStrAppendDStr(accumulator, AktToken(in)->literal);
          NextToken(in);
@@ -323,10 +319,11 @@ StrNumType ParseNumString(Scanner_p in)
       {
          if(atol(DStrView(AktToken(in)->literal)) == 0l)
          {
-            AktTokenError(in, "Denominator in rational number cannot be 0", false);
+            AktTokenError(in, "Denominator in rational number cannot be 0",
+                          false);
          }
       }
-      DStrAppendDStr(accumulator,  AktToken(in)->literal);
+      DStrAppendDStr(accumulator, AktToken(in)->literal);
       AcceptInpTokNoSkip(in, PosInt);
 
       res = SNRational;
@@ -334,12 +331,11 @@ StrNumType ParseNumString(Scanner_p in)
    else
    {
       if(TestInpTokNoSkip(in, DECIMAL_DOT) &&
-         TestTok(LookToken(in,1), PosInt) &&
-         !(LookToken(in,1)->skipped))
+         TestTok(LookToken(in, 1), PosInt) && !(LookToken(in, 1)->skipped))
       {
          DStrAppendChar(accumulator, '.');
          AcceptInpTokNoSkip(in, DECIMAL_DOT);
-         DStrAppendDStr(accumulator,  AktToken(in)->literal);
+         DStrAppendDStr(accumulator, AktToken(in)->literal);
          AcceptInpTokNoSkip(in, PosInt);
          res = SNFloat;
       }
@@ -347,17 +343,17 @@ StrNumType ParseNumString(Scanner_p in)
       {
          if(TestInpId(in, "e|E"))
          {
-            DStrAppendStr(accumulator,  "e");
+            DStrAppendStr(accumulator, "e");
             NextToken(in); /* Skip E */
-            DStrAppendDStr(accumulator,  AktToken(in)->literal);
-            AcceptInpTokNoSkip(in, Hyphen|Plus); /* Eat - */
-            DStrAppendDStr(accumulator,  AktToken(in)->literal);
+            DStrAppendDStr(accumulator, AktToken(in)->literal);
+            AcceptInpTokNoSkip(in, Hyphen | Plus); /* Eat - */
+            DStrAppendDStr(accumulator, AktToken(in)->literal);
             AcceptInpTokNoSkip(in, PosInt);
             res = SNFloat;
          }
          else if(TestInpIdnum(in, "e|E"))
          {
-            DStrAppendDStr(accumulator,  AktToken(in)->literal);
+            DStrAppendDStr(accumulator, AktToken(in)->literal);
             AcceptInpTokNoSkip(in, Idnum);
             res = SNFloat;
          }
@@ -383,14 +379,14 @@ StrNumType ParseNumString(Scanner_p in)
 
 long DDArrayParse(Scanner_p in, DDArray_p array, bool brackets)
 {
-   long i=0;
+   long i = 0;
 
    if(brackets)
    {
       AcceptInpTok(in, OpenBracket);
    }
 
-   if(TestInpTok(in, Hyphen|Plus|PosInt))
+   if(TestInpTok(in, Hyphen | Plus | PosInt))
    {
       DDArrayAssign(array, i, ParseFloat(in));
       i++;
@@ -426,7 +422,8 @@ long DDArrayParse(Scanner_p in, DDArray_p array, bool brackets)
 //
 /----------------------------------------------------------------------*/
 
-#define PLAIN_FILE_TOKENS String|Name|PosInt|Fullstop|Plus|Hyphen|EqualSign
+#define PLAIN_FILE_TOKENS                                                      \
+   String | Name | PosInt | Fullstop | Plus | Hyphen | EqualSign
 
 char* ParseFilename(Scanner_p in)
 {
@@ -435,7 +432,7 @@ char* ParseFilename(Scanner_p in)
    DStrReset(in->accu);
 
    while((first_tok || TestInpNoSkip(in)) &&
-         TestInpTok(in, PLAIN_FILE_TOKENS|Slash|Mult))
+         TestInpTok(in, PLAIN_FILE_TOKENS | Slash | Mult))
    {
       DStrAppendDStr(in->accu, AktToken(in)->literal);
       NextToken(in);
@@ -464,7 +461,7 @@ char* ParsePlainFilename(Scanner_p in)
    DStrReset(in->accu);
 
    while((first_tok || TestInpNoSkip(in)) &&
-         TestInpTok(in, PLAIN_FILE_TOKENS|Slash))
+         TestInpTok(in, PLAIN_FILE_TOKENS | Slash))
    {
       DStrAppendDStr(in->accu, AktToken(in)->literal);
       NextToken(in);
@@ -519,14 +516,14 @@ char* ParseDottedId(Scanner_p in)
    DStrReset(in->accu);
 
    DStrAppendDStr(in->accu, AktToken(in)->literal);
-   AcceptInpTok(in, Identifier|PosInt);
+   AcceptInpTok(in, Identifier | PosInt);
 
    while(TestInpNoSkip(in) && TestInpTok(in, Fullstop))
    {
       DStrAppendDStr(in->accu, AktToken(in)->literal);
       AcceptInpTok(in, Fullstop);
       DStrAppendDStr(in->accu, AktToken(in)->literal);
-      AcceptInpTok(in, Identifier|PosInt);
+      AcceptInpTok(in, Identifier | PosInt);
    }
    return SecureStrdup(DStrView(in->accu));
 }
@@ -551,10 +548,10 @@ void AcceptDottedId(Scanner_p in, char* expected)
    char* posrep = TokenPosRep(AktToken(in));
 
    candidate = ParseDottedId(in);
-   if(strcmp(candidate, expected)!=0)
+   if(strcmp(candidate, expected) != 0)
    {
-      Error("%s %s expected, but %s read", SYNTAX_ERROR,
-            posrep, expected, candidate);
+      Error("%s %s expected, but %s read", SYNTAX_ERROR, posrep, expected,
+            candidate);
    }
    FREE(candidate);
 }
@@ -590,8 +587,6 @@ char* ParseContinous(Scanner_p in)
 
 
 
-
-
 /*-----------------------------------------------------------------------
 //
 // Function: ParseSkipParenthesizedExpr()
@@ -611,31 +606,31 @@ void ParseSkipParenthesizedExpr(Scanner_p in)
    PStack_p paren_stack = PStackAlloc();
    TokenType tok;
 
-   CheckInpTok(in, OpenBracket|OpenCurly|OpenSquare);
+   CheckInpTok(in, OpenBracket | OpenCurly | OpenSquare);
    PStackPushInt(paren_stack, AktTokenType(in));
    NextToken(in);
    while(!PStackEmpty(paren_stack))
    {
-      if(TestInpTok(in, OpenBracket|OpenCurly|OpenSquare))
+      if(TestInpTok(in, OpenBracket | OpenCurly | OpenSquare))
       {
          PStackPushInt(paren_stack, AktTokenType(in));
          NextToken(in);
       }
-      else if(TestInpTok(in, CloseBracket|CloseCurly|CloseSquare))
+      else if(TestInpTok(in, CloseBracket | CloseCurly | CloseSquare))
       {
          tok = PStackPopInt(paren_stack);
          switch(tok)
          {
-         case OpenBracket:
-               AcceptInpTok(in,CloseBracket);
+            case OpenBracket:
+               AcceptInpTok(in, CloseBracket);
                break;
-         case OpenCurly:
+            case OpenCurly:
                AcceptInpTok(in, CloseCurly);
                break;
-         case OpenSquare:
-               AcceptInpTok(in,CloseSquare);
+            case OpenSquare:
+               AcceptInpTok(in, CloseSquare);
                break;
-         default:
+            default:
                assert(false && "Impossible value on parentheses stack");
                break;
          }

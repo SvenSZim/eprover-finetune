@@ -74,28 +74,28 @@ bool TOGreater(OCB_p ocb, Term_p s, Term_p t, DerefType deref_s,
 
    switch(ocb->type)
    {
-   case LPO:
+      case LPO:
          res = LPOGreater(ocb, s, t, deref_s, deref_t);
          break;
-   case LPOCopy:
+      case LPOCopy:
          res = LPOGreaterCopy(ocb, s, t, deref_s, deref_t);
          break;
-   case LPO4:
+      case LPO4:
          res = LPO4Greater(ocb, s, t, deref_s, deref_t);
          break;
-   case LPO4Copy:
+      case LPO4Copy:
          res = LPO4GreaterCopy(ocb, s, t, deref_s, deref_t);
          break;
-   case RPO:
+      case RPO:
          assert(false && "RPO not yet implemented!");
          break;
-   case KBO:
+      case KBO:
          res = KBOGreater(ocb, s, t, deref_s, deref_t);
          break;
-   case KBO6:
+      case KBO6:
          res = KBO6Greater(ocb, s, t, deref_s, deref_t);
          break;
-   default:
+      default:
          assert(false);
          break;
    }
@@ -133,32 +133,32 @@ CompareResult TOCompare(OCB_p ocb, Term_p s, Term_p t, DerefType deref_s,
 
    switch(ocb->type)
    {
-   case LPO:
+      case LPO:
          res = LPOCompare(ocb, s, t, deref_s, deref_t);
          break;
-   case LPOCopy:
+      case LPOCopy:
          res = LPOCompareCopy(ocb, s, t, deref_s, deref_t);
          break;
-   case LPO4:
+      case LPO4:
          res = LPO4Compare(ocb, s, t, deref_s, deref_t);
          break;
-   case LPO4Copy:
+      case LPO4Copy:
          res = LPO4CompareCopy(ocb, s, t, deref_s, deref_t);
          break;
-   case RPO:
+      case RPO:
          assert(false && "RPO not yet implemented!");
          break;
-   case KBO:
+      case KBO:
          assert(problemType != PROBLEM_HO);
          res = KBOCompare(ocb, s, t, deref_s, deref_t);
          break;
-   case KBO6:
+      case KBO6:
          res = KBO6Compare(ocb, s, t, deref_s, deref_t);
          break;
-   case EMPTY:
-         res  = to_uncomparable;
+      case EMPTY:
+         res = to_uncomparable;
          break;
-   default:
+      default:
          assert(false);
          break;
    }
@@ -183,19 +183,19 @@ CompareResult TOCompareSymbolParse(Scanner_p in)
 {
    CompareResult res;
 
-   CheckInpTok(in, LesserSign|GreaterSign|EqualSign);
+   CheckInpTok(in, LesserSign | GreaterSign | EqualSign);
    switch(AktToken(in)->tok)
    {
-   case LesserSign:
+      case LesserSign:
          res = to_lesser;
          break;
-   case GreaterSign:
+      case GreaterSign:
          res = to_greater;
          break;
-   case EqualSign:
+      case EqualSign:
          res = to_equal;
          break;
-   default:
+      default:
          assert(false);
          res = to_uncomparable;
          break;
@@ -221,44 +221,43 @@ CompareResult TOCompareSymbolParse(Scanner_p in)
 
 PStackPointer TOSymbolComparisonChainParse(Scanner_p in, OCB_p ocb)
 {
-   FunCode       f1, f2;
-   int           line1, column1, line2, column2;
-   StreamType    type1, type2;
-   DStr_p        source1, source2;
+   FunCode f1, f2;
+   int line1, column1, line2, column2;
+   StreamType type1, type2;
+   DStr_p source1, source2;
    CompareResult relation;
    PStackPointer ocb_state = OCBPrecedenceGetState(ocb);
 
-   line1   = AktToken(in)->line;
+   line1 = AktToken(in)->line;
    column1 = AktToken(in)->column;
    source1 = DStrGetRef(AktToken(in)->source);
-   type1   = AktToken(in)->stream_type;
-   f1      = SigParseKnownOperator(in, ocb->sig);
+   type1 = AktToken(in)->stream_type;
+   f1 = SigParseKnownOperator(in, ocb->sig);
 
-   while(TestInpTok(in,LesserSign|GreaterSign|EqualSign))
+   while(TestInpTok(in, LesserSign | GreaterSign | EqualSign))
    {
       relation = TOCompareSymbolParse(in);
 
-      line2    = AktToken(in)->line;
+      line2 = AktToken(in)->line;
       column2 = AktToken(in)->column;
       source2 = DStrGetRef(AktToken(in)->source);
-      type2   = AktToken(in)->stream_type;
-      f2      = SigParseKnownOperator(in, ocb->sig);
+      type2 = AktToken(in)->stream_type;
+      f2 = SigParseKnownOperator(in, ocb->sig);
 
       ocb_state = OCBPrecedenceAddTuple(ocb, f1, f2, relation);
 
       if(!ocb_state)
       {
          Error("%s Precedence incompatible with previous ordering",
-               INPUT_SEMANTIC_ERROR,
-               PosRep(type1, source1, line1, column1));
+               INPUT_SEMANTIC_ERROR, PosRep(type1, source1, line1, column1));
       }
       DStrReleaseRef(source1);
-      line1   = line2;
+      line1 = line2;
       column1 = column2;
       source1 = DStrGetRef(source2);
       DStrReleaseRef(source2);
-      type1   = type2;
-      f1      = f2;
+      type1 = type2;
+      f1 = f2;
    }
    DStrReleaseRef(source1);
 
@@ -314,15 +313,15 @@ PStackPointer TOPrecedenceParse(Scanner_p in, OCB_p ocb)
 
 void TOSymbolWeightParse(Scanner_p in, OCB_p ocb)
 {
-   FunCode       f;
-   long          weight;
+   FunCode f;
+   long weight;
 
    f = SigParseKnownOperator(in, ocb->sig);
    AcceptInpTok(in, Colon);
    weight = AktToken(in)->numval;
    AcceptInpTok(in, PosInt);
 
-   *OCBFunWeightPos(ocb, f) = weight*W_DEFAULT_WEIGHT;
+   *OCBFunWeightPos(ocb, f) = weight * W_DEFAULT_WEIGHT;
 }
 
 

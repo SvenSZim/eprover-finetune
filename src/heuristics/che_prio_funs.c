@@ -31,100 +31,94 @@ Changes
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-char* PrioFunNames[]=
-{
-   "PreferGroundGoals",
-   "PreferUnitGroundGoals",
-   "PreferGround",
-   "PreferNonGround",
-   "PreferProcessed",
-   "PreferNew",
-   "PreferGoals",
-   "PreferNonGoals",
-   "PreferMixed",
-   "PreferPositive",
-   "PreferNegative",
-   "PreferUnits",
-   "PreferNonEqUnits",
-   "PreferDemods",
-   "PreferNonUnits",
-   "ConstPrio",
-   "ByLiteralNumber",
-   "ByDerivationDepth",
-   "ByDerivationSize",
-   "ByNegLitDist",
-   "ByGoalDifficulty",
-   "SimulateSOS",
-   "DeferSOS",
-   "PreferHorn",
-   "PreferNonHorn",
-   "PreferUnitAndNonEq",
-   "DeferNonUnitMaxEq",
-   "ByCreationDate",
-   "ByPosLitNo",
-   "ByHornDist",
-   "PreferWatchlist",
-   "DeferWatchlist",
-   "PreferAppVar",
-   "PreferNonAppVar",
-   "ByAppVarNum",
-   "PreferHOSteps",
-   "PreferLambdas",
-   "DeferLambdas",
-   "PreferFormulas",
-   "DeferFormulas",
-   "PreferEasyHO",
-   "PreferFO",
-   NULL
-};
+char* PrioFunNames[] = { "PreferGroundGoals",
+                         "PreferUnitGroundGoals",
+                         "PreferGround",
+                         "PreferNonGround",
+                         "PreferProcessed",
+                         "PreferNew",
+                         "PreferGoals",
+                         "PreferNonGoals",
+                         "PreferMixed",
+                         "PreferPositive",
+                         "PreferNegative",
+                         "PreferUnits",
+                         "PreferNonEqUnits",
+                         "PreferDemods",
+                         "PreferNonUnits",
+                         "ConstPrio",
+                         "ByLiteralNumber",
+                         "ByDerivationDepth",
+                         "ByDerivationSize",
+                         "ByNegLitDist",
+                         "ByGoalDifficulty",
+                         "SimulateSOS",
+                         "DeferSOS",
+                         "PreferHorn",
+                         "PreferNonHorn",
+                         "PreferUnitAndNonEq",
+                         "DeferNonUnitMaxEq",
+                         "ByCreationDate",
+                         "ByPosLitNo",
+                         "ByHornDist",
+                         "PreferWatchlist",
+                         "DeferWatchlist",
+                         "PreferAppVar",
+                         "PreferNonAppVar",
+                         "ByAppVarNum",
+                         "PreferHOSteps",
+                         "PreferLambdas",
+                         "DeferLambdas",
+                         "PreferFormulas",
+                         "DeferFormulas",
+                         "PreferEasyHO",
+                         "PreferFO",
+                         NULL };
 
 
-static ClausePrioFun prio_fun_array[]=
-{
-   PrioFunPreferGroundGoals,
-   PrioFunPreferUnitGroundGoals,
-   PrioFunPreferGround,
-   PrioFunPreferNonGround,
-   PrioFunPreferProcessed,
-   PrioFunPreferNew,
-   PrioFunPreferGoals,
-   PrioFunPreferNonGoals,
-   PrioFunPreferMixed,
-   PrioFunPreferPositive,
-   PrioFunPreferNegative,
-   PrioFunPreferUnits,
-   PrioFunPreferNonEqUnits,
-   PrioFunPreferDemods,
-   PrioFunPreferNonUnits,
-   PrioFunConstPrio,
-   PrioFunByLiteralNumber,
-   PrioFunByDerivationDepth,
-   PrioFunByDerivationSize,
-   PrioFunByNegLitDist,
-   PrioFunGoalDifficulty,
-   PrioFunSimulateSOS,
-   PrioFunDeferSOS,
-   PrioFunPreferHorn,
-   PrioFunPreferNonHorn,
-   PrioFunPreferUnitAndNonEq,
-   PrioFunDeferNonUnitMaxPosEq,
-   PrioFunByCreationDate,
-   PrioFunByPosLitNo,
-   PrioFunByHornDist,
-   PrioFunPreferWatchlist,
-   PrioFunDeferWatchlist,
-   PrioFunPreferAppVar,
-   PrioFunPreferNonAppVar,
-   PrioFunByAppVarNum,
-   PrioFunPreferHOSteps,
-   PrioFunPreferLambdas,
-   PrioFunDeferLambdas,
-   PrioFunPreferFormulas,
-   PrioFunDeferFormulas,
-   PrioFunPreferEasyHO,
-   PrioFunPreferFO,
-   NULL
-};
+static ClausePrioFun prio_fun_array[] = { PrioFunPreferGroundGoals,
+                                          PrioFunPreferUnitGroundGoals,
+                                          PrioFunPreferGround,
+                                          PrioFunPreferNonGround,
+                                          PrioFunPreferProcessed,
+                                          PrioFunPreferNew,
+                                          PrioFunPreferGoals,
+                                          PrioFunPreferNonGoals,
+                                          PrioFunPreferMixed,
+                                          PrioFunPreferPositive,
+                                          PrioFunPreferNegative,
+                                          PrioFunPreferUnits,
+                                          PrioFunPreferNonEqUnits,
+                                          PrioFunPreferDemods,
+                                          PrioFunPreferNonUnits,
+                                          PrioFunConstPrio,
+                                          PrioFunByLiteralNumber,
+                                          PrioFunByDerivationDepth,
+                                          PrioFunByDerivationSize,
+                                          PrioFunByNegLitDist,
+                                          PrioFunGoalDifficulty,
+                                          PrioFunSimulateSOS,
+                                          PrioFunDeferSOS,
+                                          PrioFunPreferHorn,
+                                          PrioFunPreferNonHorn,
+                                          PrioFunPreferUnitAndNonEq,
+                                          PrioFunDeferNonUnitMaxPosEq,
+                                          PrioFunByCreationDate,
+                                          PrioFunByPosLitNo,
+                                          PrioFunByHornDist,
+                                          PrioFunPreferWatchlist,
+                                          PrioFunDeferWatchlist,
+                                          PrioFunPreferAppVar,
+                                          PrioFunPreferNonAppVar,
+                                          PrioFunByAppVarNum,
+                                          PrioFunPreferHOSteps,
+                                          PrioFunPreferLambdas,
+                                          PrioFunDeferLambdas,
+                                          PrioFunPreferFormulas,
+                                          PrioFunDeferFormulas,
+                                          PrioFunPreferEasyHO,
+                                          PrioFunPreferFO,
+                                          NULL };
 
 
 /*---------------------------------------------------------------------*/
@@ -164,7 +158,7 @@ ClausePrioFun GetPrioFun(char* name)
 
    index = StringIndex(name, PrioFunNames);
 
-   if(index>=0)
+   if(index >= 0)
    {
       return prio_fun_array[index];
    }
@@ -219,7 +213,7 @@ EvalPriority PrioFunPreferGroundGoals(Clause_p clause)
 {
    assert(clause);
 
-   if(ClauseIsGoal(clause)&&ClauseIsGround(clause))
+   if(ClauseIsGoal(clause) && ClauseIsGround(clause))
    {
       return PrioPrefer;
    }
@@ -244,7 +238,7 @@ EvalPriority PrioFunPreferUnitGroundGoals(Clause_p clause)
 {
    assert(clause);
 
-   if(ClauseIsUnit(clause)&&ClauseIsGoal(clause)&&ClauseIsGround(clause))
+   if(ClauseIsUnit(clause) && ClauseIsGoal(clause) && ClauseIsGround(clause))
    {
       return PrioPrefer;
    }
@@ -486,8 +480,6 @@ EvalPriority PrioFunPreferNegative(Clause_p clause)
 
 
 
-
-
 /*-----------------------------------------------------------------------
 //
 // Function: PrioFunPreferUnits()
@@ -529,7 +521,7 @@ EvalPriority PrioFunPreferNonEqUnits(Clause_p clause)
 {
    assert(clause);
 
-   if(ClauseIsUnit(clause)&&!ClauseIsEquational(clause))
+   if(ClauseIsUnit(clause) && !ClauseIsEquational(clause))
    {
       return PrioPrefer;
    }
@@ -554,8 +546,7 @@ EvalPriority PrioFunPreferDemods(Clause_p clause)
 {
    assert(clause);
 
-   if(ClauseIsUnit(clause)&&
-      ClauseIsEquational(clause)&&
+   if(ClauseIsUnit(clause) && ClauseIsEquational(clause) &&
       ClauseIsPositive(clause))
    {
       return PrioPrefer;
@@ -602,10 +593,7 @@ EvalPriority PrioFunPreferNonUnits(Clause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-EvalPriority PrioFunConstPrio(Clause_p clause)
-{
-   return PrioNormal;
-}
+EvalPriority PrioFunConstPrio(Clause_p clause) { return PrioNormal; }
 
 
 /*-----------------------------------------------------------------------
@@ -707,16 +695,16 @@ EvalPriority PrioFunByNegLitDist(Clause_p clause)
    Eqn_p handle;
    EvalPriority res = PrioNormal;
 
-   for(handle=clause->literals; handle; handle=handle->next)
+   for(handle = clause->literals; handle; handle = handle->next)
    {
       if(EqnIsPositive(handle))
       {
-    res=400;
-    break;
+         res = 400;
+         break;
       }
       else
       {
-    res+= EqnIsGround(handle)?1:3;
+         res += EqnIsGround(handle) ? 1 : 3;
       }
    }
    return res;
@@ -746,18 +734,18 @@ EvalPriority PrioFunGoalDifficulty(Clause_p clause)
    {
       if(ClauseIsGround(clause))
       {
-    return PrioPrefer;
+         return PrioPrefer;
       }
       else
       {
-    return PrioPrefer+1;
+         return PrioPrefer + 1;
       }
    }
    else if(ClauseIsGround(clause))
    {
-      return PrioPrefer+2;
+      return PrioPrefer + 2;
    }
-   return PrioPrefer+3;
+   return PrioPrefer + 3;
 }
 
 
@@ -777,7 +765,7 @@ EvalPriority PrioFunGoalDifficulty(Clause_p clause)
 
 EvalPriority PrioFunSimulateSOS(Clause_p clause)
 {
-   if(ClauseIsAnyPropSet(clause, CPInitial|CPIsSOS))
+   if(ClauseIsAnyPropSet(clause, CPInitial | CPIsSOS))
    {
       return PrioNormal;
    }
@@ -799,7 +787,7 @@ EvalPriority PrioFunSimulateSOS(Clause_p clause)
 
 EvalPriority PrioFunDeferSOS(Clause_p clause)
 {
-   if(ClauseIsAnyPropSet(clause, CPInitial|CPIsSOS))
+   if(ClauseIsAnyPropSet(clause, CPInitial | CPIsSOS))
    {
       return PrioDefer;
    }
@@ -1023,7 +1011,7 @@ EvalPriority PrioFunByPosLitNo(Clause_p clause)
 
 EvalPriority PrioFunByHornDist(Clause_p clause)
 {
-   return MAX(0, clause->pos_lit_no-1);
+   return MAX(0, clause->pos_lit_no - 1);
 }
 
 
@@ -1096,7 +1084,7 @@ EvalPriority PrioFunPreferHOSteps(Clause_p clause)
       PStackPointer i = 0;
       DerivationCode op;
       bool has_ho = false;
-      while(!has_ho && i<sp)
+      while(!has_ho && i < sp)
       {
          op = PStackElementInt(derivation, i);
          has_ho = DPGetIsHO(op);
@@ -1129,11 +1117,9 @@ EvalPriority PrioFunPreferHOSteps(Clause_p clause)
 EvalPriority PrioFunPreferLambdas(Clause_p clause)
 {
    EvalPriority prio = PrioNormal;
-   for(Eqn_p eqn=clause->literals; prio == PrioNormal && eqn;
-       eqn = eqn->next)
+   for(Eqn_p eqn = clause->literals; prio == PrioNormal && eqn; eqn = eqn->next)
    {
-      if(TermHasLambdaSubterm(eqn->lterm) ||
-         TermHasLambdaSubterm(eqn->rterm))
+      if(TermHasLambdaSubterm(eqn->lterm) || TermHasLambdaSubterm(eqn->rterm))
       {
          prio = PrioPrefer;
       }
@@ -1175,8 +1161,7 @@ EvalPriority PrioFunPreferFormulas(Clause_p clause)
 {
    EvalPriority prio = PrioNormal;
    PStack_p subterms = PStackAlloc();
-   for(Eqn_p eqn=clause->literals; prio == PrioNormal && eqn;
-       eqn = eqn->next)
+   for(Eqn_p eqn = clause->literals; prio == PrioNormal && eqn; eqn = eqn->next)
    {
       TB_p bank = eqn->bank;
       PStackPushP(subterms, eqn->lterm);
@@ -1188,16 +1173,15 @@ EvalPriority PrioFunPreferFormulas(Clause_p clause)
       while(prio == PrioNormal && !PStackEmpty(subterms))
       {
          Term_p t = PStackPopP(subterms);
-         if(!TermIsFreeVar(t) && TypeIsBool(t->type) &&
-            t != bank->true_term && t != bank->false_term &&
-            SigIsLogicalSymbol(bank->sig, t->f_code))
+         if(!TermIsFreeVar(t) && TypeIsBool(t->type) && t != bank->true_term &&
+            t != bank->false_term && SigIsLogicalSymbol(bank->sig, t->f_code))
          {
             prio = PrioPrefer;
          }
 
          if(prio == PrioNormal && !TermIsLambda(t))
          {
-            for(int i=TermIsPhonyApp(t) ? 1 : 0; i<t->arity; i++)
+            for(int i = TermIsPhonyApp(t) ? 1 : 0; i < t->arity; i++)
             {
                PStackPushP(subterms, t->args[i]);
             }
@@ -1245,9 +1229,9 @@ EvalPriority PrioFunPreferEasyHO(Clause_p clause)
    if(derivation && problemType == PROBLEM_HO)
    {
       PStackPointer sp = PStackGetSP(derivation);
-      PStackPointer i  = 0;
+      PStackPointer i = 0;
       DerivationCode op;
-      while(prio == PrioNormal && i<sp)
+      while(prio == PrioNormal && i < sp)
       {
          op = PStackElementInt(derivation, i);
          if(DPOpGetOpCode(op) == DOArgCong)
@@ -1267,11 +1251,10 @@ EvalPriority PrioFunPreferEasyHO(Clause_p clause)
    }
    if(prio != PrioBest)
    {
-      for(Eqn_p eqn=clause->literals; prio == PrioNormal && eqn;
+      for(Eqn_p eqn = clause->literals; prio == PrioNormal && eqn;
           eqn = eqn->next)
       {
-         if(TypeIsArrow(eqn->lterm->type) ||
-            TermIsNonFOPattern(eqn->lterm) ||
+         if(TypeIsArrow(eqn->lterm->type) || TermIsNonFOPattern(eqn->lterm) ||
             TermIsNonFOPattern(eqn->rterm))
          {
             prio = PrioPrefer;
@@ -1302,8 +1285,7 @@ EvalPriority PrioFunPreferFO(Clause_p clause)
 {
    EvalPriority prio = PrioNormal;
 
-   for(Eqn_p eqn=clause->literals; prio == PrioNormal && eqn;
-       eqn = eqn->next)
+   for(Eqn_p eqn = clause->literals; prio == PrioNormal && eqn; eqn = eqn->next)
    {
       if(!TermIsPattern(eqn->lterm) || !TermIsPattern(eqn->rterm))
       {
@@ -1312,7 +1294,6 @@ EvalPriority PrioFunPreferFO(Clause_p clause)
    }
    return prio;
 }
-
 
 
 

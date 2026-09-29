@@ -60,16 +60,16 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-long ComputeAllEqnResolvents(TB_p bank, Clause_p clause, ClauseSet_p
-              store, VarBank_p freshvars)
+long ComputeAllEqnResolvents(TB_p bank, Clause_p clause, ClauseSet_p store,
+                             VarBank_p freshvars)
 {
-   Clause_p    resolvent;
-   Eqn_p       test;
+   Clause_p resolvent;
+   Eqn_p test;
    ClausePos_p pos;
-   long        resolv_count = 0;
-   PStack_p    res_cls = PStackAlloc();
+   long resolv_count = 0;
+   PStack_p res_cls = PStackAlloc();
 
-   if(clause->neg_lit_no && !ClauseQueryProp(clause,CPNoGeneration))
+   if(clause->neg_lit_no && !ClauseQueryProp(clause, CPNoGeneration))
    {
       pos = ClausePosAlloc();
 
@@ -84,14 +84,13 @@ long ComputeAllEqnResolvents(TB_p bank, Clause_p clause, ClauseSet_p
          {
             resolvent = PStackPopP(res_cls);
             resolv_count++;
-            resolvent->proof_depth = clause->proof_depth+1;
-            resolvent->proof_size  = clause->proof_size+1;
+            resolvent->proof_depth = clause->proof_depth + 1;
+            resolvent->proof_size = clause->proof_size + 1;
             ClauseSetTPTPType(resolvent, ClauseQueryTPTPType(clause));
             ClauseSetProp(resolvent, ClauseGiveProps(clause, CPIsSOS));
             DocClauseCreationDefault(resolvent, inf_eres, clause, NULL);
-            ClausePushDerivation(resolvent,
-                                 inf_is_ho ? DPSetIsHO(DCEqRes) : DCEqRes,
-                                 clause);
+            ClausePushDerivation(
+               resolvent, inf_is_ho ? DPSetIsHO(DCEqRes) : DCEqRes, clause);
             ClauseSetInsert(store, resolvent);
          }
          test = ClausePosNextEqResLiteral(pos);
@@ -117,27 +116,27 @@ long ComputeAllEqnResolvents(TB_p bank, Clause_p clause, ClauseSet_p
 //
 /----------------------------------------------------------------------*/
 
-long ClauseERNormalizeVar(TB_p bank, Clause_p clause, ClauseSet_p
-           store, VarBank_p freshvars, bool strong)
+long ClauseERNormalizeVar(TB_p bank, Clause_p clause, ClauseSet_p store,
+                          VarBank_p freshvars, bool strong)
 {
    long count = 0;
 
-   if(clause->neg_lit_no && !ClauseQueryProp(clause,CPNoGeneration))
+   if(clause->neg_lit_no && !ClauseQueryProp(clause, CPNoGeneration))
    {
-      Eqn_p       lit;
-      Clause_p    handle;
+      Eqn_p lit;
+      Clause_p handle;
       ClausePos_p pos = ClausePosAlloc();
-      bool        found = true;
+      bool found = true;
 
       while(found)
       {
          found = false;
          for(lit = clause->literals; lit; lit = lit->next)
          {
-            if(EqnIsNegative(lit)&&
-               (EqnIsPureVar(lit) || (strong&&EqnIsPartVar(lit))))
+            if(EqnIsNegative(lit) &&
+               (EqnIsPureVar(lit) || (strong && EqnIsPartVar(lit))))
             {
-               pos->clause  = clause;
+               pos->clause = clause;
                pos->literal = lit;
                bool is_ho = false;
                handle = ComputeEqRes(bank, pos, freshvars, &is_ho, NULL);
@@ -153,8 +152,8 @@ long ClauseERNormalizeVar(TB_p bank, Clause_p clause, ClauseSet_p
                   handle->literals = NULL;
                   ClauseFree(handle);
                   DocClauseModificationDefault(clause, inf_eres, clause);
-                  ClausePushDerivation(clause,
-                                       is_ho ? DPSetIsHO(DCDesEqRes) : DCDesEqRes);
+                  ClausePushDerivation(
+                     clause, is_ho ? DPSetIsHO(DCDesEqRes) : DCDesEqRes);
                   break;
                }
             }

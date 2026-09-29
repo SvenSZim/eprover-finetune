@@ -61,18 +61,16 @@ void answer_lit_print(FILE* out, Eqn_p lit)
 {
    Term_p answer_term;
    int i;
-   char *sep="";
+   char* sep = "";
 
    fprintf(out, "[");
-   if(EqnQueryProp(lit, EPPseudoLit)
-      &&
-      SigIsSimpleAnswerPred(lit->bank->sig, lit->lterm->f_code)
-      &&
+   if(EqnQueryProp(lit, EPPseudoLit) &&
+      SigIsSimpleAnswerPred(lit->bank->sig, lit->lterm->f_code) &&
       lit->lterm->args[0]->f_code > 0)
    {
       /* It's a "proper" answer literal */
       answer_term = lit->lterm->args[0];
-      for(i=0; i<answer_term->arity; i++)
+      for(i = 0; i < answer_term->arity; i++)
       {
          fprintf(out, "%s", sep);
          TBPrintTermFull(out, lit->bank, answer_term->args[i]);
@@ -110,15 +108,15 @@ void ClausePrintAnswer(FILE* out, Clause_p clause, ProofState_p state)
 {
    Eqn_p handle;
 
-   if(ClauseIsSemFalse(clause)&&!ClauseIsEmpty(clause))
+   if(ClauseIsSemFalse(clause) && !ClauseIsEmpty(clause))
    {
       if(!state->status_reported)
       {
          TSTPOUT(GlobalOut, "Theorem");
          state->status_reported = true;
       }
-      fprintf(out, COMCHAR" SZS answers Tuple [");
-      fprintf(out, "%s", ClauseLiteralNumber(clause)>1?"(":"");
+      fprintf(out, COMCHAR " SZS answers Tuple [");
+      fprintf(out, "%s", ClauseLiteralNumber(clause) > 1 ? "(" : "");
       handle = clause->literals;
       if(handle)
       {
@@ -131,7 +129,7 @@ void ClausePrintAnswer(FILE* out, Clause_p clause, ProofState_p state)
             handle = handle->next;
          }
       }
-      fprintf(out, "%s", ClauseLiteralNumber(clause)>1?")":"");
+      fprintf(out, "%s", ClauseLiteralNumber(clause) > 1 ? ")" : "");
       fprintf(out, "|_]\n");
    }
 }
@@ -156,7 +154,7 @@ int ClauseEvaluateAnswerLits(Clause_p clause)
    Eqn_p handle;
    int res = 0;
 
-   assert(!ClauseIsAnyPropSet(clause, CPIsDIndexed|CPIsSIndexed));
+   assert(!ClauseIsAnyPropSet(clause, CPIsDIndexed | CPIsSIndexed));
 
    if(ClauseIsSemFalse(clause))
    {
@@ -183,7 +181,7 @@ int ClauseEvaluateAnswerLits(Clause_p clause)
 
          if(clause->set)
          {
-            clause->set->literals-=res;
+            clause->set->literals -= res;
          }
          DocClauseModificationDefault(clause, inf_eval_answers, NULL);
          ClausePushDerivation(clause, DCEvalAnswers);

@@ -34,11 +34,11 @@ Changes
 /*                  Data types                                         */
 /*---------------------------------------------------------------------*/
 
-#define NAME    "tsm_classify"
+#define NAME "tsm_classify"
 
 typedef enum
 {
-   OPT_NOOPT=0,
+   OPT_NOOPT = 0,
    OPT_HELP,
    OPT_VERSION,
    OPT_VERBOSE,
@@ -47,7 +47,7 @@ typedef enum
    OPT_INDEXFUN,
    OPT_INDEXDEPTH,
    OPT_TSMTYPE
-}OptionCodes;
+} OptionCodes;
 
 
 
@@ -55,63 +55,43 @@ typedef enum
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-OptCell opts[] =
-{
-   {OPT_HELP,
-    'h', "help",
-    NoArg, NULL,
-    "Print a short description of program usage and options."},
+OptCell opts[] = {
+   { OPT_HELP, 'h', "help", NoArg, NULL,
+     "Print a short description of program usage and options." },
 
-   {OPT_VERSION,
-    '\0', "version",
-    NoArg, NULL,
-    "Print the version number of the program."},
+   { OPT_VERSION, '\0', "version", NoArg, NULL,
+     "Print the version number of the program." },
 
-   {OPT_VERBOSE,
-    'v', "verbose",
-    OptArg, "1",
-    "Verbose comments on the progress of the program."},
+   { OPT_VERBOSE, 'v', "verbose", OptArg, "1",
+     "Verbose comments on the progress of the program." },
 
-   {OPT_OUTPUTLEVEL,
-    'l', "output-level",
-    ReqArg, NULL,
-    "Select an output level, greater values imply more verbose "
-    "output."},
+   { OPT_OUTPUTLEVEL, 'l', "output-level", ReqArg, NULL,
+     "Select an output level, greater values imply more verbose "
+     "output." },
 
-   {OPT_OUTPUT,
-    'o', "output-file",
-    ReqArg, NULL,
-    "Redirect output into the named file."},
+   { OPT_OUTPUT, 'o', "output-file", ReqArg, NULL,
+     "Redirect output into the named file." },
 
-   {OPT_INDEXFUN,
-    'i', "index-type",
-    ReqArg, NULL,
-    "Select an index function type. Run " NAME " -iNone for a list of"
-    " possible functions."},
+   { OPT_INDEXFUN, 'i', "index-type", ReqArg, NULL,
+     "Select an index function type. Run " NAME " -iNone for a list of"
+     " possible functions." },
 
-   {OPT_INDEXDEPTH,
-    'd', "index-depth",
-    ReqArg, NULL,
-    "Set the term top depth for the index. A depth of 0 denotes "
-    "dynamic depth selection."},
+   { OPT_INDEXDEPTH, 'd', "index-depth", ReqArg, NULL,
+     "Set the term top depth for the index. A depth of 0 denotes "
+     "dynamic depth selection." },
 
-   {OPT_TSMTYPE,
-    't', "tsm-type",
-    ReqArg, NULL,
-    "Select the type of the TSM (Flat, Recursive, Reccurent or RecLocal)."},
+   { OPT_TSMTYPE, 't', "tsm-type", ReqArg, NULL,
+     "Select the type of the TSM (Flat, Recursive, Reccurent or RecLocal)." },
 
-   {OPT_NOOPT,
-    '\0', NULL,
-    NoArg, NULL,
-    NULL}
+   { OPT_NOOPT, '\0', NULL, NoArg, NULL, NULL }
 };
 
-char      *outname = NULL;
-int       index_type = IndexArity;
-long      index_depth = 1;
-int       tsm_type = TSMTypeRecursive;
+char* outname = NULL;
+int index_type = IndexArity;
+long index_depth = 1;
+int tsm_type = TSMTypeRecursive;
 bool app_encode = false;
-ProblemType problemType  = PROBLEM_NOT_INIT;
+ProblemType problemType = PROBLEM_NOT_INIT;
 /*---------------------------------------------------------------------*/
 /*                      Forward Declarations                           */
 /*---------------------------------------------------------------------*/
@@ -126,17 +106,17 @@ void print_help(FILE* out);
 
 int main(int argc, char* argv[])
 {
-   CLState_p      state;
-   Scanner_p      in;
-   char*          infile;
-   TypeBank_p     typebank;
-   Sig_p          sig;
-   TB_p           bank;
-   AnnoSet_p      training_set, test_set;
-   FlatAnnoSet_p  ftrain_set, ftest_set;
-   DDArray_p      weights;
-   TSMAdmin_p     admin;
-   long           successes, nodes;
+   CLState_p state;
+   Scanner_p in;
+   char* infile;
+   TypeBank_p typebank;
+   Sig_p sig;
+   TB_p bank;
+   AnnoSet_p training_set, test_set;
+   FlatAnnoSet_p ftrain_set, ftest_set;
+   DDArray_p weights;
+   TSMAdmin_p admin;
+   long successes, nodes;
    PatternSubst_p subst;
 
    assert(argv[0]);
@@ -148,7 +128,7 @@ int main(int argc, char* argv[])
 
    OpenGlobalOut(outname);
 
-   if(state->argc ==  0)
+   if(state->argc == 0)
    {
       CLStateInsertArg(state, "-");
    }
@@ -177,8 +157,8 @@ int main(int argc, char* argv[])
    SigSetAllSpecial(sig, true);
 
    ftrain_set = FlatAnnoSetAlloc();
-   ftest_set  = FlatAnnoSetAlloc();
-   weights = DDArrayAlloc(2,6);
+   ftest_set = FlatAnnoSetAlloc();
+   weights = DDArrayAlloc(2, 6);
    DDArrayAssign(weights, 0, 1);
    FlatAnnoSetTranslate(ftrain_set, training_set, weights->array);
    FlatAnnoSetTranslate(ftest_set, test_set, weights->array);
@@ -191,17 +171,15 @@ int main(int argc, char* argv[])
    AnnoSetComputePatternSubst(subst, training_set);
    AnnoSetComputePatternSubst(subst, test_set);
    VERBOUT("PatternSubst generated\n");
-   TSMAdminBuildTSM(admin, ftrain_set, index_type,
-          index_depth, subst);
-   admin->eval_limit = TSMComputeClassificationLimit(admin,
-                       ftrain_set);
-   admin->unmapped_eval = TSMComputeAverageEval(admin,ftrain_set);
+   TSMAdminBuildTSM(admin, ftrain_set, index_type, index_depth, subst);
+   admin->eval_limit = TSMComputeClassificationLimit(admin, ftrain_set);
+   admin->unmapped_eval = TSMComputeAverageEval(admin, ftrain_set);
    VERBOUT("TSM build\n");
 
    successes = TSMClassifySet(admin, ftest_set);
-   nodes     = FlatAnnoSetSize(ftest_set);
+   nodes = FlatAnnoSetSize(ftest_set);
    fprintf(GlobalOut, "% ld terms, %ld successes, %5.3f percent\n", nodes,
-      successes, 100.0*(double)successes/(double)nodes);
+           successes, 100.0 * (double)successes / (double)nodes);
 
    TSMAdminFree(admin);
    VERBOUT("TSM freed\n");
@@ -247,70 +225,69 @@ CLState_p process_options(int argc, char* argv[])
 {
    Opt_p handle;
    CLState_p state;
-   char*  arg;
+   char* arg;
 
-   state = CLStateAlloc(argc,argv);
+   state = CLStateAlloc(argc, argv);
 
    while((handle = CLStateGetOpt(state, &arg, opts)))
    {
       switch(handle->option_code)
       {
-      case OPT_VERBOSE:
-       Verbose = CLStateGetIntArg(handle, arg);
-       break;
-      case OPT_HELP:
-       print_help(stdout);
-       exit(NO_ERROR);
-      case OPT_VERSION:
-       printf(NAME " " VERSION "\n");
-       exit(NO_ERROR);
-      case OPT_OUTPUTLEVEL:
-       OutputLevel = CLStateGetIntArg(handle, arg);
-       break;
-      case OPT_OUTPUT:
-       outname = arg;
-       break;
-      case OPT_INDEXFUN:
-       index_type = GetIndexType(arg);
-       printf(COMCHAR" Index type: %d\n", index_type);
-       if(index_type == -1)
-       {
-          DStr_p err = DStrAlloc();
-          DStrAppendStr(err,
-              "Wrong argument to option -i "
-              "(--index-type). Possible "
-              "values: ");
-          DStrAppendStrArray(err, IndexFunNames, ", ");
-          Error(DStrView(err), USAGE_ERROR);
-          DStrFree(err);
-       }
-       else if(index_type == IndexNoIndex)
-       {
-          Error("Sorry, need to select a real index type!",
-           USAGE_ERROR);
-       }
-       break;
-      case OPT_INDEXDEPTH:
-       index_depth = CLStateGetIntArg(handle, arg);
-       if(index_depth < 0)
-       {
-          Error("Argument for -d (--index-depth) has to be an "
-           "integer number greater than or equal to 0.",
-           USAGE_ERROR);
-       }
-       break;
-      case OPT_TSMTYPE:
-       tsm_type = GetTSMType(arg);
-       if((tsm_type == TSMTypeNoType) || (tsm_type == -1))
-       {
-          Error("Only Flat, Recursive, Recurrent and RecLocal allowed as"
-           "TSM types in option -t (--tsm-type)",
-           USAGE_ERROR);
-       }
-       break;
-     default:
-    assert(false);
-    break;
+         case OPT_VERBOSE:
+            Verbose = CLStateGetIntArg(handle, arg);
+            break;
+         case OPT_HELP:
+            print_help(stdout);
+            exit(NO_ERROR);
+         case OPT_VERSION:
+            printf(NAME " " VERSION "\n");
+            exit(NO_ERROR);
+         case OPT_OUTPUTLEVEL:
+            OutputLevel = CLStateGetIntArg(handle, arg);
+            break;
+         case OPT_OUTPUT:
+            outname = arg;
+            break;
+         case OPT_INDEXFUN:
+            index_type = GetIndexType(arg);
+            printf(COMCHAR " Index type: %d\n", index_type);
+            if(index_type == -1)
+            {
+               DStr_p err = DStrAlloc();
+               DStrAppendStr(err,
+                             "Wrong argument to option -i "
+                             "(--index-type). Possible "
+                             "values: ");
+               DStrAppendStrArray(err, IndexFunNames, ", ");
+               Error(DStrView(err), USAGE_ERROR);
+               DStrFree(err);
+            }
+            else if(index_type == IndexNoIndex)
+            {
+               Error("Sorry, need to select a real index type!", USAGE_ERROR);
+            }
+            break;
+         case OPT_INDEXDEPTH:
+            index_depth = CLStateGetIntArg(handle, arg);
+            if(index_depth < 0)
+            {
+               Error("Argument for -d (--index-depth) has to be an "
+                     "integer number greater than or equal to 0.",
+                     USAGE_ERROR);
+            }
+            break;
+         case OPT_TSMTYPE:
+            tsm_type = GetTSMType(arg);
+            if((tsm_type == TSMTypeNoType) || (tsm_type == -1))
+            {
+               Error("Only Flat, Recursive, Recurrent and RecLocal allowed as"
+                     "TSM types in option -t (--tsm-type)",
+                     USAGE_ERROR);
+            }
+            break;
+         default:
+            assert(false);
+            break;
       }
    }
    return state;
@@ -319,8 +296,7 @@ CLState_p process_options(int argc, char* argv[])
 void print_help(FILE* out)
 {
    fprintf(out, "\n\
-\n"
-NAME " " VERSION "\n\
+\n" NAME " " VERSION "\n\
 \n\
 Usage: " NAME " [options] [files]\n\
 \n\

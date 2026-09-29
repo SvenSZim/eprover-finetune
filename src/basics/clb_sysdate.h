@@ -46,12 +46,14 @@ typedef long SysDate;
 /*---------------------------------------------------------------------*/
 
 #define SysDateCreationTime() ((SysDate)0)
-#define SysDateInvalidTime() ((SysDate)-1)
+#define SysDateInvalidTime() ((SysDate) - 1)
 #define SysDateIsInvalid(date) ((date) == SysDateInvalidTime())
-#define SysDateInc(sd) ((*(sd))++);assert(*(sd));
-#define SysDateIsEarlier(date1, date2) ((date1)<(date2))
-#define SysDateEqual(date1, date2) ((date1)==(date2))
-void    SysDatePrint(FILE* out, SysDate date);
+#define SysDateInc(sd)                                                         \
+   ((*(sd))++);                                                                \
+   assert(*(sd));
+#define SysDateIsEarlier(date1, date2) ((date1) < (date2))
+#define SysDateEqual(date1, date2) ((date1) == (date2))
+void SysDatePrint(FILE* out, SysDate date);
 #define SysDateMaximum(date1, date2) MAX(date1, date2)
 #define SysDateIsCreationDate(date) ((date) == SysDateCreationTime())
 
@@ -60,8 +62,6 @@ void    SysDatePrint(FILE* out, SysDate date);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

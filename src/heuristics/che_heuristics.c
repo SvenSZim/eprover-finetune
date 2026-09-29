@@ -49,34 +49,32 @@
 //
 /----------------------------------------------------------------------*/
 
-void finalize_auto_parms(char* modename, char* hname,
-                         ProofControl_p control,
-                         HeuristicParms_p parms,
-                         SpecFeature_p spec)
+void finalize_auto_parms(char* modename, char* hname, ProofControl_p control,
+                         HeuristicParms_p parms, SpecFeature_p spec)
 {
    control->heuristic_parms = *parms;
 
    if(OutputLevel ||
 #ifndef NDEBUG
-false // true
+      false // true
 #else
-false
+      false
 #endif
    )
    {
       fprintf(GlobalOut, "Selected heuristic:\n");
       HeuristicParmsPrint(stderr, &(control->heuristic_parms));
    }
-   if(parms->mem_limit>2 && (parms->delete_bad_limit ==
-                             DEFAULT_DELETE_BAD_LIMIT))
+   if(parms->mem_limit > 2 &&
+      (parms->delete_bad_limit == DEFAULT_DELETE_BAD_LIMIT))
    {
       control->heuristic_parms.delete_bad_limit =
-         (float)(parms->mem_limit-2)*0.7;
+         (float)(parms->mem_limit - 2) * 0.7;
    }
    if(SpecNoEq(spec))
    {
       control->heuristic_parms.ac_handling = NoACHandling;
-      OUTPRINT(1, COMCHAR" No equality, disabling AC handling.\n#\n");
+      OUTPRINT(1, COMCHAR " No equality, disabling AC handling.\n#\n");
    }
 }
 
@@ -101,20 +99,19 @@ false
 
 HCB_p GetHeuristic(char* source, HCBARGUMENTS)
 {
-   char*     name;
+   char* name;
    Scanner_p in;
-   HCB_p     res;
+   HCB_p res;
 
    //printf("GetHeuristic(%s, ...)\n", source);
 
    /* StreamTypeOptionString is a hack here...it will give wrong error
       messages for internal strings (but the function will not be
       called with internal strings anyways...) */
-   in=CreateScanner(StreamTypeOptionString, source, true, NULL, true);
+   in = CreateScanner(StreamTypeOptionString, source, true, NULL, true);
    if(TestInpTok(in, OpenBracket))
    {
-      HeuristicDefParse(control->hcbs, in, control->wfcbs,
-                        control->ocb, state);
+      HeuristicDefParse(control->hcbs, in, control->wfcbs, control->ocb, state);
       CheckInpTok(in, NoToken); /* Make sure there is no trailing
                                    material - I've been bitten by an
                                    extra ')' cutting off a heuristic
@@ -137,7 +134,6 @@ HCB_p GetHeuristic(char* source, HCBARGUMENTS)
    FREE(name);
    return res;
 }
-
 
 
 

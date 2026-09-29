@@ -35,7 +35,6 @@
 
 
 
-
 /* Used as base weight for ModArity */
 #define W_TO_BASEWEIGHT 4
 
@@ -46,11 +45,10 @@
 
 
 
-#define TOGenerateDefaultWeights(ocb)                  \
-   TOGenerateWeights((ocb), NULL, WSelectMaximal,      \
-                     W_DEFAULT_WEIGHT)
+#define TOGenerateDefaultWeights(ocb)                                          \
+   TOGenerateWeights((ocb), NULL, WSelectMaximal, W_DEFAULT_WEIGHT)
 
-void TOGenerateWeights(OCB_p ocb, ClauseSet_p axioms, char *pre_weights,
+void TOGenerateWeights(OCB_p ocb, ClauseSet_p axioms, char* pre_weights,
                        OrderParms_p oparms);
 
 

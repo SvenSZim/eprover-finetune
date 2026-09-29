@@ -36,30 +36,28 @@
 typedef struct proplitcell
 {
    EqnProperties properties;
-   Term_p        lit;
-}PropLitCell, *PropLit_p;
+   Term_p lit;
+} PropLitCell, *PropLit_p;
 
 
 typedef struct propclausecell
 {
-   int        lit_no;
-   PropLit_p  literals;
-   struct propclausecell *next; /* For linear lists == PropClauseSets */
-}PropClauseCell, *PropClause_p;
+   int lit_no;
+   PropLit_p literals;
+   struct propclausecell* next; /* For linear lists == PropClauseSets */
+} PropClauseCell, *PropClause_p;
 
 typedef struct propclausesetcell
 {
-   long         members;
-   long         literals;
-   long         empty_clauses;
+   long members;
+   long literals;
+   long empty_clauses;
    PropClause_p list;    /* List of clauses */
-   PropClause_p *inspos; /* Points to next field of last clause, so we
+   PropClause_p* inspos; /* Points to next field of last clause, so we
                             can keep inserted clauses in order - I
                             believe giving propositional provers small
                             clauses first may be beneficial */
-}PropClauseSetCell, *PropClauseSet_p;
-
-
+} PropClauseSetCell, *PropClauseSet_p;
 
 
 
@@ -67,29 +65,27 @@ typedef struct propclausesetcell
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define PropClauseCellAlloc()    (PropClauseCell*)SizeMalloc(sizeof(PropClauseCell))
+#define PropClauseCellAlloc()                                                  \
+   (PropClauseCell*)SizeMalloc(sizeof(PropClauseCell))
 #define PropClauseCellFree(junk) SizeFree(junk, sizeof(PropClauseCell))
 
 PropClause_p PropClauseAlloc(Clause_p clause);
-void         PropClauseFree(PropClause_p clause);
-Clause_p     PropClauseToClause(TB_p bank, PropClause_p clause);
-void         PropClausePrint(FILE* out, TB_p bank, PropClause_p
-                             clause);
-long         PropClauseMaxVar(PropClause_p clause);
+void PropClauseFree(PropClause_p clause);
+Clause_p PropClauseToClause(TB_p bank, PropClause_p clause);
+void PropClausePrint(FILE* out, TB_p bank, PropClause_p clause);
+long PropClauseMaxVar(PropClause_p clause);
 
 
-#define PropClauseSetCellAlloc()    (PropClauseSetCell*)SizeMalloc(sizeof(PropClauseSetCell))
+#define PropClauseSetCellAlloc()                                               \
+   (PropClauseSetCell*)SizeMalloc(sizeof(PropClauseSetCell))
 #define PropClauseSetCellFree(junk) SizeFree(junk, sizeof(PropClauseSetCell))
 
 PropClauseSet_p PropClauseSetAlloc(void);
-void            PropClauseSetFree(PropClauseSet_p set);
-long            PropClauseSetInsertPropClause(PropClauseSet_p set,
-                                              PropClause_p clause);
-long            PropClauseSetInsertClause(PropClauseSet_p set,
-                                          Clause_p clause);
-void            PropClauseSetPrint(FILE* out, TB_p bank,
-                                   PropClauseSet_p set);
-long            PropClauseSetMaxVar(PropClauseSet_p set);
+void PropClauseSetFree(PropClauseSet_p set);
+long PropClauseSetInsertPropClause(PropClauseSet_p set, PropClause_p clause);
+long PropClauseSetInsertClause(PropClauseSet_p set, Clause_p clause);
+void PropClauseSetPrint(FILE* out, TB_p bank, PropClauseSet_p set);
+long PropClauseSetMaxVar(PropClauseSet_p set);
 
 #endif
 

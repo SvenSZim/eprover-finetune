@@ -54,10 +54,10 @@ Changes (vastly incomplete, see CVS log)
 
 static NumXTree_p splay_tree(NumXTree_p tree, long key)
 {
-   NumXTree_p   left, right, tmp;
+   NumXTree_p left, right, tmp;
    NumXTreeCell newnode;
 
-   if (!tree)
+   if(!tree)
    {
       return tree;
    }
@@ -67,22 +67,22 @@ static NumXTree_p splay_tree(NumXTree_p tree, long key)
    left = &newnode;
    right = &newnode;
 
-   for (;;)
+   for(;;)
    {
-      long cmpres = key-tree->key;
-      if (cmpres < 0)
+      long cmpres = key - tree->key;
+      if(cmpres < 0)
       {
          if(!tree->lson)
          {
             break;
          }
-         if((key- tree->lson->key) < 0)
+         if((key - tree->lson->key) < 0)
          {
             tmp = tree->lson;
             tree->lson = tmp->rson;
             tmp->rson = tree;
             tree = tmp;
-            if (!tree->lson)
+            if(!tree->lson)
             {
                break;
             }
@@ -93,17 +93,17 @@ static NumXTree_p splay_tree(NumXTree_p tree, long key)
       }
       else if(cmpres > 0)
       {
-         if (!tree->rson)
+         if(!tree->rson)
          {
             break;
          }
-         if((key-tree->rson->key) > 0)
+         if((key - tree->rson->key) > 0)
          {
             tmp = tree->rson;
             tree->rson = tmp->lson;
             tmp->lson = tree;
             tree = tmp;
-            if (!tree->rson)
+            if(!tree->rson)
             {
                break;
             }
@@ -124,8 +124,6 @@ static NumXTree_p splay_tree(NumXTree_p tree, long key)
 
    return tree;
 }
-
-
 
 
 
@@ -153,11 +151,11 @@ NumXTree_p NumXTreeCellAllocEmpty(void)
    NumXTree_p handle = NumXTreeCellAlloc();
    int i;
 
-   for(i=0; i<NUMXTREEVALUES; i++)
+   for(i = 0; i < NUMXTREEVALUES; i++)
    {
       handle->vals[i].i_val = 0;
    }
-   handle->lson = handle->rson       = NULL;
+   handle->lson = handle->rson = NULL;
 
    return handle;
 }
@@ -215,9 +213,9 @@ void NumXTreeFree(NumXTree_p junk)
 //
 /----------------------------------------------------------------------*/
 
-NumXTree_p NumXTreeInsert(NumXTree_p *root, NumXTree_p newnode)
+NumXTree_p NumXTreeInsert(NumXTree_p* root, NumXTree_p newnode)
 {
-   if (!*root)
+   if(!*root)
    {
       newnode->lson = newnode->rson = NULL;
       *root = newnode;
@@ -225,9 +223,9 @@ NumXTree_p NumXTreeInsert(NumXTree_p *root, NumXTree_p newnode)
    }
    *root = splay_tree(*root, newnode->key);
 
-   long cmpres = newnode->key-(*root)->key;
+   long cmpres = newnode->key - (*root)->key;
 
-   if (cmpres < 0)
+   if(cmpres < 0)
    {
       newnode->lson = (*root)->lson;
       newnode->rson = *root;
@@ -261,7 +259,7 @@ NumXTree_p NumXTreeInsert(NumXTree_p *root, NumXTree_p newnode)
 //
 /----------------------------------------------------------------------*/
 
-bool NumXTreeStore(NumXTree_p *root, long key, IntOrP val1, IntOrP val2)
+bool NumXTreeStore(NumXTree_p* root, long key, IntOrP val1, IntOrP val2)
 {
    NumXTree_p handle, newnode;
 
@@ -294,12 +292,12 @@ bool NumXTreeStore(NumXTree_p *root, long key, IntOrP val1, IntOrP val2)
 //
 /----------------------------------------------------------------------*/
 
-NumXTree_p NumXTreeFind(NumXTree_p *root, long key)
+NumXTree_p NumXTreeFind(NumXTree_p* root, long key)
 {
    if(*root)
    {
       *root = splay_tree(*root, key);
-      if(((*root)->key-key)==0)
+      if(((*root)->key - key) == 0)
       {
          return *root;
       }
@@ -323,18 +321,18 @@ NumXTree_p NumXTreeFind(NumXTree_p *root, long key)
 /----------------------------------------------------------------------*/
 
 
-NumXTree_p NumXTreeExtractEntry(NumXTree_p *root, long key)
+NumXTree_p NumXTreeExtractEntry(NumXTree_p* root, long key)
 {
    NumXTree_p x, cell;
 
-   if (!(*root))
+   if(!(*root))
    {
       return NULL;
    }
    *root = splay_tree(*root, key);
-   if((key-(*root)->key)==0)
+   if((key - (*root)->key) == 0)
    {
-      if (!(*root)->lson)
+      if(!(*root)->lson)
       {
          x = (*root)->rson;
       }
@@ -365,7 +363,7 @@ NumXTree_p NumXTreeExtractEntry(NumXTree_p *root, long key)
 //
 /----------------------------------------------------------------------*/
 
-NumXTree_p NumXTreeExtractRoot(NumXTree_p *root)
+NumXTree_p NumXTreeExtractRoot(NumXTree_p* root)
 {
    if(*root)
    {
@@ -387,7 +385,7 @@ NumXTree_p NumXTreeExtractRoot(NumXTree_p *root)
 //
 /----------------------------------------------------------------------*/
 
-bool NumXTreeDeleteEntry(NumXTree_p *root, long key)
+bool NumXTreeDeleteEntry(NumXTree_p* root, long key)
 {
    NumXTree_p cell;
 
@@ -416,7 +414,7 @@ bool NumXTreeDeleteEntry(NumXTree_p *root, long key)
 long NumXTreeNodes(NumXTree_p root)
 {
    PStack_p stack = PStackAlloc();
-   long     res   = 0;
+   long res = 0;
 
    PStackPushP(stack, root);
 
@@ -425,9 +423,9 @@ long NumXTreeNodes(NumXTree_p root)
       root = PStackPopP(stack);
       if(root)
       {
-    PStackPushP(stack, root->lson);
-    PStackPushP(stack, root->rson);
-    res++;
+         PStackPushP(stack, root->lson);
+         PStackPushP(stack, root->rson);
+         res++;
       }
    }
    PStackFree(stack);
@@ -481,7 +479,7 @@ PStack_p NumXTreeLimitedTraverseInit(NumXTree_p root, long limit)
 
    while(root)
    {
-      if(root->key<limit)
+      if(root->key < limit)
       {
          root = root->rson;
       }
@@ -500,7 +498,6 @@ PStack_p NumXTreeLimitedTraverseInit(NumXTree_p root, long limit)
    }
    return stack;
 }
-
 
 
 

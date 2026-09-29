@@ -58,5 +58,3 @@ bool Condense(Clause_p clause);
 
 
 
-
-

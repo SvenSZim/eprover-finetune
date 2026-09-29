@@ -38,13 +38,13 @@
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
 
-Clause_p ClauseDisEqDecomposition(TB_p terms, Clause_p clause, CompactPos litpos);
+Clause_p ClauseDisEqDecomposition(TB_p terms, Clause_p clause,
+                                  CompactPos litpos);
 
 
 

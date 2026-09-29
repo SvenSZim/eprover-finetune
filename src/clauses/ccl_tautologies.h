@@ -35,7 +35,6 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
@@ -44,7 +43,7 @@ Changes
 
 bool ClauseIsTautologyReal(TB_p work_bank, Clause_p clause, bool copy);
 
-#define ClauseIsTautology(b,c) (ClauseIsTautologyReal(b, c, true))
+#define ClauseIsTautology(b, c) (ClauseIsTautologyReal(b, c, true))
 
 #endif
 

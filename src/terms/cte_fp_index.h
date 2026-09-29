@@ -49,12 +49,12 @@ Changes
 
 typedef struct fp_index_cell
 {
-   IntMap_p             f_alternatives;   /* Function symbols */
+   IntMap_p f_alternatives; /* Function symbols */
    //struct fp_index_cell *below_var;
    //struct fp_index_cell *any_var;
-   long                 count;
-   PObjTree_p           payload;
-}FPTreeCell, *FPTree_p;
+   long count;
+   PObjTree_p payload;
+} FPTreeCell, *FPTree_p;
 
 
 typedef void (*FPTreeFreeFun)(void*);
@@ -64,11 +64,11 @@ typedef void (*FPTreeFreeFun)(void*);
 
 typedef struct subterm_index_cell
 {
-   FPTree_p        index;
+   FPTree_p index;
    FPIndexFunction fp_fun;
-   Sig_p           sig;
-   FPTreeFreeFun   payload_free;
-}FPIndexCell, *FPIndex_p;
+   Sig_p sig;
+   FPTreeFreeFun payload_free;
+} FPIndexCell, *FPIndex_p;
 
 typedef void (*FPLeafPrintFun)(FILE* out, PStack_p stack, FPTree_p leaf);
 
@@ -84,49 +84,45 @@ PERF_CTR_DECL(IndexMatchTimer);
 
 
 #define FPTreeCellAlloc() (FPTreeCell*)SizeMalloc(sizeof(FPTreeCell))
-#define FPTreeCellFree(junk)         SizeFree(junk, sizeof(FPTreeCell))
+#define FPTreeCellFree(junk) SizeFree(junk, sizeof(FPTreeCell))
 
 
 FPTree_p FPTreeAlloc(void);
-void     FPTreeFree(FPTree_p index, FPTreeFreeFun payload_free);
+void FPTreeFree(FPTree_p index, FPTreeFreeFun payload_free);
 
 FPTree_p FPTreeFind(FPTree_p root, IndexFP_p key);
 FPTree_p FPTreeInsert(FPTree_p root, IndexFP_p key);
-void     FPTreeDelete(FPTree_p root, IndexFP_p key);
+void FPTreeDelete(FPTree_p root, IndexFP_p key);
 
-long     FPTreeFindUnifiable(FPTree_p root,
-                             IndexFP_p key,
-                             Sig_p sig,
-                             PStack_p collect);
+long FPTreeFindUnifiable(FPTree_p root, IndexFP_p key, Sig_p sig,
+                         PStack_p collect);
 // proposal -- maybe call this find instances?
-long     FPTreeFindMatchable(FPTree_p root,
-                             IndexFP_p key,
-                             Sig_p sig,
-                             PStack_p collect);
+long FPTreeFindMatchable(FPTree_p root, IndexFP_p key, Sig_p sig,
+                         PStack_p collect);
 
 
 #define FPIndexCellAlloc() (FPIndexCell*)SizeMalloc(sizeof(FPIndexCell))
-#define FPIndexCellFree(junk)         SizeFree(junk, sizeof(FPIndexCell))
+#define FPIndexCellFree(junk) SizeFree(junk, sizeof(FPIndexCell))
 
 
 FPIndex_p FPIndexAlloc(FPIndexFunction fp_fun, Sig_p sig,
                        FPTreeFreeFun payload_free);
-void      FPIndexFree(FPIndex_p index);
+void FPIndexFree(FPIndex_p index);
 
 FPTree_p FPIndexFind(FPIndex_p index, Term_p term);
-FPTree_p  FPIndexInsert(FPIndex_p index, Term_p term);
-void      FPIndexDelete(FPIndex_p index, Term_p term);
+FPTree_p FPIndexInsert(FPIndex_p index, Term_p term);
+void FPIndexDelete(FPIndex_p index, Term_p term);
 
-long      FPIndexFindUnifiable(FPIndex_p index, Term_p term, PStack_p collect);
-long      FPIndexFindMatchable(FPIndex_p index, Term_p term, PStack_p collect);
+long FPIndexFindUnifiable(FPIndex_p index, Term_p term, PStack_p collect);
+long FPIndexFindMatchable(FPIndex_p index, Term_p term, PStack_p collect);
 
-void      FPIndexDistribPrint(FILE* out, FPIndex_p index);
-void      FPIndexDistribDataPrint(FILE* out, FPIndex_p index);
+void FPIndexDistribPrint(FILE* out, FPIndex_p index);
+void FPIndexDistribDataPrint(FILE* out, FPIndex_p index);
 
-void      FPIndexPrint(FILE* out, FPIndex_p index, FPLeafPrintFun prtfun);
-long      FPIndexCollectLeaves(FPIndex_p index, PStack_p result);
-void      FPIndexPrintDot(FILE* out, char* name, FPIndex_p index,
-                          FPLeafPayloadPrint prt_sig, Sig_p sig);
+void FPIndexPrint(FILE* out, FPIndex_p index, FPLeafPrintFun prtfun);
+long FPIndexCollectLeaves(FPIndex_p index, PStack_p result);
+void FPIndexPrintDot(FILE* out, char* name, FPIndex_p index,
+                     FPLeafPayloadPrint prt_sig, Sig_p sig);
 
 
 #endif
@@ -134,8 +130,6 @@ void      FPIndexPrintDot(FILE* out, char* name, FPIndex_p index,
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

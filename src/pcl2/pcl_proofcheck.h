@@ -39,7 +39,7 @@ typedef enum
    CheckOk,
    CheckByAssumption,
    CheckNotImplemented
-}PCLCheckType;
+} PCLCheckType;
 
 typedef enum
 {
@@ -48,36 +48,32 @@ typedef enum
    Spass,
    Setheo,
    Otter
-}ProverType;
+} ProverType;
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define E_EXEC_DEFAULT     "eprover"
+#define E_EXEC_DEFAULT "eprover"
 #define OTTER_EXEC_DEFAULT "otter"
 #define SPASS_EXEC_DEFAULT "SPASS-0.55"
 
 long PCLCollectPreconds(PCLProt_p prot, PCLStep_p step, ClauseSet_p set);
-long PCLNegSkolemizeClause(PCLProt_p prot, PCLStep_p step,
-            ClauseSet_p set);
+long PCLNegSkolemizeClause(PCLProt_p prot, PCLStep_p step, ClauseSet_p set);
 ClauseSet_p PCLGenerateCheck(PCLProt_p prot, PCLStep_p step);
 
-PCLCheckType PCLStepCheck(PCLProt_p prot, PCLStep_p step, ProverType
-           prover, char* executable, long time_limit);
+PCLCheckType PCLStepCheck(PCLProt_p prot, PCLStep_p step, ProverType prover,
+                          char* executable, long time_limit);
 
-long PCLProtCheck(PCLProt_p prot, ProverType
-        prover, char* executable, long time_limit, long*
-        unchecked);
+long PCLProtCheck(PCLProt_p prot, ProverType prover, char* executable,
+                  long time_limit, long* unchecked);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

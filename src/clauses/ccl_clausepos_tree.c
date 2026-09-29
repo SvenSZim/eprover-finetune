@@ -51,10 +51,7 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-static void clause_tpos_free_wrapper(void *junk)
-{
-   ClauseTPosFree(junk);
-}
+static void clause_tpos_free_wrapper(void* junk) { ClauseTPosFree(junk); }
 
 
 /*---------------------------------------------------------------------*/
@@ -79,7 +76,7 @@ ClauseTPos_p ClauseTPosAlloc(Clause_p clause)
    ClauseTPos_p handle = ClauseTPosCellAlloc();
 
    handle->clause = clause;
-   handle->pos    = NULL;
+   handle->pos = NULL;
 
    return handle;
 }
@@ -136,10 +133,10 @@ void ClauseTPosTreeFree(ClauseTPosTree_p tree)
 //
 /----------------------------------------------------------------------*/
 
-int CmpClauseTPosCells(const void *soc1, const void *soc2)
+int CmpClauseTPosCells(const void* soc1, const void* soc2)
 {
-   const ClauseTPos_p c1 = (const ClauseTPos_p) soc1;
-   const ClauseTPos_p c2 = (const ClauseTPos_p) soc2;
+   const ClauseTPos_p c1 = (const ClauseTPos_p)soc1;
+   const ClauseTPos_p c2 = (const ClauseTPos_p)soc2;
 
    return PCmp(c1->clause, c2->clause);
 }
@@ -158,10 +155,7 @@ int CmpClauseTPosCells(const void *soc1, const void *soc2)
 //
 /----------------------------------------------------------------------*/
 
-void ClauseTPosTreeFreeWrapper(void *junk)
-{
-   ClauseTPosTreeFree(junk);
-}
+void ClauseTPosTreeFreeWrapper(void* junk) { ClauseTPosTreeFree(junk); }
 
 
 /*-----------------------------------------------------------------------
@@ -176,7 +170,7 @@ void ClauseTPosTreeFreeWrapper(void *junk)
 //
 /----------------------------------------------------------------------*/
 
-void ClauseTPosTreeInsertPos(ClauseTPosTree_p *tree, Clause_p clause,
+void ClauseTPosTreeInsertPos(ClauseTPosTree_p* tree, Clause_p clause,
                              CompactPos pos)
 {
    ClauseTPos_p old, newnode = ClauseTPosAlloc(clause);
@@ -207,7 +201,7 @@ void ClauseTPosTreeInsertPos(ClauseTPosTree_p *tree, Clause_p clause,
 //
 /----------------------------------------------------------------------*/
 
-void ClauseTPosTreeDeletePos(ClauseTPosTree_p *tree , Clause_p clause,
+void ClauseTPosTreeDeletePos(ClauseTPosTree_p* tree, Clause_p clause,
                              CompactPos pos)
 {
    ClauseTPos_p found, key = ClauseTPosAlloc(clause);
@@ -222,8 +216,7 @@ void ClauseTPosTreeDeletePos(ClauseTPosTree_p *tree , Clause_p clause,
       NumTreeDeleteEntry(&(found->pos), pos);
       if(!found->pos)
       {
-         found = PTreeObjExtractObject(tree, found,
-                                       CmpClauseTPosCells);
+         found = PTreeObjExtractObject(tree, found, CmpClauseTPosCells);
          ClauseTPosFree(found);
       }
    }
@@ -241,7 +234,7 @@ void ClauseTPosTreeDeletePos(ClauseTPosTree_p *tree , Clause_p clause,
 //
 /----------------------------------------------------------------------*/
 
-void ClauseTPosTreeDeleteClause(ClauseTPosTree_p *tree, Clause_p clause)
+void ClauseTPosTreeDeleteClause(ClauseTPosTree_p* tree, Clause_p clause)
 {
    ClauseTPos_p found, key = ClauseTPosAlloc(clause);
 

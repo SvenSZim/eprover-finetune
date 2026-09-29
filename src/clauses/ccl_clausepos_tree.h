@@ -36,9 +36,9 @@ Changes
 
 typedef struct clause_tpos_cell
 {
-   Clause_p  clause;
+   Clause_p clause;
    NumTree_p pos;
-}ClauseTPosCell, *ClauseTPos_p;
+} ClauseTPosCell, *ClauseTPos_p;
 
 
 typedef PObjTree_p ClauseTPosTree_p;
@@ -49,22 +49,23 @@ typedef PObjTree_p ClauseTPosTree_p;
 /*---------------------------------------------------------------------*/
 
 
-#define ClauseTPosCellAlloc() (ClauseTPosCell*)SizeMalloc(sizeof(ClauseTPosCell))
+#define ClauseTPosCellAlloc()                                                  \
+   (ClauseTPosCell*)SizeMalloc(sizeof(ClauseTPosCell))
 #define ClauseTPosCellFree(junk) SizeFree(junk, sizeof(ClauseTPosCell))
 
 ClauseTPos_p ClauseTPosAlloc(Clause_p clause);
-void         ClauseTPosFree(ClauseTPos_p soc);
-void         ClauseTPosTreeFree(ClauseTPosTree_p tree);
+void ClauseTPosFree(ClauseTPos_p soc);
+void ClauseTPosTreeFree(ClauseTPosTree_p tree);
 
-int CmpClauseTPosCells(const void *soc1, const void *soc2);
+int CmpClauseTPosCells(const void* soc1, const void* soc2);
 
-void ClauseTPosTreeTreeFreeWrapper(void *junk);
+void ClauseTPosTreeTreeFreeWrapper(void* junk);
 
-void ClauseTPosTreeInsertPos(ClauseTPosTree_p *tree , Clause_p clause,
+void ClauseTPosTreeInsertPos(ClauseTPosTree_p* tree, Clause_p clause,
                              CompactPos pos);
-void ClauseTPosTreeDeletePos(ClauseTPosTree_p *tree , Clause_p clause,
+void ClauseTPosTreeDeletePos(ClauseTPosTree_p* tree, Clause_p clause,
                              CompactPos pos);
-void ClauseTPosTreeDeleteClause(ClauseTPosTree_p *tree, Clause_p clause);
+void ClauseTPosTreeDeleteClause(ClauseTPosTree_p* tree, Clause_p clause);
 
 void ClauseTPosTreePrint(FILE* out, ClauseTPos_p tree);
 
@@ -74,8 +75,6 @@ void ClauseTPosTreePrint(FILE* out, ClauseTPos_p tree);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

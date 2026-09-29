@@ -45,7 +45,7 @@ ScheduleCell* class_to_schedule(const char* problem_category,
    int min_idx = -1;
    int min_dist = INT_MAX;
    int max_class_size = INT_MIN;
-   for(int i=0; min_dist && schedules[i].key; i++)
+   for(int i = 0; min_dist && schedules[i].key; i++)
    {
       int dist = StrDistance(schedules[i].key, problem_category);
       if(dist == 0)
@@ -54,13 +54,13 @@ ScheduleCell* class_to_schedule(const char* problem_category,
          min_dist = 0;
          break;
       }
-      else if (dist < min_dist)
+      else if(dist < min_dist)
       {
          min_dist = dist;
          min_idx = i;
          max_class_size = schedules[i].class_size;
       }
-      else if (dist == min_dist && schedules[i].class_size > max_class_size)
+      else if(dist == min_dist && schedules[i].class_size > max_class_size)
       {
          min_idx = i;
          max_class_size = schedules[i].class_size;
@@ -69,8 +69,8 @@ ScheduleCell* class_to_schedule(const char* problem_category,
    assert(min_idx >= 0);
    if(min_dist)
    {
-      fprintf(GlobalOut, COMCHAR" partial match(%d): %s\n",
-              min_dist, schedules[min_idx].key);
+      fprintf(GlobalOut, COMCHAR " partial match(%d): %s\n", min_dist,
+              schedules[min_idx].key);
    }
    return schedules[min_idx].value;
 }
@@ -91,7 +91,7 @@ ScheduleCell* class_to_schedule(const char* problem_category,
 void StrategiesPrintPredefined(FILE* out, bool names_only)
 {
    int i;
-   for(i=0; conf_map[i].key; i++)
+   for(i = 0; conf_map[i].key; i++)
    {
       if(names_only)
       {
@@ -155,22 +155,20 @@ ScheduleCell* GetSearchSchedule(const char* problem_category)
 
 void GetHeuristicWithName(const char* name, HeuristicParms_p target)
 {
-   for(int i=0; conf_map[i].key; i++)
+   for(int i = 0; conf_map[i].key; i++)
    {
       if(!strcmp(name, conf_map[i].key))
       {
-         Scanner_p in = CreateScanner(StreamTypeInternalString,
-                                      (char*)conf_map[i].value,
-                                      true, NULL, true);
+         Scanner_p in =
+            CreateScanner(StreamTypeInternalString, (char*)conf_map[i].value,
+                          true, NULL, true);
          HeuristicParmsParseInto(in, target, false);
          DestroyScanner(in);
          return;
       }
    }
-   Error("Error: Configuration name %s not found.",
-         OTHER_ERROR, name);
+   Error("Error: Configuration name %s not found.", OTHER_ERROR, name);
 }
-
 
 
 
@@ -186,10 +184,7 @@ void GetHeuristicWithName(const char* name, HeuristicParms_p target)
 //
 /----------------------------------------------------------------------*/
 
-ScheduleCell* GetDefaultSchedule()
-{
-   return _DEFAULT_SCHEDULE;
-}
+ScheduleCell* GetDefaultSchedule() { return _DEFAULT_SCHEDULE; }
 
 
 /*---------------------------------------------------------------------*/

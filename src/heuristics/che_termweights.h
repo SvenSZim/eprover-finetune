@@ -36,20 +36,18 @@ typedef enum
    RTSConjectureSubterms = 1,        /* conjecture terms and subterms */
    RTSConjectureSubtermsTopGens = 2, /* subterms and top-level gens */
    RTSConjectureSubtermsAllGens = 3  /* all substerms generalizations */
-}RelatedTermSet;
+} RelatedTermSet;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define MIN3(a, b, c) ((a) < (b) ? ((a) < (c) ? (a) : (c)) : ((b) < (c) ? (b) : (c)))
+#define MIN3(a, b, c)                                                          \
+   ((a) < (b) ? ((a) < (c) ? (a) : (c)) : ((b) < (c) ? (b) : (c)))
 #define TERM_MAX_GENS 1000
 
 PStack_p ComputeSubtermsGeneralizations(Term_p term, VarBank_p vars);
-PStack_p ComputeTopGeneralizations(
-   Term_p term, 
-   VarBank_p vars, 
-   Sig_p sig);
+PStack_p ComputeTopGeneralizations(Term_p term, VarBank_p vars, Sig_p sig);
 void FreeGeneralizations(PStack_p gens);
 
 int TupleInit(FixedDArray_p cur);

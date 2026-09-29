@@ -36,8 +36,7 @@ const StreamType StreamTypeFile = NULL;
 const StreamType StreamTypeInternalString =
    "Internal (programmer-defined) string - if you see this, you"
    " encountered a bug";
-const StreamType StreamTypeUserString =
-   "Parsing a user provided string";
+const StreamType StreamTypeUserString = "Parsing a user provided string";
 const StreamType StreamTypeOptionString =
    "Parsing a user given option argument";
 
@@ -74,7 +73,7 @@ static int read_char(Stream_p stream)
    }
    else
    {
-      if(stream->stream_type!=StreamTypeFile)
+      if(stream->stream_type != StreamTypeFile)
       {
          ch = (int)DStrView(stream->source)[stream->string_pos];
          if(ch)
@@ -120,7 +119,7 @@ static int read_char(Stream_p stream)
 Stream_p CreateStream(StreamType type, char* source, bool fail)
 {
    Stream_p handle;
-   int      i;
+   int i;
 
    handle = StreamCellAlloc();
 
@@ -131,7 +130,7 @@ Stream_p CreateStream(StreamType type, char* source, bool fail)
    {
       /* Interprete source as a file name ! */
 
-      if(!source || !strcmp(source,"-"))
+      if(!source || !strcmp(source, "-"))
       {
          DStrSet(handle->source, "<stdin>");
          handle->file = stdin;
@@ -157,13 +156,13 @@ Stream_p CreateStream(StreamType type, char* source, bool fail)
       DStrSet(handle->source, source);
       handle->string_pos = 0;
    }
-   handle->next       = NULL;
-   handle->eof_seen   = false;
-   handle->line       = 1;
-   handle->column     = 1;
-   handle->current    = 0;
+   handle->next = NULL;
+   handle->eof_seen = false;
+   handle->line = 1;
+   handle->column = 1;
+   handle->current = 0;
 
-   for(i=0; i<MAXLOOKAHEAD; i++)
+   for(i = 0; i < MAXLOOKAHEAD; i++)
    {
       handle->buffer[i] = read_char(handle);
    }
@@ -230,9 +229,9 @@ int StreamNextChar(Stream_p stream)
    {
       stream->column++;
    }
-   stream->current=STREAMREALPOS(stream->current+1);
-   stream->buffer[STREAMREALPOS(stream->current+MAXLOOKAHEAD-1)]
-      = read_char(stream);
+   stream->current = STREAMREALPOS(stream->current + 1);
+   stream->buffer[STREAMREALPOS(stream->current + MAXLOOKAHEAD - 1)] =
+      read_char(stream);
 
    return StreamCurrChar(stream);
 }
@@ -252,7 +251,8 @@ int StreamNextChar(Stream_p stream)
 //
 /----------------------------------------------------------------------*/
 
-Stream_p OpenStackedInput(Inpstack_p stack, StreamType type, char* source, bool fail)
+Stream_p OpenStackedInput(Inpstack_p stack, StreamType type, char* source,
+                          bool fail)
 {
    Stream_p handle;
 

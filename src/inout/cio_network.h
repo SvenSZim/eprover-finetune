@@ -41,22 +41,22 @@ Changes
 
 typedef enum
 {
-   NWIncomplete  = 0,
-   NWError       = 1,
-   NWConnClosed  = 2,
-   NWSuccess     = 3
-}MsgStatus;
+   NWIncomplete = 0,
+   NWError = 1,
+   NWConnClosed = 2,
+   NWSuccess = 3
+} MsgStatus;
 
 /* A single message */
 
 typedef struct tcp_msg_cell
 {
-   DStr_p content; /* Includes 4 bytes initial bytes of total message
+   DStr_p content;         /* Includes 4 bytes initial bytes of total message
                       lengths in network byte order, and the payload. */
-   int len;     /* Including length field. */
+   int len;                /* Including length field. */
    int transmission_count; /* How many bytes have been sent/received? */
    char len_buf[sizeof(uint32_t)];
-}TCPMsgCell, *TCPMsg_p;
+} TCPMsgCell, *TCPMsg_p;
 
 
 
@@ -65,35 +65,35 @@ typedef struct tcp_msg_cell
 /*---------------------------------------------------------------------*/
 
 
-#define TCPMsgCellAlloc()    (TCPMsgCell*)SizeMalloc(sizeof(TCPMsgCell))
+#define TCPMsgCellAlloc() (TCPMsgCell*)SizeMalloc(sizeof(TCPMsgCell))
 #define TCPMsgCellFree(junk) SizeFree(junk, sizeof(TCPMsgCell))
 
 #define TCP_MSG_COMPLETE(msg) ((msg)->len == (msg)->transmission_count)
 
-TCPMsg_p  TCPMsgAlloc(void);
-void   TCPMsgFree(TCPMsg_p junk);
+TCPMsg_p TCPMsgAlloc(void);
+void TCPMsgFree(TCPMsg_p junk);
 
 
 TCPMsg_p TCPMsgPack(char* str);
-char*    TCPMsgUnpack(TCPMsg_p msg);
+char* TCPMsgUnpack(TCPMsg_p msg);
 
 MsgStatus TCPMsgWrite(int sock, TCPMsg_p msg);
 MsgStatus TCPMsgRead(int sock, TCPMsg_p msg);
 
 MsgStatus TCPMsgSend(int sock, TCPMsg_p msg);
-TCPMsg_p  TCPMsgRecv(int sock, MsgStatus *res);
+TCPMsg_p TCPMsgRecv(int sock, MsgStatus* res);
 
 MsgStatus TCPStringSend(int sock, char* str, bool err);
-char*     TCPStringRecv(int sock, MsgStatus* res, bool err);
+char* TCPStringRecv(int sock, MsgStatus* res, bool err);
 
-void      TCPStringSendX(int sock, char* str);
-char*     TCPStringRecvX(int sock);
+void TCPStringSendX(int sock, char* str);
+char* TCPStringRecvX(int sock);
 
 
-int  CreateServerSock(int port);
+int CreateServerSock(int port);
 void Listen(int sock);
 
-int  CreateClientSock(char* host, int port);
+int CreateClientSock(char* host, int port);
 
 #endif
 
@@ -101,8 +101,6 @@ int  CreateClientSock(char* host, int port);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

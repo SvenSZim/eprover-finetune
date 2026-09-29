@@ -28,16 +28,9 @@ Changes
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-char* PRResultTable[] =
-{
-   NULL,
-   SZS_THEOREM_STR,
-   SZS_UNSAT_STR,
-   SZS_SATSTR_STR,
-   SZS_COUNTERSAT_STR,
-   SZS_FAILURE_STR,
-   SZS_GAVEUP_STR
-};
+char* PRResultTable[] = { NULL,           SZS_THEOREM_STR,    SZS_UNSAT_STR,
+                          SZS_SATSTR_STR, SZS_COUNTERSAT_STR, SZS_FAILURE_STR,
+                          SZS_GAVEUP_STR };
 
 
 /*---------------------------------------------------------------------*/
@@ -68,18 +61,18 @@ char* PRResultTable[] =
 //
 /----------------------------------------------------------------------*/
 
-EPCtrl_p EPCtrlAlloc(char *name)
+EPCtrl_p EPCtrlAlloc(char* name)
 {
    EPCtrl_p ctrl = EPCtrlCellAlloc();
 
-   ctrl->pid        = 0;
-   ctrl->pipe       = NULL;
+   ctrl->pid = 0;
+   ctrl->pipe = NULL;
    ctrl->input_file = 0;
-   ctrl->name       = SecureStrdup(name);
+   ctrl->name = SecureStrdup(name);
    ctrl->start_time = 0;
-   ctrl->prob_time  = 0;
-   ctrl->result     = PRNoResult;
-   ctrl->output     = DStrAlloc();
+   ctrl->prob_time = 0;
+   ctrl->result = PRNoResult;
+   ctrl->output = DStrAlloc();
 
    return ctrl;
 }
@@ -110,8 +103,6 @@ void EPCtrlFree(EPCtrl_p junk)
    DStrFree(junk->output);
    EPCtrlCellFree(junk);
 }
-
-
 
 
 
@@ -164,11 +155,11 @@ void EPCtrlCleanup(EPCtrl_p ctrl, bool delete_file)
 //
 /----------------------------------------------------------------------*/
 
-EPCtrl_p ECtrlCreate(char* prover, char* name,
-                     char* extra_options,
+EPCtrl_p ECtrlCreate(char* prover, char* name, char* extra_options,
                      long cpu_limit, char* file)
 {
-   return ECtrlCreateGeneric(prover, name, E_OPTIONS, extra_options, cpu_limit, file);
+   return ECtrlCreateGeneric(prover, name, E_OPTIONS, extra_options, cpu_limit,
+                             file);
 }
 
 
@@ -188,14 +179,13 @@ EPCtrl_p ECtrlCreate(char* prover, char* name,
 //
 /----------------------------------------------------------------------*/
 
-EPCtrl_p ECtrlCreateGeneric(char* prover, char* name,
-                            char* options, char* extra_options,
-                            long cpu_limit, char* file)
+EPCtrl_p ECtrlCreateGeneric(char* prover, char* name, char* options,
+                            char* extra_options, long cpu_limit, char* file)
 {
-   DStr_p   cmd = DStrAlloc();
+   DStr_p cmd = DStrAlloc();
    EPCtrl_p res;
-   char     line[180];
-   char*    ret;
+   char line[180];
+   char* ret;
 
    DStr_p procname = DStrAlloc();
    DStrAppendStr(procname, name);
@@ -215,7 +205,7 @@ EPCtrl_p ECtrlCreateGeneric(char* prover, char* name,
    DStrAppendStr(cmd, file);
    //printf(COMCHAR" Command: %s\n", DStrView(cmd));
 
-   res->prob_time  = cpu_limit;
+   res->prob_time = cpu_limit;
    res->start_time = GetSecTime();
    res->input_file = file;
    //printf(COMCHAR" Executing: %s\n", DStrView(cmd));
@@ -232,20 +222,17 @@ EPCtrl_p ECtrlCreateGeneric(char* prover, char* name,
       Error("Cannot read eprover PID line", OTHER_ERROR);
    }
    // fprintf(GlobalOut, COMCHAR" Line = %s", line);
-   if(!strstr(line, COMCHAR" Pid: "))
+   if(!strstr(line, COMCHAR " Pid: "))
    {
       Error("Cannot get eprover PID", OTHER_ERROR);
    }
-   res->pid = atoi(line+7);
+   res->pid = atoi(line + 7);
    DStrAppendStr(res->output, line);
 
    DStrFree(cmd);
    //printf(COMCHAR" eprover subprocess started\n");
    return res;
 }
-
-
-
 
 
 
@@ -267,7 +254,7 @@ bool EPCtrlGetResult(EPCtrl_p ctrl, char* buffer, long buf_size)
 {
    char* l;
 
-   l=fgets(buffer, buf_size, ctrl->pipe);
+   l = fgets(buffer, buf_size, ctrl->pipe);
 
    if(l)
    {
@@ -322,7 +309,7 @@ EPCtrlSet_p EPCtrlSetAlloc(void)
 {
    EPCtrlSet_p handle = EPCtrlSetCellAlloc();
 
-   handle->procs     = NULL;
+   handle->procs = NULL;
 
    return handle;
 }
@@ -442,7 +429,7 @@ void EPCtrlSetDeleteProc(EPCtrlSet_p set, EPCtrl_p proc, bool delete_file)
 //
 /----------------------------------------------------------------------*/
 
-int EPCtrlSetFDSet(EPCtrlSet_p set, fd_set *rd_fds)
+int EPCtrlSetFDSet(EPCtrlSet_p set, fd_set* rd_fds)
 {
    PStack_p trav_stack;
    int maxfd = 0;
@@ -478,7 +465,7 @@ EPCtrl_p EPCtrlSetGetResult(EPCtrlSet_p set, bool delete_files)
 {
    bool eof;
    fd_set readfds, writefds, errorfds;
-   int maxfd = 0,i;
+   int maxfd = 0, i;
    EPCtrl_p handle, res = NULL;
    struct timeval waittime;
    int sel_success;
@@ -486,16 +473,16 @@ EPCtrl_p EPCtrlSetGetResult(EPCtrlSet_p set, bool delete_files)
    FD_ZERO(&readfds);
    FD_ZERO(&writefds);
    FD_ZERO(&errorfds);
-   waittime.tv_sec  = 0;
+   waittime.tv_sec = 0;
    waittime.tv_usec = 500000;
 
    maxfd = EPCtrlSetFDSet(set, &readfds);
 
-   sel_success = select(maxfd+1, &readfds, &writefds, &errorfds, &waittime);
+   sel_success = select(maxfd + 1, &readfds, &writefds, &errorfds, &waittime);
 
-   if(sel_success !=-1)
+   if(sel_success != -1)
    {
-      for(i=0; i<=maxfd; i++)
+      for(i = 0; i <= maxfd; i++)
       {
          if(FD_ISSET(i, &readfds))
          {
@@ -505,22 +492,22 @@ EPCtrl_p EPCtrlSetGetResult(EPCtrlSet_p set, bool delete_files)
             {
                switch(handle->result)
                {
-               case PRNoResult:
+                  case PRNoResult:
                      break;
-               case PRTheorem:
-               case PRUnsatisfiable:
+                  case PRTheorem:
+                  case PRUnsatisfiable:
                      res = handle;
                      break;
-               case PRSatisfiable:
-               case PRCounterSatisfiable:
-               case PRFailure:
+                  case PRSatisfiable:
+                  case PRCounterSatisfiable:
+                  case PRFailure:
                      /* Process terminates, but no proof found -> Remove it*/
-                     fprintf(GlobalOut, COMCHAR" No proof found by %s\n",
+                     fprintf(GlobalOut, COMCHAR " No proof found by %s\n",
                              handle->name);
 
                      EPCtrlSetDeleteProc(set, handle, delete_files);
                      break;
-               default:
+                  default:
                      assert(false && "Impossible ProverResult");
                }
             }

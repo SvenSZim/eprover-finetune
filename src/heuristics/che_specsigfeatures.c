@@ -64,9 +64,9 @@ void term_collect_sig_features_rek(Sig_p sig, Term_p t, long* features,
       {
          features[SigGetDepthFeatureOffset(sig, t->f_code)] = depth;
       }
-      for(i=0; i<t->arity; i++)
+      for(i = 0; i < t->arity; i++)
       {
-         term_collect_sig_features_rek(sig, t->args[i], features, depth+1);
+         term_collect_sig_features_rek(sig, t->args[i], features, depth + 1);
       }
    }
 }
@@ -95,7 +95,7 @@ void SpecSigFeatureInit(SpecSigFeature_p specftrs)
 {
    int i;
 
-   for(i=0; i<SPECSIG_TOTAL_FTR_NO; i++)
+   for(i = 0; i < SPECSIG_TOTAL_FTR_NO; i++)
    {
       specftrs->features[i] = 0;
    }
@@ -113,15 +113,15 @@ void SpecSigFeatureInit(SpecSigFeature_p specftrs)
 //
 /----------------------------------------------------------------------*/
 
-void SpecSigFeaturePrint(FILE*out, SpecSigFeature_p specftrs)
+void SpecSigFeaturePrint(FILE* out, SpecSigFeature_p specftrs)
 {
    int i;
-   char* sep="";
+   char* sep = "";
 
-   for(i=0; i<SPECSIG_TOTAL_FTR_NO; i++)
+   for(i = 0; i < SPECSIG_TOTAL_FTR_NO; i++)
    {
       fprintf(out, "%s%5ld", sep, specftrs->features[i]);
-      sep =", ";
+      sep = ", ";
    }
 }
 
@@ -143,8 +143,6 @@ void TermCollectSigFeatures(Sig_p sig, Term_p term, long* features)
 {
    term_collect_sig_features_rek(sig, term, features, 1);
 }
-
-
 
 
 
@@ -181,7 +179,7 @@ void ClauseCollectSigFeatures(Clause_p clause, long* features)
    {
       if(EqnIsPositive(handle))
       {
-         EqnCollectSigFeatures(handle, features+2);
+         EqnCollectSigFeatures(handle, features + 2);
          if(EqnIsEquLit(handle))
          {
             features[0]++;
@@ -189,7 +187,8 @@ void ClauseCollectSigFeatures(Clause_p clause, long* features)
       }
       else
       {
-         EqnCollectSigFeatures(handle, features+2+3*SIG_FEATURE_ARITY_LIMIT);
+         EqnCollectSigFeatures(handle,
+                               features + 2 + 3 * SIG_FEATURE_ARITY_LIMIT);
          if(EqnIsEquLit(handle))
          {
             features[1]++;
@@ -214,7 +213,7 @@ void ClauseCollectSigFeatures(Clause_p clause, long* features)
 
 void ClauseComputeSigFeatures(Clause_p clause, long* features)
 {
-   memset(features, 0, (2+6*SIG_FEATURE_ARITY_LIMIT)*sizeof(long));
+   memset(features, 0, (2 + 6 * SIG_FEATURE_ARITY_LIMIT) * sizeof(long));
    ClauseCollectSigFeatures(clause, features);
 }
 
@@ -237,16 +236,15 @@ void ClauseSetCollectSigFeatures(Sig_p sig, ClauseSet_p set,
    Clause_p handle;
    FunCode i;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsConjecture(handle))
       {
-         ClauseCollectSigFeatures(handle, specftrs->features+SPECSIG_CJ_FTRS);
+         ClauseCollectSigFeatures(handle, specftrs->features + SPECSIG_CJ_FTRS);
       }
       else
       {
-         ClauseCollectSigFeatures(handle, specftrs->features+SPECSIG_AX_FTRS);
+         ClauseCollectSigFeatures(handle, specftrs->features + SPECSIG_AX_FTRS);
       }
       if(ClauseIsUnit(handle))
       {
@@ -261,9 +259,9 @@ void ClauseSetCollectSigFeatures(Sig_p sig, ClauseSet_p set,
          specftrs->features[SPECSIG_GLOBAL_GNRL]++;
       }
    }
-   for(i=sig->internal_symbols+1; i<=sig->f_count; i++)
+   for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
-      specftrs->features[SPECSIG_GLOBAL_SIG+SigGetFeatureOffset(sig, i)]++;
+      specftrs->features[SPECSIG_GLOBAL_SIG + SigGetFeatureOffset(sig, i)]++;
       //printf(COMCHAR" %s : %d -> %d\n", sig->f_info[i].name, sig->f_info[i].arity,
       //SigGetFeatureOffset(sig, i));
    }

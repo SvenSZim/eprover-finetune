@@ -31,19 +31,11 @@
 #define PICOSAT_BUFSIZE 200
 
 
-char* GroundingStratNames[] =
-{
-   "NoGrounding",
-   "PseudoVar",
-   "FirstConst",
-   "ConjMinMinFreq",
-   "ConjMaxMinFreq",
-   "ConjMinMaxFreq",
-   "ConjMaxMaxFreq",
-   "GlobalMax",
-   "GlobalMin",
-   NULL
-};
+char* GroundingStratNames[] = { "NoGrounding",    "PseudoVar",
+                                "FirstConst",     "ConjMinMinFreq",
+                                "ConjMaxMinFreq", "ConjMinMaxFreq",
+                                "ConjMaxMaxFreq", "GlobalMax",
+                                "GlobalMin",      NULL };
 
 /*---------------------------------------------------------------------*/
 /*                      Forward Declarations                           */
@@ -69,7 +61,7 @@ char* GroundingStratNames[] =
 
 int sat_translate_literal(Eqn_p eqn, SatClauseSet_p set)
 {
-   int  atom = 0;
+   int atom = 0;
    long lit_code;
    Term_p lterm, rterm, lit_term;
 
@@ -84,11 +76,13 @@ int sat_translate_literal(Eqn_p eqn, SatClauseSet_p set)
       // We normalize literals to avoid spurious failures
       if(PGreater(lterm, rterm))
       {
-         lit_term = EqnTermsTBTermEncode(eqn->bank, lterm, rterm, true, PENormal);
+         lit_term =
+            EqnTermsTBTermEncode(eqn->bank, lterm, rterm, true, PENormal);
       }
       else
       {
-         lit_term = EqnTermsTBTermEncode(eqn->bank, lterm, rterm, true, PEReverse);
+         lit_term =
+            EqnTermsTBTermEncode(eqn->bank, lterm, rterm, true, PEReverse);
       }
    }
    else
@@ -134,7 +128,7 @@ static void litstate_add_satclause(int* state, SatClause_p clause)
    assert(state);
    assert(clause);
 
-   for(i=0; i<clause->lit_no; i++)
+   for(i = 0; i < clause->lit_no; i++)
    {
       lit = clause->literals[i];
       if(lit > 0)
@@ -168,13 +162,13 @@ static bool litstate_check_pure(int* state, SatClause_p clause)
    assert(state);
    assert(clause);
 
-   for(i = 0; i<clause->lit_no; i++)
+   for(i = 0; i < clause->lit_no; i++)
    {
       lit = clause->literals[i];
       if(lit > 0)
       {
          assert(state[lit]);
-         if(state[lit]!=3)
+         if(state[lit] != 3)
          {
             return true;
          }
@@ -182,7 +176,7 @@ static bool litstate_check_pure(int* state, SatClause_p clause)
       else
       {
          assert(state[-lit]);
-         if(state[-lit]!=3)
+         if(state[-lit] != 3)
          {
             return true;
          }
@@ -216,7 +210,7 @@ bool prefer_conj_min_max_freq(FunCode f1, FunCode f2, long* conj_dist_array,
    {
       return false;
    }
-   return (conj_dist_array[f1] < conj_dist_array[f2])||
+   return (conj_dist_array[f1] < conj_dist_array[f2]) ||
       ((conj_dist_array[f1] = conj_dist_array[f2]) &&
        (dist_array[f1] > dist_array[f2]));
 }
@@ -238,7 +232,7 @@ bool prefer_conj_min_max_freq(FunCode f1, FunCode f2, long* conj_dist_array,
 bool prefer_conj_max_max_freq(FunCode f1, FunCode f2, long* conj_dist_array,
                               long* dist_array)
 {
-   return (conj_dist_array[f1] > conj_dist_array[f2])||
+   return (conj_dist_array[f1] > conj_dist_array[f2]) ||
       ((conj_dist_array[f1] = conj_dist_array[f2]) &&
        (dist_array[f1] > dist_array[f2]));
 }
@@ -268,7 +262,7 @@ bool prefer_conj_min_min_freq(FunCode f1, FunCode f2, long* conj_dist_array,
    {
       return false;
    }
-   return (conj_dist_array[f1] < conj_dist_array[f2])||
+   return (conj_dist_array[f1] < conj_dist_array[f2]) ||
       ((conj_dist_array[f1] = conj_dist_array[f2]) &&
        (dist_array[f1] < dist_array[f2]));
 }
@@ -290,7 +284,7 @@ bool prefer_conj_min_min_freq(FunCode f1, FunCode f2, long* conj_dist_array,
 bool prefer_conj_max_min_freq(FunCode f1, FunCode f2, long* conj_dist_array,
                               long* dist_array)
 {
-   return (conj_dist_array[f1] > conj_dist_array[f2])||
+   return (conj_dist_array[f1] > conj_dist_array[f2]) ||
       ((conj_dist_array[f1] = conj_dist_array[f2]) &&
        (dist_array[f1] < dist_array[f2]));
 }
@@ -309,7 +303,7 @@ bool prefer_conj_max_min_freq(FunCode f1, FunCode f2, long* conj_dist_array,
 /----------------------------------------------------------------------*/
 
 bool prefer_global_max_freq(FunCode f1, FunCode f2, long* conj_dist_array,
-                              long* dist_array)
+                            long* dist_array)
 {
    return (dist_array[f1] > dist_array[f2]);
 }
@@ -328,7 +322,7 @@ bool prefer_global_max_freq(FunCode f1, FunCode f2, long* conj_dist_array,
 /----------------------------------------------------------------------*/
 
 bool prefer_global_min_freq(FunCode f1, FunCode f2, long* conj_dist_array,
-                              long* dist_array)
+                            long* dist_array)
 {
    return (dist_array[f1] < dist_array[f2]);
 }
@@ -345,10 +339,7 @@ bool prefer_global_min_freq(FunCode f1, FunCode f2, long* conj_dist_array,
 //
 /----------------------------------------------------------------------*/
 
-bool sat_clause_not_pure(SatClause_p cl)
-{
-   return !cl->has_pure_lit;
-}
+bool sat_clause_not_pure(SatClause_p cl) { return !cl->has_pure_lit; }
 
 /*-----------------------------------------------------------------------
 //
@@ -363,7 +354,8 @@ bool sat_clause_not_pure(SatClause_p cl)
 //
 /----------------------------------------------------------------------*/
 
-void export_to_solver(SatSolver_p solver, SatClauseSet_p set, SatClauseFilter filter)
+void export_to_solver(SatSolver_p solver, SatClauseSet_p set,
+                      SatClauseFilter filter)
 {
    PStackPointer i;
    SatClause_p clause;
@@ -371,7 +363,7 @@ void export_to_solver(SatSolver_p solver, SatClauseSet_p set, SatClauseFilter fi
    assert(set);
 
    PStackReset(set->exported);
-   for(i=0; i<PStackGetSP(set->set); i++)
+   for(i = 0; i < PStackGetSP(set->set); i++)
    {
       clause = PStackElementP(set->set, i);
       if(filter == NULL || filter(clause))
@@ -410,10 +402,10 @@ SatClause_p SatClauseAlloc(int lit_no)
    SatClause_p handle = SatClauseCellAlloc();
 
    handle->has_pure_lit = false;
-   handle->lit_no       = lit_no;
-   handle->literals     = SizeMalloc((lit_no+1)*sizeof(int));
+   handle->lit_no = lit_no;
+   handle->literals = SizeMalloc((lit_no + 1) * sizeof(int));
    handle->literals[handle->lit_no] = 0;
-   handle->source       = NULL;
+   handle->source = NULL;
 
    return handle;
 }
@@ -435,7 +427,7 @@ void SatClauseFree(SatClause_p junk)
 {
    assert(junk);
 
-   SizeFree(junk->literals, (junk->lit_no+1)*sizeof(int));
+   SizeFree(junk->literals, (junk->lit_no + 1) * sizeof(int));
    SatClauseCellFree(junk);
 }
 
@@ -461,7 +453,7 @@ SatClauseSet_p SatClauseSetAlloc(void)
    set->max_lit = 0;
    set->renumber_index = NULL; // We create this lazily when we know
                                // the first index!
-   set->set      = PStackAlloc();
+   set->set = PStackAlloc();
    set->exported = PStackAlloc();
    set->core_size = 0;
    set->set_size_limit = -1;
@@ -521,8 +513,7 @@ SatClause_p SatClauseCreateAndStore(Clause_p clause, SatClauseSet_p set)
    assert(clause);
    assert(set);
 
-   if(set->set_size_limit != -1 &&
-         PStackGetSP(set->set) >= set->set_size_limit)
+   if(set->set_size_limit != -1 && PStackGetSP(set->set) >= set->set_size_limit)
    {
       return NULL;
    }
@@ -530,11 +521,9 @@ SatClause_p SatClauseCreateAndStore(Clause_p clause, SatClauseSet_p set)
 
    handle = SatClauseAlloc(ClauseLiteralNumber(clause));
    handle->source = clause;
-   for(i=0, lit=clause->literals;
-       lit;
-       i++, lit=lit->next)
+   for(i = 0, lit = clause->literals; lit; i++, lit = lit->next)
    {
-      assert(i<handle->lit_no);
+      assert(i < handle->lit_no);
       handle->literals[i] = sat_translate_literal(lit, set);
    }
 
@@ -561,7 +550,7 @@ void SatClausePrint(FILE* out, SatClause_p satclause)
 
    assert(satclause);
 
-   for(i=0; i<satclause->lit_no; i++)
+   for(i = 0; i < satclause->lit_no; i++)
    {
       fprintf(out, "%d ", satclause->literals[i]);
    }
@@ -589,7 +578,7 @@ void SatClauseSetPrint(FILE* out, SatClauseSet_p set)
 
    fprintf(out, "p cnf %d %ld\n", set->max_lit, PStackGetSP(set->set));
 
-   for(i=0; i<PStackGetSP(set->set); i++)
+   for(i = 0; i < PStackGetSP(set->set); i++)
    {
       SatClausePrint(out, PStackElementP(set->set, i));
    }
@@ -635,8 +624,7 @@ long SatClauseSetImportClauseSet(SatClauseSet_p satset, ClauseSet_p set)
    assert(set);
    int added = 0;
 
-   for(handle = set->anchor->succ;
-       handle != set->anchor;
+   for(handle = set->anchor->succ; handle != set->anchor;
        handle = handle->succ, added++)
    {
       if(!SatClauseCreateAndStore(handle, satset))
@@ -674,7 +662,7 @@ Subst_p SubstPseudoGroundVarBank(VarBank_p vars)
 
    assert(vars);
 
-   for (i=0; i < PDArraySize(vars->varstacks); i++)
+   for(i = 0; i < PDArraySize(vars->varstacks); i++)
    {
       varstack = PDArrayElementP(vars->varstacks, i);
       // printf(COMCHAR" varstack: %p\n", varstack);
@@ -684,11 +672,11 @@ Subst_p SubstPseudoGroundVarBank(VarBank_p vars)
          // printf(COMCHAR" varstack size: %ld\n", size);
          if(size)
          {
-            norm = PStackElementP(varstack,0);
+            norm = PStackElementP(varstack, 0);
             // printf(COMCHAR" varstack[1]: %p\n", norm);
-            for(j=0; j< size; j++)
+            for(j = 0; j < size; j++)
             {
-               current = PStackElementP(varstack,j);
+               current = PStackElementP(varstack, j);
                // printf(COMCHAR" varstack[%ld]: %p\n", j, current);
                if(current && !current->binding)
                {
@@ -725,17 +713,17 @@ Subst_p SubstGroundVarBankFirstConst(TB_p terms, bool norm_const)
 
    assert(vars);
 
-   for (i=0; i < PDArraySize(vars->varstacks); i++)
+   for(i = 0; i < PDArraySize(vars->varstacks); i++)
    {
       varstack = PDArrayElementP(vars->varstacks, i);
       //printf(COMCHAR" varstack: %p\n", varstack);
-      if (varstack)
+      if(varstack)
       {
          size = PStackGetSP(varstack);
          //printf(COMCHAR" varstack size: %ld\n", size);
          if(size)
          {
-            backup = PStackElementP(varstack,0);
+            backup = PStackElementP(varstack, 0);
             assert(backup->type->type_uid == i);
 
             norm = TBGetFirstConstTerm(terms, backup->type);
@@ -748,9 +736,9 @@ Subst_p SubstGroundVarBankFirstConst(TB_p terms, bool norm_const)
                norm = TermFollowRWChain(norm);
             }
             // printf(COMCHAR" varstack[1]: %p\n", norm);
-            for(j=0; j< size; j++)
+            for(j = 0; j < size; j++)
             {
-               current = PStackElementP(varstack,j);
+               current = PStackElementP(varstack, j);
                // printf(COMCHAR" varstack[%ld]: %p\n", j, current);
                if(current && !current->binding)
                {
@@ -789,30 +777,30 @@ Subst_p SubstGroundFreqBased(TB_p terms, ClauseSet_p clauses,
 
    assert(vars);
 
-   dist_arr_size = (terms->sig->f_count+1) * sizeof(long);
+   dist_arr_size = (terms->sig->f_count + 1) * sizeof(long);
    conj_dist_array = SizeMalloc(dist_arr_size);
-   dist_array      = SizeMalloc(dist_arr_size);
+   dist_array = SizeMalloc(dist_arr_size);
    memset(conj_dist_array, 0, dist_arr_size);
    memset(dist_array, 0, dist_arr_size);
 
    ClauseSetAddSymbolDistribution(clauses, dist_array);
    ClauseSetAddConjSymbolDistribution(clauses, conj_dist_array);
 
-   for (sort=0; sort < PDArraySize(vars->varstacks); sort++)
+   for(sort = 0; sort < PDArraySize(vars->varstacks); sort++)
    {
       varstack = PDArrayElementP(vars->varstacks, sort);
       //printf(COMCHAR" varstack: %p\n", varstack);
-      if (varstack)
+      if(varstack)
       {
          size = PStackGetSP(varstack);
          //printf(COMCHAR" varstack size: %ld\n", size);
          if(size)
          {
-            backup = PStackElementP(varstack,0);
+            backup = PStackElementP(varstack, 0);
             assert(backup->type->type_uid == sort);
 
-            norm = TBGetFreqConstTerm(terms, backup->type,
-                                      conj_dist_array, dist_array, is_better);
+            norm = TBGetFreqConstTerm(terms, backup->type, conj_dist_array,
+                                      dist_array, is_better);
             if(!norm)
             {
                norm = backup;
@@ -822,9 +810,9 @@ Subst_p SubstGroundFreqBased(TB_p terms, ClauseSet_p clauses,
                norm = TermFollowRWChain(norm);
             }
             // printf(COMCHAR" varstack[1]: %p\n", norm);
-            for(j=0; j< size; j++)
+            for(j = 0; j < size; j++)
             {
-               current = PStackElementP(varstack,j);
+               current = PStackElementP(varstack, j);
                // printf(COMCHAR" varstack[%ld]: %p\n", j, current);
                if(current)
                {
@@ -874,7 +862,7 @@ void SatClauseSetExportToSolverNonPure(SatSolver_p solver, SatClauseSet_p set)
 long SatClauseSetImportProofState(SatClauseSet_p satset, ProofState_p state,
                                   GroundingStrategy strat, bool norm_const)
 {
-   long    res = 0;
+   long res = 0;
    Subst_p pseudogroundsubst = NULL;
    assert(satset);
    assert(state);
@@ -883,50 +871,38 @@ long SatClauseSetImportProofState(SatClauseSet_p satset, ProofState_p state,
 
    switch(strat)
    {
-   case GMPseudoVar:
+      case GMPseudoVar:
          pseudogroundsubst = SubstPseudoGroundVarBank(state->terms->vars);
          break;
-   case GMFirstConst:
-         pseudogroundsubst = SubstGroundVarBankFirstConst(state->terms,
-                                                          norm_const);
+      case GMFirstConst:
+         pseudogroundsubst =
+            SubstGroundVarBankFirstConst(state->terms, norm_const);
          break;
-   case GMConjMinMinFreq:
-         pseudogroundsubst = SubstGroundFreqBased(state->terms,
-                                                  state->axioms,
-                                                  prefer_conj_min_min_freq,
-                                                  norm_const);
+      case GMConjMinMinFreq:
+         pseudogroundsubst = SubstGroundFreqBased(
+            state->terms, state->axioms, prefer_conj_min_min_freq, norm_const);
          break;
-   case GMConjMaxMinFreq:
-         pseudogroundsubst = SubstGroundFreqBased(state->terms,
-                                                  state->axioms,
-                                                  prefer_conj_max_min_freq,
-                                                  norm_const);
+      case GMConjMaxMinFreq:
+         pseudogroundsubst = SubstGroundFreqBased(
+            state->terms, state->axioms, prefer_conj_max_min_freq, norm_const);
          break;
-   case GMConjMinMaxFreq:
-         pseudogroundsubst = SubstGroundFreqBased(state->terms,
-                                                  state->axioms,
-                                                  prefer_conj_min_max_freq,
-                                                  norm_const);
+      case GMConjMinMaxFreq:
+         pseudogroundsubst = SubstGroundFreqBased(
+            state->terms, state->axioms, prefer_conj_min_max_freq, norm_const);
          break;
-   case GMConjMaxMaxFreq:
-         pseudogroundsubst = SubstGroundFreqBased(state->terms,
-                                                  state->axioms,
-                                                  prefer_conj_max_max_freq,
-                                                  norm_const);
+      case GMConjMaxMaxFreq:
+         pseudogroundsubst = SubstGroundFreqBased(
+            state->terms, state->axioms, prefer_conj_max_max_freq, norm_const);
          break;
-   case GMGlobalMax:
-         pseudogroundsubst = SubstGroundFreqBased(state->terms,
-                                                  state->axioms,
-                                                  prefer_global_max_freq,
-                                                  norm_const);
+      case GMGlobalMax:
+         pseudogroundsubst = SubstGroundFreqBased(
+            state->terms, state->axioms, prefer_global_max_freq, norm_const);
          break;
-   case GMGlobalMin:
-         pseudogroundsubst = SubstGroundFreqBased(state->terms,
-                                                  state->axioms,
-                                                  prefer_global_min_freq,
-                                                  norm_const);
+      case GMGlobalMin:
+         pseudogroundsubst = SubstGroundFreqBased(
+            state->terms, state->axioms, prefer_global_min_freq, norm_const);
          break;
-   default:
+      default:
          assert(false && "Unimplemented grounding strategy");
          break;
    }
@@ -959,24 +935,24 @@ long SatClauseSetImportProofState(SatClauseSet_p satset, ProofState_p state,
 long SatClauseSetMarkPure(SatClauseSet_p satset)
 {
    long pure_clauses = 0;
-   int *litstate;
+   int* litstate;
    PStackPointer i;
    SatClause_p clause;
 
    assert(satset);
 
-   litstate = SizeMalloc(sizeof(int)*(satset->max_lit+1));
-   memset(litstate, 0, sizeof(int)*(satset->max_lit+1));
+   litstate = SizeMalloc(sizeof(int) * (satset->max_lit + 1));
+   memset(litstate, 0, sizeof(int) * (satset->max_lit + 1));
 
 
-   for(i=0; i< PStackGetSP(satset->set); i++)
+   for(i = 0; i < PStackGetSP(satset->set); i++)
    {
       clause = PStackElementP(satset->set, i);
       litstate_add_satclause(litstate, clause);
       clause->has_pure_lit = false;
    }
 
-   for(i=0; i< PStackGetSP(satset->set); i++)
+   for(i = 0; i < PStackGetSP(satset->set); i++)
    {
       clause = PStackElementP(satset->set, i);
       if(litstate_check_pure(litstate, clause))
@@ -985,7 +961,7 @@ long SatClauseSetMarkPure(SatClauseSet_p satset)
          pure_clauses++;
       }
    }
-   SizeFree(litstate, sizeof(int)*(satset->max_lit+1));
+   SizeFree(litstate, sizeof(int) * (satset->max_lit + 1));
 
    return pure_clauses;
 }
@@ -1007,10 +983,10 @@ long SatClauseSetMarkPure(SatClauseSet_p satset)
 long sat_extract_core(SatClauseSet_p satset, PStack_p core, SatSolver_p solver)
 {
    SatClause_p satclause;
-   long        nr_exported = PStackGetSP(satset->exported);
-   long        res = 0;
+   long nr_exported = PStackGetSP(satset->exported);
+   long res = 0;
 
-   for(long id=0; id<nr_exported; id++)
+   for(long id = 0; id < nr_exported; id++)
    {
       if(picosat_coreclause(solver, id))
       {
@@ -1036,13 +1012,13 @@ long sat_extract_core(SatClauseSet_p satset, PStack_p core, SatSolver_p solver)
 //
 /----------------------------------------------------------------------*/
 
-ProverResult SatClauseSetCheckUnsat(SatClauseSet_p satset, Clause_p *empty,
+ProverResult SatClauseSetCheckUnsat(SatClauseSet_p satset, Clause_p* empty,
                                     SatSolver_p solver,
                                     int sat_check_decision_limit)
 {
    ProverResult res;
-   int          solverres;
-   Clause_p     parent;
+   int solverres;
+   Clause_p parent;
 
    SatClauseSetMarkPure(satset);
    SatClauseSetExportToSolverNonPure(solver, satset);
@@ -1053,20 +1029,20 @@ ProverResult SatClauseSetCheckUnsat(SatClauseSet_p satset, Clause_p *empty,
 
    switch(solverres)
    {
-   case PICOSAT_SATISFIABLE:
+      case PICOSAT_SATISFIABLE:
          res = PRSatisfiable;
          break;
-   case PICOSAT_UNSATISFIABLE:
+      case PICOSAT_UNSATISFIABLE:
          res = PRUnsatisfiable;
          break;
-   default:
+      default:
          res = PRGaveUp;
    }
 
    if(res == PRUnsatisfiable)
    {
       PStack_p unsat_core = PStackAlloc();
-      fprintf(GlobalOut, COMCHAR" SatCheck found unsatisfiable ground set\n");
+      fprintf(GlobalOut, COMCHAR " SatCheck found unsatisfiable ground set\n");
       *empty = EmptyClauseAlloc();
       sat_extract_core(satset, unsat_core, solver);
       satset->core_size = PStackGetSP(unsat_core);
@@ -1096,8 +1072,7 @@ ProverResult SatClauseSetCheckUnsat(SatClauseSet_p satset, Clause_p *empty,
 //
 /----------------------------------------------------------------------*/
 
-bool SatClauseSetCheckAndGetCore(SatClauseSet_p satset,
-                                 SatSolver_p solver,
+bool SatClauseSetCheckAndGetCore(SatClauseSet_p satset, SatSolver_p solver,
                                  PStack_p unsat_core)
 {
    SatClauseSetMarkPure(satset);

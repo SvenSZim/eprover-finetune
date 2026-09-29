@@ -42,7 +42,7 @@ typedef struct bw_rw_payload
                        privileged position with restricted rewriting
                        */
    PTree_p rw_full; /* Of clauses in which it appears unrestricted */
-}BWRWPayload;
+} BWRWPayload;
 
 
 /* Payload for overlaps (paramodulation) */
@@ -50,20 +50,20 @@ typedef struct bw_rw_payload
 typedef struct overlap_payload
 {
    PObjTree_p clauses;
-}OverlapPayload;
+} OverlapPayload;
 
 
 /* Cell for recording all occurrences of a subterm.*/
 
 typedef struct subterm_occ_cell
 {
-   Term_p       term;
+   Term_p term;
    union
    {
-      BWRWPayload    occs;
+      BWRWPayload occs;
       OverlapPayload pos;
-   }pl;
-}SubtermOccCell, *SubtermOcc_p;
+   } pl;
+} SubtermOccCell, *SubtermOcc_p;
 
 typedef PObjTree_p SubtermTree_p;
 
@@ -72,28 +72,29 @@ typedef PObjTree_p SubtermTree_p;
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define SubtermOccCellAlloc() (SubtermOccCell*)SizeMalloc(sizeof(SubtermOccCell))
+#define SubtermOccCellAlloc()                                                  \
+   (SubtermOccCell*)SizeMalloc(sizeof(SubtermOccCell))
 #define SubtermOccCellFree(junk) SizeFree(junk, sizeof(SubtermOccCell))
 
 SubtermOcc_p SubtermOccAlloc(Term_p term);
-void         SubtermOccFree(SubtermOcc_p soc);
-void         SubtermPosFree(SubtermOcc_p soc);
+void SubtermOccFree(SubtermOcc_p soc);
+void SubtermPosFree(SubtermOcc_p soc);
 
-int CmpSubtermCells(const void *soc1, const void *soc2);
+int CmpSubtermCells(const void* soc1, const void* soc2);
 
-void         SubtermBWTreeFree(SubtermTree_p root);
-void         SubtermBWTreeFreeWrapper(void *junk);
-void         SubtermOLTreeFree(SubtermTree_p root);
-void         SubtermOLTreeFreeWrapper(void *junk);
+void SubtermBWTreeFree(SubtermTree_p root);
+void SubtermBWTreeFreeWrapper(void* junk);
+void SubtermOLTreeFree(SubtermTree_p root);
+void SubtermOLTreeFreeWrapper(void* junk);
 
-SubtermOcc_p SubtermTreeInsertTerm(SubtermTree_p *root, Term_p term);
-SubtermOcc_p SubtermTreeFindTerm(SubtermTree_p *root, Term_p term);
-void         SubtermTreeDeleteTerm(SubtermTree_p *root, Term_p term);
+SubtermOcc_p SubtermTreeInsertTerm(SubtermTree_p* root, Term_p term);
+SubtermOcc_p SubtermTreeFindTerm(SubtermTree_p* root, Term_p term);
+void SubtermTreeDeleteTerm(SubtermTree_p* root, Term_p term);
 
-bool         SubtermTreeInsertTermOcc(SubtermTree_p *root, Term_p term,
-                                      Clause_p clause, bool restricted);
-bool         SubtermTreeDeleteTermOcc(SubtermTree_p *root, Term_p term,
-                                      Clause_p clause, bool restricted);
+bool SubtermTreeInsertTermOcc(SubtermTree_p* root, Term_p term, Clause_p clause,
+                              bool restricted);
+bool SubtermTreeDeleteTermOcc(SubtermTree_p* root, Term_p term, Clause_p clause,
+                              bool restricted);
 
 void SubtermTreePrint(FILE* out, SubtermTree_p root, Sig_p sig);
 

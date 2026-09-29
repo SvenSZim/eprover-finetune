@@ -35,9 +35,9 @@
 
 typedef struct filevarscell
 {
-   PStack_p  names; /* Of sources, for error messages */
-   StrTree_p vars;  /* Storing (ident, value) pairs */
-}FileVarsCell, *FileVars_p;
+   PStack_p names; /* Of sources, for error messages */
+   StrTree_p vars; /* Storing (ident, value) pairs */
+} FileVarsCell, *FileVars_p;
 
 
 
@@ -47,17 +47,16 @@ typedef struct filevarscell
 
 
 #define FileVarsCellAlloc() (FileVarsCell*)SizeMalloc(sizeof(FileVarsCell))
-#define FileVarsCellFree(junk)        SizeFree(junk, sizeof(FileVarsCell))
+#define FileVarsCellFree(junk) SizeFree(junk, sizeof(FileVarsCell))
 
 FileVars_p FileVarsAlloc(void);
-void       FileVarsFree(FileVars_p handle);
-long       FileVarsParse(Scanner_p in, FileVars_p vars);
-long       FileVarsReadFromFile(char* file, FileVars_p vars);
-bool       FileVarsGetBool(FileVars_p vars, char* name, bool *value);
-bool       FileVarsGetInt(FileVars_p vars, char* name,  long *value);
-bool       FileVarsGetStr(FileVars_p vars, char* name,  char **value);
-bool       FileVarsGetIdentifier(FileVars_p vars, char* name,  char
-             **value);
+void FileVarsFree(FileVars_p handle);
+long FileVarsParse(Scanner_p in, FileVars_p vars);
+long FileVarsReadFromFile(char* file, FileVars_p vars);
+bool FileVarsGetBool(FileVars_p vars, char* name, bool* value);
+bool FileVarsGetInt(FileVars_p vars, char* name, long* value);
+bool FileVarsGetStr(FileVars_p vars, char* name, char** value);
+bool FileVarsGetIdentifier(FileVars_p vars, char* name, char** value);
 
 #endif
 

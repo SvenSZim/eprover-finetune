@@ -35,31 +35,34 @@ Changes
 /*---------------------------------------------------------------------*/
 
 
-#define OUTPRINT(level, message)\
-    if(level<= OutputLevel){fprintf(GlobalOut, message);}
+#define OUTPRINT(level, message)                                               \
+   if(level <= OutputLevel)                                                    \
+   {                                                                           \
+      fprintf(GlobalOut, message);                                             \
+   }
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-extern long  OutputLevel;
+extern long OutputLevel;
 extern FILE* GlobalOut;
-extern int   GlobalOutFD;
+extern int GlobalOutFD;
 
-#define      InitOutput() GlobalOut=stdout;GlobalOutFD=STDOUT_FILENO
-void         OpenGlobalOut(char* outname);
-FILE*        OutOpen(char* name);
-void         OutClose(FILE* file);
-void         PrintDashedStatuses(FILE* out, char *stat1, char *stat2, char *fallback);
+#define InitOutput()                                                           \
+   GlobalOut = stdout;                                                         \
+   GlobalOutFD = STDOUT_FILENO
+void OpenGlobalOut(char* outname);
+FILE* OutOpen(char* name);
+void OutClose(FILE* file);
+void PrintDashedStatuses(FILE* out, char* stat1, char* stat2, char* fallback);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

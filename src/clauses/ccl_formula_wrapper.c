@@ -71,18 +71,19 @@ TFormula_p handle_ho_def(Scanner_p in, TB_p bank)
    Term_p lside_term = TBTermParse(in, bank);
    if(TypeIsBool(lside_term->type))
    {
-      TFormula_p lside = EqnTermsTBTermEncode(bank, lside_term,
-                                              bank->true_term, true, PENormal);
+      TFormula_p lside = EqnTermsTBTermEncode(bank, lside_term, bank->true_term,
+                                              true, PENormal);
       if(!TestInpTok(in, EqualSign))
       {
-         AktTokenError(in, "E currently supports definitions of type <predicate "
-                           " symbol> = <closed LFHOL formula>",
+         AktTokenError(in,
+                       "E currently supports definitions of type <predicate "
+                       " symbol> = <closed LFHOL formula>",
                        false);
       }
 
       AcceptInpTok(in, EqualSign);
-      TFormula_p res =  TFormulaFCodeAlloc(bank, bank->sig->equiv_code,
-                                           lside, TFormulaTSTPParse(in, bank));
+      TFormula_p res = TFormulaFCodeAlloc(bank, bank->sig->equiv_code, lside,
+                                          TFormulaTSTPParse(in, bank));
       if(in_parens)
       {
          AcceptInpTok(in, CloseBracket);
@@ -96,10 +97,10 @@ TFormula_p handle_ho_def(Scanner_p in, TB_p bank)
       {
          positive = false;
       }
-      AcceptInpTok(in, EqualSign|NegEqualSign);
+      AcceptInpTok(in, EqualSign | NegEqualSign);
       Term_p rside = TBTermParse(in, bank);
-      TFormula_p res = EqnTermsTBTermEncode(bank, lside_term, rside,
-                                            positive, PENormal);
+      TFormula_p res =
+         EqnTermsTBTermEncode(bank, lside_term, rside, positive, PENormal);
       if(in_parens)
       {
          AcceptInpTok(in, CloseBracket);
@@ -131,15 +132,15 @@ WFormula_p DefaultWFormulaAlloc(void)
    WFormula_p handle = WFormulaCellAlloc();
 
    handle->properties = CPIgnoreProps;
-   handle->is_clause  = false;
-   handle->ident      = 0;
-   handle->terms      = NULL;
-   handle->info       = NULL;
+   handle->is_clause = false;
+   handle->ident = 0;
+   handle->terms = NULL;
+   handle->info = NULL;
    handle->derivation = NULL;
-   handle->tformula   = NULL;
-   handle->set        = NULL;
-   handle->pred       = NULL;
-   handle->succ       = NULL;
+   handle->tformula = NULL;
+   handle->set = NULL;
+   handle->pred = NULL;
+   handle->succ = NULL;
 
    return handle;
 }
@@ -161,9 +162,9 @@ WFormula_p WTFormulaAlloc(TB_p terms, TFormula_p formula)
 {
    WFormula_p handle = DefaultWFormulaAlloc();
 
-   handle->terms   = terms;
+   handle->terms = terms;
    handle->tformula = formula;
-   handle->ident   = ++global_formula_counter;
+   handle->ident = ++global_formula_counter;
 
    return handle;
 }
@@ -216,10 +217,10 @@ WFormula_p WFormulaFlatCopy(WFormula_p form)
    WFormula_p res = DefaultWFormulaAlloc();
 
    res->properties = form->properties;
-   res->is_clause  = form->is_clause;
-   res->ident      = form->ident;
-   res->terms      = form->terms;
-   res->tformula   = form->tformula;
+   res->is_clause = form->is_clause;
+   res->ident = form->ident;
+   res->terms = form->terms;
+   res->tformula = form->tformula;
 
    return res;
 }
@@ -239,7 +240,7 @@ WFormula_p WFormulaFlatCopy(WFormula_p form)
 
 void WFormulaGCMarkCells(WFormula_p form)
 {
-      TFormulaGCMarkCells(form->terms, form->tformula);
+   TFormulaGCMarkCells(form->terms, form->tformula);
 }
 
 /*-----------------------------------------------------------------------
@@ -280,9 +281,7 @@ char* WFormulaGetId(WFormula_p form)
    char prefix;
    long id;
 
-   if(FormulasKeepInputNames
-      &&form->info
-      &&form->info->name)
+   if(FormulasKeepInputNames && form->info && form->info->name)
    {
       return form->info->name;
    }
@@ -315,22 +314,23 @@ char* WFormulaGetId(WFormula_p form)
 
 WFormula_p WFormulaTPTPParse(Scanner_p in, TB_p terms)
 {
-   TFormula_p         tform;
-   FormulaProperties  type;
-   WFormula_p         handle;
-   ClauseInfo_p       info;
+   TFormula_p tform;
+   FormulaProperties type;
+   WFormula_p handle;
+   ClauseInfo_p info;
 
    info = ClauseInfoAlloc(NULL, DStrView(AktToken(in)->source),
-                          AktToken(in)->line,
-                          AktToken(in)->column);
+                          AktToken(in)->line, AktToken(in)->column);
    AcceptInpId(in, "input_formula");
    SetProblemType(PROBLEM_FO);
    AcceptInpTok(in, OpenBracket);
-   CheckInpTok(in, Name|PosInt);
+   CheckInpTok(in, Name | PosInt);
    info->name = DStrCopy(AktToken(in)->literal);
    NextToken(in);
    AcceptInpTok(in, Comma);
-   CheckInpId(in, "axiom|hypothesis|negated_conjecture|conjecture|question|lemma|unknown");
+   CheckInpId(
+      in,
+      "axiom|hypothesis|negated_conjecture|conjecture|question|lemma|unknown");
    if(TestInpId(in, "conjecture"))
    {
       type = CPTypeConjecture;
@@ -360,7 +360,7 @@ WFormula_p WFormulaTPTPParse(Scanner_p in, TB_p terms)
    AcceptInpTok(in, CloseBracket);
    AcceptInpTok(in, Fullstop);
    FormulaSetType(handle, type);
-   FormulaSetProp(handle, CPInitial|CPInputFormula);
+   FormulaSetProp(handle, CPInitial | CPInputFormula);
    handle->info = info;
 
    return handle;
@@ -380,31 +380,31 @@ WFormula_p WFormulaTPTPParse(Scanner_p in, TB_p terms)
 
 void WFormulaTPTPPrint(FILE* out, WFormula_p form, bool fullterms)
 {
-   char *typename;
+   char* typename;
 
    switch(FormulaQueryType(form))
    {
-   case CPTypeAxiom:
+      case CPTypeAxiom:
          typename = "axiom";
          break;
-   case CPTypeHypothesis:
+      case CPTypeHypothesis:
          typename = "hypothesis";
          break;
-   case CPTypeConjecture:
-   case CPTypeNegConjecture:
+      case CPTypeConjecture:
+      case CPTypeNegConjecture:
          typename = "conjecture";
          break;
-   case CPTypeQuestion:
+      case CPTypeQuestion:
          typename = "question";
          break;
-   default:
+      default:
          typename = "unknown";
          break;
    }
    fprintf(out, "input_formula(%s,%s,", WFormulaGetId(form), typename);
 
-   TFormulaTPTPPrint(out, form->terms, form->tformula,fullterms, false);
-   fprintf(out,").");
+   TFormulaTPTPPrint(out, form->terms, form->tformula, fullterms, false);
+   fprintf(out, ").");
 }
 
 
@@ -422,20 +422,19 @@ void WFormulaTPTPPrint(FILE* out, WFormula_p form, bool fullterms)
 
 WFormula_p WFormulaTSTPParse(Scanner_p in, TB_p terms)
 {
-   TFormula_p        tform;
-   TFormula_p        nonbool;
+   TFormula_p tform;
+   TFormula_p nonbool;
    FormulaProperties type = CPTypeAxiom;
    FormulaProperties initial = CPInputFormula;
-   WFormula_p        handle;
-   ClauseInfo_p      info;
-   bool              is_tcf = false;
-   DStr_p            source_name;
-   long              line, column;
-   StreamType        inptype;
+   WFormula_p handle;
+   ClauseInfo_p info;
+   bool is_tcf = false;
+   DStr_p source_name;
+   long line, column;
+   StreamType inptype;
 
    info = ClauseInfoAlloc(NULL, DStrView(AktToken(in)->source),
-                          AktToken(in)->line,
-                          AktToken(in)->column);
+                          AktToken(in)->line, AktToken(in)->column);
 
    if(TestInpId(in, "tcf"))
    {
@@ -453,7 +452,7 @@ WFormula_p WFormulaTSTPParse(Scanner_p in, TB_p terms)
 
    AcceptInpId(in, "fof|tff|thf|tcf");
    AcceptInpTok(in, OpenBracket);
-   CheckInpTok(in, Name|PosInt|SQString);
+   CheckInpTok(in, Name | PosInt | SQString);
    info->name = DStrCopy(AktToken(in)->literal);
    // printf(COMCHAR" Parsing: %s\n", info->name);
    NextToken(in);
@@ -483,22 +482,22 @@ WFormula_p WFormulaTSTPParse(Scanner_p in, TB_p terms)
    }
    else
    {
-      type = (FormulaProperties)
-         ClauseTypeParse(in,is_tcf?
-                         "axiom|hypothesis|definition|assumption|"
-                         "lemma|theorem|conjecture|question|negated_conjecture|"
-                         "plain|unknown|watchlist":
-                         "axiom|hypothesis|definition|assumption|"
-                         "lemma|theorem|conjecture|question|negated_conjecture|"
-                         "plain|unknown");
+      type = (FormulaProperties)ClauseTypeParse(
+         in,
+         is_tcf ? "axiom|hypothesis|definition|assumption|"
+                  "lemma|theorem|conjecture|question|negated_conjecture|"
+                  "plain|unknown|watchlist"
+                : "axiom|hypothesis|definition|assumption|"
+                  "lemma|theorem|conjecture|question|negated_conjecture|"
+                  "plain|unknown");
       AcceptInpTok(in, Comma);
 
       // printf(COMCHAR" Formula Start!\n");
 
       source_name = DStrGetRef(AktToken(in)->source);
-      inptype     = AktToken(in)->stream_type;
-      line        = AktToken(in)->line;
-      column      = AktToken(in)->column;
+      inptype = AktToken(in)->stream_type;
+      line = AktToken(in)->line;
+      column = AktToken(in)->column;
 
       if(TestInpId(in, "$distinct"))
       {
@@ -531,8 +530,7 @@ WFormula_p WFormulaTSTPParse(Scanner_p in, TB_p terms)
       {
          Error("%s Formula has free variables (check parentheses "
                "and quantifier precedence)",
-               SYNTAX_ERROR,
-               PosRep(inptype, source_name, line, column));
+               SYNTAX_ERROR, PosRep(inptype, source_name, line, column));
       }
       nonbool = TFormulaHasNonBoolSubForm(terms->sig, tform);
       if(nonbool)
@@ -541,14 +539,13 @@ WFormula_p WFormulaTSTPParse(Scanner_p in, TB_p terms)
             formula printers assume a well-typed formula skeleton. */
          if(nonbool->type)
          {
-            fprintf(stderr, COMCHAR" Subformula has type ");
+            fprintf(stderr, COMCHAR " Subformula has type ");
             TypePrintTSTP(stderr, terms->sig->type_bank, nonbool->type);
             fprintf(stderr, ", but a formula must have type $o\n");
          }
          Error("%s Formula is not Boolean (check parentheses "
                "and quantifier precedence)",
-               SYNTAX_ERROR,
-               PosRep(inptype, source_name, line, column));
+               SYNTAX_ERROR, PosRep(inptype, source_name, line, column));
       }
       DStrReleaseRef(source_name);
 
@@ -569,7 +566,7 @@ WFormula_p WFormulaTSTPParse(Scanner_p in, TB_p terms)
    AcceptInpTok(in, CloseBracket);
    AcceptInpTok(in, Fullstop);
    FormulaSetType(handle, type);
-   FormulaSetProp(handle, initial|CPInitial);
+   FormulaSetProp(handle, initial | CPInitial);
    handle->info = info;
    //WFormulaTSTPPrintFlex(stdout, handle, true, true, false);
    //printf("\n");
@@ -595,7 +592,7 @@ WFormula_p WFormulaTSTPParse(Scanner_p in, TB_p terms)
 void WFormulaTSTPPrintFlex(FILE* out, WFormula_p form, bool fullterms,
                            bool complete, bool as_formula)
 {
-   char *typename = "plain", *formula_kind = "fof";
+   char* typename = "plain", *formula_kind = "fof";
    bool is_untyped = TFormulaIsUntyped(form->tformula);
    //SigPrint(stdout, form->terms->sig);
 
@@ -621,32 +618,32 @@ void WFormulaTSTPPrintFlex(FILE* out, WFormula_p form, bool fullterms,
 
    switch(FormulaQueryType(form))
    {
-   case CPTypeAxiom:
+      case CPTypeAxiom:
          if(FormulaQueryProp(form, CPInputFormula))
          {
             typename = "axiom";
          }
          break;
-   case CPTypeHypothesis:
+      case CPTypeHypothesis:
          typename = "hypothesis";
          break;
-   case CPTypeConjecture:
+      case CPTypeConjecture:
          typename = "conjecture";
          break;
-   case CPTypeDefinition:
+      case CPTypeDefinition:
          typename = "definition";
          break;
-   case CPTypeQuestion:
+      case CPTypeQuestion:
          typename = "question";
          break;
-   case CPTypeLemma:
+      case CPTypeLemma:
          typename = "lemma";
          break;
-   case CPTypeNegConjecture:
+      case CPTypeNegConjecture:
          typename = "negated_conjecture";
          break;
-   default:
-    break;
+      default:
+         break;
    }
    fprintf(out, "%s(%s, %s", formula_kind, WFormulaGetId(form), typename);
    fprintf(out, ", ");
@@ -655,7 +652,8 @@ void WFormulaTSTPPrintFlex(FILE* out, WFormula_p form, bool fullterms,
    {
       if(as_formula)
       {
-         TFormula_p closure =  TFormulaClosure(form->terms, form->tformula, true);
+         TFormula_p closure =
+            TFormulaClosure(form->terms, form->tformula, true);
          TFormulaTPTPPrint(out, form->terms, closure, fullterms, false);
       }
       else
@@ -667,7 +665,7 @@ void WFormulaTSTPPrintFlex(FILE* out, WFormula_p form, bool fullterms,
    }
    else
    {
-      TFormulaTPTPPrint(out, form->terms, form->tformula,fullterms, false);
+      TFormulaTPTPPrint(out, form->terms, form->tformula, fullterms, false);
       //fprintf(out, "<dummy %p in %p>", form->tformula, form->terms);
    }
    if(complete)
@@ -691,33 +689,33 @@ void WFormulaTSTPPrintFlex(FILE* out, WFormula_p form, bool fullterms,
 
 void WFormulaAppEncode(FILE* out, WFormula_p form)
 {
-   char *typename = "plain", *formula_kind = "tff";
+   char* typename = "plain", *formula_kind = "tff";
 
    switch(FormulaQueryType(form))
    {
-   case CPTypeAxiom:
+      case CPTypeAxiom:
          if(FormulaQueryProp(form, CPInputFormula))
          {
             typename = "axiom";
          }
          break;
-   case CPTypeHypothesis:
+      case CPTypeHypothesis:
          typename = "hypothesis";
          break;
-   case CPTypeConjecture:
+      case CPTypeConjecture:
          typename = "conjecture";
          break;
-   case CPTypeQuestion:
+      case CPTypeQuestion:
          typename = "question";
          break;
-   case CPTypeLemma:
+      case CPTypeLemma:
          typename = "lemma";
          break;
-   case CPTypeNegConjecture:
+      case CPTypeNegConjecture:
          typename = "negated_conjecture";
          break;
-   default:
-    break;
+      default:
+         break;
    }
    fprintf(out, "%s(%s, %s", formula_kind, WFormulaGetId(form), typename);
    fprintf(out, ", ");
@@ -751,16 +749,16 @@ WFormula_p WFormulaParse(Scanner_p in, TB_p terms)
    }
    switch(ScannerGetFormat(in))
    {
-   case LOPFormat:
+      case LOPFormat:
          Error("LOP currently does not support full FOF!", OTHER_ERROR);
          break;
-   case TPTPFormat:
+      case TPTPFormat:
          wform = WFormulaTPTPParse(in, terms);
          break;
-   case TSTPFormat:
+      case TSTPFormat:
          wform = WFormulaTSTPParse(in, terms);
          break;
-   default:
+      default:
          assert(false);
          break;
    }
@@ -784,14 +782,14 @@ WFormula_p WFormulaParse(Scanner_p in, TB_p terms)
 
 WFormula_p WFormClauseParse(Scanner_p in, TB_p terms)
 {
-   WFormula_p wform  = NULL;
+   WFormula_p wform = NULL;
    TFormula_p form;
-   Clause_p   handle = ClauseParse(in, terms);
+   Clause_p handle = ClauseParse(in, terms);
 
    form = TFormulaClauseEncode(terms, handle);
 
    wform = WTFormulaAlloc(terms, form);
-   wform->is_clause  = true;
+   wform->is_clause = true;
    wform->properties = (FormulaProperties)handle->properties;
    wform->info = handle->info;
    handle->info = NULL;
@@ -818,15 +816,13 @@ WFormula_p WFormClauseParse(Scanner_p in, TB_p terms)
 
 Clause_p WFormClauseToClause(WFormula_p form)
 {
-   Clause_p res  = TFormulaCollectClause(form->tformula, form->terms, NULL);
+   Clause_p res = TFormulaCollectClause(form->tformula, form->terms, NULL);
 
    res->properties = form->properties;
    if(form->info)
    {
-      res->info = ClauseInfoAlloc(form->info->name,
-                                  form->info->source,
-                                  form->info->line,
-                                  form->info->column);
+      res->info = ClauseInfoAlloc(form->info->name, form->info->source,
+                                  form->info->line, form->info->column);
    }
    return res;
 }
@@ -856,16 +852,16 @@ void WFormulaPrint(FILE* out, WFormula_p form, bool fullterms)
    {
       switch(OutputFormat)
       {
-      case LOPFormat:
+         case LOPFormat:
             Warning("Currently no LOP FOF format, using TPTP");
-      case TPTPFormat:
+         case TPTPFormat:
             WFormulaTPTPPrint(out, form, fullterms);
             break;
-      case TSTPFormat:
+         case TSTPFormat:
             WFormulaTSTPPrint(out, form, fullterms, true);
             break;
-      default:
-            assert(false&& "Unknown output format");
+         default:
+            assert(false && "Unknown output format");
             break;
       }
    }
@@ -904,9 +900,9 @@ long WFormulaReturnFCodes(WFormula_p form, PStack_p f_codes)
    TBTermCollectSubterms(form->tformula, stack);
 
    start = PStackGetSP(f_codes);
-   for(i=0; i<PStackGetSP(stack);i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
-      t = PStackElementP(stack,i);
+      t = PStackElementP(stack, i);
       TermCellDelProp(t, TPOpFlag);
       if(!TermIsAnyVar(t) && !TermIsPhonyApp(t))
       {
@@ -921,9 +917,9 @@ long WFormulaReturnFCodes(WFormula_p form, PStack_p f_codes)
    PStackFree(stack);
 
    /* Reset FPOpFlags */
-   for(i=start; i<PStackGetSP(f_codes);i++)
+   for(i = start; i < PStackGetSP(f_codes); i++)
    {
-      f =  PStackElementInt(f_codes, i);
+      f = PStackElementInt(f_codes, i);
       SigDelFuncProp(sig, f, FPOpFlag);
    }
    return res;
@@ -1004,13 +1000,13 @@ FunCode WFormulaGetLambdaDefinedSym(WFormula_p form)
    {
       Term_p tform = form->tformula;
       Sig_p sig = form->terms->sig;
-      while (tform->f_code == sig->qall_code && tform->arity == 2)
+      while(tform->f_code == sig->qall_code && tform->arity == 2)
       {
          tform = tform->args[1];
       }
 
       Term_p lhs = NULL;
-      if (tform->f_code == sig->eqn_code)
+      if(tform->f_code == sig->eqn_code)
       {
          lhs = tform->args[0];
       }

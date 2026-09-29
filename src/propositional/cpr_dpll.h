@@ -36,14 +36,14 @@ Changes
 typedef struct dpll_state_cell
 {
    DPLLFormula_p form;
-   PStack_p      assignment; /* Current assignment, atom code
+   PStack_p assignment;   /* Current assignment, atom code
                                 represents positive assignment, -atom
                                 code represents negative assignment */
-   PStack_p      deactivated; /* Clauses that have been deactivated,
+   PStack_p deactivated;  /* Clauses that have been deactivated,
              each initiated by a NULL pointer */
-   PStack_p      unproc_units; /* Known unprocessed unit clauses */
-   AtomSet_p     open_atoms;  /* List of unassigned variables */
-}DPLLStateCell, *DPLLState_p;
+   PStack_p unproc_units; /* Known unprocessed unit clauses */
+   AtomSet_p open_atoms;  /* List of unassigned variables */
+} DPLLStateCell, *DPLLState_p;
 
 
 
@@ -52,21 +52,19 @@ typedef struct dpll_state_cell
 /*---------------------------------------------------------------------*/
 
 #define DPLLStateCellAlloc() (DPLLStateCell*)SizeMalloc(sizeof(DPLLStateCell))
-#define DPLLStateCellFree(junk)            SizeFree(junk, sizeof(DPLLStateCell))
+#define DPLLStateCellFree(junk) SizeFree(junk, sizeof(DPLLStateCell))
 
 DPLLState_p DPLLStateAlloc(DPLLFormula_p form);
-void        DPLLStateFree(DPLLState_p junk);
+void DPLLStateFree(DPLLState_p junk);
 
-bool      DPLLAssignVar(DPLLState_p state, PLiteralCode assignment);
-void      DPLLRetractLastAss(DPLLState_p state);
+bool DPLLAssignVar(DPLLState_p state, PLiteralCode assignment);
+void DPLLRetractLastAss(DPLLState_p state);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

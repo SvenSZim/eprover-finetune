@@ -55,17 +55,17 @@ typedef char* StreamType;
 typedef struct streamcell
 {
    struct streamcell* next;
-   DStr_p             source;
-   StreamType         stream_type; /* Only constant strings allowed
+   DStr_p source;
+   StreamType stream_type; /* Only constant strings allowed
                                       here! */
-   long               string_pos;
-   FILE*              file;
-   bool               eof_seen;
-   long               line;
-   long               column;
-   int                buffer[MAXLOOKAHEAD];
-   int                current;
-}StreamCell, *Stream_p, **Inpstack_p;
+   long string_pos;
+   FILE* file;
+   bool eof_seen;
+   long line;
+   long column;
+   int buffer[MAXLOOKAHEAD];
+   int current;
+} StreamCell, *Stream_p, **Inpstack_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -79,25 +79,25 @@ extern const StreamType StreamTypeOptionString;
 
 
 #define StreamCellAlloc() (StreamCell*)SizeMalloc(sizeof(StreamCell))
-#define StreamCellFree(junk)         SizeFree(junk, sizeof(StreamCell))
+#define StreamCellFree(junk) SizeFree(junk, sizeof(StreamCell))
 
 Stream_p CreateStream(StreamType type, char* source, bool fail);
-void     DestroyStream(Stream_p stream);
+void DestroyStream(Stream_p stream);
 
-#define  STREAMREALPOS(pos) ((pos) % MAXLOOKAHEAD)
+#define STREAMREALPOS(pos) ((pos) % MAXLOOKAHEAD)
 
-#define  StreamLookChar(stream, look)\
-         (assert((look)<MAXLOOKAHEAD),\
-     (stream)->buffer[STREAMREALPOS((stream)->current+(look))])
-#define  StreamCurrChar(stream) ((stream)->buffer[(stream)->current])
-#define  StreamCurrLine(stream)   ((stream)->line)
-#define  StreamCurrColumn(stream) ((stream)->column)
+#define StreamLookChar(stream, look)                                           \
+   (assert((look) < MAXLOOKAHEAD),                                             \
+    (stream)->buffer[STREAMREALPOS((stream)->current + (look))])
+#define StreamCurrChar(stream) ((stream)->buffer[(stream)->current])
+#define StreamCurrLine(stream) ((stream)->line)
+#define StreamCurrColumn(stream) ((stream)->column)
 
-int      StreamNextChar(Stream_p stream);
+int StreamNextChar(Stream_p stream);
 
-Stream_p OpenStackedInput(Inpstack_p stack, StreamType type,
-           char* source, bool fail);
-void     CloseStackedInput(Inpstack_p stack);
+Stream_p OpenStackedInput(Inpstack_p stack, StreamType type, char* source,
+                          bool fail);
+void CloseStackedInput(Inpstack_p stack);
 
 
 #endif

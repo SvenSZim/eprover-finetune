@@ -71,37 +71,32 @@ static PStack_p lev_compute_term_code(Term_p term)
 
    code = PStackAlloc();
    stack = PStackAlloc();
-   
-   TermLRTraverseInit(stack,term);
-   while ((sub_term = TermLRTraverseNext(stack))) {
-      PStackPushInt(code,sub_term->f_code);
+
+   TermLRTraverseInit(stack, term);
+   while((sub_term = TermLRTraverseNext(stack)))
+   {
+      PStackPushInt(code, sub_term->f_code);
    }
    PStackFree(stack);
 
    return code;
 }
 
-static void lev_insert_term(
-   PStack_p codes,
-   Term_p term, 
-   VarBank_p vars, 
-   VarNormStyle var_norm)
+static void lev_insert_term(PStack_p codes, Term_p term, VarBank_p vars,
+                            VarNormStyle var_norm)
 {
    Term_p norm;
    PStack_p code;
-  
-   norm = TermCopyNormalizeVars(vars,term,var_norm);
+
+   norm = TermCopyNormalizeVars(vars, term, var_norm);
    code = lev_compute_term_code(norm);
-   PStackPushP(codes,code);
+   PStackPushP(codes, code);
 
    TermFree(norm);
 }
 
-static void lev_insert_subterms(
-   PStack_p codes,
-   Term_p term, 
-   VarBank_p vars, 
-   VarNormStyle var_norm)
+static void lev_insert_subterms(PStack_p codes, Term_p term, VarBank_p vars,
+                                VarNormStyle var_norm)
 {
    int i;
    PStack_p stack;
@@ -110,15 +105,16 @@ static void lev_insert_subterms(
    stack = PStackAlloc();
 
    PStackPushP(stack, term);
-   while (!PStackEmpty(stack))
+   while(!PStackEmpty(stack))
    {
       subterm = PStackPopP(stack);
-      if(TermIsFreeVar(subterm)) {
+      if(TermIsFreeVar(subterm))
+      {
          continue;
       }
-      lev_insert_term(codes,subterm,vars,var_norm);
+      lev_insert_term(codes, subterm, vars, var_norm);
 
-      for(i=0; i<subterm->arity; i++)
+      for(i = 0; i < subterm->arity; i++)
       {
          PStackPushP(stack, subterm->args[i]);
       }
@@ -127,39 +123,34 @@ static void lev_insert_subterms(
    PStackFree(stack);
 }
 
-static void lev_insert_topgens(
-   PStack_p codes, 
-   Term_p term, 
-   VarBank_p vars,
-   Sig_p sig,
-   VarNormStyle var_norm)
+static void lev_insert_topgens(PStack_p codes, Term_p term, VarBank_p vars,
+                               Sig_p sig, VarNormStyle var_norm)
 {
    int i;
    PStack_p topgens;
    Term_p topgen;
 
-   topgens = ComputeTopGeneralizations(term,vars,sig);
-   for (i=0; i<topgens->current; i++) {
+   topgens = ComputeTopGeneralizations(term, vars, sig);
+   for(i = 0; i < topgens->current; i++)
+   {
       topgen = topgens->stack[i].p_val;
-      lev_insert_term(codes,topgen,vars,var_norm);
+      lev_insert_term(codes, topgen, vars, var_norm);
    }
    FreeGeneralizations(topgens);
 }
 
-static void lev_insert_subgens(
-   PStack_p codes, 
-   Term_p term, 
-   VarBank_p vars, 
-   VarNormStyle var_norm)
+static void lev_insert_subgens(PStack_p codes, Term_p term, VarBank_p vars,
+                               VarNormStyle var_norm)
 {
    int i;
    PStack_p subgens;
    Term_p genterm;
 
-   subgens = ComputeSubtermsGeneralizations(term,vars);
-   for (i=0; i<subgens->current; i++) {
+   subgens = ComputeSubtermsGeneralizations(term, vars);
+   for(i = 0; i < subgens->current; i++)
+   {
       genterm = subgens->stack[i].p_val;
-      lev_insert_term(codes,genterm,vars,var_norm);
+      lev_insert_term(codes, genterm, vars, var_norm);
    }
    FreeGeneralizations(subgens);
 }
@@ -170,70 +161,68 @@ static void lev_init(LevWeightParam_p data)
    Clause_p anchor;
    Eqn_p lit;
 
-   if (data->codes) 
+   if(data->codes)
    {
       return;
    }
 
    data->codes = PStackAlloc();
    data->vars = VarBankAlloc(data->proofstate->signature->type_bank);
-   
+
    // for each axiom ...
    anchor = data->proofstate->axioms->anchor;
-   for (clause=anchor->succ; clause!=anchor; clause=clause->succ)
+   for(clause = anchor->succ; clause != anchor; clause = clause->succ)
    {
-      if(ClauseQueryTPTPType(clause) != CPTypeNegConjecture) 
+      if(ClauseQueryTPTPType(clause) != CPTypeNegConjecture)
       {
          continue;
       }
-      
+
       // for each literal of a negated conjecture ...
-      for (lit=clause->literals; lit; lit=lit->next)
+      for(lit = clause->literals; lit; lit = lit->next)
       {
-         switch (data->rel_terms) 
+         switch(data->rel_terms)
          {
-         case RTSConjectureTerms:
-            lev_insert_term(
-               data->codes,lit->lterm,data->vars,data->var_norm);
-            lev_insert_term(
-               data->codes,lit->rterm,data->vars,data->var_norm);
-            break;
-         case RTSConjectureSubterms:
-            lev_insert_subterms(
-               data->codes,lit->lterm,data->vars,data->var_norm);
-            lev_insert_subterms(
-               data->codes,lit->rterm,data->vars,data->var_norm);
-            break;
-         case RTSConjectureSubtermsTopGens:
-            lev_insert_subterms(
-               data->codes,lit->lterm,data->vars,data->var_norm);
-            lev_insert_subterms(
-               data->codes,lit->rterm,data->vars,data->var_norm);
-            lev_insert_topgens(data->codes,lit->lterm,data->vars,
-               data->ocb->sig,data->var_norm);
-            lev_insert_topgens(data->codes,lit->rterm,data->vars,
-               data->ocb->sig,data->var_norm);
-            break;
-         case RTSConjectureSubtermsAllGens:
-            lev_insert_subgens(
-               data->codes,lit->lterm,data->vars,data->var_norm);
-            lev_insert_subgens(
-               data->codes,lit->rterm,data->vars,data->var_norm);
-            break;
-         default:
-            Error("ConjectureLevDistanceWeight parameters usage error (unsupported RelatedTermSet %d)", USAGE_ERROR, data->rel_terms);
-            break;
+            case RTSConjectureTerms:
+               lev_insert_term(data->codes, lit->lterm, data->vars,
+                               data->var_norm);
+               lev_insert_term(data->codes, lit->rterm, data->vars,
+                               data->var_norm);
+               break;
+            case RTSConjectureSubterms:
+               lev_insert_subterms(data->codes, lit->lterm, data->vars,
+                                   data->var_norm);
+               lev_insert_subterms(data->codes, lit->rterm, data->vars,
+                                   data->var_norm);
+               break;
+            case RTSConjectureSubtermsTopGens:
+               lev_insert_subterms(data->codes, lit->lterm, data->vars,
+                                   data->var_norm);
+               lev_insert_subterms(data->codes, lit->rterm, data->vars,
+                                   data->var_norm);
+               lev_insert_topgens(data->codes, lit->lterm, data->vars,
+                                  data->ocb->sig, data->var_norm);
+               lev_insert_topgens(data->codes, lit->rterm, data->vars,
+                                  data->ocb->sig, data->var_norm);
+               break;
+            case RTSConjectureSubtermsAllGens:
+               lev_insert_subgens(data->codes, lit->lterm, data->vars,
+                                  data->var_norm);
+               lev_insert_subgens(data->codes, lit->rterm, data->vars,
+                                  data->var_norm);
+               break;
+            default:
+               Error(
+                  "ConjectureLevDistanceWeight parameters usage error (unsupported RelatedTermSet %d)",
+                  USAGE_ERROR, data->rel_terms);
+               break;
          }
       }
    }
 }
 
-static double lev_codes_distance(
-   PStack_p code1,
-   PStack_p code2,
-   int ins_cost, 
-   int del_cost, 
-   int ch_cost)
+static double lev_codes_distance(PStack_p code1, PStack_p code2, int ins_cost,
+                                 int del_cost, int ch_cost)
 {
    unsigned int x, y, lastdiag, olddiag;
    unsigned int del, ins, ch;
@@ -241,27 +230,28 @@ static double lev_codes_distance(
    FunCode* s2 = (FunCode*)code2->stack;
    unsigned int s1len = code1->current;
    unsigned int s2len = code2->current;
-   unsigned int column[s1len+1];
+   unsigned int column[s1len + 1];
 
-   for (y=0; y<=s1len; y++) 
+   for(y = 0; y <= s1len; y++)
    {
-      column[y] = y*del_cost;
+      column[y] = y * del_cost;
    }
-   for (x=1;x<=s2len; x++) 
+   for(x = 1; x <= s2len; x++)
    {
-      column[0] = x*ins_cost;;
-      for (y=1,lastdiag=(x-1)*ins_cost; y<=s1len; y++) 
+      column[0] = x * ins_cost;
+      ;
+      for(y = 1, lastdiag = (x - 1) * ins_cost; y <= s1len; y++)
       {
          olddiag = column[y];
-         del = column[y]+del_cost;
-         ins = column[y-1]+ins_cost;
-         ch = lastdiag+(s1[y-1]==s2[x-1] ? 0 : ch_cost);
-         column[y] = MIN3(del,ins,ch);
+         del = column[y] + del_cost;
+         ins = column[y - 1] + ins_cost;
+         ch = lastdiag + (s1[y - 1] == s2[x - 1] ? 0 : ch_cost);
+         column[y] = MIN3(del, ins, ch);
          lastdiag = olddiag;
       }
    }
 
-   return(column[s1len]);
+   return (column[s1len]);
 }
 
 static double lev_term_weight(Term_p term, LevWeightParam_p data)
@@ -272,15 +262,16 @@ static double lev_term_weight(Term_p term, LevWeightParam_p data)
    PStack_p conj_code;
    Term_p norm;
 
-   norm = TermCopyNormalizeVars(data->vars,term,data->var_norm);
+   norm = TermCopyNormalizeVars(data->vars, term, data->var_norm);
    norm_code = lev_compute_term_code(norm);
 
    min = DBL_MAX;
-   for (i=0; i<data->codes->current; i++) 
+   for(i = 0; i < data->codes->current; i++)
    {
       conj_code = data->codes->stack[i].p_val;
-      min = MIN(min,lev_codes_distance(norm_code,conj_code,
-         data->ins_cost,data->del_cost,data->ch_cost));
+      min = MIN(min,
+                lev_codes_distance(norm_code, conj_code, data->ins_cost,
+                                   data->del_cost, data->ch_cost));
    }
 
    PStackFree(norm_code);
@@ -308,10 +299,10 @@ static double lev_term_weight(Term_p term, LevWeightParam_p data)
 LevWeightParam_p LevWeightParamAlloc(void)
 {
    LevWeightParam_p res = LevWeightParamCellAlloc();
-   
+
    res->codes = NULL;
-   res->vars  = NULL;
-   
+   res->vars = NULL;
+
    return res;
 }
 
@@ -331,9 +322,9 @@ void LevWeightParamFree(LevWeightParam_p junk)
 {
    PStack_p code;
 
-   if (junk->codes) 
+   if(junk->codes)
    {
-      while (!PStackEmpty(junk->codes)) 
+      while(!PStackEmpty(junk->codes))
       {
          code = PStackPopP(junk->codes);
          PStackFree(code);
@@ -341,14 +332,14 @@ void LevWeightParamFree(LevWeightParam_p junk)
       PStackFree(junk->codes);
       junk->codes = NULL;
    }
-   if (junk->vars)
+   if(junk->vars)
    {
       VarBankFree(junk->vars);
       junk->vars = NULL;
    }
    LevWeightParamCellFree(junk);
 }
- 
+
 /*-----------------------------------------------------------------------
 //
 // Function: ConjectureLevDistanceWeightParse()
@@ -361,11 +352,9 @@ void LevWeightParamFree(LevWeightParam_p junk)
 //
 /----------------------------------------------------------------------*/
 
-WFCB_p ConjectureLevDistanceWeightParse(
-   Scanner_p in,  
-   OCB_p ocb, 
-   ProofState_p state)
-{   
+WFCB_p ConjectureLevDistanceWeightParse(Scanner_p in, OCB_p ocb,
+                                        ProofState_p state)
+{
    ClausePrioFun prio_fun;
    double pos_multiplier, max_term_multiplier, max_literal_multiplier;
    TermWeightExtenstionStyle ext_style;
@@ -397,20 +386,10 @@ WFCB_p ConjectureLevDistanceWeightParse(
    AcceptInpTok(in, Comma);
    pos_multiplier = ParseFloat(in);
    AcceptInpTok(in, CloseBracket);
-   
+
    return ConjectureLevDistanceWeightInit(
-      prio_fun, 
-      ocb,
-      state,
-      var_norm,
-      rel_terms,
-      ins_cost,
-      del_cost,
-      ch_cost,
-      ext_style,
-      max_term_multiplier,
-      max_literal_multiplier,
-      pos_multiplier);
+      prio_fun, ocb, state, var_norm, rel_terms, ins_cost, del_cost, ch_cost,
+      ext_style, max_term_multiplier, max_literal_multiplier, pos_multiplier);
 }
 
 /*-----------------------------------------------------------------------
@@ -426,42 +405,27 @@ WFCB_p ConjectureLevDistanceWeightParse(
 /----------------------------------------------------------------------*/
 
 WFCB_p ConjectureLevDistanceWeightInit(
-   ClausePrioFun prio_fun, 
-   OCB_p ocb,
-   ProofState_p proofstate,
-   VarNormStyle var_norm,
-   RelatedTermSet rel_terms,
-   int ins_cost,
-   int del_cost, 
-   int ch_cost,
-   TermWeightExtenstionStyle ext_style,
-   double max_term_multiplier,
-   double max_literal_multiplier,
-   double pos_multiplier)
+   ClausePrioFun prio_fun, OCB_p ocb, ProofState_p proofstate,
+   VarNormStyle var_norm, RelatedTermSet rel_terms, int ins_cost, int del_cost,
+   int ch_cost, TermWeightExtenstionStyle ext_style, double max_term_multiplier,
+   double max_literal_multiplier, double pos_multiplier)
 {
    LevWeightParam_p data = LevWeightParamAlloc();
 
-   data->init_fun   = lev_init;
-   data->ocb        = ocb;
+   data->init_fun = lev_init;
+   data->ocb = ocb;
    data->proofstate = proofstate;
-   data->var_norm   = var_norm;
-   data->rel_terms  = rel_terms;
-   data->ins_cost   = ins_cost;
-   data->del_cost   = del_cost;
-   data->ch_cost    = ch_cost;
+   data->var_norm = var_norm;
+   data->rel_terms = rel_terms;
+   data->ins_cost = ins_cost;
+   data->del_cost = del_cost;
+   data->ch_cost = ch_cost;
    data->twe = TermWeightExtensionAlloc(
-      max_term_multiplier,
-      max_literal_multiplier,
-      pos_multiplier,
-      ext_style,
-      (TermWeightFun)lev_term_weight,
-      data);
-   
-   return WFCBAlloc(
-      ConjectureLevDistanceWeightCompute, 
-      prio_fun,
-      ConjectureLevDistanceWeightExit, 
-      data);
+      max_term_multiplier, max_literal_multiplier, pos_multiplier, ext_style,
+      (TermWeightFun)lev_term_weight, data);
+
+   return WFCBAlloc(ConjectureLevDistanceWeightCompute, prio_fun,
+                    ConjectureLevDistanceWeightExit, data);
 }
 
 /*-----------------------------------------------------------------------
@@ -505,7 +469,7 @@ double ConjectureLevDistanceWeightCompute(void* data, Clause_p clause)
 void ConjectureLevDistanceWeightExit(void* data)
 {
    LevWeightParam_p junk = data;
-   
+
    TermWeightExtensionFree(junk->twe);
    LevWeightParamFree(junk);
 }

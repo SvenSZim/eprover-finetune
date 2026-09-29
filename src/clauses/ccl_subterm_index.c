@@ -54,31 +54,30 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-static long term_collect_idx_subterms(Term_p term, PTree_p *rest,
-                                      PTree_p *full, bool restricted,
-                                      bool lambda_demod)
+static long term_collect_idx_subterms(Term_p term, PTree_p* rest, PTree_p* full,
+                                      bool restricted, bool lambda_demod)
 {
    long res = 0;
    int i;
-   PTree_p *tree;
+   PTree_p* tree;
 
    if(TermIsFreeVar(term))
    {
       return 0;
    }
 
-   tree = restricted?rest:full;
+   tree = restricted ? rest : full;
 
-   if((!lambda_demod || TermIsDBClosed(term)) && 
-       PTreeStore(tree, term))
+   if((!lambda_demod || TermIsDBClosed(term)) && PTreeStore(tree, term))
    {
       res++;
    }
    if(!lambda_demod && !TermIsLambda(term))
    {
-      for(i=0; i<term->arity; i++)
+      for(i = 0; i < term->arity; i++)
       {
-         res += term_collect_idx_subterms(term->args[i], rest, full, false, true);
+         res +=
+            term_collect_idx_subterms(term->args[i], rest, full, false, true);
       }
    }
    return res;
@@ -99,14 +98,17 @@ static long term_collect_idx_subterms(Term_p term, PTree_p *rest,
 //
 /----------------------------------------------------------------------*/
 
-static long eqn_collect_idx_subterms(Eqn_p eqn, PTree_p *rest, 
-                                     PTree_p *full, bool lambda_demod)
+static long eqn_collect_idx_subterms(Eqn_p eqn, PTree_p* rest, PTree_p* full,
+                                     bool lambda_demod)
 {
    long res = 0;
-   bool restricted_rw = EqnIsMaximal(eqn) && EqnIsPositive(eqn) && EqnIsOriented(eqn);
+   bool restricted_rw =
+      EqnIsMaximal(eqn) && EqnIsPositive(eqn) && EqnIsOriented(eqn);
 
-   res += term_collect_idx_subterms(eqn->lterm, rest, full, restricted_rw, lambda_demod);
-   res += term_collect_idx_subterms(eqn->rterm, rest, full, false, lambda_demod);
+   res += term_collect_idx_subterms(eqn->lterm, rest, full, restricted_rw,
+                                    lambda_demod);
+   res +=
+      term_collect_idx_subterms(eqn->rterm, rest, full, false, lambda_demod);
 
    return res;
 }
@@ -125,12 +127,11 @@ static long eqn_collect_idx_subterms(Eqn_p eqn, PTree_p *rest,
 //
 /----------------------------------------------------------------------*/
 
-static void subterm_index_insert_set(SubtermIndex_p index,
-                                     Clause_p clause,
+static void subterm_index_insert_set(SubtermIndex_p index, Clause_p clause,
                                      PTree_p terms, bool restricted)
 {
    PStack_p stack = PTreeTraverseInit(terms);
-   PTree_p   cell;
+   PTree_p cell;
 
    while((cell = PTreeTraverseNext(stack)))
    {
@@ -153,12 +154,11 @@ static void subterm_index_insert_set(SubtermIndex_p index,
 //
 /----------------------------------------------------------------------*/
 
-static void subterm_index_delete_set(SubtermIndex_p index,
-                                     Clause_p clause,
+static void subterm_index_delete_set(SubtermIndex_p index, Clause_p clause,
                                      PTree_p terms, bool restricted)
 {
    PStack_p stack = PTreeTraverseInit(terms);
-   PTree_p   cell;
+   PTree_p cell;
 
    while((cell = PTreeTraverseNext(stack)))
    {
@@ -187,16 +187,17 @@ static void subterm_index_delete_set(SubtermIndex_p index,
 // Side Effects    : Memory operatios
 //
 /----------------------------------------------------------------------*/
-bool SubtermIndexInsertOcc(SubtermIndex_p index, Clause_p clause,
-                           Term_p term, bool restricted)
+bool SubtermIndexInsertOcc(SubtermIndex_p index, Clause_p clause, Term_p term,
+                           bool restricted)
 {
-   FPTree_p     fp_node;
+   FPTree_p fp_node;
    SubtermOcc_p subterm_node;
-   PTree_p      *root;
+   PTree_p* root;
 
-   fp_node      = FPIndexInsert(index, term);
+   fp_node = FPIndexInsert(index, term);
    subterm_node = SubtermTreeInsertTerm((void*)&(fp_node->payload), term);
-   root         = restricted?&(subterm_node->pl.occs.rw_rest):&(subterm_node->pl.occs.rw_full);
+   root = restricted ? &(subterm_node->pl.occs.rw_rest)
+                     : &(subterm_node->pl.occs.rw_full);
 
    return PTreeStore(root, clause);
 }
@@ -215,19 +216,19 @@ bool SubtermIndexInsertOcc(SubtermIndex_p index, Clause_p clause,
 //
 /----------------------------------------------------------------------*/
 
-bool SubtermIndexDeleteOcc(SubtermIndex_p index, Clause_p clause,
-                           Term_p term, bool restricted)
+bool SubtermIndexDeleteOcc(SubtermIndex_p index, Clause_p clause, Term_p term,
+                           bool restricted)
 {
-   FPTree_p     fp_node;
-   bool         res;
+   FPTree_p fp_node;
+   bool res;
 
-   fp_node      = FPIndexFind(index, term);
+   fp_node = FPIndexFind(index, term);
    if(!fp_node)
    {
       return false;
    }
-   res =  SubtermTreeDeleteTermOcc((void*)&(fp_node->payload), term,
-                                   clause, restricted);
+   res = SubtermTreeDeleteTermOcc((void*)&(fp_node->payload), term, clause,
+                                  restricted);
 
    if(fp_node->payload == NULL)
    {
@@ -235,7 +236,6 @@ bool SubtermIndexDeleteOcc(SubtermIndex_p index, Clause_p clause,
    }
    return res;
 }
-
 
 
 
@@ -253,9 +253,7 @@ bool SubtermIndexDeleteOcc(SubtermIndex_p index, Clause_p clause,
 //
 /----------------------------------------------------------------------*/
 
-long ClauseCollectIdxSubterms(Clause_p clause,
-                              PTree_p *rest,
-                              PTree_p *full,
+long ClauseCollectIdxSubterms(Clause_p clause, PTree_p* rest, PTree_p* full,
                               bool lambda_demod)
 {
    long res = 0;
@@ -284,7 +282,7 @@ long ClauseCollectIdxSubterms(Clause_p clause,
 void SubtermIndexInsertClause(SubtermIndex_p index, Clause_p clause,
                               bool lambda_demod)
 {
-   PTree_p rest=NULL, full=NULL;
+   PTree_p rest = NULL, full = NULL;
 
    ClauseCollectIdxSubterms(clause, &rest, &full, lambda_demod);
 
@@ -308,9 +306,10 @@ void SubtermIndexInsertClause(SubtermIndex_p index, Clause_p clause,
 //
 /----------------------------------------------------------------------*/
 
-void SubtermIndexDeleteClause(SubtermIndex_p index, Clause_p clause, bool lambda_demod)
+void SubtermIndexDeleteClause(SubtermIndex_p index, Clause_p clause,
+                              bool lambda_demod)
 {
-   PTree_p rest=NULL, full=NULL;
+   PTree_p rest = NULL, full = NULL;
 
    ClauseCollectIdxSubterms(clause, &rest, &full, lambda_demod);
 

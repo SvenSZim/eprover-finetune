@@ -39,22 +39,22 @@ Changes
 
 typedef struct relevance_cell
 {
-   Sig_p     sig;
+   Sig_p sig;
 
-   PList_p   clauses_core;
-   PList_p   formulas_core;
+   PList_p clauses_core;
+   PList_p formulas_core;
 
-   PList_p   clauses_rest;
-   PList_p   formulas_rest;
+   PList_p clauses_rest;
+   PList_p formulas_rest;
 
-   FIndex_p  clauses_index;
-   FIndex_p  formulas_index;
+   FIndex_p clauses_index;
+   FIndex_p formulas_index;
 
-   long      max_level;
+   long max_level;
    PDArray_p fcode_relevance;
-   PStack_p  new_codes;
-   PStack_p  relevance_levels;
-}RelevanceCell, *Relevance_p;
+   PStack_p new_codes;
+   PStack_p relevance_levels;
+} RelevanceCell, *Relevance_p;
 
 
 
@@ -62,20 +62,19 @@ typedef struct relevance_cell
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define RelevanceCellAlloc()    (RelevanceCell*)SizeMalloc(sizeof(RelevanceCell))
+#define RelevanceCellAlloc() (RelevanceCell*)SizeMalloc(sizeof(RelevanceCell))
 #define RelevanceCellFree(junk) SizeFree(junk, sizeof(RelevanceCell))
 
 
 Relevance_p RelevanceAlloc(void);
-void        RelevanceFree(Relevance_p junk);
+void RelevanceFree(Relevance_p junk);
 
 void ClausePListPrint(FILE* out, PList_p list);
 void FormulaPListPrint(FILE* out, PList_p list);
 
-long        RelevanceDataInit(ProofState_p state, Relevance_p data);
+long RelevanceDataInit(ProofState_p state, Relevance_p data);
 Relevance_p RelevanceDataCompute(ProofState_p state);
-long        ProofStateRelevancyProcess(ProofState_p state, long level);
-
+long ProofStateRelevancyProcess(ProofState_p state, long level);
 
 
 

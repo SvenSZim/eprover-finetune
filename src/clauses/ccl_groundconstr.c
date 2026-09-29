@@ -66,16 +66,15 @@ LitOccTable_p LitOccTableAlloc(Sig_p sig)
 
    LitOccTable_p handle = LitOccTableCellAlloc();
 
-   handle->sig_size  = sig->f_count+1; /* To allow for element 0*/
+   handle->sig_size = sig->f_count + 1; /* To allow for element 0*/
    arity = SigFindMaxPredicateArity(sig);
-   handle->maxarity = MAX(arity,2); /* To cover $eqn, which might be
+   handle->maxarity = MAX(arity, 2); /* To cover $eqn, which might be
                                        special */
-   handle->matrix = SizeMalloc((handle->sig_size)
-                               * (handle->maxarity+1)
-                               * sizeof(LitConstrCell));
-   for(i=0; i< handle->sig_size; i++)
+   handle->matrix = SizeMalloc((handle->sig_size) * (handle->maxarity + 1) *
+                               sizeof(LitConstrCell));
+   for(i = 0; i < handle->sig_size; i++)
    {
-      for(j=0; j<handle->maxarity; j++)
+      for(j = 0; j < handle->maxarity; j++)
       {
          LIT_OCC_TABLE_ENTRY(handle, i, j).constrained = true;
          LIT_OCC_TABLE_ENTRY(handle, i, j).constraints = NULL;
@@ -104,16 +103,15 @@ void LitOccTableFree(LitOccTable_p junk)
    assert(junk);
    assert(junk->matrix);
 
-   for(i=0; i< junk->sig_size; i++)
+   for(i = 0; i < junk->sig_size; i++)
    {
-      for(j=0; j<junk->maxarity; j++)
+      for(j = 0; j < junk->maxarity; j++)
       {
          PTreeFree(LIT_OCC_TABLE_ENTRY(junk, i, j).constraints);
       }
    }
-   SizeFree(junk->matrix,((junk->sig_size)
-                          * (junk->maxarity + 1)
-                          * sizeof(LitConstrCell)));
+   SizeFree(junk->matrix,
+            ((junk->sig_size) * (junk->maxarity + 1) * sizeof(LitConstrCell)));
    LitOccTableCellFree(junk);
 }
 
@@ -213,8 +211,7 @@ bool LitPosAddConstraint(LitOccTable_p table, FunCode pred, int pos,
    }
    else
    {
-      PTreeStore(&(LIT_OCC_TABLE_ENTRY(table, pred, pos).constraints),
-                 term);
+      PTreeStore(&(LIT_OCC_TABLE_ENTRY(table, pred, pos).constraints), term);
       return false;
    }
 }
@@ -233,8 +230,7 @@ bool LitPosAddConstraint(LitOccTable_p table, FunCode pred, int pos,
 //
 /----------------------------------------------------------------------*/
 
-void LitOccAddLitAlt(LitOccTable_p p_table, LitOccTable_p n_table,
-                     Eqn_p eqn)
+void LitOccAddLitAlt(LitOccTable_p p_table, LitOccTable_p n_table, Eqn_p eqn)
 {
    int i;
    LitOccTable_p handle;
@@ -252,7 +248,7 @@ void LitOccAddLitAlt(LitOccTable_p p_table, LitOccTable_p n_table,
    }
    lit = eqn->lterm;
 
-   for(i=0; i< lit->arity; i++)
+   for(i = 0; i < lit->arity; i++)
    {
       LitPosAddConstraint(handle, lit->f_code, i, lit->args[i]);
    }
@@ -276,7 +272,7 @@ void LitOccAddClauseAlt(LitOccTable_p p_table, LitOccTable_p n_table,
 {
    Eqn_p handle;
 
-   for(handle = clause->literals; handle; handle=handle->next)
+   for(handle = clause->literals; handle; handle = handle->next)
    {
       LitOccAddLitAlt(p_table, n_table, handle);
    }
@@ -296,13 +292,12 @@ void LitOccAddClauseAlt(LitOccTable_p p_table, LitOccTable_p n_table,
 //
 /----------------------------------------------------------------------*/
 
-void LitOccAddClauseSetAlt(LitOccTable_p p_table, LitOccTable_p
-                           n_table, ClauseSet_p set)
+void LitOccAddClauseSetAlt(LitOccTable_p p_table, LitOccTable_p n_table,
+                           ClauseSet_p set)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!= set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       LitOccAddClauseAlt(p_table, n_table, handle);
    }
@@ -334,19 +329,19 @@ long SigCollectConstantTerms(TB_p bank, PStack_p stack, FunCode uniq)
    if(uniq)
    {
       assert((uniq > 0) && (uniq <= bank->sig->f_count) &&
-             (SigFindArity(bank->sig,uniq)==0));
+             (SigFindArity(bank->sig, uniq) == 0));
       tmp = TermConstCellAlloc(uniq);
       found = TBTermTopInsert(bank, tmp);
       PStackPushP(stack, found);
-      res=1;
+      res = 1;
    }
    else
    {
-      for(i=bank->sig->internal_symbols+1; i<=bank->sig->f_count; i++)
+      for(i = bank->sig->internal_symbols + 1; i <= bank->sig->f_count; i++)
       {
          if(!SigIsPredicate(bank->sig, i) &&
             !SigQueryProp(bank->sig, i, FPSpecial) &&
-            SigFindArity(bank->sig,i)==0)
+            SigFindArity(bank->sig, i) == 0)
          {
             tmp = TermConstCellAlloc(i);
             found = TBTermTopInsert(bank, tmp);
@@ -357,8 +352,9 @@ long SigCollectConstantTerms(TB_p bank, PStack_p stack, FunCode uniq)
    }
    if(!res)
    {
-      OUTPRINT(1, COMCHAR" No constant in specification, "
-               "added new Skolem constant\n");
+      OUTPRINT(1,
+               COMCHAR " No constant in specification, "
+                       "added new Skolem constant\n");
       i = SigGetNewSkolemCode(bank->sig, 0);
       tmp = TermConstCellAlloc(i);
       found = TBTermTopInsert(bank, tmp);
@@ -386,31 +382,26 @@ long SigCollectConstantTerms(TB_p bank, PStack_p stack, FunCode uniq)
 void EqnCollectVarConstr(LitOccTable_p p_table, LitOccTable_p n_table,
                          PDArray_p var_constr, Eqn_p eqn)
 {
-   int     i;
+   int i;
    PTree_p tree;
    LitOccTable_p constr;
    Term_p lit = eqn->lterm;
 
 
-   constr = EqnIsPositive(eqn)?n_table:p_table; /* Contraints are
+   constr = EqnIsPositive(eqn) ? n_table : p_table; /* Contraints are
                                                    induced by literals
                                                    of the opposite
                                                    sign! */
-   for(i=0; i<lit->arity; i++)
+   for(i = 0; i < lit->arity; i++)
    {
       if(TermIsFreeVar(lit->args[i]))
       {
-         if(LitPosGetConstrState(constr,lit->f_code,i))
+         if(LitPosGetConstrState(constr, lit->f_code, i))
          {
-            tree = PDArrayElementP(var_constr,
-                                   -(lit->args[i]->f_code));
-            (void)PTreeDestrIntersection(&tree,
-                                         LitPosGetConstraints(constr,
-                                                              lit->f_code,
-                                                              i));
-            PDArrayAssignP(var_constr,
-                           -(lit->args[i]->f_code),
-                           tree);
+            tree = PDArrayElementP(var_constr, -(lit->args[i]->f_code));
+            (void)PTreeDestrIntersection(
+               &tree, LitPosGetConstraints(constr, lit->f_code, i));
+            PDArrayAssignP(var_constr, -(lit->args[i]->f_code), tree);
             /* if(tmp)
                {
                printf("Constraints at work: %ld\n", tmp);
@@ -419,7 +410,6 @@ void EqnCollectVarConstr(LitOccTable_p p_table, LitOccTable_p n_table,
       }
    }
 }
-
 
 
 
@@ -436,9 +426,9 @@ void EqnCollectVarConstr(LitOccTable_p p_table, LitOccTable_p n_table,
 //
 /----------------------------------------------------------------------*/
 
-void ClauseCollectVarConstr(LitOccTable_p p_table, LitOccTable_p
-                            n_table, Clause_p clause, PTree_p
-                            ground_terms, PDArray_p var_constr)
+void ClauseCollectVarConstr(LitOccTable_p p_table, LitOccTable_p n_table,
+                            Clause_p clause, PTree_p ground_terms,
+                            PDArray_p var_constr)
 {
    Eqn_p handle;
 

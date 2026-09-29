@@ -27,7 +27,7 @@
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-bool      SigSupportLists = false;
+bool SigSupportLists = false;
 
 /*---------------------------------------------------------------------*/
 /*                      Forward Declarations                           */
@@ -55,7 +55,7 @@ static void sig_print_operator(FILE* out, Sig_p sig, FunCode op, bool comments)
 {
    if(comments)
    {
-      fprintf(out, "   %-13s : %2d    "COMCHAR"  %2ld %2d ",
+      fprintf(out, "   %-13s : %2d    " COMCHAR "  %2ld %2d ",
               sig->f_info[op].pname, sig->f_info[op].arity, op,
               sig->f_info[op].properties);
       if(sig->f_info[op].type)
@@ -64,14 +64,14 @@ static void sig_print_operator(FILE* out, Sig_p sig, FunCode op, bool comments)
       }
       else
       {
-               fprintf(stdout,"(no type)");
+         fprintf(stdout, "(no type)");
       }
-      fprintf(stdout,"\n");
+      fprintf(stdout, "\n");
    }
    else
    {
-      fprintf(out, "   %-13s : %2d\n",
-              sig->f_info[op].pname, sig->f_info[op].arity);
+      fprintf(out, "   %-13s : %2d\n", sig->f_info[op].pname,
+              sig->f_info[op].arity);
    }
 }
 
@@ -129,10 +129,9 @@ Sig_p SigAlloc(TypeBank_p bank)
    handle = SigCellAlloc();
 
    handle->alpha_ranks_valid = false;
-   handle->size           = DEFAULT_SIGNATURE_SIZE;
-   handle->f_count        = 0;
-   handle->f_info         =
-      SecureMalloc(sizeof(FuncCell)*DEFAULT_SIGNATURE_SIZE);
+   handle->size = DEFAULT_SIGNATURE_SIZE;
+   handle->f_count = 0;
+   handle->f_info = SecureMalloc(sizeof(FuncCell) * DEFAULT_SIGNATURE_SIZE);
    handle->f_index = NULL;
    handle->ac_axioms = PStackAlloc();
 
@@ -140,53 +139,52 @@ Sig_p SigAlloc(TypeBank_p bank)
    handle->typed_symbols = false;
 
    SigInsertId(handle, "$true", 0, true);
-   assert(SigFindFCode(handle, "$true")==SIG_TRUE_CODE);
+   assert(SigFindFCode(handle, "$true") == SIG_TRUE_CODE);
    SigSetFuncProp(handle, SIG_TRUE_CODE, FPInterpreted);
    SigDeclareType(handle, SIG_TRUE_CODE, handle->type_bank->bool_type);
    SigInsertId(handle, "$false", 0, true);
-   assert(SigFindFCode(handle, "$false")==SIG_FALSE_CODE);
+   assert(SigFindFCode(handle, "$false") == SIG_FALSE_CODE);
    SigSetFuncProp(handle, SIG_FALSE_CODE, FPInterpreted);
    SigDeclareType(handle, SIG_FALSE_CODE, handle->type_bank->bool_type);
 
    if(SigSupportLists)
    {
       SigInsertId(handle, "$nil", 0, true);
-      assert(SigFindFCode(handle, "$nil")==SIG_NIL_CODE);
+      assert(SigFindFCode(handle, "$nil") == SIG_NIL_CODE);
       SigInsertId(handle, "$cons", 2, true);
-      assert(SigFindFCode(handle, "$cons")==SIG_CONS_CODE);
+      assert(SigFindFCode(handle, "$cons") == SIG_CONS_CODE);
    }
    handle->internal_symbols = handle->f_count;
 
-   handle->eqn_code      = 0;
-   handle->neqn_code     = 0;
-   handle->cnil_code     = 0;
-   handle->orn_codes     = NULL;
+   handle->eqn_code = 0;
+   handle->neqn_code = 0;
+   handle->cnil_code = 0;
+   handle->orn_codes = NULL;
 
-   handle->or_code           = 0;
-   handle->not_code          = 0;
-   handle->qex_code          = 0;
-   handle->qall_code         = 0;
-   handle->and_code          = 0;
-   handle->or_code           = 0;
-   handle->impl_code         = 0;
-   handle->equiv_code        = 0;
-   handle->nand_code         = 0;
-   handle->nor_code          = 0;
-   handle->bimpl_code        = 0;
-   handle->xor_code          = 0;
-   handle->answer_code       = 0;
-   handle->distinct_code     = 0;
+   handle->or_code = 0;
+   handle->not_code = 0;
+   handle->qex_code = 0;
+   handle->qall_code = 0;
+   handle->and_code = 0;
+   handle->or_code = 0;
+   handle->impl_code = 0;
+   handle->equiv_code = 0;
+   handle->nand_code = 0;
+   handle->nor_code = 0;
+   handle->bimpl_code = 0;
+   handle->xor_code = 0;
+   handle->answer_code = 0;
+   handle->distinct_code = 0;
 
-   handle->skolem_count      = 0;
-   handle->newpred_count     = 0;
-   handle->newdef_count      = 0;
+   handle->skolem_count = 0;
+   handle->newpred_count = 0;
+   handle->newdef_count = 0;
 
    handle->distinct_props = FPDistinctProp;
    handle->let_scopes = PStackAlloc();
    handle->let_names = PStackAlloc();
    return handle;
 }
-
 
 
 
@@ -211,72 +209,72 @@ void SigInsertInternalCodes(Sig_p sig)
    assert((SigSupportLists && sig->internal_symbols == SIG_CONS_CODE) ||
           (!SigSupportLists && sig->internal_symbols == SIG_FALSE_CODE));
 
-   Type_p bool2[2] = {sig->type_bank->bool_type, sig->type_bank->bool_type};
-   Type_p bool3[3] = {sig->type_bank->bool_type, sig->type_bank->bool_type,
-                      sig->type_bank->bool_type};
-   Type_p unary_log_op_type =
-      TypeBankInsertTypeShared(sig->type_bank, AllocArrowTypeCopyArgs(2, bool2));
-   Type_p binary_log_op_type =
-      TypeBankInsertTypeShared(sig->type_bank, AllocArrowTypeCopyArgs(3, bool3));
+   Type_p bool2[2] = { sig->type_bank->bool_type, sig->type_bank->bool_type };
+   Type_p bool3[3] = { sig->type_bank->bool_type, sig->type_bank->bool_type,
+                       sig->type_bank->bool_type };
+   Type_p unary_log_op_type = TypeBankInsertTypeShared(
+      sig->type_bank, AllocArrowTypeCopyArgs(2, bool2));
+   Type_p binary_log_op_type = TypeBankInsertTypeShared(
+      sig->type_bank, AllocArrowTypeCopyArgs(3, bool3));
 
-   sig->eqn_code    = SigInsertId(sig, "$eq",   2, true);
+   sig->eqn_code = SigInsertId(sig, "$eq", 2, true);
    SigSetPolymorphic(sig, sig->eqn_code, true);
 
-   sig->neqn_code   = SigInsertId(sig, "$neq",   2, true);
+   sig->neqn_code = SigInsertId(sig, "$neq", 2, true);
    SigSetPolymorphic(sig, sig->neqn_code, true);
 
-   sig->qex_code   = SigInsertId(sig, "$qex",   2, true);
-   sig->qall_code  = SigInsertId(sig, "$qall",  2, true);
+   sig->qex_code = SigInsertId(sig, "$qex", 2, true);
+   sig->qall_code = SigInsertId(sig, "$qall", 2, true);
    SigSetPolymorphic(sig, sig->qex_code, true);
    SigSetPolymorphic(sig, sig->qall_code, true);
 
-   sig->not_code   = SigInsertFOFOp(sig, "$not",   1);
+   sig->not_code = SigInsertFOFOp(sig, "$not", 1);
    SigDeclareFinalType(sig, sig->not_code, unary_log_op_type);
-   sig->and_code   = SigInsertFOFOp(sig, "$and",   2);
+   sig->and_code = SigInsertFOFOp(sig, "$and", 2);
    SigDeclareFinalType(sig, sig->and_code, binary_log_op_type);
-   sig->or_code    = SigInsertFOFOp(sig, "$or",    2);
+   sig->or_code = SigInsertFOFOp(sig, "$or", 2);
    SigDeclareFinalType(sig, sig->or_code, binary_log_op_type);
-   sig->impl_code  = SigInsertFOFOp(sig, "$impl",  2);
+   sig->impl_code = SigInsertFOFOp(sig, "$impl", 2);
    SigDeclareFinalType(sig, sig->impl_code, binary_log_op_type);
    sig->equiv_code = SigInsertFOFOp(sig, "$equiv", 2);
    SigDeclareFinalType(sig, sig->equiv_code, binary_log_op_type);
-   sig->nand_code  = SigInsertFOFOp(sig, "$nand",  2);
+   sig->nand_code = SigInsertFOFOp(sig, "$nand", 2);
    SigDeclareFinalType(sig, sig->nand_code, binary_log_op_type);
-   sig->nor_code   = SigInsertFOFOp(sig, "$nor",   2);
+   sig->nor_code = SigInsertFOFOp(sig, "$nor", 2);
    SigDeclareFinalType(sig, sig->nor_code, binary_log_op_type);
    sig->bimpl_code = SigInsertFOFOp(sig, "$bimpl", 2);
    SigDeclareFinalType(sig, sig->bimpl_code, binary_log_op_type);
-   sig->xor_code   = SigInsertFOFOp(sig, "$xor",   2);
+   sig->xor_code = SigInsertFOFOp(sig, "$xor", 2);
    SigDeclareFinalType(sig, sig->xor_code, binary_log_op_type);
-   sig->answer_code =  SigInsertId(sig, "$answer", 1, true);
-   SigSetFuncProp(sig, sig->answer_code, FPInterpreted|FPPseudoPred);
+   sig->answer_code = SigInsertId(sig, "$answer", 1, true);
+   SigSetFuncProp(sig, sig->answer_code, FPInterpreted | FPPseudoPred);
 
 #ifndef NDEBUG
    // surpressing compiler warning
    FunCode f_code =
 #endif
-   SigInsertId(sig, "$@_var", 1, true);
+      SigInsertId(sig, "$@_var", 1, true);
    assert(f_code == SIG_PHONY_APP_CODE); //for future code changes
 #ifndef NDEBUG
    f_code =
 #endif
-   SigInsertId(sig, "$named_lam", 2, true);
+      SigInsertId(sig, "$named_lam", 2, true);
    assert(f_code == SIG_NAMED_LAMBDA_CODE); //for future code changes
 #ifndef NDEBUG
    f_code =
 #endif
-   SigInsertId(sig, "$db_lam", 2, true);
+      SigInsertId(sig, "$db_lam", 2, true);
    assert(f_code == SIG_DB_LAMBDA_CODE); //for future code changes
 #ifndef NDEBUG
    f_code =
 #endif
-   SigInsertId(sig, "$ite", 3, true);
+      SigInsertId(sig, "$ite", 3, true);
    // SigSetPolymorphic(sig, SIG_ITE_CODE, true);
    assert(f_code == SIG_ITE_CODE); //for future code changes
 #ifndef NDEBUG
    f_code =
 #endif
-   SigInsertId(sig, "$let", 3, true);
+      SigInsertId(sig, "$let", 3, true);
    // SigSetPolymorphic(sig, SIG_LET_CODE, true);
    assert(f_code == SIG_LET_CODE); //for future code changes
 
@@ -317,7 +315,7 @@ void SigFree(Sig_p junk)
 
    /* names are shared with junk->f_index and are free()ed by the
       StrTreeFree() call below! */
-   for(i=0; i<= junk->f_count; i++)
+   for(i = 0; i <= junk->f_count; i++)
    {
       if(junk->f_info[i].pname)
       {
@@ -365,10 +363,10 @@ FunCode SigFindFCode(Sig_p sig, const char* name)
    DStr_p raw_name = NULL;
 
 
-   if(name[0]=='\'')
+   if(name[0] == '\'')
    {
       raw_name = DStrAlloc();
-      DStrAppendStr(raw_name, name+1);
+      DStrAppendStr(raw_name, name + 1);
       DStrDeleteLastChar(raw_name);
       name = DStrView(raw_name);
    }
@@ -563,11 +561,11 @@ void SigSetSpecial(Sig_p sig, FunCode f_code, bool value)
 
    if(value)
    {
-      SigSetFuncProp(sig,f_code,FPSpecial);
+      SigSetFuncProp(sig, f_code, FPSpecial);
    }
    else
    {
-      SigDelFuncProp(sig,f_code,FPSpecial);
+      SigDelFuncProp(sig, f_code, FPSpecial);
    }
 }
 
@@ -637,7 +635,7 @@ void SigSetAllSpecial(Sig_p sig, bool value)
 {
    FunCode i;
 
-   for(i=1; i<=sig->f_count; i++)
+   for(i = 1; i <= sig->f_count; i++)
    {
       SigSetSpecial(sig, i, value);
    }
@@ -661,17 +659,17 @@ void SigSetAllSpecial(Sig_p sig, bool value)
 
 FunCode SigInsertId(Sig_p sig, const char* name, int arity, bool special_id)
 {
-   long      pos;
+   long pos;
    StrTree_p new, test;
-   DStr_p    raw_name = DStrAlloc(), fix_name = DStrAlloc();
+   DStr_p raw_name = DStrAlloc(), fix_name = DStrAlloc();
    const char *rawname, *prtname;
 
    prtname = name;
    rawname = name;
 
-   if(name[0]=='\'')
+   if(name[0] == '\'')
    {
-      DStrAppendStr(raw_name, name+1);
+      DStrAppendStr(raw_name, name + 1);
       DStrDeleteLastChar(raw_name);
       rawname = DStrView(raw_name);
       prtname = name;
@@ -688,7 +686,7 @@ FunCode SigInsertId(Sig_p sig, const char* name, int arity, bool special_id)
          DStrAppendStr(fix_name, name);
          DStrAppendStr(fix_name, "_ARITYFIX");
          DStrAppendInt(fix_name, arity);
-         DStrAppendStr(fix_name, " ");  /* Trailing space should ensure that it
+         DStrAppendStr(fix_name, " "); /* Trailing space should ensure that it
                                          * cannot come from the real parser */
          prtname = rawname;
          rawname = DStrView(fix_name);
@@ -711,20 +709,17 @@ FunCode SigInsertId(Sig_p sig, const char* name, int arity, bool special_id)
       return pos; /* all is fine... */
    }
    /* Now insert the new name...ensure that there is space */
-   if(sig->f_count == sig->size-1)
+   if(sig->f_count == sig->size - 1)
    {
       /* sig->size+= DEFAULT_SIGNATURE_SIZE; */
       sig->size *= DEFAULT_SIGNATURE_GROW;
-      sig->f_info  = SecureRealloc(sig->f_info,
-                                   sizeof(FuncCell)*sig->size);
+      sig->f_info = SecureRealloc(sig->f_info, sizeof(FuncCell) * sig->size);
    }
 
    /* Insert the element in f_index and f_info */
    sig->f_count++;
-   sig->f_info[sig->f_count].name
-      = SecureStrdup(rawname);
-   sig->f_info[sig->f_count].pname
-      = SecureStrdup(prtname);
+   sig->f_info[sig->f_count].name = SecureStrdup(rawname);
+   sig->f_info[sig->f_count].pname = SecureStrdup(prtname);
    sig->f_info[sig->f_count].arity = arity;
    sig->f_info[sig->f_count].properties = FPIgnoreProps;
    sig->f_info[sig->f_count].type = NULL;
@@ -735,8 +730,9 @@ FunCode SigInsertId(Sig_p sig, const char* name, int arity, bool special_id)
    new->val1.i_val = sig->f_count;
 
    test = StrTreeInsert(&(sig->f_index), new);
-   UNUSED(test); assert(test == NULL);
-   SigSetSpecial(sig,sig->f_count,special_id);
+   UNUSED(test);
+   assert(test == NULL);
+   SigSetSpecial(sig, sig->f_count, special_id);
    sig->alpha_ranks_valid = false;
    DStrFree(raw_name);
    DStrFree(fix_name);
@@ -822,12 +818,11 @@ long SigBacktrack(Sig_p sig, FunCode f_count)
 FunCode SigInsertLetId(Sig_p sig, const char* name, Type_p type)
 {
    assert(type);
-   if(sig->f_count == sig->size-1)
+   if(sig->f_count == sig->size - 1)
    {
       /* sig->size+= DEFAULT_SIGNATURE_SIZE; */
       sig->size *= DEFAULT_SIGNATURE_GROW;
-      sig->f_info  = SecureRealloc(sig->f_info,
-                                   sizeof(FuncCell)*sig->size);
+      sig->f_info = SecureRealloc(sig->f_info, sizeof(FuncCell) * sig->size);
    }
 
    /* Insert the element in f_index and f_info */
@@ -887,11 +882,11 @@ void SigPrint(FILE* out, Sig_p sig)
 {
    FunCode i;
 
-   fprintf(out, COMCHAR" Signature (%2ld symbols out of %2ld allocated):\n",
+   fprintf(out, COMCHAR " Signature (%2ld symbols out of %2ld allocated):\n",
            sig->f_count, sig->size);
-   fprintf(out, COMCHAR"     -Symbol-    -Arity- -Encoding-\n");
+   fprintf(out, COMCHAR "     -Symbol-    -Arity- -Encoding-\n");
 
-   for(i=1; i<=sig->f_count; i++)
+   for(i = 1; i <= sig->f_count; i++)
    {
       sig_print_operator(out, sig, i, true);
    }
@@ -914,8 +909,8 @@ void SigPrintSpecial(FILE* out, Sig_p sig)
 {
    FunCode i;
 
-   fputs(COMCHARRAW" Special symbols:\n", out);
-   for(i=1; i<=sig->f_count; i++)
+   fputs(COMCHARRAW " Special symbols:\n", out);
+   for(i = 1; i <= sig->f_count; i++)
    {
       if(SigIsSpecial(sig, i))
       {
@@ -941,21 +936,21 @@ void SigPrintACStatus(FILE* out, Sig_p sig)
 {
    FunCode i;
 
-   for(i=1; i<=sig->f_count; i++)
+   for(i = 1; i <= sig->f_count; i++)
    {
       if(SigQueryFuncProp(sig, i, FPIsAC))
       {
-         fprintf(out, COMCHAR" %s is AC\n", sig->f_info[i].name);
+         fprintf(out, COMCHAR " %s is AC\n", sig->f_info[i].name);
          continue;
       }
       if(SigQueryFuncProp(sig, i, FPAssociative))
       {
-         fprintf(out, COMCHAR" %s is associative\n", sig->f_info[i].name);
+         fprintf(out, COMCHAR " %s is associative\n", sig->f_info[i].name);
          continue;
       }
       if(SigQueryFuncProp(sig, i, FPCommutative))
       {
-         fprintf(out, COMCHAR" %s is commutative\n", sig->f_info[i].name);
+         fprintf(out, COMCHAR " %s is commutative\n", sig->f_info[i].name);
          continue;
       }
    }
@@ -978,15 +973,15 @@ void SigPrintACStatus(FILE* out, Sig_p sig)
 
 FunCode SigParseKnownOperator(Scanner_p in, Sig_p sig)
 {
-   FunCode       res;
-   int           line, column;
-   DStr_p        id, source_name;
-   StreamType    type;
+   FunCode res;
+   int line, column;
+   DStr_p id, source_name;
+   StreamType type;
 
    line = AktToken(in)->line;
    column = AktToken(in)->column;
    source_name = DStrGetRef(AktToken(in)->source);
-   type        = AktToken(in)->stream_type;
+   type = AktToken(in)->stream_type;
 
    id = DStrAlloc();
    FuncSymbParse(in, id);
@@ -996,8 +991,7 @@ FunCode SigParseKnownOperator(Scanner_p in, Sig_p sig)
    if(!res)
    {
       Error("%s %s undeclared", SYNTAX_ERROR,
-            PosRep(type, source_name, line, column),
-            DStrView(id));
+            PosRep(type, source_name, line, column), DStrView(id));
    }
    DStrReleaseRef(source_name);
    DStrFree(id);
@@ -1020,15 +1014,15 @@ FunCode SigParseKnownOperator(Scanner_p in, Sig_p sig)
 
 FunCode SigParseSymbolDeclaration(Scanner_p in, Sig_p sig, bool special_id)
 {
-   int        arity, line, column;
-   DStr_p     id = DStrAlloc(), source_name;
-   FunCode    res;
+   int arity, line, column;
+   DStr_p id = DStrAlloc(), source_name;
+   FunCode res;
    StreamType type;
 
    line = AktToken(in)->line;
    column = AktToken(in)->column;
    source_name = DStrGetRef(AktToken(in)->source);
-   type        = AktToken(in)->stream_type;
+   type = AktToken(in)->stream_type;
 
    FuncSymbParse(in, id);
    AcceptInpTok(in, Colon);
@@ -1039,11 +1033,8 @@ FunCode SigParseSymbolDeclaration(Scanner_p in, Sig_p sig, bool special_id)
    if(!res)
    {
       Error("%s %s declared with arity %d but registered with arity %d",
-            SYNTAX_ERROR,
-            PosRep(type, source_name, line, column),
-            DStrView(id),
-            arity,
-            SigFindArity(sig, SigFindFCode(sig, DStrView(id))));
+            SYNTAX_ERROR, PosRep(type, source_name, line, column), DStrView(id),
+            arity, SigFindArity(sig, SigFindFCode(sig, DStrView(id))));
    }
    DStrReleaseRef(source_name);
    DStrFree(id);
@@ -1069,8 +1060,7 @@ FunCode SigParse(Scanner_p in, Sig_p sig, bool special_ids)
    FunCode res = 0;
 
    /* FIXME: Cannot handle complex symbols here! */
-   while(TestInpTok(in, FuncSymbToken) &&
-         TestTok(LookToken(in, 1), Colon))
+   while(TestInpTok(in, FuncSymbToken) && TestTok(LookToken(in, 1), Colon))
    {
       res = SigParseSymbolDeclaration(in, sig, special_ids);
    }
@@ -1093,10 +1083,10 @@ FunCode SigParse(Scanner_p in, Sig_p sig, bool special_ids)
 
 int SigFindMaxUsedArity(Sig_p sig)
 {
-   int     res = 0;
+   int res = 0;
    FunCode i;
 
-   for(i=1; i<=sig->f_count; i++)
+   for(i = 1; i <= sig->f_count; i++)
    {
       res = MAX(res, SigFindArity(sig, i));
    }
@@ -1120,15 +1110,14 @@ int SigFindMaxUsedArity(Sig_p sig)
 int SigFindMaxPredicateArity(Sig_p sig)
 {
    FunCode i;
-   int res=0, arity;
+   int res = 0, arity;
 
-   for(i=sig->internal_symbols+1; i<=sig->f_count; i++)
+   for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
-      if(SigIsPredicate(sig, i) &&
-         !SigQueryFuncProp(sig, i, FPSpecial))
+      if(SigIsPredicate(sig, i) && !SigQueryFuncProp(sig, i, FPSpecial))
       {
-         arity = SigFindArity(sig,i);
-         res = MAX(res,arity);
+         arity = SigFindArity(sig, i);
+         res = MAX(res, arity);
       }
    }
    return res;
@@ -1151,15 +1140,14 @@ int SigFindMaxPredicateArity(Sig_p sig)
 int SigFindMinPredicateArity(Sig_p sig)
 {
    FunCode i;
-   int res=INT_MAX, arity;
+   int res = INT_MAX, arity;
 
-   for(i=sig->internal_symbols+1; i<=sig->f_count; i++)
+   for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
-      if(SigIsPredicate(sig, i) &&
-         !SigQueryFuncProp(sig, i, FPSpecial))
+      if(SigIsPredicate(sig, i) && !SigQueryFuncProp(sig, i, FPSpecial))
       {
-         arity = SigFindArity(sig,i);
-         res = MIN(res,arity);
+         arity = SigFindArity(sig, i);
+         res = MIN(res, arity);
       }
    }
    return res;
@@ -1182,14 +1170,14 @@ int SigFindMinPredicateArity(Sig_p sig)
 int SigFindMaxFunctionArity(Sig_p sig)
 {
    FunCode i;
-   int res=0, arity;
+   int res = 0, arity;
 
-   for(i=sig->internal_symbols+1; i<=sig->f_count; i++)
+   for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
       if(!SigIsPredicate(sig, i) && !SigQueryFuncProp(sig, i, FPSpecial))
       {
-         arity = SigFindArity(sig,i);
-         res = MAX(res,arity);
+         arity = SigFindArity(sig, i);
+         res = MAX(res, arity);
       }
    }
    return res;
@@ -1212,14 +1200,14 @@ int SigFindMaxFunctionArity(Sig_p sig)
 int SigFindMinFunctionArity(Sig_p sig)
 {
    FunCode i;
-   int res=INT_MAX, arity;
+   int res = INT_MAX, arity;
 
-   for(i=sig->internal_symbols+1; i<=sig->f_count; i++)
+   for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
       if(!SigIsPredicate(sig, i) && !SigQueryFuncProp(sig, i, FPSpecial))
       {
-         arity = SigFindArity(sig,i);
-         res = MIN(res,arity);
+         arity = SigFindArity(sig, i);
+         res = MIN(res, arity);
       }
    }
    return res;
@@ -1242,15 +1230,14 @@ int SigFindMinFunctionArity(Sig_p sig)
 int SigCountAritySymbols(Sig_p sig, int arity, bool predicates)
 {
    FunCode i;
-   int res=0, tmp_arity;
+   int res = 0, tmp_arity;
 
-   for(i=sig->internal_symbols+1; i<=sig->f_count; i++)
+   for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
-      if(EQUIV(SigIsPredicate(sig, i), predicates)
-         &&(!SigIsSpecial(sig,i)))
+      if(EQUIV(SigIsPredicate(sig, i), predicates) && (!SigIsSpecial(sig, i)))
       {
-         tmp_arity = SigFindArity(sig,i);
-         if(tmp_arity==arity)
+         tmp_arity = SigFindArity(sig, i);
+         if(tmp_arity == arity)
          {
             res++;
          }
@@ -1276,11 +1263,11 @@ int SigCountAritySymbols(Sig_p sig, int arity, bool predicates)
 int SigCountSymbols(Sig_p sig, bool predicates)
 {
    FunCode i;
-   int res=0;
+   int res = 0;
 
-   for(i=sig->internal_symbols+1; i<=sig->f_count; i++)
+   for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
-      if(!SigIsSpecial(sig,i))
+      if(!SigIsSpecial(sig, i))
       {
          if(predicates && SigIsPredicate(sig, i))
          {
@@ -1317,12 +1304,11 @@ int SigAddSymbolArities(Sig_p sig, PDArray_p distrib, bool predicates,
                         long selection[])
 {
    FunCode i;
-   int     max_arity = -1, arity;
+   int max_arity = -1, arity;
 
-   for(i = 1; i<=sig->f_count; i++)
+   for(i = 1; i <= sig->f_count; i++)
    {
-      if(EQUIV(SigIsPredicate(sig, i), predicates) &&
-         selection[i])
+      if(EQUIV(SigIsPredicate(sig, i), predicates) && selection[i])
       {
          arity = SigFindArity(sig, i);
          max_arity = MAX(arity, max_arity);
@@ -1349,11 +1335,11 @@ int SigAddSymbolArities(Sig_p sig, PDArray_p distrib, bool predicates,
 
 long SigCollectSortConsts(Sig_p sig, Type_p sort, PStack_p res)
 {
-   FunCode   i;
-   long      rescount = 0;
-   Type_p    f_sort;
+   FunCode i;
+   long rescount = 0;
+   Type_p f_sort;
 
-   for(i = sig->internal_symbols+1; i<=sig->f_count; i++)
+   for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
       if(SigFindArity((sig), i) == 0)
       {
@@ -1362,7 +1348,7 @@ long SigCollectSortConsts(Sig_p sig, Type_p sort, PStack_p res)
          {
             f_sort = sig->f_info[i].type;
          }
-         if(f_sort==sort)
+         if(f_sort == sort)
          {
             /* printf("Collecting constant %ld (%s) for sort %d\n", */
             /*        i, SigFindName(sig, i), sort); */
@@ -1395,7 +1381,7 @@ FunCode SigGetOrNCode(Sig_p sig, int arity)
 
    if(!sig->orn_codes)
    {
-      sig->orn_codes = PDArrayAlloc(10,10);
+      sig->orn_codes = PDArrayAlloc(10, 10);
    }
    res = PDArrayElementInt(sig->orn_codes, arity);
 
@@ -1453,18 +1439,18 @@ FunCode SigGetOtherEqnCode(Sig_p sig, FunCode f_code)
 //
 /----------------------------------------------------------------------*/
 
-FunCode SigGetNewFCode(Sig_p sig, int arity, char *prefix,
-                       long *counter, FunctionProperties props)
+FunCode SigGetNewFCode(Sig_p sig, int arity, char* prefix, long* counter,
+                       FunctionProperties props)
 {
    FunCode res;
-   char    new_symbol[48];
+   char new_symbol[48];
 
    (*counter)++;
-   sprintf(new_symbol,"%s%ld_%d", prefix, *counter, arity);
-   while(SigFindFCode(sig,new_symbol))
+   sprintf(new_symbol, "%s%ld_%d", prefix, *counter, arity);
+   while(SigFindFCode(sig, new_symbol))
    {
       (*counter)++;
-      sprintf(new_symbol,"%s%ld_%d", prefix, *counter, arity);
+      sprintf(new_symbol, "%s%ld_%d", prefix, *counter, arity);
    }
    res = SigInsertId(sig, new_symbol, arity, false);
    SigSetFuncProp(sig, res, props);
@@ -1518,17 +1504,16 @@ FunCode SigGetNewFCode(Sig_p sig, int arity, char *prefix,
 //
 /----------------------------------------------------------------------*/
 
-FunCode SigGetNewTypedFCode(Sig_p sig, char* prefix, Type_p* args,
-                            int num_args, long* counter, Type_p ret_type,
+FunCode SigGetNewTypedFCode(Sig_p sig, char* prefix, Type_p* args, int num_args,
+                            long* counter, Type_p ret_type,
                             FunctionProperties props)
 {
-   Type_p sk_type =
-      TypeBankInsertTypeShared(sig->type_bank,
-                               ArrowTypeFlattened(args, num_args, ret_type));
+   Type_p sk_type = TypeBankInsertTypeShared(
+      sig->type_bank, ArrowTypeFlattened(args, num_args, ret_type));
    int max_arity = TypeGetMaxArity(sk_type);
    FunCode res = SigGetNewFCode(sig, max_arity, prefix, counter, props);
-   SigDeclareType(sig,res,sk_type);
-   if (UNLIKELY(TypeIsPredicate(sk_type)))
+   SigDeclareType(sig, res, sk_type);
+   if(UNLIKELY(TypeIsPredicate(sk_type)))
    {
       SigDeclareIsPredicate(sig, res);
    }
@@ -1565,9 +1550,9 @@ void SigDeclareType(Sig_p sig, FunCode f, Type_p type)
       {
          if(SigIsFixedType(sig, f))
          {
-            if(Verbose>=3)
+            if(Verbose >= 3)
             {
-               fprintf(stderr, COMCHAR" Type conflict for %s between ",
+               fprintf(stderr, COMCHAR " Type conflict for %s between ",
                        SigFindName(sig, f));
                TypePrintTSTP(stderr, sig->type_bank, fun->type);
                fprintf(stderr, " and ");
@@ -1580,7 +1565,8 @@ void SigDeclareType(Sig_p sig, FunCode f, Type_p type)
          {
             if(Verbose >= 2)
             {
-               fprintf(stderr, COMCHAR" type re-declaration %s: ", SigFindName(sig, f));
+               fprintf(stderr, COMCHAR " type re-declaration %s: ",
+                       SigFindName(sig, f));
                TypePrintTSTP(stderr, sig->type_bank, type);
                fprintf(stderr, "\n");
             }
@@ -1592,7 +1578,7 @@ void SigDeclareType(Sig_p sig, FunCode f, Type_p type)
    {
       if(Verbose >= 2)
       {
-         fprintf(stderr, COMCHAR" type declaration %s: ", SigFindName(sig, f));
+         fprintf(stderr, COMCHAR " type declaration %s: ", SigFindName(sig, f));
          TypePrintTSTP(stderr, sig->type_bank, type);
          fprintf(stderr, "\n");
       }
@@ -1651,7 +1637,8 @@ void SigDeclareIsFunction(Sig_p sig, FunCode f_code)
    /* must update type */
    if(TypeIsBool(type))
    {
-      new_type = TypeChangeReturnType(sig->type_bank, type, SigDefaultSort(sig));
+      new_type =
+         TypeChangeReturnType(sig->type_bank, type, SigDefaultSort(sig));
       assert(new_type->type_uid != INVALID_TYPE_UID);
 
       SigDeclareFinalType(sig, f_code, new_type);
@@ -1688,7 +1675,8 @@ void SigDeclareIsPredicate(Sig_p sig, FunCode f_code)
    /* must update type */
    if(!TypeIsBool(type))
    {
-      new_type = TypeChangeReturnType(sig->type_bank, type, sig->type_bank->bool_type);
+      new_type =
+         TypeChangeReturnType(sig->type_bank, type, sig->type_bank->bool_type);
       SigDeclareFinalType(sig, f_code, new_type);
    }
    else
@@ -1715,9 +1703,9 @@ void SigPrintTypes(FILE* out, Sig_p sig)
    FunCode i;
    Func_p fun;
 
-   for(i=1; i <= sig->f_count; i++)
+   for(i = 1; i <= sig->f_count; i++)
    {
-      if (i > 1)
+      if(i > 1)
       {
          fputs(", ", out);
       }
@@ -1725,7 +1713,7 @@ void SigPrintTypes(FILE* out, Sig_p sig)
       fun = &sig->f_info[i];
       fprintf(out, "%s:", fun->name);
       fflush(out);
-      if (!fun->type)
+      if(!fun->type)
       {
          fputs("<no type>", out);
       }
@@ -1754,10 +1742,10 @@ void SigPrintTypeDeclsTSTP(FILE* out, Sig_p sig)
    Func_p fun;
    const char* tag = problemType == PROBLEM_HO ? "thf" : "tff";
 
-   for(i=sig->internal_symbols+1; i <= sig->f_count; i++)
+   for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
       fun = &(sig->f_info[i]);
-      if (fun->type /*&& !TypeIsUntyped(fun->type)*/)
+      if(fun->type /*&& !TypeIsUntyped(fun->type)*/)
       {
          fprintf(out, "%s(decl_%ld, type, %s: ", tag, i, fun->name);
          TypePrintTSTP(out, sig->type_bank, fun->type);
@@ -1780,18 +1768,18 @@ void SigPrintTypeDeclsTSTP(FILE* out, Sig_p sig)
 //
 /----------------------------------------------------------------------*/
 
-void SigPrintTypeDeclsTSTPSelective(FILE* out, Sig_p sig, NumTree_p *symbols)
+void SigPrintTypeDeclsTSTPSelective(FILE* out, Sig_p sig, NumTree_p* symbols)
 {
    FunCode i;
    Func_p fun;
    const char* tag = problemType == PROBLEM_HO ? "thf" : "tff";
 
-   for(i=sig->internal_symbols+1; i <= sig->f_count; i++)
+   for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
-      if(NumTreeFind(symbols,i))
+      if(NumTreeFind(symbols, i))
       {
          fun = &sig->f_info[i];
-         if (fun->type /*&& !TypeIsUntyped(fun->type)*/)
+         if(fun->type /*&& !TypeIsUntyped(fun->type)*/)
          {
             fprintf(out, "%s(decl_%ld, type, %s: ", tag, i, fun->pname);
             TypePrintTSTP(out, sig->type_bank, fun->type);
@@ -1834,18 +1822,16 @@ void SigParseTFFTypeDeclaration(Scanner_p in, Sig_p sig)
    /* parse symbol */
    source_name = DStrGetRef(AktToken(in)->source);
    type_stream = AktToken(in)->stream_type;
-   line   = AktToken(in)->line;
+   line = AktToken(in)->line;
    column = AktToken(in)->column;
 
    symbtype = FuncSymbParse(in, id);
 
-   if(symbtype != FSIdentFreeFun
-      && symbtype != FSIdentInterpreted
-      && symbtype != FSIdentObject)
+   if(symbtype != FSIdentFreeFun && symbtype != FSIdentInterpreted &&
+      symbtype != FSIdentObject)
    {
       Error("%s Type name expected in type declaration, but got %s",
-            SYNTAX_ERROR,
-            PosRep(type_stream, source_name, line, column),
+            SYNTAX_ERROR, PosRep(type_stream, source_name, line, column),
             DStrView(id));
    }
    DStrReleaseRef(source_name);
@@ -1871,7 +1857,8 @@ void SigParseTFFTypeDeclaration(Scanner_p in, Sig_p sig)
    {
       if(TypeIsArrow(type))
       {
-         TypeBankDefineTypeConstructor(sig->type_bank, DStrView(id), type->arity-1);
+         TypeBankDefineTypeConstructor(sig->type_bank, DStrView(id),
+                                       type->arity - 1);
       }
       else
       {
@@ -1899,7 +1886,7 @@ bool SigHasUnimplementedInterpretedSymbols(Sig_p sig)
 {
    FunCode i;
 
-   for(i=sig->internal_symbols+1; i<=sig->f_count; i++)
+   for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
       if(FuncQueryProp(&(sig->f_info[i]), FPInterpreted))
       {
@@ -1924,7 +1911,7 @@ bool SigHasUnimplementedInterpretedSymbols(Sig_p sig)
 //
 /----------------------------------------------------------------------*/
 
-long SigFCodesCollectTypes(Sig_p sig, NumTree_p fcodes, PTree_p *types)
+long SigFCodesCollectTypes(Sig_p sig, NumTree_p fcodes, PTree_p* types)
 {
    long res = 0;
    PStack_p to_process = PStackAlloc(), iter;
@@ -1951,7 +1938,7 @@ long SigFCodesCollectTypes(Sig_p sig, NumTree_p fcodes, PTree_p *types)
       {
          res++;
          PTreeStore(types, type);
-         for(int i=0; i<type->arity; i++)
+         for(int i = 0; i < type->arity; i++)
          {
             PStackPushP(to_process, type->args[i]);
          }
@@ -1960,7 +1947,6 @@ long SigFCodesCollectTypes(Sig_p sig, NumTree_p fcodes, PTree_p *types)
    PTreeTraverseExit(to_process);
    return res;
 }
-
 
 
 
@@ -1983,11 +1969,11 @@ long SigFCodesCollectTypes(Sig_p sig, NumTree_p fcodes, PTree_p *types)
 
 void SigUpdateFeatureOffset(Sig_p sig, FunCode f)
 {
-   int feature_arity = MIN(SIG_FEATURE_ARITY_LIMIT-1, SigFindArity(sig, f));
+   int feature_arity = MIN(SIG_FEATURE_ARITY_LIMIT - 1, SigFindArity(sig, f));
 
    if(SigIsPredicate(sig, f))
    {
-      sig->f_info[f].feature_offset = feature_arity+SIG_FEATURE_ARITY_LIMIT;
+      sig->f_info[f].feature_offset = feature_arity + SIG_FEATURE_ARITY_LIMIT;
    }
    else
    {
@@ -2059,11 +2045,11 @@ FunCode SigGetTypedApp(Sig_p sig, Type_p arg1, Type_p arg2, Type_p ret)
 
 void SigPrintAppEncodedDecls(FILE* out, Sig_p sig)
 {
-   for(FunCode i=sig->internal_symbols+1; i <= sig->f_count; i++)
+   for(FunCode i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
       fprintf(out, "tff(symboltypedecl%ld, type, %s: ",
-                      (i+1)-sig->internal_symbols, SigFindName(sig, i));
-      if (SigQueryFuncProp(sig, i, FPTypedApplication))
+              (i + 1) - sig->internal_symbols, SigFindName(sig, i));
+      if(SigQueryFuncProp(sig, i, FPTypedApplication))
       {
          Type_p t = SigGetType(sig, i);
          DStr_p left = TypeAppEncodedName(t->args[0]);
@@ -2071,8 +2057,8 @@ void SigPrintAppEncodedDecls(FILE* out, Sig_p sig)
          DStr_p ret = TypeAppEncodedName(t->args[2]);
 
 
-         fprintf(out, "(%s * %s) > %s",
-                         DStrView(left), DStrView(right), DStrView(ret));
+         fprintf(out, "(%s * %s) > %s", DStrView(left), DStrView(right),
+                 DStrView(ret));
 
          DStrFree(left);
          DStrFree(right);
@@ -2087,7 +2073,6 @@ void SigPrintAppEncodedDecls(FILE* out, Sig_p sig)
       }
       fprintf(out, ").\n");
    }
-
 }
 
 /*-----------------------------------------------------------------------
@@ -2109,11 +2094,9 @@ bool SigSymbolUnifiesWithVar(Sig_p sig, FunCode f_code)
    assert(sig);
    assert(f_code);
 
-   return problemType == PROBLEM_HO ||
-          f_code == SIG_TRUE_CODE || f_code == SIG_FALSE_CODE ||
-          f_code != SIG_DB_LAMBDA_CODE ||
-          f_code <= 0 ||
-          !SigIsPredicate(sig,f_code);
+   return problemType == PROBLEM_HO || f_code == SIG_TRUE_CODE ||
+      f_code == SIG_FALSE_CODE || f_code != SIG_DB_LAMBDA_CODE || f_code <= 0 ||
+      !SigIsPredicate(sig, f_code);
 }
 
 #define TMP_LET_ID (-1)
@@ -2136,7 +2119,7 @@ void SigEnterLetScope(Sig_p sig, PStack_p type_decls)
    PStack_p scope = PStackAlloc();
    PStackPushP(sig->let_scopes, scope);
 
-   for(PStackPointer i=1; i<PStackGetSP(type_decls); i += 2)
+   for(PStackPointer i = 1; i < PStackGetSP(type_decls); i += 2)
    {
       FunCode id = PStackElementInt(type_decls, i);
       char* name = SigFindName(sig, id);
@@ -2155,7 +2138,7 @@ void SigEnterLetScope(Sig_p sig, PStack_p type_decls)
          PStackPushInt(scope, TMP_LET_ID);
          PStackPushP(scope, name);
 
-         IntOrP id_tree = {.i_val = id}, dummy = {.i_val = 0};
+         IntOrP id_tree = { .i_val = id }, dummy = { .i_val = 0 };
 
          StrTreeStore(&(sig->f_index), name, id_tree, dummy);
       }
@@ -2193,7 +2176,6 @@ void SigExitLetScope(Sig_p sig)
       {
          StrTreeDeleteEntry(&(sig->f_index), name);
       }
-
    }
    PStackFree(scope);
 }
@@ -2215,11 +2197,11 @@ bool SigHasChoiceSym(Sig_p sig)
 {
    FunCode i;
 
-   for(i=sig->internal_symbols+1;
-       i<=sig->f_count && !IsChoiceType(SigGetType(sig, i));
-       i++)
-   {}
-   return i<=sig->f_count;
+   for(i = sig->internal_symbols + 1;
+       i <= sig->f_count && !IsChoiceType(SigGetType(sig, i)); i++)
+   {
+   }
+   return i <= sig->f_count;
 }
 
 

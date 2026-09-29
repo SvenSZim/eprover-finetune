@@ -39,28 +39,27 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-extern rlim_t                ScheduleTimeLimit; /* Used for
+extern rlim_t ScheduleTimeLimit; /* Used for
                                                  * determining how
                                                  * much time the
                                                  * scheduler can use
                                                  * in total */
-extern rlim_t                SystemTimeLimit; /* Returned by the
+extern rlim_t SystemTimeLimit;   /* Returned by the
                    initial getrlimit
                    call as general hard
                    time limit */
-extern rlim_t                SoftTimeLimit;   /* Try to exit
+extern rlim_t SoftTimeLimit;     /* Try to exit
                    gracefully */
-extern rlim_t                HardTimeLimit;   /* Exit now! */
+extern rlim_t HardTimeLimit;     /* Exit now! */
 extern sig_atomic_t TimeIsUp;
 extern sig_atomic_t TimeLimitIsSoft; /* Have we hit hard or
                    soft? */
 extern sig_atomic_t SigTermCaught;
-extern bool         SilentTimeOut;
+extern bool SilentTimeOut;
 
 void ESignalSetup(int mysignal);
 void ESignalHandler(int mysignal);

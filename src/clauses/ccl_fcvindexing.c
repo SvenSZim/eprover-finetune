@@ -31,8 +31,7 @@ Changes
 
 PERF_CTR_DEFINE(FVIndexTimer);
 
-FVIndexParmsCell FVIDefaultParameters =
-{
+FVIndexParmsCell FVIDefaultParameters = {
    {
       FVIACFold,
       false,
@@ -53,8 +52,8 @@ FVIndexParmsCell FVIDefaultParameters =
       0,
       0,
    },
-   false,   /* use_perm_vectors */
-   false,  /* eliminate_uninformative */
+   false, /* use_perm_vectors */
+   false, /* eliminate_uninformative */
    FVINDEX_MAX_FEATURES_DEFAULT,
    FVINDEX_SYMBOL_SLACK_DEFAULT,
 };
@@ -82,7 +81,7 @@ FVIndexParmsCell FVIDefaultParameters =
 
 void print_lvl(FILE* out, int level)
 {
-   for(int i=0; i<level; i++)
+   for(int i = 0; i < level; i++)
    {
       fprintf(out, "--");
    }
@@ -104,8 +103,8 @@ void print_lvl(FILE* out, int level)
 void print_clauses(FILE* out, PTree_p clauses, int level, bool fullterms)
 {
    PStack_p stack = PTreeTraverseInit(clauses);
-   PTree_p  node  = NULL;
-   Clause_p cl_handle   = NULL;
+   PTree_p node = NULL;
+   Clause_p cl_handle = NULL;
 
    while((node = PTreeTraverseNext(stack)))
    {
@@ -136,11 +135,12 @@ void fv_index_print(FILE* out, FVIndex_p index, bool fullterms, int level)
 {
    if(index->final)
    {
-      print_clauses(out, index->u1.clauses, level+1, fullterms);
+      print_clauses(out, index->u1.clauses, level + 1, fullterms);
    }
    else
    {
-      IntMapIter_p iterator = IntMapIterAlloc(index->u1.successors, 0, LONG_MAX);
+      IntMapIter_p iterator =
+         IntMapIterAlloc(index->u1.successors, 0, LONG_MAX);
 
       long key = 0;
       FVIndex_p succ;
@@ -149,12 +149,11 @@ void fv_index_print(FILE* out, FVIndex_p index, bool fullterms, int level)
          print_lvl(out, level);
          fprintf(stderr, "Alternative %ld: \n", key);
 
-         fv_index_print(out, succ, fullterms, level+1);
+         fv_index_print(out, succ, fullterms, level + 1);
       }
 
       IntMapIterFree(iterator);
    }
-
 }
 
 /*-----------------------------------------------------------------------
@@ -208,10 +207,7 @@ static FVIndex_p insert_empty_node(FVIndex_p node, FVIAnchor_p anchor, long key)
 //
 /----------------------------------------------------------------------*/
 
-void FVIndexParmsInit(FVIndexParms_p parms)
-{
-   *parms = FVIDefaultParameters;
-}
+void FVIndexParmsInit(FVIndexParms_p parms) { *parms = FVIDefaultParameters; }
 
 /*-----------------------------------------------------------------------
 //
@@ -251,10 +247,10 @@ FVIndex_p FVIndexAlloc(void)
 {
    FVIndex_p handle = FVIndexCellAlloc();
 
-   handle->clause_count  = 0;
-   handle->u1.clauses    = NULL;
+   handle->clause_count = 0;
+   handle->u1.clauses = NULL;
    handle->u1.successors = NULL;
-   handle->final         = false;
+   handle->final = false;
 
    return handle;
 }
@@ -276,8 +272,8 @@ FVIndex_p FVIndexAlloc(void)
 void FVIndexFree(FVIndex_p junk)
 {
    IntMapIter_p iter;
-   long         i;
-   FVIndex_p    succ;
+   long i;
+   FVIndex_p succ;
 
    if(junk)
    {
@@ -316,10 +312,10 @@ FVIAnchor_p FVIAnchorAlloc(FVCollect_p cspec, PermVector_p perm)
 {
    FVIAnchor_p handle = FVIAnchorCellAlloc();
 
-   handle->perm_vector  = perm;
-   handle->cspec        = cspec;
-   handle->index        = FVIndexAlloc();
-   handle->storage      = 0;
+   handle->perm_vector = perm;
+   handle->cspec = cspec;
+   handle->index = FVIndexAlloc();
+   handle->storage = 0;
 
    return handle;
 }
@@ -377,7 +373,7 @@ FVIndex_p FVIndexGetNextNonEmptyNode(FVIndex_p node, long key)
    assert(!node->final);
 
    handle = IntMapGetVal(node->u1.successors, key);
-   if(handle&&handle->clause_count)
+   if(handle && handle->clause_count)
    {
       return handle;
    }
@@ -413,16 +409,14 @@ void FVIndexInsert(FVIAnchor_p index, FreqVector_p vec_clause)
    handle = index->index;
    handle->clause_count++;
 
-   for(i=0; i<vec_clause->size; i++)
+   for(i = 0; i < vec_clause->size; i++)
    {
       assert(!handle->final);
 
       newnode = IntMapGetVal(handle->u1.successors, vec_clause->array[i]);
       if(!newnode)
       {
-         newnode = insert_empty_node(handle,
-                                     index,
-                                     vec_clause->array[i]);
+         newnode = insert_empty_node(handle, index, vec_clause->array[i]);
       }
       handle = newnode;
       handle->clause_count++;
@@ -456,26 +450,26 @@ bool FVIndexDelete(FVIAnchor_p index, Clause_p clause)
    long i;
    bool res;
 
-   vec = OptimizedVarFreqVectorCompute(clause, index->perm_vector,
-                   index->cspec);
+   vec =
+      OptimizedVarFreqVectorCompute(clause, index->perm_vector, index->cspec);
    /* FreqVector-Computation is measured independently */
    PERF_CTR_ENTRY(FVIndexTimer);
    handle = index->index;
    handle->clause_count--;
 
-   for(i=0; i<vec->size; i++)
+   for(i = 0; i < vec->size; i++)
    {
       assert(!handle->final);
       handle = IntMapGetVal(handle->u1.successors, vec->array[i]);
       if(!handle)
       {
-    break;
+         break;
       }
       handle->clause_count--;
    }
    FreqVectorFree(vec);
    /* ClauseDelProp(clause, CPIsSIndexed); */
-   res = handle?PTreeDeleteEntry(&(handle->u1.clauses), clause):false;
+   res = handle ? PTreeDeleteEntry(&(handle->u1.clauses), clause) : false;
    PERF_CTR_EXIT(FVIndexTimer);
    return res;
 }
@@ -503,18 +497,18 @@ long FVIndexCountNodes(FVIndex_p index, bool leaves, bool empty)
    {
       if(index->final)
       {
-    if(!empty || !index->u1.clauses)
-    {
-       res++;
-    }
-    assert(EQUIV(index->clause_count,index->u1.clauses));
+         if(!empty || !index->u1.clauses)
+         {
+            res++;
+         }
+         assert(EQUIV(index->clause_count, index->u1.clauses));
       }
       else
       {
-    if(!(empty||leaves))
-    {
-       res++;
-    }
+         if(!(empty || leaves))
+         {
+            res++;
+         }
          if(index->u1.successors)
          {
             iter = IntMapIterAlloc(index->u1.successors, 0, LONG_MAX);
@@ -525,7 +519,7 @@ long FVIndexCountNodes(FVIndex_p index, bool leaves, bool empty)
                }
             }
             IntMapIterFree(iter);
-    }
+         }
       }
    }
    return res;
@@ -550,8 +544,7 @@ FVPackedClause_p FVIndexPackClause(Clause_p clause, FVIAnchor_p anchor)
    {
       return FVPackClause(clause, NULL, NULL);
    }
-   return FVPackClause(clause, anchor->perm_vector,
-             anchor->cspec);
+   return FVPackClause(clause, anchor->perm_vector, anchor->cspec);
 }
 
 /*-----------------------------------------------------------------------

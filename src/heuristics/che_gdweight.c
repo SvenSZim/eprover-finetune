@@ -56,7 +56,7 @@ long gd_term_weight(Term_p term, long vweight, long fweight,
 {
    long res = 0;
 
-   if(TermIsGround(term)&&TermCellQueryProp(term, TPIsConjectureTerm))
+   if(TermIsGround(term) && TermCellQueryProp(term, TPIsConjectureTerm))
    {
       if(goal_multiplier == 0)
       {
@@ -64,13 +64,15 @@ long gd_term_weight(Term_p term, long vweight, long fweight,
       }
       else
       {
-         res = goal_const+goal_multiplier*(TermWeight(term, fweight, vweight));
+         res =
+            goal_const + goal_multiplier * (TermWeight(term, fweight, vweight));
       }
    }
    else
    {
       if(TermIsFreeVar(term) ||
-         (TermIsAppliedFreeVar(term) && NormalizePatternAppVar(TermGetBank(term), term)))
+         (TermIsAppliedFreeVar(term) &&
+          NormalizePatternAppVar(TermGetBank(term), term)))
       {
          // if variable is of the form X xn where xn are bound variables -->
          // then it is counted as a simple variable
@@ -79,8 +81,9 @@ long gd_term_weight(Term_p term, long vweight, long fweight,
       else
       {
          // lambdas (and corresponding bound var) are ignored.
-         res += fweight*((TermIsPhonyApp(term) || TermIsDBLambda(term)) ? 0 : 1);
-         for(int i=(TermIsDBLambda(term)?1:0); i<term->arity; i++)
+         res +=
+            fweight * ((TermIsPhonyApp(term) || TermIsDBLambda(term)) ? 0 : 1);
+         for(int i = (TermIsDBLambda(term) ? 1 : 0); i < term->arity; i++)
          {
             res += gd_term_weight(term->args[i], vweight, fweight,
                                   goal_multiplier, goal_const);
@@ -106,23 +109,23 @@ long gd_term_weight(Term_p term, long vweight, long fweight,
 //
 /----------------------------------------------------------------------*/
 
-double  gd_literal_weight(Eqn_p eq, double pos_multiplier, long vweight,
-                          long fweight, double goal_multiplier,
-                          long goal_const, double app_var_mult)
+double gd_literal_weight(Eqn_p eq, double pos_multiplier, long vweight,
+                         long fweight, double goal_multiplier, long goal_const,
+                         double app_var_mult)
 {
    double res = 0, lweight;
    long tmp;
 
    if(EqnIsEquLit(eq))
    {
-      res = (double)gd_term_weight(eq->rterm, vweight, fweight,
-                                   goal_multiplier, goal_const);
+      res = (double)gd_term_weight(eq->rterm, vweight, fweight, goal_multiplier,
+                                   goal_const);
       //printf("Rterm: %f\n", res);
       res = TERM_APPLY_APP_VAR_MULT(res, eq->rterm, app_var_mult);
       res += fweight; /* Count the equal-predicate */
    }
-   tmp = gd_term_weight(eq->lterm, vweight, fweight,
-                        goal_multiplier, goal_const);
+   tmp =
+      gd_term_weight(eq->lterm, vweight, fweight, goal_multiplier, goal_const);
    lweight = (double)tmp;
    lweight = TERM_APPLY_APP_VAR_MULT(lweight, eq->lterm, app_var_mult);
    //printf("Lterm: %f = %ld\n", lweight, tmp);
@@ -131,7 +134,7 @@ double  gd_literal_weight(Eqn_p eq, double pos_multiplier, long vweight,
 
    if(EqnIsPositive(eq))
    {
-      res = res*pos_multiplier;
+      res = res * pos_multiplier;
    }
    return res;
 }
@@ -151,23 +154,19 @@ double  gd_literal_weight(Eqn_p eq, double pos_multiplier, long vweight,
 //
 /----------------------------------------------------------------------*/
 
-double gd_clause_weight(Clause_p clause, double
-                        pos_multiplier, long vweight, long fweight,
-                        double goal_multiplier, long goal_const,
+double gd_clause_weight(Clause_p clause, double pos_multiplier, long vweight,
+                        long fweight, double goal_multiplier, long goal_const,
                         double app_var_mult)
 {
-   Eqn_p  handle;
+   Eqn_p handle;
    double res = 0;
 
    //ClauseTSTPPrint(stdout, clause, true, true);
    //printf("\n");
    for(handle = clause->literals; handle; handle = handle->next)
    {
-      res += gd_literal_weight(handle, pos_multiplier,
-                               vweight, fweight,
-                               goal_multiplier, goal_const,
-                               app_var_mult);
-
+      res += gd_literal_weight(handle, pos_multiplier, vweight, fweight,
+                               goal_multiplier, goal_const, app_var_mult);
    }
    return res;
 }
@@ -190,11 +189,10 @@ void initialize_goal_terms(ClauseSet_p axioms)
 {
    Clause_p handle;
 
-   for(handle=axioms->anchor->succ;
-       handle!=axioms->anchor;
+   for(handle = axioms->anchor->succ; handle != axioms->anchor;
        handle = handle->succ)
    {
-      if(ClauseQueryTPTPType(handle)==CPTypeNegConjecture)
+      if(ClauseQueryTPTPType(handle) == CPTypeNegConjecture)
       {
          ClauseTermSetProp(handle, TPIsConjectureTerm);
       }
@@ -229,24 +227,22 @@ void initialize_goal_terms(ClauseSet_p axioms)
 /----------------------------------------------------------------------*/
 
 WFCB_p GDClauseWeightInit(ClausePrioFun prio_fun, ClauseSet_p axioms,
-                          int fweight, int
-                          vweight, double pos_multiplier,
+                          int fweight, int vweight, double pos_multiplier,
                           double goal_multiplier, long goal_const,
                           double app_var_mult)
 {
    GDWeightParam_p data = GDWeightParamCellAlloc();
 
-   data->fweight                = fweight;
-   data->vweight                = vweight;
-   data->pos_multiplier         = pos_multiplier;
-   data->goal_multiplier        = goal_multiplier;
-   data->goal_const             = goal_const;
-   data->app_var_mult           = app_var_mult;
+   data->fweight = fweight;
+   data->vweight = vweight;
+   data->pos_multiplier = pos_multiplier;
+   data->goal_multiplier = goal_multiplier;
+   data->goal_const = goal_const;
+   data->app_var_mult = app_var_mult;
    data->goal_terms_initialized = false;
-   data->axioms                 = axioms;
+   data->axioms = axioms;
 
-   return WFCBAlloc(GDClauseWeightCompute, prio_fun,
-                    GDClauseWeightExit, data);
+   return WFCBAlloc(GDClauseWeightCompute, prio_fun, GDClauseWeightExit, data);
 }
 
 
@@ -287,8 +283,8 @@ WFCB_p GDClauseWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
    AcceptInpTok(in, CloseBracket);
 
    return GDClauseWeightInit(prio_fun, state->axioms, fweight, vweight,
-                             pos_multiplier, goal_multiplier,
-                             goal_const, app_var_mult);
+                             pos_multiplier, goal_multiplier, goal_const,
+                             app_var_mult);
 }
 
 
@@ -313,13 +309,9 @@ double GDClauseWeightCompute(void* data, Clause_p clause)
       local->goal_terms_initialized = true;
    }
 
-   return gd_clause_weight(clause,
-                           local->pos_multiplier,
-                           local->vweight,
-                           local->fweight,
-                           local->goal_multiplier,
-                           local->goal_const,
-                           local->app_var_mult);
+   return gd_clause_weight(clause, local->pos_multiplier, local->vweight,
+                           local->fweight, local->goal_multiplier,
+                           local->goal_const, local->app_var_mult);
 }
 
 
@@ -335,10 +327,7 @@ double GDClauseWeightCompute(void* data, Clause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-void GDClauseWeightExit(void* data)
-{
-   GDWeightParamCellFree(data);
-}
+void GDClauseWeightExit(void* data) { GDWeightParamCellFree(data); }
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */

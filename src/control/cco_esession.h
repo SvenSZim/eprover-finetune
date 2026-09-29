@@ -37,19 +37,19 @@ Changes
 
 typedef enum
 {
-   ESNoState,  /* Default */
-   ESWaiting,  /* Connected, not processing */
-   ESActive,   /* Connected and processing */
-   ESStale     /* Disconnected, will be removed */
-}ESessionState;
+   ESNoState, /* Default */
+   ESWaiting, /* Connected, not processing */
+   ESActive,  /* Connected and processing */
+   ESStale    /* Disconnected, will be removed */
+} ESessionState;
 
 
 typedef struct esession_cell
 {
    ESessionState state;
-   TCPChannel_p  channel;
-   EPCtrlSet_p   running;
-}ESessionCell, *ESession_p;
+   TCPChannel_p channel;
+   EPCtrlSet_p running;
+} ESessionCell, *ESession_p;
 
 
 
@@ -64,31 +64,25 @@ XXX_p  XXXAlloc();
 void   XXXFree(XXX_p junk);
 */
 
-#define ESessionCellAlloc()    (ESessionCell*)SizeMalloc(sizeof(ESessionCell))
+#define ESessionCellAlloc() (ESessionCell*)SizeMalloc(sizeof(ESessionCell))
 #define ESessionCellFree(junk) SizeFree(junk, sizeof(ESessionCell))
 
-ESession_p  ESessionAlloc(int sock);
-void        ESessionFree(ESession_p junk);
+ESession_p ESessionAlloc(int sock);
+void ESessionFree(ESession_p junk);
 
-int         ESessionInitFDSet(ESession_p session,
-                              fd_set *rd_fds,
-                              fd_set *wr_fds);
+int ESessionInitFDSet(ESession_p session, fd_set* rd_fds, fd_set* wr_fds);
 
-#define     ESessionSetState(session, state) (session)->state = state
+#define ESessionSetState(session, state) (session)->state = state
 
-void        ESessionDoIO(ESession_p session,
-                         fd_set *rd_fds,
-                         fd_set *wr_fds);
+void ESessionDoIO(ESession_p session, fd_set* rd_fds, fd_set* wr_fds);
 
-void        ESessionProcessCmds(ESession_p session);
+void ESessionProcessCmds(ESession_p session);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

@@ -32,55 +32,45 @@
 
 typedef struct strucweightparamcell
 {
-   OCB_p        ocb;
+   OCB_p ocb;
    ProofState_p proofstate;
 
    VarNormStyle var_norm;
    RelatedTermSet rel_terms;
 
-   PStack_p  terms;
+   PStack_p terms;
    VarBank_p vars;
-   double    var_mismatch;
-   double    sym_mismatch;
-   double    inst_factor;
-   double    gen_factor;
+   double var_mismatch;
+   double sym_mismatch;
+   double inst_factor;
+   double gen_factor;
 
    TermWeightExtension_p twe;
-   void   (*init_fun)(struct strucweightparamcell*);
-}StrucWeightParamCell, *StrucWeightParam_p;
+   void (*init_fun)(struct strucweightparamcell*);
+} StrucWeightParamCell, *StrucWeightParam_p;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define StrucWeightParamCellAlloc() (StrucWeightParamCell*) \
-        SizeMalloc(sizeof(StrucWeightParamCell))
-#define StrucWeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(StrucWeightParamCell))
+#define StrucWeightParamCellAlloc()                                            \
+   (StrucWeightParamCell*)SizeMalloc(sizeof(StrucWeightParamCell))
+#define StrucWeightParamCellFree(junk)                                         \
+   SizeFree(junk, sizeof(StrucWeightParamCell))
 
 StrucWeightParam_p StrucWeightParamAlloc(void);
-void              StrucWeightParamFree(StrucWeightParam_p junk);
+void StrucWeightParamFree(StrucWeightParam_p junk);
 
 
-WFCB_p ConjectureStrucDistanceWeightParse(
-   Scanner_p in, 
-   OCB_p ocb, 
-   ProofState_p state);
+WFCB_p ConjectureStrucDistanceWeightParse(Scanner_p in, OCB_p ocb,
+                                          ProofState_p state);
 
 WFCB_p ConjectureStrucDistanceWeightInit(
-   ClausePrioFun prio_fun, 
-   OCB_p ocb,
-   ProofState_p proofstate,
-   VarNormStyle var_norm,
-   RelatedTermSet rel_terms,
-   double var_mismatch,
-   double sym_mismatch,
-   double inst_factor,
-   double gen_factor,
-   TermWeightExtenstionStyle ext_style,
-   double max_term_multiplier,
-   double max_literal_multiplier,
-   double pos_multiplier);
+   ClausePrioFun prio_fun, OCB_p ocb, ProofState_p proofstate,
+   VarNormStyle var_norm, RelatedTermSet rel_terms, double var_mismatch,
+   double sym_mismatch, double inst_factor, double gen_factor,
+   TermWeightExtenstionStyle ext_style, double max_term_multiplier,
+   double max_literal_multiplier, double pos_multiplier);
 
 double ConjectureStrucDistanceWeightCompute(void* data, Clause_p clause);
 

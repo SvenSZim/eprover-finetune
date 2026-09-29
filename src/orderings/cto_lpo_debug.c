@@ -48,26 +48,21 @@ Changes
 /*---------------------------------------------------------------------*/
 /*                         Internal Functions                          */
 /*---------------------------------------------------------------------*/
-static CompareResult lpofungtr(OCB_p, Term_p, Term_p,
-                DerefType, DerefType);
+static CompareResult lpofungtr(OCB_p, Term_p, Term_p, DerefType, DerefType);
 
-static CompareResult lpofuneq(OCB_p, Term_p, Term_p,
-               DerefType, DerefType);
+static CompareResult lpofuneq(OCB_p, Term_p, Term_p, DerefType, DerefType);
 
-static CompareResult lpocheckarg(OCB_p, Term_p, Term_p,
-             DerefType, DerefType);
+static CompareResult lpocheckarg(OCB_p, Term_p, Term_p, DerefType, DerefType);
 
-static CompareResult lpogtr(OCB_p, Term_p, Term_p,
-             DerefType, DerefType);
+static CompareResult lpogtr(OCB_p, Term_p, Term_p, DerefType, DerefType);
 
-static CompareResult lpogtrcompvars(OCB_p, Term_p, Term_p,
-                DerefType, DerefType);
+static CompareResult lpogtrcompvars(OCB_p, Term_p, Term_p, DerefType,
+                                    DerefType);
 
-static CompareResult lpogtrfuneq(OCB_p, Term_p, Term_p,
-             DerefType, DerefType);
+static CompareResult lpogtrfuneq(OCB_p, Term_p, Term_p, DerefType, DerefType);
 
-static CompareResult lpogtrcheckarg(OCB_p, Term_p, Term_p,
-                DerefType, DerefType);
+static CompareResult lpogtrcheckarg(OCB_p, Term_p, Term_p, DerefType,
+                                    DerefType);
 
 
 /*-----------------------------------------------------------------------
@@ -86,31 +81,32 @@ static CompareResult lpogtrcheckarg(OCB_p, Term_p, Term_p,
 //
 -----------------------------------------------------------------------*/
 
-static CompareResult lpofungtr(OCB_p ocb, Term_p s, Term_p t,
-                DerefType deref_s, DerefType deref_t)
+static CompareResult lpofungtr(OCB_p ocb, Term_p s, Term_p t, DerefType deref_s,
+                               DerefType deref_t)
 {
    bool greater = true;
    int i;
 
-   for (i=0; i<t->arity; i++)
+   for(i = 0; i < t->arity; i++)
    {
-      switch (D_LPOCompare(ocb, s, t->args[i], deref_s, deref_t))
+      switch(D_LPOCompare(ocb, s, t->args[i], deref_s, deref_t))
       {
-      case to_greater:
-       break;
-      case to_lesser: case to_equal:
-       return to_lesser;
-       break;
-      case to_uncomparable:
-       greater = false;
-       break;
-      default:
-       assert(false);
-       break;
+         case to_greater:
+            break;
+         case to_lesser:
+         case to_equal:
+            return to_lesser;
+            break;
+         case to_uncomparable:
+            greater = false;
+            break;
+         default:
+            assert(false);
+            break;
       }
    }
 
-   if (greater)
+   if(greater)
    {
       return to_greater;
    }
@@ -138,56 +134,54 @@ static CompareResult lpofungtr(OCB_p ocb, Term_p s, Term_p t,
 //
 -----------------------------------------------------------------------*/
 
-static CompareResult lpofuneq(OCB_p ocb, Term_p s, Term_p t,
-               DerefType deref_s, DerefType deref_t)
+static CompareResult lpofuneq(OCB_p ocb, Term_p s, Term_p t, DerefType deref_s,
+                              DerefType deref_t)
 {
    CompareResult res = to_equal, res_help, comp_res;
    int i, j;
 
-   for (i=0; i<MAX(s->arity,t->arity); i++)
+   for(i = 0; i < MAX(s->arity, t->arity); i++)
    {
-      if (t->arity <= i)
+      if(t->arity <= i)
       {
-    return to_greater;
+         return to_greater;
       }
-      if (s->arity <= i)
+      if(s->arity <= i)
       {
-    return to_lesser;
+         return to_lesser;
       }
-      if ((res = D_LPOCompare(ocb, s->args[i], t->args[i],
-             deref_s, deref_t)) == to_uncomparable)
+      if((res = D_LPOCompare(ocb, s->args[i], t->args[i], deref_s, deref_t)) ==
+         to_uncomparable)
       {
-    return to_uncomparable;
+         return to_uncomparable;
       }
-      if ((res == to_greater) || (res == to_lesser))
+      if((res == to_greater) || (res == to_lesser))
       {
-    res_help = res;
-    comp_res = (res == to_greater) ? to_lesser : to_greater;
+         res_help = res;
+         comp_res = (res == to_greater) ? to_lesser : to_greater;
 
-    j = i+1;
-    while ((j<MAX(s->arity, t->arity)) && (res_help == res))
-    {
-       if (res == to_greater)
-       {
-          res_help = D_LPOCompare(ocb, s, t->args[j],
-                 deref_s, deref_t);
-       }
-       else
-       {
-          res_help = D_LPOCompare(ocb, s->args[j], t,
-                 deref_s, deref_t);
-       }
-       if (res_help == comp_res)
-       {
-          return comp_res;
-       }
-       j++;
-    }
-    if (res_help == res)
-    {
-       return res;
-    }
-    return to_uncomparable;
+         j = i + 1;
+         while((j < MAX(s->arity, t->arity)) && (res_help == res))
+         {
+            if(res == to_greater)
+            {
+               res_help = D_LPOCompare(ocb, s, t->args[j], deref_s, deref_t);
+            }
+            else
+            {
+               res_help = D_LPOCompare(ocb, s->args[j], t, deref_s, deref_t);
+            }
+            if(res_help == comp_res)
+            {
+               return comp_res;
+            }
+            j++;
+         }
+         if(res_help == res)
+         {
+            return res;
+         }
+         return to_uncomparable;
       }
    }
    return to_equal;
@@ -211,17 +205,17 @@ static CompareResult lpofuneq(OCB_p ocb, Term_p s, Term_p t,
 -----------------------------------------------------------------------*/
 
 static CompareResult lpocheckarg(OCB_p ocb, Term_p s, Term_p t,
-             DerefType deref_s, DerefType deref_t)
+                                 DerefType deref_s, DerefType deref_t)
 {
    CompareResult res;
    int i;
 
-   for (i=0; i<s->arity; i++)
+   for(i = 0; i < s->arity; i++)
    {
       res = D_LPOCompare(ocb, s->args[i], t, deref_s, deref_t);
-      if ((res == to_greater) || (res == to_equal))
+      if((res == to_greater) || (res == to_equal))
       {
-    return to_greater;
+         return to_greater;
       }
    }
    return to_uncomparable;
@@ -241,13 +235,14 @@ static CompareResult lpocheckarg(OCB_p ocb, Term_p s, Term_p t,
 // Side Effects    : -
 //
 -----------------------------------------------------------------------*/
-static CompareResult lpogtr(OCB_p ocb, Term_p s, Term_p t,
-             DerefType deref_s, DerefType deref_t)
+static CompareResult lpogtr(OCB_p ocb, Term_p s, Term_p t, DerefType deref_s,
+                            DerefType deref_t)
 {
    CompareResult res, res_funs;
    int i;
 
-   s = TermDeref(s, &deref_s);  t = TermDeref(t, &deref_t);
+   s = TermDeref(s, &deref_s);
+   t = TermDeref(t, &deref_t);
 
    /* The cases s=x v t=x are checked separately. */
    if(TermIsFreeVar(s) || TermIsFreeVar(t))
@@ -261,46 +256,44 @@ static CompareResult lpogtr(OCB_p ocb, Term_p s, Term_p t,
 
    switch((res_funs = OCBFunCompare(ocb, s->f_code, t->f_code)))
    {
-   case to_greater:
-    res = to_greater;
-    for(i=0; i<t->arity; i++)
-    {
-       if((res = lpogtr(ocb, s, t->args[i], deref_s, deref_t)) !=
-          to_greater)
-       {
-          break;
-       }
-    }
-    if(res == to_greater)
-    {
-       return res;
-    }
-    break;
-   case to_lesser:
-    for(i=0; i<s->arity; i++)
-    {
-       res = lpogtr(ocb, s->args[i], t, deref_s, deref_t);
-       if((res == to_greater) || (res == to_equal))
-       {
-          return to_greater;
-       }
-    }
-    return to_uncomparable;
-    break;
-   case to_equal:
-    if ((res = lpogtrfuneq(ocb, s, t, deref_s, deref_t)) !=
-        to_uncomparable)
-    {
-       return res;
-    }
-    break;
-   default:            /* Leave the switch statement whenever the leading
+      case to_greater:
+         res = to_greater;
+         for(i = 0; i < t->arity; i++)
+         {
+            if((res = lpogtr(ocb, s, t->args[i], deref_s, deref_t)) !=
+               to_greater)
+            {
+               break;
+            }
+         }
+         if(res == to_greater)
+         {
+            return res;
+         }
+         break;
+      case to_lesser:
+         for(i = 0; i < s->arity; i++)
+         {
+            res = lpogtr(ocb, s->args[i], t, deref_s, deref_t);
+            if((res == to_greater) || (res == to_equal))
+            {
+               return to_greater;
+            }
+         }
+         return to_uncomparable;
+         break;
+      case to_equal:
+         if((res = lpogtrfuneq(ocb, s, t, deref_s, deref_t)) != to_uncomparable)
+         {
+            return res;
+         }
+         break;
+      default: /* Leave the switch statement whenever the leading
                           operators are incomparable.                  */
-    break;
+         break;
    }
 
-   if ((res_funs != to_greater) &&
-       ((res_funs != to_equal) || (s->arity >= 2)))
+   if((res_funs != to_greater) && ((res_funs != to_equal) || (s->arity >= 2)))
    {
       res = lpogtrcheckarg(ocb, s, t, deref_s, deref_t);
       return res;
@@ -328,21 +321,20 @@ static CompareResult lpogtr(OCB_p ocb, Term_p s, Term_p t,
 -----------------------------------------------------------------------*/
 
 static CompareResult lpogtrcompvars(OCB_p ocb, Term_p s, Term_p t,
-                DerefType deref_s,
-                DerefType deref_t)
+                                    DerefType deref_s, DerefType deref_t)
 {
    s = TermDeref(s, &deref_s);
    t = TermDeref(t, &deref_t);
 
-   if (TermIsFreeVar(s))
+   if(TermIsFreeVar(s))
    {
       if(s == t)
       {
-    return to_equal;
+         return to_equal;
       }
       else
       {
-    return to_uncomparable;
+         return to_uncomparable;
       }
    }
    else
@@ -350,7 +342,7 @@ static CompareResult lpogtrcompvars(OCB_p ocb, Term_p s, Term_p t,
       assert(TermIsFreeVar(t));
       if(TermIsSubterm(s, t, deref_s))
       {
-    return to_greater;
+         return to_greater;
       }
    }
    return to_uncomparable;
@@ -376,40 +368,40 @@ static CompareResult lpogtrcompvars(OCB_p ocb, Term_p s, Term_p t,
 -----------------------------------------------------------------------*/
 
 static CompareResult lpogtrfuneq(OCB_p ocb, Term_p s, Term_p t,
-                  DerefType deref_s, DerefType deref_t)
+                                 DerefType deref_s, DerefType deref_t)
 {
    CompareResult res = to_equal;
    int i, j;
 
-   for (i=0; i<MAX(s->arity, t->arity); i++)
+   for(i = 0; i < MAX(s->arity, t->arity); i++)
    {
-      if (t->arity <= i)
+      if(t->arity <= i)
       {
-    return to_greater;
+         return to_greater;
       }
-      if (s->arity <= i)
+      if(s->arity <= i)
       {
-    return to_uncomparable;
+         return to_uncomparable;
       }
 
       res = lpogtr(ocb, s->args[i], t->args[i], deref_s, deref_t);
-      if (res == to_uncomparable)
+      if(res == to_uncomparable)
       {
-    break;
+         break;
       }
-      if (res == to_greater)
+      if(res == to_greater)
       {
-    j = i+1;
-    while ((j<MAX(s->arity, t->arity)) && (res == to_greater))
-    {
-       res = lpogtr(ocb, s, t->args[j], deref_s, deref_t);
-       j++;
-    }
-    if (res == to_greater)
-    {
-       return to_greater;
-    }
-    return to_uncomparable;
+         j = i + 1;
+         while((j < MAX(s->arity, t->arity)) && (res == to_greater))
+         {
+            res = lpogtr(ocb, s, t->args[j], deref_s, deref_t);
+            j++;
+         }
+         if(res == to_greater)
+         {
+            return to_greater;
+         }
+         return to_uncomparable;
       }
    }
    return res;
@@ -433,18 +425,17 @@ v//
 -----------------------------------------------------------------------*/
 
 static CompareResult lpogtrcheckarg(OCB_p ocb, Term_p s, Term_p t,
-                DerefType deref_s,
-                DerefType deref_t)
+                                    DerefType deref_s, DerefType deref_t)
 {
    CompareResult res;
    int i;
 
-   for (i=0; i<s->arity; i++)
+   for(i = 0; i < s->arity; i++)
    {
       res = lpogtr(ocb, s->args[i], t, deref_s, deref_t);
-      if ((res == to_greater) || (res == to_equal))
+      if((res == to_greater) || (res == to_equal))
       {
-    return to_greater;
+         return to_greater;
       }
    }
    return to_uncomparable;
@@ -472,8 +463,8 @@ static CompareResult lpogtrcheckarg(OCB_p ocb, Term_p s, Term_p t,
 //
 -----------------------------------------------------------------------*/
 
-CompareResult D_LPOCompare(OCB_p ocb, Term_p s, Term_p t,
-          DerefType deref_s, DerefType deref_t)
+CompareResult D_LPOCompare(OCB_p ocb, Term_p s, Term_p t, DerefType deref_s,
+                           DerefType deref_t)
 {
    assert(problemType != PROBLEM_HO); // no need to change derefs
    CompareResult res, res_funs;
@@ -481,8 +472,8 @@ CompareResult D_LPOCompare(OCB_p ocb, Term_p s, Term_p t,
    s = TermDeref(s, &deref_s);
    t = TermDeref(t, &deref_t);
 
-                     /* The cases s=x v t=x are checked separately. */
-   if (TermIsFreeVar(s) || TermIsFreeVar(t))
+   /* The cases s=x v t=x are checked separately. */
+   if(TermIsFreeVar(s) || TermIsFreeVar(t))
    {
       res = D_LPOCompareVars(s, t, deref_s, deref_t);
       return res;
@@ -490,47 +481,42 @@ CompareResult D_LPOCompare(OCB_p ocb, Term_p s, Term_p t,
 
    /* Depending on the comparison of the leading operators wrt. the
       precedence, different conditions must be tested.           */
-   switch ((res_funs = OCBFunCompare(ocb, s->f_code, t->f_code)))
+   switch((res_funs = OCBFunCompare(ocb, s->f_code, t->f_code)))
    {
-   case to_greater:
-    if ((res = lpofungtr(ocb, s, t, deref_s, deref_t)) !=
-        to_uncomparable)
-    {
-       assert(res != to_equal);
-       return res;
-    }
-    break;
-   case to_equal:
-    if ((res = lpofuneq(ocb, s, t, deref_s, deref_t)) !=
-        to_uncomparable)
-    {
-       return res;
-    }
-    break;
-   case to_lesser:
-    if ((res = lpofungtr(ocb, t, s, deref_t, deref_s)) !=
-        to_uncomparable)
-    {
-       /* Note that lpofungtr does not return `to_equal'. */
-       res = (res == to_greater) ? to_lesser : to_greater;
-       return res;
-    }
-    break;
-   default:         /* Leave the switch statement whenever the leading
+      case to_greater:
+         if((res = lpofungtr(ocb, s, t, deref_s, deref_t)) != to_uncomparable)
+         {
+            assert(res != to_equal);
+            return res;
+         }
+         break;
+      case to_equal:
+         if((res = lpofuneq(ocb, s, t, deref_s, deref_t)) != to_uncomparable)
+         {
+            return res;
+         }
+         break;
+      case to_lesser:
+         if((res = lpofungtr(ocb, t, s, deref_t, deref_s)) != to_uncomparable)
+         {
+            /* Note that lpofungtr does not return `to_equal'. */
+            res = (res == to_greater) ? to_lesser : to_greater;
+            return res;
+         }
+         break;
+      default: /* Leave the switch statement whenever the leading
                        operators are incomparable.                  */
-    break;
+         break;
    }
-           /* Check the third condition of the lpo (see `(iii)' of the
+   /* Check the third condition of the lpo (see `(iii)' of the
               definition at the top of this file.                   */
-   if ((res_funs != to_greater) &&
-       ((res_funs != to_equal) || (s->arity >= 2)) &&
-       (lpocheckarg(ocb, s, t, deref_s, deref_t) == to_greater))
+   if((res_funs != to_greater) && ((res_funs != to_equal) || (s->arity >= 2)) &&
+      (lpocheckarg(ocb, s, t, deref_s, deref_t) == to_greater))
    {
       return to_greater;
    }
-   if ((res_funs != to_lesser) &&
-       ((res_funs != to_equal) || (t->arity >= 2)) &&
-       (lpocheckarg(ocb, t, s, deref_t, deref_s) == to_greater))
+   if((res_funs != to_lesser) && ((res_funs != to_equal) || (t->arity >= 2)) &&
+      (lpocheckarg(ocb, t, s, deref_t, deref_s) == to_greater))
    {
       return to_lesser;
    }
@@ -555,11 +541,11 @@ CompareResult D_LPOCompare(OCB_p ocb, Term_p s, Term_p t,
 //
 -----------------------------------------------------------------------*/
 
-bool D_LPOGreater(OCB_p ocb, Term_p s, Term_p t,
-      DerefType deref_s, DerefType deref_t)
+bool D_LPOGreater(OCB_p ocb, Term_p s, Term_p t, DerefType deref_s,
+                  DerefType deref_t)
 {
    assert(problemType != PROBLEM_HO); // no need to change derefs
-   if (lpogtr(ocb, s, t, deref_s, deref_t) == to_greater)
+   if(lpogtr(ocb, s, t, deref_s, deref_t) == to_greater)
    {
       return true;
    }
@@ -583,33 +569,32 @@ bool D_LPOGreater(OCB_p ocb, Term_p s, Term_p t,
 //
 -----------------------------------------------------------------------*/
 
-CompareResult D_LPOCompareVars(Term_p s, Term_p t,
-              DerefType deref_s,
-              DerefType deref_t)
+CompareResult D_LPOCompareVars(Term_p s, Term_p t, DerefType deref_s,
+                               DerefType deref_t)
 {
    assert(problemType != PROBLEM_HO); // no need to change derefs
    s = TermDeref(s, &deref_s);
    t = TermDeref(t, &deref_t);
 
-   if (TermIsFreeVar(s))
+   if(TermIsFreeVar(s))
    {
       if(s == t)
       {
-    return to_equal;
+         return to_equal;
       }
       else
       {
-    if(TermIsSubterm(t, s, deref_t))
-    {
-       return to_lesser;
-    }
+         if(TermIsSubterm(t, s, deref_t))
+         {
+            return to_lesser;
+         }
       }
    }
    else
-   {                  /* Note that in this case, t is a variable. */
+   { /* Note that in this case, t is a variable. */
       if(TermIsSubterm(s, t, deref_s))
       {
-    return to_greater;
+         return to_greater;
       }
    }
 

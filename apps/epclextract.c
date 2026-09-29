@@ -33,11 +33,11 @@
 /*                  Data types                                         */
 /*---------------------------------------------------------------------*/
 
-#define NAME    "epclextract"
+#define NAME "epclextract"
 
 typedef enum
 {
-   OPT_NOOPT=0,
+   OPT_NOOPT = 0,
    OPT_HELP,
    OPT_VERSION,
    OPT_VERBOSE,
@@ -49,7 +49,7 @@ typedef enum
    OPT_OUTPUT,
    OPT_SILENT,
    OPT_OUTPUTLEVEL
-}OptionCodes;
+} OptionCodes;
 
 
 
@@ -57,83 +57,54 @@ typedef enum
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-OptCell opts[] =
-{
-   {OPT_HELP,
-    'h', "help",
-    NoArg, NULL,
-    "Print a short description of program usage and options."},
+OptCell opts[] = {
+   { OPT_HELP, 'h', "help", NoArg, NULL,
+     "Print a short description of program usage and options." },
 
-   {OPT_VERSION,
-    'V', "version",
-    NoArg, NULL,
-    "Print the version number of the program."},
+   { OPT_VERSION, 'V', "version", NoArg, NULL,
+     "Print the version number of the program." },
 
-   {OPT_VERBOSE,
-    'v', "verbose",
-    OptArg, "1",
-    "Verbose comments on the progress of the program."},
+   { OPT_VERBOSE, 'v', "verbose", OptArg, "1",
+     "Verbose comments on the progress of the program." },
 
-   {OPT_FAST,
-    'f', "fast-extract",
-    NoArg, NULL,
-    "Do a fast extract. With this option the program understands only "
-    "a subset of PCL and assumes that all \"proof\" and \"final\" "
-    "steps are at the end of the protocoll."},
+   { OPT_FAST, 'f', "fast-extract", NoArg, NULL,
+     "Do a fast extract. With this option the program understands only "
+     "a subset of PCL and assumes that all \"proof\" and \"final\" "
+     "steps are at the end of the protocoll." },
 
-   {OPT_PASS_COMMENTS,
-    'C', "forward-comments",
-    NoArg, NULL,
-    "Pass comments found in the input through to the output while"
-    " reading input."},
+   { OPT_PASS_COMMENTS, 'C', "forward-comments", NoArg, NULL,
+     "Pass comments found in the input through to the output while"
+     " reading input." },
 
-   {OPT_COMPETITION,
-    'c', "competition-framing",
-    NoArg, NULL,
-    "Print special \"begin\" and \"end\"comments around the proof "
-    "object, as required by the CASC MIX* class."},
+   { OPT_COMPETITION, 'c', "competition-framing", NoArg, NULL,
+     "Print special \"begin\" and \"end\"comments around the proof "
+     "object, as required by the CASC MIX* class." },
 
-   {OPT_NO_EXTRACT,
-    'n', "no-extract",
-    NoArg, NULL,
-    "Don't extract, print back all steps (actually, it treats all "
-    "steps as proof steps). Useful as a syntax checker, or if you want"
-    " to convert PCL to TSTP with the next option."},
+   { OPT_NO_EXTRACT, 'n', "no-extract", NoArg, NULL,
+     "Don't extract, print back all steps (actually, it treats all "
+     "steps as proof steps). Useful as a syntax checker, or if you want"
+     " to convert PCL to TSTP with the next option." },
 
-   {OPT_TSTP_PRINT,
-    '\0', "tstp-out",
-    NoArg, NULL,
-    "Print proof protocol in TSTP syntax (default is PCL)."},
+   { OPT_TSTP_PRINT, '\0', "tstp-out", NoArg, NULL,
+     "Print proof protocol in TSTP syntax (default is PCL)." },
 
-   {OPT_TSTP_PRINT,
-    '\0', "tptp3-out",
-    NoArg, NULL,
-    "Synonymous with --tstp-out."},
+   { OPT_TSTP_PRINT, '\0', "tptp3-out", NoArg, NULL,
+     "Synonymous with --tstp-out." },
 
-   {OPT_OUTPUT,
-    'o', "output-file",
-    ReqArg, NULL,
-    "Redirect output into the named file."},
+   { OPT_OUTPUT, 'o', "output-file", ReqArg, NULL,
+     "Redirect output into the named file." },
 
-   {OPT_SILENT,
-    's', "silent",
-    NoArg, NULL,
-    "Equivalent to --output-level=0."},
+   { OPT_SILENT, 's', "silent", NoArg, NULL,
+     "Equivalent to --output-level=0." },
 
-   {OPT_NOOPT,
-    '\0', NULL,
-    NoArg, NULL,
-    NULL}
+   { OPT_NOOPT, '\0', NULL, NoArg, NULL, NULL }
 };
 
-char       *outname    = NULL;
-long       time_limit  = 10;
-char       *executable = NULL;
-bool       fast_extract = false,
-   comp_frame = false,
-   no_extract = false,
-   pass_comments = false,
-   app_encode = false;
+char* outname = NULL;
+long time_limit = 10;
+char* executable = NULL;
+bool fast_extract = false, comp_frame = false, no_extract = false,
+     pass_comments = false, app_encode = false;
 OutputFormatType output_format = pcl_format;
 
 /*---------------------------------------------------------------------*/
@@ -150,12 +121,12 @@ void print_help(FILE* out);
 
 int main(int argc, char* argv[])
 {
-   CLState_p       state;
-   Scanner_p       in;
-   int             i;
-   bool            empty_clause = false;
-   PCLMiniProt_p   mprot = NULL;
-   PCLProt_p       prot = NULL;
+   CLState_p state;
+   Scanner_p in;
+   int i;
+   bool empty_clause = false;
+   PCLMiniProt_p mprot = NULL;
+   PCLProt_p prot = NULL;
 
    assert(argv[0]);
 
@@ -177,7 +148,7 @@ int main(int argc, char* argv[])
 
    OpenGlobalOut(outname);
 
-   if(state->argc ==  0)
+   if(state->argc == 0)
    {
       CLStateInsertArg(state, "-");
    }
@@ -189,10 +160,10 @@ int main(int argc, char* argv[])
    {
       prot = PCLProtAlloc();
    }
-   for(i=0; state->argv[i]; i++)
+   for(i = 0; state->argv[i]; i++)
    {
-      in = CreateScanner(StreamTypeFile, state->argv[i], !pass_comments,
-                         NULL, true);
+      in = CreateScanner(StreamTypeFile, state->argv[i], !pass_comments, NULL,
+                         true);
       ScannerSetFormat(in, TPTPFormat);
       if(fast_extract)
       {
@@ -234,38 +205,38 @@ int main(int argc, char* argv[])
    {
       if(no_extract)
       {
-         fprintf(GlobalOut, COMCHAR" SZS output start Derivation.\n");
+         fprintf(GlobalOut, COMCHAR " SZS output start Derivation.\n");
       }
       else if(empty_clause)
       {
-         fprintf(GlobalOut, COMCHAR" SZS output start CNFRefutation.\n");
+         fprintf(GlobalOut, COMCHAR " SZS output start CNFRefutation.\n");
       }
       else
       {
-         fprintf(GlobalOut, COMCHAR" SZS output start Saturation.\n");
+         fprintf(GlobalOut, COMCHAR " SZS output start Saturation.\n");
       }
    }
    if(fast_extract)
    {
-      PCLMiniProtPrintProofClauses(GlobalOut,mprot, output_format);
+      PCLMiniProtPrintProofClauses(GlobalOut, mprot, output_format);
    }
    else
    {
-      PCLProtPrintProofClauses(GlobalOut,prot, output_format);
+      PCLProtPrintProofClauses(GlobalOut, prot, output_format);
    }
    if(comp_frame)
    {
       if(no_extract)
       {
-         fprintf(GlobalOut, COMCHAR" SZS output end Derivation.\n");
+         fprintf(GlobalOut, COMCHAR " SZS output end Derivation.\n");
       }
       else if(empty_clause)
       {
-         fprintf(GlobalOut, COMCHAR" SZS output end CNFRefutation\n");
+         fprintf(GlobalOut, COMCHAR " SZS output end CNFRefutation\n");
       }
       else
       {
-         fprintf(GlobalOut, COMCHAR" SZS output end Saturation.\n");
+         fprintf(GlobalOut, COMCHAR " SZS output end Saturation.\n");
       }
    }
 #ifdef FAST_EXIT
@@ -313,46 +284,46 @@ CLState_p process_options(int argc, char* argv[])
 {
    Opt_p handle;
    CLState_p state;
-   char*  arg;
+   char* arg;
 
-   state = CLStateAlloc(argc,argv);
+   state = CLStateAlloc(argc, argv);
 
    while((handle = CLStateGetOpt(state, &arg, opts)))
    {
       switch(handle->option_code)
       {
-      case OPT_VERBOSE:
+         case OPT_VERBOSE:
             Verbose = CLStateGetIntArg(handle, arg);
             break;
-      case OPT_HELP:
+         case OPT_HELP:
             print_help(stdout);
             exit(NO_ERROR);
-      case OPT_VERSION:
+         case OPT_VERSION:
             printf(NAME " " VERSION "\n");
             exit(NO_ERROR);
-      case OPT_FAST:
+         case OPT_FAST:
             fast_extract = true;
             break;
-      case OPT_PASS_COMMENTS:
+         case OPT_PASS_COMMENTS:
             pass_comments = true;
             break;
-      case OPT_COMPETITION:
+         case OPT_COMPETITION:
             comp_frame = true;
             break;
-      case OPT_NO_EXTRACT:
+         case OPT_NO_EXTRACT:
             no_extract = true;
             break;
-      case OPT_TSTP_PRINT:
+         case OPT_TSTP_PRINT:
             output_format = tstp_format;
             OutputFormat = TSTPFormat;
             break;
-      case OPT_OUTPUT:
+         case OPT_OUTPUT:
             outname = arg;
             break;
-      case OPT_SILENT:
+         case OPT_SILENT:
             OutputLevel = 0;
             break;
-      default:
+         default:
             assert(false);
             break;
       }
@@ -364,8 +335,7 @@ void print_help(FILE* out)
 {
    fprintf(out,
            "\n"
-           "\n"
-           NAME " " VERSION "\n"
+           "\n" NAME " " VERSION "\n"
            "\n"
            "Usage: " NAME " [options] [files]\n"
            "\n"

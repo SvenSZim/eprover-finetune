@@ -1,4 +1,4 @@
- /*-----------------------------------------------------------------------
+/*-----------------------------------------------------------------------
 
 File  : che_axfilter.h
 
@@ -31,22 +31,19 @@ Changes
 /* The order of this has to match the order of values in the
  * definition of GeneralityMeasure in the header file */
 
-char* GeneralityMeasureNames[] =
-{
-   "None",
-   "CountTerms",
-   "CountLiterals",
-   "CountFormulas",
-   "CoutPosFormulas",
-   "CountPosLiterals",
-   "CountPosTerms",
-   "CoutNegFormulas",
-   "CountNegLiterals",
-   "CountNegTerms",
-   NULL
-};
+char* GeneralityMeasureNames[] = { "None",
+                                   "CountTerms",
+                                   "CountLiterals",
+                                   "CountFormulas",
+                                   "CoutPosFormulas",
+                                   "CountPosLiterals",
+                                   "CountPosTerms",
+                                   "CoutNegFormulas",
+                                   "CountNegLiterals",
+                                   "CountNegTerms",
+                                   NULL };
 
-char* AxFilterDefaultSet ="\
+char* AxFilterDefaultSet = "\
    threshold010000=Threshold(10000)\
 \
    LambdaDef=LambdaDef\
@@ -100,11 +97,11 @@ GeneralityMeasure get_gen_measure(char* str)
 {
    int res = StringIndex(str, GeneralityMeasureNames);
 
-   if(res==-1)
+   if(res == -1)
    {
-      res=0;
+      res = 0;
    }
-   return (GeneralityMeasure) res;
+   return (GeneralityMeasure)res;
 }
 
 /*---------------------------------------------------------------------*/
@@ -127,18 +124,18 @@ AxFilter_p AxFilterAlloc(void)
 {
    AxFilter_p handle = AxFilterCellAlloc();
 
-   handle->name                 = NULL;
-   handle->type                 = AFNoFilter;
-   handle->gen_measure          = GMNoMeasure;
-   handle->use_hypotheses       = false;
-   handle->benevolence          = 1.0;
-   handle->generosity           = LONG_MAX;
-   handle->max_recursion_depth  = INT_MAX;
-   handle->max_set_size         = LONG_MAX; /* LONG LONG MAX is
+   handle->name = NULL;
+   handle->type = AFNoFilter;
+   handle->gen_measure = GMNoMeasure;
+   handle->use_hypotheses = false;
+   handle->benevolence = 1.0;
+   handle->generosity = LONG_MAX;
+   handle->max_recursion_depth = INT_MAX;
+   handle->max_set_size = LONG_MAX; /* LONG LONG MAX is
                                               problematic */
-   handle->max_set_fraction     = 1.0;
+   handle->max_set_fraction = 1.0;
    handle->add_no_symbol_axioms = false;
-   handle->trim_implications    = false;
+   handle->trim_implications = false;
    handle->defined_symbols_in_drel = false; // if
 
    return handle;
@@ -206,7 +203,7 @@ AxFilter_p GSinEParse(Scanner_p in)
    {
       AktTokenError(in, "Unknown generality measure", false);
    }
-   if(res->gen_measure!=GMTerms && res->gen_measure!=GMFormulas)
+   if(res->gen_measure != GMTerms && res->gen_measure != GMFormulas)
    {
       AktTokenError(in, "Generality measure not yet implemented", false);
    }
@@ -223,7 +220,7 @@ AxFilter_p GSinEParse(Scanner_p in)
       NextToken(in);
    }
    AcceptInpTok(in, Comma);
-   if(!TestInpTok(in, Comma) && TestInpId(in,"true|false"))
+   if(!TestInpTok(in, Comma) && TestInpId(in, "true|false"))
    {
       res->defined_symbols_in_drel = TestInpId(in, "true");
       AcceptInpId(in, "true|false");
@@ -254,11 +251,12 @@ AxFilter_p GSinEParse(Scanner_p in)
       AcceptInpTok(in, PosInt);
    }
    AcceptInpTok(in, Comma);
-   if(!TestInpTok(in, CloseBracket|Comma))
+   if(!TestInpTok(in, CloseBracket | Comma))
    {
       res->max_set_fraction = ParseFloat(in);
    }
-   if(TestInpTok(in, Comma) && TestId(LookToken(in, 1), "addnosymb|ignorenosymb"))
+   if(TestInpTok(in, Comma) &&
+      TestId(LookToken(in, 1), "addnosymb|ignorenosymb"))
    {
       AcceptInpTok(in, Comma);
       res->add_no_symbol_axioms = TestInpId(in, "addnosymb");
@@ -388,10 +386,10 @@ AxFilter_p AxFilterDefParse(Scanner_p in)
 {
    static unsigned long ax_id_count = 0;
    char* name;
-   char  anon_name[256];
+   char anon_name[256];
    AxFilter_p res;
 
-   if(TestTok(LookToken(in,1), EqualSign))
+   if(TestTok(LookToken(in, 1), EqualSign))
    {
       CheckInpTok(in, Identifier);
       name = SecureStrdup(DStrView(AktToken(in)->literal));
@@ -430,31 +428,28 @@ bool AxFilterPrintBuf(char* buf, int buflen, AxFilter_p filter)
 
    switch(filter->type)
    {
-   case AFGSinE:
-         res = snprintf(buf, buflen, "%s(%s, %s, %s, %f, %ld, %ld, %lld, %f, %s, %s)",
-                        "GSinE",
-                        GeneralityMeasureNames[filter->gen_measure],
-                        filter->use_hypotheses?"hypos":"nohypos",
-                        filter->defined_symbols_in_drel?"true":"false",
-                        filter->benevolence,
-                        filter->generosity,
-                        filter->max_recursion_depth,
-                        filter->max_set_size,
-                        filter->max_set_fraction,
-                        filter->add_no_symbol_axioms?"addnosymb":"ignorenosymb",
-                        filter->trim_implications?"true":"false");
+      case AFGSinE:
+         res = snprintf(
+            buf, buflen, "%s(%s, %s, %s, %f, %ld, %ld, %lld, %f, %s, %s)",
+            "GSinE", GeneralityMeasureNames[filter->gen_measure],
+            filter->use_hypotheses ? "hypos" : "nohypos",
+            filter->defined_symbols_in_drel ? "true" : "false",
+            filter->benevolence, filter->generosity,
+            filter->max_recursion_depth, filter->max_set_size,
+            filter->max_set_fraction,
+            filter->add_no_symbol_axioms ? "addnosymb" : "ignorenosymb",
+            filter->trim_implications ? "true" : "false");
          break;
-   case AFThreshold:
-         res = snprintf(buf, buflen, "Threshold(%ld)",
-                        filter->threshold);
+      case AFThreshold:
+         res = snprintf(buf, buflen, "Threshold(%ld)", filter->threshold);
          break;
-   case AFLambdaDefines:
+      case AFLambdaDefines:
          res = snprintf(buf, buflen, "LambdaDef");
-   default:
+      default:
          assert(false && "Unknown AxFilter type");
          break;
    }
-   return (res<buflen);
+   return (res < buflen);
 }
 
 /*-----------------------------------------------------------------------
@@ -478,7 +473,7 @@ void AxFilterPrint(FILE* out, AxFilter_p filter)
    while(!success)
    {
       buf = SecureMalloc(size);
-      success =  AxFilterPrintBuf(buf, size, filter);
+      success = AxFilterPrintBuf(buf, size, filter);
       if(success)
       {
          fprintf(out, "%s", buf);
@@ -552,7 +547,6 @@ void AxFilterSetFree(AxFilterSet_p junk)
    }
    PStackFree(junk->set);
    AxFilterSetCellFree(junk);
-
 }
 
 /*-----------------------------------------------------------------------
@@ -598,8 +592,8 @@ long AxFilterSetParse(Scanner_p in, AxFilterSet_p set)
 AxFilterSet_p AxFilterSetCreateInternal(char* str)
 {
    AxFilterSet_p filters = AxFilterSetAlloc();
-   Scanner_p in = CreateScanner(StreamTypeInternalString, str, true,
-                                NULL, true);
+   Scanner_p in =
+      CreateScanner(StreamTypeInternalString, str, true, NULL, true);
    AxFilterSetParse(in, filters);
    DestroyScanner(in);
    return filters;
@@ -623,7 +617,7 @@ void AxFilterSetPrint(FILE* out, AxFilterSet_p set)
 {
    PStackPointer i;
 
-   for(i=0; i<PStackGetSP(set->set); i++)
+   for(i = 0; i < PStackGetSP(set->set); i++)
    {
       AxFilterDefPrint(out, PStackElementP(set->set, i));
       fprintf(out, "\n");
@@ -646,12 +640,12 @@ void AxFilterSetPrint(FILE* out, AxFilterSet_p set)
 AxFilter_p AxFilterSetFindFilter(AxFilterSet_p set, char* name)
 {
    PStackPointer i;
-   AxFilter_p    res=NULL, tmp;
+   AxFilter_p res = NULL, tmp;
 
-   for(i=0; i<PStackGetSP(set->set); i++)
+   for(i = 0; i < PStackGetSP(set->set); i++)
    {
       tmp = AxFilterSetGetFilter(set, i);
-      if(strcmp(tmp->name, name)==0)
+      if(strcmp(tmp->name, name) == 0)
       {
          res = tmp;
          break;
@@ -675,10 +669,10 @@ AxFilter_p AxFilterSetFindFilter(AxFilterSet_p set, char* name)
 void AxFilterSetAddNames(DStr_p res, AxFilterSet_p filters)
 {
    PStackPointer i;
-   AxFilter_p    tmp;
-   char*         sep = "";
+   AxFilter_p tmp;
+   char* sep = "";
 
-   for(i=0; i<PStackGetSP(filters->set); i++)
+   for(i = 0; i < PStackGetSP(filters->set); i++)
    {
       tmp = AxFilterSetGetFilter(filters, i);
 

@@ -53,13 +53,14 @@
 //
 /----------------------------------------------------------------------*/
 
-static Term_p term_top_unfold_def_fo(TB_p bank, Term_p term, Term_p lside, Term_p rside)
+static Term_p term_top_unfold_def_fo(TB_p bank, Term_p term, Term_p lside,
+                                     Term_p rside)
 {
    Term_p res;
    Subst_p subst;
    bool tmp;
 
-   assert(bank&&term&&lside&&rside);
+   assert(bank && term && lside && rside);
 
    assert(!TermIsAnyVar(lside));
    if(lside->f_code != term->f_code)
@@ -68,7 +69,8 @@ static Term_p term_top_unfold_def_fo(TB_p bank, Term_p term, Term_p lside, Term_
    }
    subst = SubstAlloc();
    tmp = SubstMatchComplete(lside, term, subst);
-   UNUSED(tmp); assert(tmp); /* Match must exist because demod is demod! */
+   UNUSED(tmp);
+   assert(tmp); /* Match must exist because demod is demod! */
    res = TBInsertInstantiated(bank, rside);
    SubstDelete(subst);
    return res;
@@ -88,9 +90,10 @@ static Term_p term_top_unfold_def_fo(TB_p bank, Term_p term, Term_p lside, Term_
 //
 /----------------------------------------------------------------------*/
 
-static Term_p term_top_unfold_def_ho(TB_p bank, Term_p term, Term_p lside, Term_p rside)
+static Term_p term_top_unfold_def_ho(TB_p bank, Term_p term, Term_p lside,
+                                     Term_p rside)
 {
-   assert(bank&&term&&lside&&rside);
+   assert(bank && term && lside && rside);
 
    assert(!TermIsTopLevelAnyVar(lside));
    assert(!TermIsLambda(lside));
@@ -108,7 +111,7 @@ static Term_p term_top_unfold_def_ho(TB_p bank, Term_p term, Term_p lside, Term_
    else
    {
       PStack_p args = PStackAlloc();
-      for(int i=0; i<term->arity; i++)
+      for(int i = 0; i < term->arity; i++)
       {
          PStackPushP(args, term->args[i]);
       }
@@ -136,8 +139,8 @@ static Term_p term_top_unfold_def_ho(TB_p bank, Term_p term, Term_p lside, Term_
 //
 /----------------------------------------------------------------------*/
 
-static Term_p term_unfold_def(TB_p bank, Term_p term, PStack_p
-                              pos_stack, Term_p demod_l, Term_p demod_r)
+static Term_p term_unfold_def(TB_p bank, Term_p term, PStack_p pos_stack,
+                              Term_p demod_l, Term_p demod_r)
 {
    Term_p res, tmp = NULL;
    int i;
@@ -145,10 +148,10 @@ static Term_p term_unfold_def(TB_p bank, Term_p term, PStack_p
 
    res = TermTopCopyWithoutArgs(term);
 
-   for(i=0; i<res->arity; i++)
+   for(i = 0; i < res->arity; i++)
    {
-      res->args[i] = term_unfold_def(bank, term->args[i], pos_stack,
-                                     demod_l, demod_r);
+      res->args[i] =
+         term_unfold_def(bank, term->args[i], pos_stack, demod_l, demod_r);
       if(res->args[i] != term->args[i])
       {
          changed = true;
@@ -163,9 +166,10 @@ static Term_p term_unfold_def(TB_p bank, Term_p term, PStack_p
       TermTopFree(res);
       tmp = term;
    }
-   res = (problemType == PROBLEM_FO ? term_top_unfold_def_fo : term_top_unfold_def_ho)
-            (bank, tmp, demod_l, demod_r);
-   if(res!=tmp)
+   res = (problemType == PROBLEM_FO
+             ? term_top_unfold_def_fo
+             : term_top_unfold_def_ho)(bank, tmp, demod_l, demod_r);
+   if(res != tmp)
    {
       PStackPushP(pos_stack, term);
    }
@@ -185,7 +189,8 @@ static Term_p term_unfold_def(TB_p bank, Term_p term, PStack_p
 //
 /----------------------------------------------------------------------*/
 
-static bool eqn_unfold_def(Eqn_p eqn, PStack_p pos_stack, Term_p lside, Term_p rside)
+static bool eqn_unfold_def(Eqn_p eqn, PStack_p pos_stack, Term_p lside,
+                           Term_p rside)
 {
    bool res = false;
    Term_p tmp;
@@ -226,7 +231,8 @@ static bool eqn_unfold_def(Eqn_p eqn, PStack_p pos_stack, Term_p lside, Term_p r
 //
 /----------------------------------------------------------------------*/
 
-bool ClauseUnfoldEqDef(Clause_p clause, ClausePos_p demod, Term_p lside, Term_p rside)
+bool ClauseUnfoldEqDef(Clause_p clause, ClausePos_p demod, Term_p lside,
+                       Term_p rside)
 {
    bool res = false;
    PStack_p pos_stack = PStackAlloc();
@@ -246,9 +252,8 @@ bool ClauseUnfoldEqDef(Clause_p clause, ClausePos_p demod, Term_p lside, Term_p 
       {
          ClauseSetTPTPType(clause, CPTypeConjecture);
       }
-      DocClauseEqUnfold(GlobalOut, OutputLevel, clause, demod,
-                        pos_stack);
-      for(i=0; i<PStackGetSP(pos_stack); i++)
+      DocClauseEqUnfold(GlobalOut, OutputLevel, clause, demod, pos_stack);
+      for(i = 0; i < PStackGetSP(pos_stack); i++)
       {
          ClausePushDerivation(clause, DCUnfold, demod->clause);
       }
@@ -274,9 +279,7 @@ bool ClauseUnfoldEqDef(Clause_p clause, ClausePos_p demod, Term_p lside, Term_p 
 bool ClauseSetUnfoldEqDef(ClauseSet_p set, ClausePos_p demod)
 {
    Clause_p handle;
-   bool
-      res = false,
-      demod_is_conj = ClauseIsConjecture(demod->clause);
+   bool res = false, demod_is_conj = ClauseIsConjecture(demod->clause);
 
    Term_p lside = ClausePosGetSide(demod);
    Term_p rside = ClausePosGetOtherSide(demod);
@@ -286,9 +289,7 @@ bool ClauseSetUnfoldEqDef(ClauseSet_p set, ClausePos_p demod)
       ClauseExtractHODefinition(demod->clause, demod->side, &lside, &rside);
    }
 
-   for(handle = set->anchor->succ;
-       handle!=set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseUnfoldEqDef(handle, demod, lside, rside))
       {
@@ -299,7 +300,7 @@ bool ClauseSetUnfoldEqDef(ClauseSet_p set, ClausePos_p demod)
             e.g. SoS. */
          if(demod_is_conj)
          {
-            ClauseSetTPTPType(handle,CPTypeNegConjecture);
+            ClauseSetTPTPType(handle, CPTypeNegConjecture);
          }
       }
    }
@@ -322,8 +323,8 @@ bool ClauseSetUnfoldEqDef(ClauseSet_p set, ClausePos_p demod)
 
 
 long ClauseSetUnfoldAllEqDefs(ClauseSet_p set, ClauseSet_p passive,
-                              ClauseSet_p archive,
-                              int min_arity, long eqdef_incrlimit)
+                              ClauseSet_p archive, int min_arity,
+                              long eqdef_incrlimit)
 {
    ClausePos_p demod;
    long res = false;
@@ -332,8 +333,8 @@ long ClauseSetUnfoldAllEqDefs(ClauseSet_p set, ClauseSet_p passive,
    while((demod = ClauseSetFindEqDefinition(set, min_arity, start)))
    {
       start = demod->clause->succ;
-      if((TermStandardWeight(ClausePosGetOtherSide(demod))-
-          TermStandardWeight(ClausePosGetSide(demod)))<=eqdef_incrlimit)
+      if((TermStandardWeight(ClausePosGetOtherSide(demod)) -
+          TermStandardWeight(ClausePosGetSide(demod))) <= eqdef_incrlimit)
       {
          ClauseSetExtractEntry(demod->clause);
          ClauseSetUnfoldEqDef(set, demod);
@@ -367,16 +368,16 @@ long ClauseSetUnfoldAllEqDefs(ClauseSet_p set, ClauseSet_p passive,
 
 long ClauseSetPreprocess(ClauseSet_p set, ClauseSet_p passive,
                          ClauseSet_p archive, TB_p tmp_terms, TB_p terms,
-                         bool replace_injectivity_defs,
-                         int eqdef_incrlimit, long eqdef_maxclauses)
+                         bool replace_injectivity_defs, int eqdef_incrlimit,
+                         long eqdef_maxclauses)
 {
    long res;
 
    ClauseSetRemoveSuperfluousLiterals(set);
    res = ClauseSetFilterTautologies(set, tmp_terms);
-   if (replace_injectivity_defs)
+   if(replace_injectivity_defs)
    {
-      ClauseSetReplaceInjectivityDefs(set,archive,terms);
+      ClauseSetReplaceInjectivityDefs(set, archive, terms);
    }
    ClauseSetCanonize(set);
    return res;
@@ -400,11 +401,12 @@ long ClauseSetUnfoldEqDefNormalize(ClauseSet_p set, ClauseSet_p passive,
 {
    long res = 0, tmp;
 
-   if((eqdef_incrlimit==LONG_MIN) || (set->members > eqdef_maxclauses))
+   if((eqdef_incrlimit == LONG_MIN) || (set->members > eqdef_maxclauses))
    {
       return res;
    }
-   if((tmp = ClauseSetUnfoldAllEqDefs(set, passive, archive, 1, eqdef_incrlimit)))
+   if((tmp =
+          ClauseSetUnfoldAllEqDefs(set, passive, archive, 1, eqdef_incrlimit)))
    {
       res += tmp;
       res += ClauseSetFilterTautologies(set, tmp_terms);

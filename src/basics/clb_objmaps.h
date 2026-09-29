@@ -34,30 +34,28 @@ Changes
 /*                    Data type declarations                           */
 /*---------------------------------------------------------------------*/
 
-typedef void (*KeyValDelFun)(void *key, void* val);
+typedef void (*KeyValDelFun)(void* key, void* val);
 
 struct objmap_node;
 typedef struct objmap_node* PObjMap_p;
 
 PStack_p PObjMapTraverseInit(PObjMap_p, PStack_p);
-void*    PObjMapTraverseNext(PStack_p, void**);
-#define  PObjMapTraverseExit(stack) (assert(stack), PStackReset(stack))
+void* PObjMapTraverseNext(PStack_p, void**);
+#define PObjMapTraverseExit(stack) (assert(stack), PStackReset(stack))
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
-void*      PObjMapStore(PObjMap_p *root, void* key, void* value,
-                        ComparisonFunctionType cmpfun);
-void**     PObjMapGetRef(PObjMap_p *root, void* key,
-                         ComparisonFunctionType cmpfun, bool* updated);
-void*      PObjMapFind(PObjMap_p *root, void* key,
-                       ComparisonFunctionType cmpfun);
-void*      PObjMapExtract(PObjMap_p *root, void* key,
-                          ComparisonFunctionType cmpfun);
-void       PObjMapFreeWDeleter(PObjMap_p root, KeyValDelFun del_fun);
-void       PObjMapFree(PObjMap_p root);
-size_t     SizeOfPObjNode();
+void* PObjMapStore(PObjMap_p* root, void* key, void* value,
+                   ComparisonFunctionType cmpfun);
+void** PObjMapGetRef(PObjMap_p* root, void* key, ComparisonFunctionType cmpfun,
+                     bool* updated);
+void* PObjMapFind(PObjMap_p* root, void* key, ComparisonFunctionType cmpfun);
+void* PObjMapExtract(PObjMap_p* root, void* key, ComparisonFunctionType cmpfun);
+void PObjMapFreeWDeleter(PObjMap_p root, KeyValDelFun del_fun);
+void PObjMapFree(PObjMap_p root);
+size_t SizeOfPObjNode();
 #endif
 
 /*---------------------------------------------------------------------*/

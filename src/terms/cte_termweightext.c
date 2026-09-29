@@ -45,21 +45,21 @@ static double term_ext_weight_sum(Term_p term, TermWeightExtension_p twe)
    stack = PStackAlloc();
 
    PStackPushP(stack, term);
-   while (!PStackEmpty(stack))
+   while(!PStackEmpty(stack))
    {
       subterm = PStackPopP(stack);
       res += twe->term_weight_fun(subterm, twe->data);
 
-      if (!TermIsFreeVar(subterm))
+      if(!TermIsFreeVar(subterm))
       {
-         for (i=0; i<subterm->arity; i++)
+         for(i = 0; i < subterm->arity; i++)
          {
             PStackPushP(stack, subterm->args[i]);
          }
       }
    }
    PStackFree(stack);
-   
+
    return res;
 }
 
@@ -74,21 +74,21 @@ static double term_ext_weight_max(Term_p term, TermWeightExtension_p twe)
    stack = PStackAlloc();
 
    PStackPushP(stack, term);
-   while (!PStackEmpty(stack))
+   while(!PStackEmpty(stack))
    {
       subterm = PStackPopP(stack);
       res = MAX(res, twe->term_weight_fun(subterm, twe->data));
 
-      if (!TermIsFreeVar(subterm))
+      if(!TermIsFreeVar(subterm))
       {
-         for (i=0; i<subterm->arity; i++)
+         for(i = 0; i < subterm->arity; i++)
          {
             PStackPushP(stack, subterm->args[i]);
          }
       }
    }
    PStackFree(stack);
-   
+
    return res;
 }
 
@@ -109,12 +109,9 @@ static double term_ext_weight_max(Term_p term, TermWeightExtension_p twe)
 /----------------------------------------------------------------------*/
 
 TermWeightExtension_p TermWeightExtensionAlloc(
-   double max_term_multiplier,
-   double max_literal_multiplier,
-   double pos_eq_multiplier,
-   TermWeightExtenstionStyle ext_style,
-   TermWeightFun term_weight_fun,
-   void* data)
+   double max_term_multiplier, double max_literal_multiplier,
+   double pos_eq_multiplier, TermWeightExtenstionStyle ext_style,
+   TermWeightFun term_weight_fun, void* data)
 {
    TermWeightExtension_p handle = TermWeightExtensionCellAlloc();
 
@@ -162,13 +159,17 @@ void TermWeightExtensionFree(TermWeightExtension_p junk)
 
 double TermExtWeight(Term_p term, TermWeightExtension_p twe)
 {
-   switch (twe->ext_style) 
+   switch(twe->ext_style)
    {
-      case TWESimple: return twe->term_weight_fun(term, twe->data);
-      case TWESubtermsSum: return term_ext_weight_sum(term, twe);
-      case TWESubtermsMax: return term_ext_weight_max(term, twe);
-      default: Error("TermExtWeight: Unsupported evaluation extension style %d", 
-         USAGE_ERROR, twe->ext_style);
+      case TWESimple:
+         return twe->term_weight_fun(term, twe->data);
+      case TWESubtermsSum:
+         return term_ext_weight_sum(term, twe);
+      case TWESubtermsMax:
+         return term_ext_weight_max(term, twe);
+      default:
+         Error("TermExtWeight: Unsupported evaluation extension style %d",
+               USAGE_ERROR, twe->ext_style);
    }
 
    return 0; // just to avoid a warning

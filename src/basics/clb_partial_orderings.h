@@ -43,12 +43,12 @@ typedef enum
    to_lesser = 4,
    to_notgteq, /* For caching partial LPO results */
    to_notleeq
-}CompareResult;
+} CompareResult;
 
-typedef enum ho_order_kind 
+typedef enum ho_order_kind
 {
-   LFHO_ORDER, // older LFHO order
-   LAMBDA_ORDER  // Boolean free HO order
+   LFHO_ORDER,  // older LFHO order
+   LAMBDA_ORDER // Boolean free HO order
 } HoOrderKind;
 
 
@@ -57,17 +57,16 @@ typedef enum ho_order_kind
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-extern char*  POCompareSymbol[];
+extern char* POCompareSymbol[];
 
 /* Translating standard UNIX total Quasi-Ordering comparions into
    CompareResult: */
 
-#define Q_TO_PART(res) (((res)<0) ? to_lesser:\
-                       (((res)>0) ? to_greater:to_equal))
+#define Q_TO_PART(res)                                                         \
+   (((res) < 0) ? to_lesser : (((res) > 0) ? to_greater : to_equal))
 
 
-static inline CompareResult POInverseRelation(CompareResult
-                    relation);
+static inline CompareResult POInverseRelation(CompareResult relation);
 
 
 /*---------------------------------------------------------------------*/
@@ -87,31 +86,30 @@ static inline CompareResult POInverseRelation(CompareResult
 //
 /----------------------------------------------------------------------*/
 
-static inline CompareResult POInverseRelation(CompareResult
-                    relation)
+static inline CompareResult POInverseRelation(CompareResult relation)
 {
    CompareResult res = relation;
 
    switch(relation)
    {
-   case to_equal:
-   case to_uncomparable:
-    break;
-   case to_greater:
-    res = to_lesser;
-    break;
-   case to_lesser:
-    res = to_greater;
-    break;
-   case to_notgteq:
-    res = to_notleeq;
-    break;
-   case to_notleeq:
-    res = to_notgteq;
-    break;
-   default:
-    assert(false);
-    break;
+      case to_equal:
+      case to_uncomparable:
+         break;
+      case to_greater:
+         res = to_lesser;
+         break;
+      case to_lesser:
+         res = to_greater;
+         break;
+      case to_notgteq:
+         res = to_notleeq;
+         break;
+      case to_notleeq:
+         res = to_notgteq;
+         break;
+      default:
+         assert(false);
+         break;
    }
    return res;
 }
@@ -122,8 +120,6 @@ static inline CompareResult POInverseRelation(CompareResult
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

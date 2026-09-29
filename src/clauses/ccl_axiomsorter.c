@@ -65,13 +65,13 @@ WAxiom_p WAxiomAlloc(void* axiom, AxiomType type)
    ax->weight = 0.0;
    switch(type)
    {
-   case ClauseAxiom:
+      case ClauseAxiom:
          ax->ax.clause = axiom;
          break;
-   case FormulaAxiom:
+      case FormulaAxiom:
          ax->ax.form = axiom;
          break;
-   default:
+      default:
          assert(false);
    }
    return ax;
@@ -94,24 +94,24 @@ WAxiom_p WAxiomAlloc(void* axiom, AxiomType type)
 
 void WAxiomAddRelEval(WAxiom_p ax, Sig_p sig, PDArray_p rel_vec)
 {
-   PStack_p      f_codes = PStackAlloc();
-   double        sum = 0.0;
-   long          count = 0, rel;
-   FunCode       f;
+   PStack_p f_codes = PStackAlloc();
+   double sum = 0.0;
+   long count = 0, rel;
+   FunCode f;
    PStackPointer i;
 
    switch(ax->type)
    {
-   case ClauseAxiom:
+      case ClauseAxiom:
          ClauseReturnFCodes(ax->ax.clause, f_codes);
          break;
-   case FormulaAxiom:
+      case FormulaAxiom:
          WFormulaReturnFCodes(ax->ax.form, f_codes);
          break;
-   default:
+      default:
          assert(false);
    }
-   for(i=0; i<PStackGetSP(f_codes); i++)
+   for(i = 0; i < PStackGetSP(f_codes); i++)
    {
       f = PStackElementInt(f_codes, i);
       if(!SigIsSpecial(sig, f))
@@ -119,14 +119,14 @@ void WAxiomAddRelEval(WAxiom_p ax, Sig_p sig, PDArray_p rel_vec)
          rel = PDArrayElementInt(rel_vec, f);
          if(rel)
          {
-            sum+= rel;
+            sum += rel;
             count++;
          }
       }
    }
    if(count)
    {
-      ax->weight = sum/count;
+      ax->weight = sum / count;
    }
    PStackFree(f_codes);
 }
@@ -181,8 +181,8 @@ int WAxiomCmp(WAxiom_p s1, WAxiom_p s2)
 
 int WAxiomCmpWrapper(const void* s1, const void* s2)
 {
-   const IntOrP* step1 = (const IntOrP*) s1;
-   const IntOrP* step2 = (const IntOrP*) s2;
+   const IntOrP* step1 = (const IntOrP*)s1;
+   const IntOrP* step2 = (const IntOrP*)s2;
 
    return WAxiomCmp(step1->p_val, step2->p_val);
 }

@@ -52,7 +52,7 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-long deactivate_clauses(DPLLState_p state, PTree_p *clauses)
+long deactivate_clauses(DPLLState_p state, PTree_p* clauses)
 {
    long res = 0;
 
@@ -72,7 +72,7 @@ long deactivate_clauses(DPLLState_p state, PTree_p *clauses)
 //
 /----------------------------------------------------------------------*/
 
-long shorten_clauses(DPLLState_p state, PTree_p *clauses)
+long shorten_clauses(DPLLState_p state, PTree_p* clauses)
 {
    long res = 0;
 
@@ -104,26 +104,26 @@ DPLLState_p DPLLStateAlloc(DPLLFormula_p form)
    long i, limit;
    DPLLClause_p clause;
 
-   handle->form         = form;
-   handle->assignment   = PStackAlloc();
-   handle->deactivated  = PStackAlloc();
+   handle->form = form;
+   handle->assignment = PStackAlloc();
+   handle->deactivated = PStackAlloc();
    handle->unproc_units = PStackAlloc();
-   handle->open_atoms   = AtomSetAlloc();
+   handle->open_atoms = AtomSetAlloc();
 
-   for(i=1; i<form->atom_no; i++)
+   for(i = 1; i < form->atom_no; i++)
    {
       if(form->atoms[i].pos_occur + form->atoms[i].neg_occur)
       {
-    AtomSetInsert(handle->open_atoms, i);
+         AtomSetInsert(handle->open_atoms, i);
       }
    }
    limit = PStackGetSP(form->clauses);
-   for(i=0; i<limit; i++)
+   for(i = 0; i < limit; i++)
    {
       clause = PStackElementP(form->clauses, i);
       if(DPLLClauseIsUnit(clause))
       {
-    PStackPushP(handle->unproc_units, clause);
+         PStackPushP(handle->unproc_units, clause);
       }
    }
    return handle;

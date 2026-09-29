@@ -31,17 +31,17 @@ Changes
 /*                  Data types                                         */
 /*---------------------------------------------------------------------*/
 
-#define NAME    "ekb_delete"
+#define NAME "ekb_delete"
 
 typedef enum
 {
-   OPT_NOOPT=0,
+   OPT_NOOPT = 0,
    OPT_HELP,
    OPT_VERSION,
    OPT_VERBOSE,
    OPT_KB,
    OPT_NAME
-}OptionCodes;
+} OptionCodes;
 
 
 
@@ -49,32 +49,20 @@ typedef enum
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-OptCell opts[] =
-{
-   {OPT_HELP,
-    'h', "help",
-    NoArg, NULL,
-    "Print a short description of program usage and options."},
+OptCell opts[] = {
+   { OPT_HELP, 'h', "help", NoArg, NULL,
+     "Print a short description of program usage and options." },
 
-   {OPT_VERSION,
-    '\0', "version",
-    NoArg, NULL,
-    "Print the version number of the program."},
+   { OPT_VERSION, '\0', "version", NoArg, NULL,
+     "Print the version number of the program." },
 
-   {OPT_VERBOSE,
-    'v', "verbose",
-    OptArg, "1",
-    "Verbose comments on the progress of the program."},
+   { OPT_VERBOSE, 'v', "verbose", OptArg, "1",
+     "Verbose comments on the progress of the program." },
 
-   {OPT_KB,
-    'k',"knowledge-base",
-    ReqArg, NULL,
-    "Select the knowledge base. If not given, select E_KNOWLEDGE."},
+   { OPT_KB, 'k', "knowledge-base", ReqArg, NULL,
+     "Select the knowledge base. If not given, select E_KNOWLEDGE." },
 
-   {OPT_NOOPT,
-    '\0', NULL,
-    NoArg, NULL,
-    NULL}
+   { OPT_NOOPT, '\0', NULL, NoArg, NULL, NULL }
 };
 
 char* kb_name = "E_KNOWLEDGE";
@@ -95,16 +83,16 @@ void print_help(FILE* out);
 
 int main(int argc, char* argv[])
 {
-   CLState_p       state;
-   DStr_p          name, store_file;
-   FILE            *out;
-   ExampleSet_p    proof_examples;
-   ExampleRep_p    to_delete;
-   AnnoSet_p       clause_examples;
-   TB_p            annoterms;
-   Scanner_p       in;
-   TypeBank_p      typetable;
-   Sig_p           sig;
+   CLState_p state;
+   DStr_p name, store_file;
+   FILE* out;
+   ExampleSet_p proof_examples;
+   ExampleRep_p to_delete;
+   AnnoSet_p clause_examples;
+   TB_p annoterms;
+   Scanner_p in;
+   TypeBank_p typetable;
+   Sig_p sig;
 
    assert(argv[0]);
 
@@ -112,10 +100,10 @@ int main(int argc, char* argv[])
 
    state = process_options(argc, argv);
 
-   if(state->argc !=  1)
+   if(state->argc != 1)
    {
       Error("One argument (name of the problem to remove) required",
-       USAGE_ERROR);
+            USAGE_ERROR);
    }
    assert(state->argv[0]);
    ex_name = state->argv[0];
@@ -125,8 +113,7 @@ int main(int argc, char* argv[])
    /* Step 1: Read existing files: problems, clausepatterns, signature
     */
    proof_examples = ExampleSetAlloc();
-   in = CreateScanner(StreamTypeFile,
-            KBFileName(name, kb_name, "problems"),
+   in = CreateScanner(StreamTypeFile, KBFileName(name, kb_name, "problems"),
                       true, NULL, true);
    ExampleSetParse(in, proof_examples);
    DestroyScanner(in);
@@ -134,9 +121,9 @@ int main(int argc, char* argv[])
    typetable = TypeBankAlloc();
    sig = SigAlloc(typetable);
    annoterms = TBAlloc(sig);
-   in = CreateScanner(StreamTypeFile,
-            KBFileName(name, kb_name, "clausepatterns"),
-                      true, NULL, true);
+   in =
+      CreateScanner(StreamTypeFile, KBFileName(name, kb_name, "clausepatterns"),
+                    true, NULL, true);
    clause_examples = AnnoSetParse(in, annoterms, KB_ANNOTATION_NO);
    DestroyScanner(in);
 
@@ -216,32 +203,32 @@ CLState_p process_options(int argc, char* argv[])
 {
    Opt_p handle;
    CLState_p state;
-   char*  arg;
+   char* arg;
 
-   state = CLStateAlloc(argc,argv);
+   state = CLStateAlloc(argc, argv);
 
    while((handle = CLStateGetOpt(state, &arg, opts)))
    {
       switch(handle->option_code)
       {
-      case OPT_VERBOSE:
-       Verbose = CLStateGetIntArg(handle, arg);
-       break;
-      case OPT_HELP:
-       print_help(stdout);
-       exit(NO_ERROR);
-      case OPT_VERSION:
-       printf(NAME " " VERSION "\n");
-       exit(NO_ERROR);
-      case OPT_KB:
-       kb_name = arg;
-       break;
-      case OPT_NAME:
-       ex_name = arg;
-       break;
-     default:
-    assert(false);
-    break;
+         case OPT_VERBOSE:
+            Verbose = CLStateGetIntArg(handle, arg);
+            break;
+         case OPT_HELP:
+            print_help(stdout);
+            exit(NO_ERROR);
+         case OPT_VERSION:
+            printf(NAME " " VERSION "\n");
+            exit(NO_ERROR);
+         case OPT_KB:
+            kb_name = arg;
+            break;
+         case OPT_NAME:
+            ex_name = arg;
+            break;
+         default:
+            assert(false);
+            break;
       }
    }
    return state;
@@ -250,8 +237,7 @@ CLState_p process_options(int argc, char* argv[])
 void print_help(FILE* out)
 {
    fprintf(out, "\n\
-\n"
-NAME " " VERSION "\n\
+\n" NAME " " VERSION "\n\
 \n\
 Usage: " NAME " [options] <name>\n\
 \n\

@@ -41,7 +41,7 @@ typedef enum
    NoUnitSimplify,       /* No unit simplification */
    TopLevelUnitSimplify, /* Only on top level */
    FullUnitSimplify      /* Go down (with positive units only) */
-}UnitSimplifyType;
+} UnitSimplifyType;
 
 #define SimplifyFailed(res) ((res) == NULL)
 
@@ -53,30 +53,20 @@ extern char* UnitSimplifyNames[];
 
 #define TransUnitSimplifyString(str) StringIndex((str), UnitSimplifyNames);
 
-ClausePos_p FindTopSimplifyingUnit(ClauseSet_p units, Term_p t1,
-               Term_p t2);
+ClausePos_p FindTopSimplifyingUnit(ClauseSet_p units, Term_p t1, Term_p t2);
 ClausePos_p FindSignedTopSimplifyingUnit(ClauseSet_p units, Term_p t1,
-                Term_p t2, bool sign);
-ClausePos_p FindSimplifyingUnit(ClauseSet_p set, Term_p t1,
-            Term_p t2, bool positive_only);
+                                         Term_p t2, bool sign);
+ClausePos_p FindSimplifyingUnit(ClauseSet_p set, Term_p t1, Term_p t2,
+                                bool positive_only);
 
-bool        ClauseSimplifyWithUnitSet(Clause_p clause, ClauseSet_p
-                                      unit_set, UnitSimplifyType how);
+bool ClauseSimplifyWithUnitSet(Clause_p clause, ClauseSet_p unit_set,
+                               UnitSimplifyType how);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
-
-
-
-
-
-
-
 
 
 

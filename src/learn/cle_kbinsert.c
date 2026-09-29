@@ -58,20 +58,20 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-AnnoTerm_p ParseExampleClause(Scanner_p in, TB_p parse_terms, TB_p
-               internal_terms, long ident)
+AnnoTerm_p ParseExampleClause(Scanner_p in, TB_p parse_terms,
+                              TB_p internal_terms, long ident)
 {
-   Term_p         clauserep, newrep, tmp;
-   Clause_p       clause;
-   Annotation_p   anno = AnnotationAlloc();
-   long           i;
-   double         value;
+   Term_p clauserep, newrep, tmp;
+   Clause_p clause;
+   Annotation_p anno = AnnotationAlloc();
+   long i;
+   double value;
    PatternSubst_p subst;
-   PStack_p       listrep;
-   AnnoTerm_p     handle = NULL;
+   PStack_p listrep;
+   AnnoTerm_p handle = NULL;
 
-   AcceptInpTok(in,PosInt);
-   AcceptInpTok(in,Colon);
+   AcceptInpTok(in, PosInt);
+   AcceptInpTok(in, Colon);
 
    anno->key = ident;
    AcceptInpTok(in, OpenBracket);
@@ -98,7 +98,7 @@ AnnoTerm_p ParseExampleClause(Scanner_p in, TB_p parse_terms, TB_p
 
    AcceptInpTok(in, PosInt);
 
-   i=3;
+   i = 3;
    while(TestInpTok(in, Comma))
    {
       AcceptInpTok(in, Comma);
@@ -112,15 +112,14 @@ AnnoTerm_p ParseExampleClause(Scanner_p in, TB_p parse_terms, TB_p
    AcceptInpTok(in, Colon);
    clause = ClauseParse(in, parse_terms);
 
-   subst   = PatternDefaultSubstAlloc(parse_terms->sig);
+   subst = PatternDefaultSubstAlloc(parse_terms->sig);
    listrep = PStackAlloc();
 
    if(PatternClauseCompute(clause, &subst, &listrep))
    {
       clauserep = RecEncodeClauseListRep(parse_terms, listrep);
       tmp = PatternTranslateSig(clauserep, subst, parse_terms->sig,
-            internal_terms->sig,
-            internal_terms->vars);
+                                internal_terms->sig, internal_terms->vars);
       newrep = TBInsert(internal_terms, tmp, DEREF_NEVER);
       TermFree(tmp);
       /* TBDelete(parse_terms, clauserep); */
@@ -151,13 +150,12 @@ AnnoTerm_p ParseExampleClause(Scanner_p in, TB_p parse_terms, TB_p
 //
 /----------------------------------------------------------------------*/
 
-long KBAxiomsInsert(ExampleSet_p set, ClauseSet_p axioms, Sig_p sig,
-          char* name)
+long KBAxiomsInsert(ExampleSet_p set, ClauseSet_p axioms, Sig_p sig, char* name)
 {
    ExampleRep_p handle = ExampleRepCellAlloc();
 
-   handle->ident = set->count+1;
-   handle->name  = SecureStrdup(name);
+   handle->ident = set->count + 1;
+   handle->name = SecureStrdup(name);
    handle->features = FeaturesAlloc();
    ComputeClauseSetNumFeatures(handle->features, axioms, sig);
    ExampleSetInsert(set, handle);
@@ -179,13 +177,13 @@ long KBAxiomsInsert(ExampleSet_p set, ClauseSet_p axioms, Sig_p sig,
 /----------------------------------------------------------------------*/
 
 void KBParseExampleFile(Scanner_p in, char* name, ExampleSet_p set,
-         AnnoSet_p examples, Sig_p res_sig)
+                        AnnoSet_p examples, Sig_p res_sig)
 {
-   TB_p        terms;
+   TB_p terms;
    ClauseSet_p axioms = ClauseSetAlloc();
-   long        ident;
-   AnnoTerm_p  handle;
-   TypeBank_p  sort_table = TypeBankAlloc();
+   long ident;
+   AnnoTerm_p handle;
+   TypeBank_p sort_table = TypeBankAlloc();
 
    terms = TBAlloc(SigAlloc(sort_table));
    ClauseSetParseList(in, axioms, terms);

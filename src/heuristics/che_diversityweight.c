@@ -56,34 +56,30 @@
 //
 /----------------------------------------------------------------------*/
 
-WFCB_p DiversityWeightInit(ClausePrioFun prio_fun, int fweight,
-                           int vweight, OCB_p ocb,
-                           double max_term_multiplier,
-                           double max_literal_multiplier,
-                           double pos_multiplier,
-                           double fdiff1weight,
-                           double fdiff2weight,
-                           double vdiff1weight,
-                           double vdiff2weight,
+WFCB_p DiversityWeightInit(ClausePrioFun prio_fun, int fweight, int vweight,
+                           OCB_p ocb, double max_term_multiplier,
+                           double max_literal_multiplier, double pos_multiplier,
+                           double fdiff1weight, double fdiff2weight,
+                           double vdiff1weight, double vdiff2weight,
                            double app_var_mult)
 {
    DiversityWeightParam_p data = DiversityWeightParamCellAlloc();
 
-   data->fweight                = fweight;
-   data->vweight                = vweight;
-   data->pos_multiplier         = pos_multiplier;
-   data->max_term_multiplier    = max_term_multiplier;
+   data->fweight = fweight;
+   data->vweight = vweight;
+   data->pos_multiplier = pos_multiplier;
+   data->max_term_multiplier = max_term_multiplier;
    data->max_literal_multiplier = max_literal_multiplier;
-   data->ocb                    = ocb;
-   data->fdiff1weight           = fdiff1weight;
-   data->fdiff2weight           = fdiff2weight;
-   data->vdiff1weight           = vdiff1weight;
-   data->vdiff2weight           = vdiff2weight;
+   data->ocb = ocb;
+   data->fdiff1weight = fdiff1weight;
+   data->fdiff2weight = fdiff2weight;
+   data->vdiff1weight = vdiff1weight;
+   data->vdiff2weight = vdiff2weight;
 
-   data->app_var_mult           = app_var_mult;
+   data->app_var_mult = app_var_mult;
 
-   return WFCBAlloc(DiversityWeightCompute, prio_fun,
-          DiversityWeightExit, data);
+   return WFCBAlloc(DiversityWeightCompute, prio_fun, DiversityWeightExit,
+                    data);
 }
 
 
@@ -99,14 +95,13 @@ WFCB_p DiversityWeightInit(ClausePrioFun prio_fun, int fweight,
 //
 /----------------------------------------------------------------------*/
 
-WFCB_p DiversityWeightParse(Scanner_p in, OCB_p ocb, ProofState_p
-            state)
+WFCB_p DiversityWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
 {
    ClausePrioFun prio_fun;
    int fweight, vweight;
    double pos_multiplier, max_term_multiplier, max_literal_multiplier,
-      fdiff1weight, fdiff2weight,
-      vdiff1weight, vdiff2weight, app_var_mult = APP_VAR_MULT_DEFAULT;
+      fdiff1weight, fdiff2weight, vdiff1weight, vdiff2weight,
+      app_var_mult = APP_VAR_MULT_DEFAULT;
 
    AcceptInpTok(in, OpenBracket);
    prio_fun = ParsePrioFun(in);
@@ -136,14 +131,9 @@ WFCB_p DiversityWeightParse(Scanner_p in, OCB_p ocb, ProofState_p
    AcceptInpTok(in, CloseBracket);
 
    return DiversityWeightInit(prio_fun, fweight, vweight, ocb,
-                              max_term_multiplier,
-                              max_literal_multiplier,
-                              pos_multiplier,
-                              fdiff1weight,
-                              fdiff2weight,
-                              vdiff1weight,
-                              vdiff2weight,
-                              app_var_mult);
+                              max_term_multiplier, max_literal_multiplier,
+                              pos_multiplier, fdiff1weight, fdiff2weight,
+                              vdiff1weight, vdiff2weight, app_var_mult);
 }
 
 /*-----------------------------------------------------------------------
@@ -167,14 +157,10 @@ double DiversityWeightCompute(void* data, Clause_p clause)
    long f_diversity, v_diversity;
 
    ClauseCondMarkMaximalTerms(local->ocb, clause);
-   res =  ClauseWeight(clause,
-             local->max_term_multiplier,
-             local->max_literal_multiplier,
-             local->pos_multiplier,
-             local->vweight,
-             local->fweight,
-             local->app_var_mult,
-             false);
+   res =
+      ClauseWeight(clause, local->max_term_multiplier,
+                   local->max_literal_multiplier, local->pos_multiplier,
+                   local->vweight, local->fweight, local->app_var_mult, false);
 
    stack = PStackAlloc();
    f_diversity = ClauseReturnFCodes(clause, stack);
@@ -184,8 +170,10 @@ double DiversityWeightCompute(void* data, Clause_p clause)
    v_diversity = ClauseCollectVariables(clause, &tree);
    PTreeFree(tree);
 
-   res += f_diversity*(local->fdiff2weight*f_diversity+local->fdiff1weight);
-   res += v_diversity*(local->vdiff2weight*v_diversity+local->vdiff1weight);
+   res +=
+      f_diversity * (local->fdiff2weight * f_diversity + local->fdiff1weight);
+   res +=
+      v_diversity * (local->vdiff2weight * v_diversity + local->vdiff1weight);
 
    return res;
 }
@@ -204,10 +192,7 @@ double DiversityWeightCompute(void* data, Clause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-void DiversityWeightExit(void* data)
-{
-   DiversityWeightParamCellFree(data);
-}
+void DiversityWeightExit(void* data) { DiversityWeightParamCellFree(data); }
 
 
 /*---------------------------------------------------------------------*/

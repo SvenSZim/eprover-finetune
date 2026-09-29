@@ -57,11 +57,11 @@ Changes
 
 static StrTree_p splay_tree(StrTree_p tree, const char* key)
 {
-   StrTree_p   left, right, tmp;
+   StrTree_p left, right, tmp;
    StrTreeCell newnode;
-   int         cmpres;
+   int cmpres;
 
-   if (!tree)
+   if(!tree)
    {
       return tree;
    }
@@ -71,10 +71,10 @@ static StrTree_p splay_tree(StrTree_p tree, const char* key)
    left = &newnode;
    right = &newnode;
 
-   for (;;)
+   for(;;)
    {
       cmpres = strcmp(key, tree->key);
-      if (cmpres < 0)
+      if(cmpres < 0)
       {
          if(!tree->lson)
          {
@@ -86,7 +86,7 @@ static StrTree_p splay_tree(StrTree_p tree, const char* key)
             tree->lson = tmp->rson;
             tmp->rson = tree;
             tree = tmp;
-            if (!tree->lson)
+            if(!tree->lson)
             {
                break;
             }
@@ -97,7 +97,7 @@ static StrTree_p splay_tree(StrTree_p tree, const char* key)
       }
       else if(cmpres > 0)
       {
-         if (!tree->rson)
+         if(!tree->rson)
          {
             break;
          }
@@ -107,7 +107,7 @@ static StrTree_p splay_tree(StrTree_p tree, const char* key)
             tree->rson = tmp->lson;
             tmp->lson = tree;
             tree = tmp;
-            if (!tree->rson)
+            if(!tree->rson)
             {
                break;
             }
@@ -128,7 +128,6 @@ static StrTree_p splay_tree(StrTree_p tree, const char* key)
 
    return tree;
 }
-
 
 
 
@@ -156,7 +155,7 @@ StrTree_p StrTreeCellAllocEmpty(void)
    StrTree_p handle = StrTreeCellAlloc();
 
    handle->val1.i_val = handle->val2.i_val = 0;
-   handle->lson       = handle->rson       = NULL;
+   handle->lson = handle->rson = NULL;
 
    return handle;
 }
@@ -201,10 +200,10 @@ void StrTreeFree(StrTree_p junk)
 //
 /----------------------------------------------------------------------*/
 
-StrTree_p StrTreeInsert(StrTree_p *root, StrTree_p newnode)
+StrTree_p StrTreeInsert(StrTree_p* root, StrTree_p newnode)
 {
    int cmpres;
-   if (!*root)
+   if(!*root)
    {
       newnode->lson = newnode->rson = NULL;
       *root = newnode;
@@ -214,7 +213,7 @@ StrTree_p StrTreeInsert(StrTree_p *root, StrTree_p newnode)
 
    cmpres = strcmp(newnode->key, (*root)->key);
 
-   if (cmpres < 0)
+   if(cmpres < 0)
    {
       newnode->lson = (*root)->lson;
       newnode->rson = *root;
@@ -248,7 +247,7 @@ StrTree_p StrTreeInsert(StrTree_p *root, StrTree_p newnode)
 //
 /----------------------------------------------------------------------*/
 
-StrTree_p StrTreeStore(StrTree_p *root, char* key, IntOrP val1, IntOrP val2)
+StrTree_p StrTreeStore(StrTree_p* root, char* key, IntOrP val1, IntOrP val2)
 {
    StrTree_p handle, old;
 
@@ -282,12 +281,12 @@ StrTree_p StrTreeStore(StrTree_p *root, char* key, IntOrP val1, IntOrP val2)
 //
 /----------------------------------------------------------------------*/
 
-StrTree_p StrTreeFind(StrTree_p *root, const char* key)
+StrTree_p StrTreeFind(StrTree_p* root, const char* key)
 {
    if(*root)
    {
       *root = splay_tree(*root, key);
-      if(strcmp((*root)->key,key)==0)
+      if(strcmp((*root)->key, key) == 0)
       {
          return *root;
       }
@@ -311,18 +310,18 @@ StrTree_p StrTreeFind(StrTree_p *root, const char* key)
 /----------------------------------------------------------------------*/
 
 
-StrTree_p StrTreeExtractEntry(StrTree_p *root, const char* key)
+StrTree_p StrTreeExtractEntry(StrTree_p* root, const char* key)
 {
    StrTree_p x, cell;
 
-   if (!(*root))
+   if(!(*root))
    {
       return NULL;
    }
    *root = splay_tree(*root, key);
-   if(strcmp(key, (*root)->key)==0)
+   if(strcmp(key, (*root)->key) == 0)
    {
-      if (!(*root)->lson)
+      if(!(*root)->lson)
       {
          x = (*root)->rson;
       }
@@ -352,7 +351,7 @@ StrTree_p StrTreeExtractEntry(StrTree_p *root, const char* key)
 //
 /----------------------------------------------------------------------*/
 
-bool StrTreeDeleteEntry(StrTree_p *root, const char* key)
+bool StrTreeDeleteEntry(StrTree_p* root, const char* key)
 {
    StrTree_p cell;
 

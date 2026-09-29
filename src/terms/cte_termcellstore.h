@@ -38,15 +38,15 @@ Changes
 /*                    Data type declarations                           */
 /*---------------------------------------------------------------------*/
 
-#define TERM_STORE_HASH_SIZE (8192*4)
-#define TERM_STORE_HASH_MASK (TERM_STORE_HASH_SIZE-1)
+#define TERM_STORE_HASH_SIZE (8192 * 4)
+#define TERM_STORE_HASH_MASK (TERM_STORE_HASH_SIZE - 1)
 
 typedef struct termcellstore
 {
-   long   entries;
-   long   arg_count;
+   long entries;
+   long arg_count;
    Term_p store[TERM_STORE_HASH_SIZE];
-}TermCellStoreCell, *TermCellStore_p;
+} TermCellStoreCell, *TermCellStore_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -54,42 +54,40 @@ typedef struct termcellstore
 /*---------------------------------------------------------------------*/
 
 #define tcs_arity0hash(term) ((term)->f_code)
-#define tcs_arity1hash(term) (tcs_arity0hash(term)^(((intptr_t)(term)->args[0])>>3))
-#define tcs_aritynhash(term) (tcs_arity1hash(term)^(((intptr_t)(term)->args[1])>>4))
+#define tcs_arity1hash(term)                                                   \
+   (tcs_arity0hash(term) ^ (((intptr_t)(term)->args[0]) >> 3))
+#define tcs_aritynhash(term)                                                   \
+   (tcs_arity1hash(term) ^ (((intptr_t)(term)->args[1]) >> 4))
 
-#define TermCellHash(term)\
-((((term)->arity == 0)?\
-  tcs_arity0hash(term):\
-  (((term)->arity == 1)?tcs_arity1hash(term):tcs_aritynhash(term)))\
-   &TERM_STORE_HASH_MASK)
+#define TermCellHash(term)                                                     \
+   ((((term)->arity == 0) ? tcs_arity0hash(term)                               \
+                          : (((term)->arity == 1) ? tcs_arity1hash(term)       \
+                                                  : tcs_aritynhash(term))) &   \
+    TERM_STORE_HASH_MASK)
 
-void    TermCellStoreInit(TermCellStore_p store);
-void    TermCellStoreExit(TermCellStore_p store);
+void TermCellStoreInit(TermCellStore_p store);
+void TermCellStoreExit(TermCellStore_p store);
 
-Term_p  TermCellStoreFind(TermCellStore_p store, Term_p term);
-Term_p  TermCellStoreInsert(TermCellStore_p store, Term_p term);
-Term_p  TermCellStoreExtract(TermCellStore_p store, Term_p term);
-bool    TermCellStoreDelete(TermCellStore_p store, Term_p term);
+Term_p TermCellStoreFind(TermCellStore_p store, Term_p term);
+Term_p TermCellStoreInsert(TermCellStore_p store, Term_p term);
+Term_p TermCellStoreExtract(TermCellStore_p store, Term_p term);
+bool TermCellStoreDelete(TermCellStore_p store, Term_p term);
 
-void    TermCellStoreSetProp(TermCellStore_p store, TermProperties
-              props);
-void    TermCellStoreDelProp(TermCellStore_p store, TermProperties
-              props);
+void TermCellStoreSetProp(TermCellStore_p store, TermProperties props);
+void TermCellStoreDelProp(TermCellStore_p store, TermProperties props);
 
 #define TermCellStoreNodes(store) ((store)->entries)
-long    TermCellStoreCountNodes(TermCellStore_p store);
+long TermCellStoreCountNodes(TermCellStore_p store);
 
-long    TermCellStoreGCSweep(TermCellStore_p store, TermProperties gc_state );
+long TermCellStoreGCSweep(TermCellStore_p store, TermProperties gc_state);
 
-void    TermCellStorePrintDistrib(FILE* out, TermCellStore_p store);
+void TermCellStorePrintDistrib(FILE* out, TermCellStore_p store);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

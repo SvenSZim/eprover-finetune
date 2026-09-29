@@ -41,58 +41,57 @@ Changes
 
 typedef struct examplerepcell
 {
-   long       ident;
-   char*      name;
+   long ident;
+   char* name;
    Features_p features;
-}ExampleRepCell, *ExampleRep_p;
+} ExampleRepCell, *ExampleRep_p;
 
 
 /* We want to deal with sets of example representations */
 
 typedef struct examplesetcell
 {
-   long      count; /* For ident generation, _not_ number of examples
+   long count; /* For ident generation, _not_ number of examples
            */
    NumTree_p ident_index;
    StrTree_p name_index;
-}ExampleSetCell, *ExampleSet_p;
+} ExampleSetCell, *ExampleSet_p;
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define ExampleRepCellAlloc() (ExampleRepCell*)SizeMalloc(sizeof(ExampleRepCell))
+#define ExampleRepCellAlloc()                                                  \
+   (ExampleRepCell*)SizeMalloc(sizeof(ExampleRepCell))
 #define ExampleRepCellFree(junk) SizeFree(junk, sizeof(ExampleRepCell))
 
-void          ExampleRepFree(ExampleRep_p junk);
-void          ExampleRepPrint(FILE* out, ExampleRep_p rep);
-ExampleRep_p  ExampleRepParse(Scanner_p in);
+void ExampleRepFree(ExampleRep_p junk);
+void ExampleRepPrint(FILE* out, ExampleRep_p rep);
+ExampleRep_p ExampleRepParse(Scanner_p in);
 
-#define ExampleSetCellAlloc() (ExampleSetCell*)SizeMalloc(sizeof(ExampleSetCell))
+#define ExampleSetCellAlloc()                                                  \
+   (ExampleSetCell*)SizeMalloc(sizeof(ExampleSetCell))
 #define ExampleSetCellFree(junk) SizeFree(junk, sizeof(ExampleSetCell))
 
-ExampleSet_p  ExampleSetAlloc(void);
-void          ExampleSetFree(ExampleSet_p junk);
-ExampleRep_p  ExampleSetFindName(ExampleSet_p set, char* name);
-bool          ExampleSetInsert(ExampleSet_p set, ExampleRep_p rep);
-ExampleRep_p  ExampleSetExtract(ExampleSet_p set, ExampleRep_p rep);
-bool          ExampleSetDeleteId(ExampleSet_p set, long ident);
-bool          ExampleSetDeleteName(ExampleSet_p set, char* name);
-void          ExampleSetPrint(FILE* out, ExampleSet_p set);
-long          ExampleSetParse(Scanner_p in, ExampleSet_p set);
-long          ExampleSetSelectByDist(PStack_p results, ExampleSet_p
-                 set, Features_p target, double
-                 pred_w, double func_w, double
-                 *weights, long sel_no, double
-                 set_part, double dist_part);
+ExampleSet_p ExampleSetAlloc(void);
+void ExampleSetFree(ExampleSet_p junk);
+ExampleRep_p ExampleSetFindName(ExampleSet_p set, char* name);
+bool ExampleSetInsert(ExampleSet_p set, ExampleRep_p rep);
+ExampleRep_p ExampleSetExtract(ExampleSet_p set, ExampleRep_p rep);
+bool ExampleSetDeleteId(ExampleSet_p set, long ident);
+bool ExampleSetDeleteName(ExampleSet_p set, char* name);
+void ExampleSetPrint(FILE* out, ExampleSet_p set);
+long ExampleSetParse(Scanner_p in, ExampleSet_p set);
+long ExampleSetSelectByDist(PStack_p results, ExampleSet_p set,
+                            Features_p target, double pred_w, double func_w,
+                            double* weights, long sel_no, double set_part,
+                            double dist_part);
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

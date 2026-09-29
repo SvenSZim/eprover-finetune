@@ -49,8 +49,8 @@
 //
 /----------------------------------------------------------------------*/
 
-static void print_var_pattern(FILE* out, char* symbol, int arity, char*
-                              var, char* alt_var, int exception)
+static void print_var_pattern(FILE* out, char* symbol, int arity, char* var,
+                              char* alt_var, int exception)
 {
    int i;
    char* prefix = "";
@@ -58,10 +58,10 @@ static void print_var_pattern(FILE* out, char* symbol, int arity, char*
 
    fprintf(out, "%s(", symbol);
 
-   for(i=1; i<= arity; i++)
+   for(i = 1; i <= arity; i++)
    {
       fputs(prefix, out);
-      if(i==exception)
+      if(i == exception)
       {
          fputs(alt_var, out);
       }
@@ -91,11 +91,11 @@ static void eq_func_axiom_print(FILE* out, char* symbol, int arity,
                                 bool single_subst)
 {
    int i;
-   char *prefix = "";
+   char* prefix = "";
 
    if(single_subst)
    {
-      for(i=1; i<=arity; i++)
+      for(i = 1; i <= arity; i++)
       {
          fprintf(out, "equal(");
          print_var_pattern(out, symbol, arity, "X", "Y", i);
@@ -108,11 +108,11 @@ static void eq_func_axiom_print(FILE* out, char* symbol, int arity,
    else
    {
       fprintf(out, "equal(");
-      print_var_pattern(out, symbol, arity, "X", NULL,0);
+      print_var_pattern(out, symbol, arity, "X", NULL, 0);
       fprintf(out, ",");
-      print_var_pattern(out, symbol, arity, "Y", NULL,0);
+      print_var_pattern(out, symbol, arity, "Y", NULL, 0);
       fprintf(out, ") <- ");
-      for(i=1; i<=arity; i++)
+      for(i = 1; i <= arity; i++)
       {
          fprintf(out, "%sequal(X%d,Y%d)", prefix, i, i);
          prefix = ",";
@@ -140,7 +140,7 @@ static void eq_pred_axiom_print(FILE* out, char* symbol, int arity,
 
    if(single_subst)
    {
-      for(i=1; i<=arity; i++)
+      for(i = 1; i <= arity; i++)
       {
          print_var_pattern(out, symbol, arity, "X", "Y", i);
          fprintf(out, " <- ");
@@ -150,10 +150,10 @@ static void eq_pred_axiom_print(FILE* out, char* symbol, int arity,
    }
    else
    {
-      print_var_pattern(out, symbol, arity, "X", NULL,0);
+      print_var_pattern(out, symbol, arity, "X", NULL, 0);
       fprintf(out, " <- ");
-      print_var_pattern(out, symbol, arity, "Y", NULL,0);
-      for(i=1; i<=arity; i++)
+      print_var_pattern(out, symbol, arity, "Y", NULL, 0);
+      for(i = 1; i <= arity; i++)
       {
          fprintf(out, ",equal(X%d,Y%d)", i, i);
       }
@@ -181,10 +181,10 @@ static void tptp_eq_func_axiom_print(FILE* out, char* symbol, int arity,
 
    if(single_subst)
    {
-      for(i=1; i<=arity; i++)
+      for(i = 1; i <= arity; i++)
       {
-         fprintf(out, "input_clause(eq_subst_%s%d, axiom, [++equal(",
-                 symbol, i);
+         fprintf(out, "input_clause(eq_subst_%s%d, axiom, [++equal(", symbol,
+                 i);
          print_var_pattern(out, symbol, arity, "X", "Y", i);
          fprintf(out, ",");
          print_var_pattern(out, symbol, arity, "X", "Z", i);
@@ -194,13 +194,12 @@ static void tptp_eq_func_axiom_print(FILE* out, char* symbol, int arity,
    }
    else
    {
-      fprintf(out, "input_clause(eq_subst_%s, axiom, [++equal(",
-              symbol);
-      print_var_pattern(out, symbol, arity, "X", NULL,0);
+      fprintf(out, "input_clause(eq_subst_%s, axiom, [++equal(", symbol);
+      print_var_pattern(out, symbol, arity, "X", NULL, 0);
       fprintf(out, ",");
-      print_var_pattern(out, symbol, arity, "Y", NULL,0);
+      print_var_pattern(out, symbol, arity, "Y", NULL, 0);
       fprintf(out, ")");
-      for(i=1; i<=arity; i++)
+      for(i = 1; i <= arity; i++)
       {
          fprintf(out, ",--equal(X%d,Y%d)", i, i);
       }
@@ -227,10 +226,9 @@ static void tptp_eq_pred_axiom_print(FILE* out, char* symbol, int arity,
 
    if(single_subst)
    {
-      for(i=1; i<=arity; i++)
+      for(i = 1; i <= arity; i++)
       {
-         fprintf(out, "input_clause(eq_subst_%s%d, axiom, [++",
-                 symbol, i);
+         fprintf(out, "input_clause(eq_subst_%s%d, axiom, [++", symbol, i);
          print_var_pattern(out, symbol, arity, "X", "Y", i);
          fprintf(out, ",--");
          print_var_pattern(out, symbol, arity, "X", "Z", i);
@@ -239,12 +237,11 @@ static void tptp_eq_pred_axiom_print(FILE* out, char* symbol, int arity,
    }
    else
    {
-      fprintf(out, "input_clause(eq_subst_%s, axiom, [++",
-              symbol);
-      print_var_pattern(out, symbol, arity, "X", NULL,0);
+      fprintf(out, "input_clause(eq_subst_%s, axiom, [++", symbol);
+      print_var_pattern(out, symbol, arity, "X", NULL, 0);
       fprintf(out, ",--");
-      print_var_pattern(out, symbol, arity, "Y", NULL,0);
-      for(i=1; i<=arity; i++)
+      print_var_pattern(out, symbol, arity, "Y", NULL, 0);
+      for(i = 1; i <= arity; i++)
       {
          fprintf(out, ",--equal(X%d,Y%d)", i, i);
       }
@@ -267,8 +264,8 @@ static void tptp_eq_pred_axiom_print(FILE* out, char* symbol, int arity,
 
 static void clause_set_extract_entry(Clause_p clause)
 {
-   int     i;
-   Eval_p *root;
+   int i;
+   Eval_p* root;
 
    assert(clause);
    assert(clause->set);
@@ -276,19 +273,17 @@ static void clause_set_extract_entry(Clause_p clause)
 
    if(clause->evaluations)
    {
-      for(i=0; i<clause->evaluations->eval_no; i++)
+      for(i = 0; i < clause->evaluations->eval_no; i++)
       {
          root = (void*)&PDArrayElementP(clause->set->eval_indices, i);
          // This may fail (silently) if the clause evaluation was
          // added to a clause already in a set!
-         EvalTreeExtractEntry(root,
-                              clause->evaluations,
-                              i);
+         EvalTreeExtractEntry(root, clause->evaluations, i);
       }
    }
    clause->pred->succ = clause->succ;
    clause->succ->pred = clause->pred;
-   clause->set->literals-=ClauseLiteralNumber(clause);
+   clause->set->literals -= ClauseLiteralNumber(clause);
    clause->set->members--;
    clause->set = NULL;
    clause->succ = NULL;
@@ -329,7 +324,7 @@ ClauseSet_p ClauseSetAlloc(void)
    handle->demod_index = NULL;
    handle->fvindex = NULL;
 
-   handle->eval_indices = PDArrayAlloc(4,4);
+   handle->eval_indices = PDArrayAlloc(4, 4);
    handle->eval_no = 0;
 
    handle->identifier = DStrAlloc();
@@ -417,7 +412,7 @@ long ClauseSetStackCardinality(PStack_p stack)
    PStackPointer i;
    long res = 0;
 
-   for(i=0; i<PStackGetSP(stack); i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
       handle = PStackElementP(stack, i);
       res += ClauseSetCardinality(handle);
@@ -443,8 +438,7 @@ void ClauseSetGCMarkTerms(ClauseSet_p set)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClauseGCMarkTerms(handle);
    }
@@ -464,11 +458,11 @@ void ClauseSetGCMarkTerms(ClauseSet_p set)
 
 void ClauseSetInsert(ClauseSet_p set, Clause_p newclause)
 {
-   int    i;
+   int i;
 #ifndef NDEBUG
    Eval_p test;
 #endif
-   Eval_p *root;
+   Eval_p* root;
 
    assert(!newclause->set);
 
@@ -478,12 +472,12 @@ void ClauseSetInsert(ClauseSet_p set, Clause_p newclause)
    set->anchor->pred = newclause;
    newclause->set = set;
    set->members++;
-   set->literals+=ClauseLiteralNumber(newclause);
+   set->literals += ClauseLiteralNumber(newclause);
    if(newclause->evaluations)
    {
-      for(i=0; i<newclause->evaluations->eval_no; i++)
+      for(i = 0; i < newclause->evaluations->eval_no; i++)
       {
-         root = (void*)&(PDArrayElementP(newclause->set->eval_indices,i));
+         root = (void*)&(PDArrayElementP(newclause->set->eval_indices, i));
 #ifndef NDEBUG
          test =
 #endif
@@ -543,11 +537,11 @@ void ClauseSetPDTIndexedInsert(ClauseSet_p set, Clause_p newclause)
    assert(ClauseIsUnit(newclause));
 
    ClauseSetInsert(set, newclause);
-   pos          = ClausePosCellAlloc();
-   pos->clause  = newclause;
+   pos = ClausePosCellAlloc();
+   pos->clause = newclause;
    pos->literal = newclause->literals;
-   pos->side    = LeftSide;
-   pos->pos     = NULL;
+   pos->side = LeftSide;
+   pos->pos = NULL;
    if(!PDTreeInsert(set->demod_index, pos))
    {
       // not inserted
@@ -555,11 +549,11 @@ void ClauseSetPDTIndexedInsert(ClauseSet_p set, Clause_p newclause)
    }
    if(!EqnIsOriented(newclause->literals))
    {
-      pos          = ClausePosCellAlloc();
-      pos->clause  = newclause;
+      pos = ClausePosCellAlloc();
+      pos->clause = newclause;
       pos->literal = newclause->literals;
-      pos->side    = RightSide;
-      pos->pos     = NULL;
+      pos->side = RightSide;
+      pos->pos = NULL;
       if(!PDTreeInsert(set->demod_index, pos))
       {
          // not inserted
@@ -679,8 +673,8 @@ Clause_p ClauseSetExtractEntry(Clause_p clause)
                       clause);
          if(!EqnIsOriented(clause->literals))
          {
-            PDTreeDelete(clause->set->demod_index,
-                         clause->literals->rterm, clause);
+            PDTreeDelete(clause->set->demod_index, clause->literals->rterm,
+                         clause);
          }
          ClauseDelProp(clause, CPIsDIndexed);
       }
@@ -760,7 +754,7 @@ void ClauseSetDeleteEntry(Clause_p clause)
 Clause_p ClauseSetFindBest(ClauseSet_p set, int idx)
 {
    Clause_p clause;
-   Eval_p   evaluation;
+   Eval_p evaluation;
 
    /* printf("I: %d", idx); */
    evaluation =
@@ -776,7 +770,6 @@ Clause_p ClauseSetFindBest(ClauseSet_p set, int idx)
    assert(clause->set == set);
    return clause;
 }
-
 
 
 
@@ -796,8 +789,7 @@ void ClauseSetPrint(FILE* out, ClauseSet_p set, bool fullterms)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClausePrint(out, handle, fullterms);
       fputc('\n', out);
@@ -821,8 +813,7 @@ void ClauseSetTSTPPrint(FILE* out, ClauseSet_p set, bool fullterms)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClauseTSTPPrint(out, handle, fullterms, true);
       fputc('\n', out);
@@ -846,15 +837,13 @@ void ClauseSetPrintPrefix(FILE* out, char* prefix, ClauseSet_p set)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       fputs(prefix, out);
       ClausePrint(out, handle, true);
       fputc('\n', out);
    }
 }
-
 
 
 
@@ -889,9 +878,9 @@ void ClauseSetSort(ClauseSet_p set, ComparisonFunctionType cmp_fun)
 
    PStackSort(stack, cmp_fun);
 
-   for(i=0; i<PStackGetSP(stack); i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
-      clause = PStackElementP(stack,i);
+      clause = PStackElementP(stack, i);
       ClauseSetInsert(set, clause);
    }
    /* ClauseSetPrint(GlobalOut, set, true); */
@@ -915,8 +904,7 @@ void ClauseSetSetProp(ClauseSet_p set, FormulaProperties prop)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClauseSetProp(handle, prop);
    }
@@ -939,8 +927,7 @@ void ClauseSetDelProp(ClauseSet_p set, FormulaProperties prop)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClauseDelProp(handle, prop);
    }
@@ -963,13 +950,11 @@ void ClauseSetSetTPTPType(ClauseSet_p set, FormulaProperties type)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClauseSetTPTPType(handle, type);
    }
 }
-
 
 
 
@@ -992,15 +977,13 @@ long ClauseSetMarkCopies(ClauseSet_p set)
 {
    long res = 0;
    Clause_p handle, exists;
-   PTree_p  store = NULL;
+   PTree_p store = NULL;
 
    assert(set);
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
-      if((exists = PTreeObjStore(&store, handle,
-                                 ClauseCompareFun)))
+      if((exists = PTreeObjStore(&store, handle, ClauseCompareFun)))
       {
          //if(!ClauseParentsAreSubset(exists, handle))
          //{
@@ -1014,8 +997,6 @@ long ClauseSetMarkCopies(ClauseSet_p set)
 
    return res;
 }
-
-
 
 
 
@@ -1077,7 +1058,9 @@ long ClauseSetDeleteCopies(ClauseSet_p set)
 
    res1 = ClauseSetMarkCopies(set);
    res2 = ClauseSetDeleteMarkedEntries(set);
-   UNUSED(res1); UNUSED(res2); assert(res1==res2);
+   UNUSED(res1);
+   UNUSED(res2);
+   assert(res1 == res2);
 
    return res1;
 }
@@ -1106,19 +1089,18 @@ long ClauseSetDeleteNonUnits(ClauseSet_p set)
    handle = set->anchor->succ;
    while(handle != set->anchor)
    {
-      if(ClauseLiteralNumber(handle)>1)
+      if(ClauseLiteralNumber(handle) > 1)
       {
-         ClauseSetProp(handle,CPDeleteClause);
+         ClauseSetProp(handle, CPDeleteClause);
       }
       else
       {
-         ClauseDelProp(handle,CPDeleteClause);
+         ClauseDelProp(handle, CPDeleteClause);
       }
       handle = handle->succ;
    }
    return ClauseSetDeleteMarkedEntries(set);
 }
-
 
 
 
@@ -1137,11 +1119,10 @@ long ClauseSetDeleteNonUnits(ClauseSet_p set)
 
 long ClauseSetGetTermNodes(ClauseSet_p set)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle != set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       res += ClauseWeight(handle, 1, 1, 1, 1, 1, 1, true);
    }
@@ -1163,13 +1144,12 @@ long ClauseSetGetTermNodes(ClauseSet_p set)
 
 long ClauseSetMarkSOS(ClauseSet_p set, bool tptp_types)
 {
-   long     res = 0;
+   long res = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle != set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
-      if((tptp_types && (ClauseQueryTPTPType(handle) == CPTypeConjecture))||
+      if((tptp_types && (ClauseQueryTPTPType(handle) == CPTypeConjecture)) ||
          (!tptp_types && (ClauseIsGoal(handle))))
       {
          ClauseSetProp(handle, CPIsSOS);
@@ -1200,8 +1180,7 @@ void ClauseSetTermSetProp(ClauseSet_p set, TermProperties prop)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle != set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClauseTermSetProp(handle, prop);
    }
@@ -1224,8 +1203,7 @@ long ClauseSetTBTermPropDelCount(ClauseSet_p set, TermProperties prop)
    Clause_p handle;
    long res = 0;
 
-   for(handle = set->anchor->succ; handle != set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       res += ClauseTBTermDelPropCount(handle, prop);
    }
@@ -1271,7 +1249,7 @@ long ClauseSetGetSharedTermNodes(ClauseSet_p set)
 
 long ClauseSetParseList(Scanner_p in, ClauseSet_p set, TB_p bank)
 {
-   long     count = 0;
+   long count = 0;
    Clause_p clause;
 
    while(ClauseStartsMaybe(in))
@@ -1302,8 +1280,7 @@ void ClauseSetMarkMaximalTerms(OCB_p ocb, ClauseSet_p set)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClauseMarkMaximalTerms(ocb, handle);
    }
@@ -1326,8 +1303,7 @@ void ClauseSetSortLiterals(ClauseSet_p set, ComparisonFunctionType cmp_fun)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClauseSortLiterals(handle, cmp_fun);
    }
@@ -1347,12 +1323,12 @@ void ClauseSetSortLiterals(ClauseSet_p set, ComparisonFunctionType cmp_fun)
 //
 /----------------------------------------------------------------------*/
 
-SysDate ClauseSetListGetMaxDate(ClauseSet_p *demodulators, int limit)
+SysDate ClauseSetListGetMaxDate(ClauseSet_p* demodulators, int limit)
 {
    int i;
    SysDate res = SysDateCreationTime();
 
-   for(i=0; i<limit; i++)
+   for(i = 0; i < limit; i++)
    {
       assert(demodulators[i]);
       res = SysDateMaximum(res, demodulators[i]->date);
@@ -1382,8 +1358,7 @@ Clause_p ClauseSetFind(ClauseSet_p set, Clause_p clause)
    assert(set);
    assert(clause);
 
-   for(handle = set->anchor->succ; handle!=set->anchor;
-       handle=handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(handle == clause)
       {
@@ -1415,8 +1390,7 @@ Clause_p ClauseSetFindById(ClauseSet_p set, long ident)
 
    assert(set);
 
-   for(handle = set->anchor->succ; handle!=set->anchor;
-       handle=handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(handle->ident == ident)
       {
@@ -1445,12 +1419,11 @@ void ClauseSetRemoveEvaluations(ClauseSet_p set)
 {
    int i;
    Clause_p handle;
-   for(i=0; i<set->eval_indices->size; i++)
+   for(i = 0; i < set->eval_indices->size; i++)
    {
       PDArrayAssignP(set->eval_indices, i, NULL);
    }
-   for(handle = set->anchor->succ; handle!=set->anchor;
-       handle=handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       EvalsFree(handle->evaluations);
       handle->evaluations = NULL;
@@ -1477,8 +1450,7 @@ long ClauseSetApplyFun(ClauseSet_p set, ClauseFunType fun)
 
    assert(set);
 
-   for(handle = set->anchor->succ; handle!=set->anchor;
-       handle=handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       res += fun(handle);
    }
@@ -1624,12 +1596,10 @@ ClausePos_p ClauseSetFindEqDefinition(ClauseSet_p set, int min_arity,
       start = set->anchor->succ;
    }
 
-   for(handle = start;
-       handle!=set->anchor;
-       handle = handle->succ)
+   for(handle = start; handle != set->anchor; handle = handle->succ)
    {
       side = ClauseIsEqDefinition(handle, min_arity);
-      if(side!=NoSide)
+      if(side != NoSide)
       {
          res = ClausePosCellAlloc();
          res->clause = handle;
@@ -1664,13 +1634,12 @@ void ClauseSetDocInital(FILE* out, long level, ClauseSet_p set)
 {
    Clause_p handle;
 
-   if(level>=2)
+   if(level >= 2)
    {
-      for(handle = set->anchor->succ; handle!=set->anchor; handle =
-             handle->succ)
+      for(handle = set->anchor->succ; handle != set->anchor;
+          handle = handle->succ)
       {
-         DocClauseCreation(out, OutputLevel, handle,
-                           inf_initial, NULL, NULL,
+         DocClauseCreation(out, OutputLevel, handle, inf_initial, NULL, NULL,
                            NULL);
       }
    }
@@ -1694,14 +1663,14 @@ void ClauseSetPropDocQuote(FILE* out, long level, FormulaProperties prop,
 {
    Clause_p handle;
 
-   if(level>=2)
+   if(level >= 2)
    {
-      for(handle = set->anchor->succ; handle!=set->anchor; handle =
-             handle->succ)
+      for(handle = set->anchor->succ; handle != set->anchor;
+          handle = handle->succ)
       {
          if(ClauseQueryProp(handle, prop))
          {
-            DocClauseQuote(out, level, 2, handle, comment , NULL);
+            DocClauseQuote(out, level, 2, handle, comment, NULL);
          }
       }
    }
@@ -1760,11 +1729,11 @@ bool PDTreeVerifyIndex(PDTree_p tree, ClauseSet_p demods)
 {
    PStack_p stack = PStackAlloc(), trav;
    PDTNode_p handle;
-   long             i;
-   IntMapIter_p     iter;
-   ClausePos_p      pos;
-   PTree_p          entry;
-   bool             res = true;
+   long i;
+   IntMapIter_p iter;
+   ClausePos_p pos;
+   PTree_p entry;
+   bool res = true;
 
    PStackPushP(stack, tree->tree);
 
@@ -1785,7 +1754,7 @@ bool PDTreeVerifyIndex(PDTree_p tree, ClauseSet_p demods)
          IntMapIterFree(iter);
 
          PStack_p map_iter = PStackAlloc();
-          map_iter = PObjMapTraverseInit(handle->v_alternatives, map_iter);
+         map_iter = PObjMapTraverseInit(handle->v_alternatives, map_iter);
          while((handle = PObjMapTraverseNext(map_iter, NULL)))
          {
             PStackPushP(stack, handle);
@@ -1851,27 +1820,28 @@ void EqAxiomsPrint(FILE* out, Sig_p sig, bool single_subst)
               " [++equal(X,Y),--equal(Y,X)]).\n"
               "input_clause(eq_transitive, axiom,"
               " [++equal(X,Z),--equal(X,Y),--equal(Y,Z)]).\n");
-      for(i=sig->internal_symbols+1; i<=sig->f_count; i++)
+      for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
       {
-         if((arity=SigFindArity(sig, i)))
+         if((arity = SigFindArity(sig, i)))
          {
-            if(SigIsPredicate(sig,i))
+            if(SigIsPredicate(sig, i))
             {
-               tptp_eq_pred_axiom_print(out, SigFindName(sig,i),
-                                        arity, single_subst);
+               tptp_eq_pred_axiom_print(out, SigFindName(sig, i), arity,
+                                        single_subst);
             }
             else
             {
-               tptp_eq_func_axiom_print(out, SigFindName(sig,i),
-                                        arity, single_subst);
+               tptp_eq_func_axiom_print(out, SigFindName(sig, i), arity,
+                                        single_subst);
             }
          }
       }
    }
    else if(OutputFormat == TSTPFormat)
    {
-      Error("Adding of equality axioms not (yet) supported for TSTP/TPTP-3 format.",
-            OTHER_ERROR);
+      Error(
+         "Adding of equality axioms not (yet) supported for TSTP/TPTP-3 format.",
+         OTHER_ERROR);
    }
    else
    {
@@ -1879,18 +1849,18 @@ void EqAxiomsPrint(FILE* out, Sig_p sig, bool single_subst)
               "equal(X,X) <- .\n"
               "equal(X,Y) <- equal(Y,X).\n"
               "equal(X,Z) <- equal(X,Y), equal(Y,Z).\n");
-      for(i=sig->internal_symbols+1; i<=sig->f_count; i++)
+      for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
       {
-         if((arity=SigFindArity(sig, i)))
+         if((arity = SigFindArity(sig, i)))
          {
-            if(SigIsPredicate(sig,i))
+            if(SigIsPredicate(sig, i))
             {
-               eq_pred_axiom_print(out, SigFindName(sig,i), arity,
+               eq_pred_axiom_print(out, SigFindName(sig, i), arity,
                                    single_subst);
             }
             else
             {
-               eq_func_axiom_print(out, SigFindName(sig,i), arity,
+               eq_func_axiom_print(out, SigFindName(sig, i), arity,
                                    single_subst);
             }
          }
@@ -1912,12 +1882,11 @@ void EqAxiomsPrint(FILE* out, Sig_p sig, bool single_subst)
 //
 /----------------------------------------------------------------------*/
 
-void ClauseSetAddSymbolDistribution(ClauseSet_p set, long *dist_array)
+void ClauseSetAddSymbolDistribution(ClauseSet_p set, long* dist_array)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClauseAddSymbolDistribution(handle, dist_array);
    }
@@ -1935,12 +1904,11 @@ void ClauseSetAddSymbolDistribution(ClauseSet_p set, long *dist_array)
 //
 /----------------------------------------------------------------------*/
 
-void ClauseSetAddTypeDistribution(ClauseSet_p set, long *type_array)
+void ClauseSetAddTypeDistribution(ClauseSet_p set, long* type_array)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClauseAddTypeDistribution(handle, type_array);
    }
@@ -1959,12 +1927,11 @@ void ClauseSetAddTypeDistribution(ClauseSet_p set, long *type_array)
 //
 /----------------------------------------------------------------------*/
 
-void ClauseSetAddConjSymbolDistribution(ClauseSet_p set, long *dist_array)
+void ClauseSetAddConjSymbolDistribution(ClauseSet_p set, long* dist_array)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsConjecture(handle))
       {
@@ -1986,12 +1953,11 @@ void ClauseSetAddConjSymbolDistribution(ClauseSet_p set, long *dist_array)
 //
 /----------------------------------------------------------------------*/
 
-void ClauseSetAddAxiomSymbolDistribution(ClauseSet_p set, long *dist_array)
+void ClauseSetAddAxiomSymbolDistribution(ClauseSet_p set, long* dist_array)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(!ClauseIsConjecture(handle))
       {
@@ -2014,13 +1980,12 @@ void ClauseSetAddAxiomSymbolDistribution(ClauseSet_p set, long *dist_array)
 //
 /----------------------------------------------------------------------*/
 
-void ClauseSetComputeFunctionRanks(ClauseSet_p set, long *rank_array,
+void ClauseSetComputeFunctionRanks(ClauseSet_p set, long* rank_array,
                                    long* count)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClauseComputeFunctionRanks(handle, rank_array, count);
    }
@@ -2043,31 +2008,30 @@ void ClauseSetComputeFunctionRanks(ClauseSet_p set, long *rank_array,
 FunCode ClauseSetFindFreqSymbol(ClauseSet_p set, Sig_p sig, int arity,
                                 bool least)
 {
-   FunCode       i, selected=0;
-   long          *dist_array,freq=least?LONG_MAX:0;
+   FunCode i, selected = 0;
+   long *dist_array, freq = least ? LONG_MAX : 0;
 
-   dist_array = SizeMalloc((sig->f_count+1) * sizeof(long));
+   dist_array = SizeMalloc((sig->f_count + 1) * sizeof(long));
 
-   for(i=0; i<=sig->f_count; i++)
+   for(i = 0; i <= sig->f_count; i++)
    {
       dist_array[i] = 0;
    }
    ClauseSetAddSymbolDistribution(set, dist_array);
 
-   for(i=sig->internal_symbols+1; i<= sig->f_count; i++)
+   for(i = sig->internal_symbols + 1; i <= sig->f_count; i++)
    {
-      if((SigFindArity(sig,i)==arity) && !SigIsPredicate(sig,i) &&
-         !SigIsSpecial(sig,i))
+      if((SigFindArity(sig, i) == arity) && !SigIsPredicate(sig, i) &&
+         !SigIsSpecial(sig, i))
       {
-         if((least && (dist_array[i]<=freq)) ||
-            (dist_array[i]>=freq))
+         if((least && (dist_array[i] <= freq)) || (dist_array[i] >= freq))
          {
             freq = dist_array[i];
             selected = i;
          }
       }
    }
-   SizeFree(dist_array, (sig->f_count+1)*sizeof(long));
+   SizeFree(dist_array, (sig->f_count + 1) * sizeof(long));
 
    return selected;
 }
@@ -2087,12 +2051,11 @@ FunCode ClauseSetFindFreqSymbol(ClauseSet_p set, Sig_p sig, int arity,
 
 long ClauseSetMaxVarNumber(ClauseSet_p set)
 {
-   long res=0, tmp;
+   long res = 0, tmp;
    PTree_p tree;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!= set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       tree = NULL;
       tmp = ClauseCollectVariables(handle, &tree);
@@ -2129,9 +2092,7 @@ long ClauseSetFindCharFreqVectors(ClauseSet_p set, FreqVector_p fsum,
    FreqVectorInitialize(fmax, 0);
    FreqVectorInitialize(fmin, LONG_MAX);
 
-   for(handle = set->anchor->succ;
-       handle!= set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       current = VarFreqVectorCompute(handle, cspec);
       FreqVectorAdd(fsum, fsum, current);
@@ -2181,14 +2142,9 @@ PermVector_p PermVectorCompute(ClauseSet_p set, FVCollect_p cspec,
    fmax = FreqVectorAlloc(vlen);
    fmin = FreqVectorAlloc(vlen);
 
-   ClauseSetFindCharFreqVectors(set,
-                                fsum,
-                                fmax,
-                                fmin,
-                                cspec);
+   ClauseSetFindCharFreqVectors(set, fsum, fmax, fmin, cspec);
 
-   res = PermVectorComputeInternal(fmax, fmin, fsum,
-                                   cspec->max_symbols,
+   res = PermVectorComputeInternal(fmax, fmin, fsum, cspec->max_symbols,
                                    eliminate_uninformative);
    FreqVectorFree(fsum);
    FreqVectorFree(fmax);
@@ -2286,15 +2242,13 @@ long ClauseSetNewTerms(ClauseSet_p set, TB_p terms)
 //
 /----------------------------------------------------------------------*/
 
-long ClauseSetSplitConjectures(ClauseSet_p set,
-                               PList_p conjectures, PList_p rest)
+long ClauseSetSplitConjectures(ClauseSet_p set, PList_p conjectures,
+                               PList_p rest)
 {
    Clause_p handle;
-   long     res = 0;
+   long res = 0;
 
-   for(handle = set->anchor->succ;
-       handle!=set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsConjecture(handle))
       {
@@ -2323,12 +2277,10 @@ long ClauseSetSplitConjectures(ClauseSet_p set,
 
 long long ClauseSetStandardWeight(ClauseSet_p set)
 {
-   Clause_p  handle;
+   Clause_p handle;
    long long res = 0;
 
-   for(handle = set->anchor->succ;
-       handle!=set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       res += ClauseStandardWeight(handle);
    }
@@ -2352,11 +2304,11 @@ long long ClauseSetStandardWeight(ClauseSet_p set)
 void ClauseSetDerivationStackStatistics(ClauseSet_p set)
 {
    Clause_p handle;
-   long     i;
-   PDArray_p dist = PDArrayAlloc(8,8);
-   double    sum = 0.0;
+   long i;
+   PDArray_p dist = PDArrayAlloc(8, 8);
+   double sum = 0.0;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(handle->derivation)
       {
@@ -2367,14 +2319,13 @@ void ClauseSetDerivationStackStatistics(ClauseSet_p set)
          PDArrayElementIncInt(dist, 0, 1);
       }
    }
-   for(i=0; i<PDArraySize(dist); i++)
+   for(i = 0; i < PDArraySize(dist); i++)
    {
-      printf(COMCHAR" %5ld: %6ld\n", i, PDArrayElementInt(dist,i));
-      sum += PDArrayElementInt(dist,i)*i;
+      printf(COMCHAR " %5ld: %6ld\n", i, PDArrayElementInt(dist, i));
+      sum += PDArrayElementInt(dist, i) * i;
    }
-   printf(COMCHAR" Average over %ld clauses: %f\n",
-          ClauseSetCardinality(set),
-          sum/ClauseSetCardinality(set));
+   printf(COMCHAR " Average over %ld clauses: %f\n", ClauseSetCardinality(set),
+          sum / ClauseSetCardinality(set));
    PDArrayFree(dist);
 }
 
@@ -2394,9 +2345,9 @@ void ClauseSetDerivationStackStatistics(ClauseSet_p set)
 long ClauseSetPushClauses(PStack_p stack, ClauseSet_p set)
 {
    Clause_p handle;
-   long     res = 0;
+   long res = 0;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       PStackPushP(stack, handle);
       res++;
@@ -2420,7 +2371,7 @@ void ClauseSetDefaultWeighClauses(ClauseSet_p set)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       handle->weight = ClauseStandardWeight(handle);
    }
@@ -2446,9 +2397,7 @@ long ClauseSetCountConjectures(ClauseSet_p set, long* hypos)
    Clause_p handle;
 
 
-   for(handle = set->anchor->succ;
-       handle != set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(ClauseIsConjecture(handle))
       {
@@ -2479,17 +2428,15 @@ int ClauseConjectureOrder(ClauseSet_p set)
    int ord = 0;
    Clause_p handle;
 
-   for(handle = set->anchor->succ;
-       handle != set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       for(Eqn_p lit = handle->literals; lit; lit = lit->next)
       {
          Sig_p sig = lit->bank->sig;
-         ord = MAX(ord, MAX(TermComputeOrder(sig, lit->lterm),
-                            TermComputeOrder(sig, lit->rterm)));
+         ord = MAX(ord,
+                   MAX(TermComputeOrder(sig, lit->lterm),
+                       TermComputeOrder(sig, lit->rterm)));
       }
-
    }
    return ord;
 }
@@ -2510,9 +2457,9 @@ bool ClauseSetIsUntyped(ClauseSet_p set)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
-      if (!ClauseIsUntyped(handle))
+      if(!ClauseIsUntyped(handle))
       {
          return false;
       }

@@ -34,15 +34,16 @@
 
 typedef struct
 {
-  char* key;
-  char* value;
+   char* key;
+   char* value;
 } StrStrPair;
 
 typedef struct
 {
-  char* key;
-  ScheduleCell* value;
-  int class_size; // how many problems were originally in the class used for scheduling
+   char* key;
+   ScheduleCell* value;
+   int
+      class_size; // how many problems were originally in the class used for scheduling
                   // (will be used for tie-breaking when choosing the class)
 } StrSchedPair;
 
@@ -51,12 +52,11 @@ typedef struct
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-void          StrategiesPrintPredefined(FILE* out, bool name_only);
+void StrategiesPrintPredefined(FILE* out, bool name_only);
 ScheduleCell* GetPreprocessingSchedule(const char* problem_category);
 ScheduleCell* GetSearchSchedule(const char* problem_category);
 ScheduleCell* GetDefaultSchedule();
-void          GetHeuristicWithName(const char* name,
-                                   HeuristicParms_p target);
+void GetHeuristicWithName(const char* name, HeuristicParms_p target);
 
 #endif
 

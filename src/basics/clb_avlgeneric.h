@@ -38,7 +38,6 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
@@ -54,9 +53,9 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-#define AVL_TRAVERSE_DECLARATION(name,type)\
-PStack_p name##TraverseInit(type root);\
-type     name##TraverseNext(PStack_p state);
+#define AVL_TRAVERSE_DECLARATION(name, type)                                   \
+   PStack_p name##TraverseInit(type root);                                     \
+   type name##TraverseNext(PStack_p state);
 
 
 /*-----------------------------------------------------------------------
@@ -89,37 +88,37 @@ type     name##TraverseNext(PStack_p state);
 //
 /----------------------------------------------------------------------*/
 
-#define AVL_TRAVERSE_DEFINITION(name,type)\
-PStack_p name##TraverseInit(type root)\
-{\
-   PStack_p stack = PStackAlloc();\
-\
-   while(root)\
-   {\
-      PStackPushP(stack, root);\
-      root = root->lson;\
-   }\
-   return stack;\
-}\
-\
-\
-type name##TraverseNext(PStack_p state)\
-{\
-   type handle, res;\
-\
-   if(PStackEmpty(state))\
-   {\
-      return NULL;\
-   }\
-   res = PStackPopP(state);\
-   handle = res->rson;\
-   while(handle)\
-   {\
-      PStackPushP(state, handle);\
-      handle = handle->lson;\
-   }\
-   return res;\
-}
+#define AVL_TRAVERSE_DEFINITION(name, type)                                    \
+   PStack_p name##TraverseInit(type root)                                      \
+   {                                                                           \
+      PStack_p stack = PStackAlloc();                                          \
+                                                                               \
+      while(root)                                                              \
+      {                                                                        \
+         PStackPushP(stack, root);                                             \
+         root = root->lson;                                                    \
+      }                                                                        \
+      return stack;                                                            \
+   }                                                                           \
+                                                                               \
+                                                                               \
+   type name##TraverseNext(PStack_p state)                                     \
+   {                                                                           \
+      type handle, res;                                                        \
+                                                                               \
+      if(PStackEmpty(state))                                                   \
+      {                                                                        \
+         return NULL;                                                          \
+      }                                                                        \
+      res = PStackPopP(state);                                                 \
+      handle = res->rson;                                                      \
+      while(handle)                                                            \
+      {                                                                        \
+         PStackPushP(state, handle);                                           \
+         handle = handle->lson;                                                \
+      }                                                                        \
+      return res;                                                              \
+   }
 
 
 
@@ -128,8 +127,6 @@ type name##TraverseNext(PStack_p state)\
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

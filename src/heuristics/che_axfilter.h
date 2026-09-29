@@ -38,10 +38,10 @@ Changes
 typedef enum
 {
    AFNoFilter = 0,
-   AFGSinE,    /* Generalized SinE */
-   AFThreshold,  /* Pass all formulas if less then N */
-   AFLambdaDefines  /* Pass only conjecture and all definitions */
-}AxFilterType;
+   AFGSinE,        /* Generalized SinE */
+   AFThreshold,    /* Pass all formulas if less then N */
+   AFLambdaDefines /* Pass only conjecture and all definitions */
+} AxFilterType;
 
 
 /* Type of generality measure: Number of occurences in terms or in
@@ -59,34 +59,34 @@ typedef enum
    GMNegFormula,
    GMNegLiteral,
    GMNegTerms
-}GeneralityMeasure;
+} GeneralityMeasure;
 
 
 /* Parameters for a single Axiom filter */
 
 typedef struct
 {
-   char*             name;
-   AxFilterType      type;
+   char* name;
+   AxFilterType type;
    GeneralityMeasure gen_measure;
-   bool              use_hypotheses;
-   double            benevolence;
-   long              generosity;
-   long              max_recursion_depth;
-   long long         max_set_size;
-   double            max_set_fraction;
-   bool              add_no_symbol_axioms;
-   bool              trim_implications;
-   bool              defined_symbols_in_drel;
-   long              threshold; // for Threshold filter only
-}AxFilterCell, *AxFilter_p;
+   bool use_hypotheses;
+   double benevolence;
+   long generosity;
+   long max_recursion_depth;
+   long long max_set_size;
+   double max_set_fraction;
+   bool add_no_symbol_axioms;
+   bool trim_implications;
+   bool defined_symbols_in_drel;
+   long threshold; // for Threshold filter only
+} AxFilterCell, *AxFilter_p;
 
 
 /* Sets of AxFilters */
 typedef struct
 {
    PStack_p set;
-}AxFilterSetCell, *AxFilterSet_p;
+} AxFilterSetCell, *AxFilterSet_p;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
@@ -94,31 +94,32 @@ typedef struct
 
 extern char* AxFilterDefaultSet;
 
-#define AxFilterCellAlloc()    (AxFilterCell*)SizeMalloc(sizeof(AxFilterCell))
+#define AxFilterCellAlloc() (AxFilterCell*)SizeMalloc(sizeof(AxFilterCell))
 #define AxFilterCellFree(junk) SizeFree(junk, sizeof(AxFilterCell))
 
 AxFilter_p AxFilterAlloc(void);
-void       AxFilterFree(AxFilter_p junk);
+void AxFilterFree(AxFilter_p junk);
 AxFilter_p AxFilterParse(Scanner_p in);
 AxFilter_p AxFilterDefParse(Scanner_p in);
-bool       AxFilterPrintBuf(char* buf, int buflen, AxFilter_p filter);
-void       AxFilterPrint(FILE* out, AxFilter_p filter);
-void       AxFilterDefPrint(FILE* out, AxFilter_p filter);
+bool AxFilterPrintBuf(char* buf, int buflen, AxFilter_p filter);
+void AxFilterPrint(FILE* out, AxFilter_p filter);
+void AxFilterDefPrint(FILE* out, AxFilter_p filter);
 
 
-#define AxFilterSetCellAlloc()    (AxFilterSetCell*)SizeMalloc(sizeof(AxFilterSetCell))
+#define AxFilterSetCellAlloc()                                                 \
+   (AxFilterSetCell*)SizeMalloc(sizeof(AxFilterSetCell))
 #define AxFilterSetCellFree(junk) SizeFree(junk, sizeof(AxFilterSetCell))
 
 AxFilterSet_p AxFilterSetAlloc(void);
-void          AxFilterSetFree(AxFilterSet_p junk);
-long          AxFilterSetParse(Scanner_p in, AxFilterSet_p set);
+void AxFilterSetFree(AxFilterSet_p junk);
+long AxFilterSetParse(Scanner_p in, AxFilterSet_p set);
 AxFilterSet_p AxFilterSetCreateInternal(char* str);
-void          AxFilterSetPrint(FILE* out, AxFilterSet_p set);
-#define       AxFilterSetElements(s) PStackGetSP((s)->set)
-#define       AxFilterSetGetFilter(s, i) ((AxFilter_p)PStackElementP((s)->set,(i)))
-#define       AxFilterSetAddFilter(s, f) PStackPushP((s)->set, (f))
-AxFilter_p    AxFilterSetFindFilter(AxFilterSet_p set, char* name);
-void          AxFilterSetAddNames(DStr_p res, AxFilterSet_p filters);
+void AxFilterSetPrint(FILE* out, AxFilterSet_p set);
+#define AxFilterSetElements(s) PStackGetSP((s)->set)
+#define AxFilterSetGetFilter(s, i) ((AxFilter_p)PStackElementP((s)->set, (i)))
+#define AxFilterSetAddFilter(s, f) PStackPushP((s)->set, (f))
+AxFilter_p AxFilterSetFindFilter(AxFilterSet_p set, char* name);
+void AxFilterSetAddNames(DStr_p res, AxFilterSet_p filters);
 
 #endif
 

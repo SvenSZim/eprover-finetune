@@ -57,16 +57,15 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-Eqn_p find_next_potential_eq_factor_partner(ClausePos_p pos1,
-                   ClausePos_p pos2)
+Eqn_p find_next_potential_eq_factor_partner(ClausePos_p pos1, ClausePos_p pos2)
 {
    Eqn_p lit;
 
    lit = ClausePosFindPosLiteral(pos2, false);
-   if(lit==pos1->literal)
+   if(lit == pos1->literal)
    {
       pos2->literal = pos2->literal->next;
-      lit =  ClausePosFindPosLiteral(pos2, false);
+      lit = ClausePosFindPosLiteral(pos2, false);
    }
    return lit;
 }
@@ -124,12 +123,12 @@ Eqn_p find_first_eq_factor_partner(ClausePos_p pos1, ClausePos_p pos2)
 /----------------------------------------------------------------------*/
 
 Clause_p ComputeOrderedFactor(TB_p bank, OCB_p ocb, ClausePos_p pos1,
-               ClausePos_p pos2, VarBank_p freshvars)
+                              ClausePos_p pos2, VarBank_p freshvars)
 {
-   Subst_p  subst;
+   Subst_p subst;
    Clause_p new_clause = NULL;
-   Eqn_p    new_literals;
-   bool     unifies;
+   Eqn_p new_literals;
+   bool unifies;
 
    assert(pos1->clause == pos2->clause);
    assert(pos1->literal != pos2->literal);
@@ -149,16 +148,15 @@ Clause_p ComputeOrderedFactor(TB_p bank, OCB_p ocb, ClausePos_p pos1,
    }
    if(unifies)
    {
-      if(EqnListEqnIsMaximal(ocb, pos1->clause->literals,
-              pos1->literal))
+      if(EqnListEqnIsMaximal(ocb, pos1->clause->literals, pos1->literal))
       {
-    NormSubstEqnListExcept(pos1->clause->literals, pos2->literal,
-            subst, freshvars);
-    new_literals = EqnListCopyOptExcept(pos1->clause->literals,
-                                             pos2->literal);
-    EqnListRemoveResolved(&new_literals);
-    EqnListRemoveDuplicates(new_literals);
-    new_clause = ClauseAlloc(new_literals);
+         NormSubstEqnListExcept(pos1->clause->literals, pos2->literal, subst,
+                                freshvars);
+         new_literals =
+            EqnListCopyOptExcept(pos1->clause->literals, pos2->literal);
+         EqnListRemoveResolved(&new_literals);
+         EqnListRemoveDuplicates(new_literals);
+         new_clause = ClauseAlloc(new_literals);
       }
    }
    SubstDelete(subst);
@@ -182,8 +180,8 @@ Clause_p ComputeOrderedFactor(TB_p bank, OCB_p ocb, ClausePos_p pos1,
 //
 /----------------------------------------------------------------------*/
 
-Eqn_p ClausePosFirstOrderedFactorLiterals(Clause_p clause, ClausePos_p
-                 pos1, ClausePos_p pos2)
+Eqn_p ClausePosFirstOrderedFactorLiterals(Clause_p clause, ClausePos_p pos1,
+                                          ClausePos_p pos2)
 {
    Eqn_p lit;
 
@@ -222,14 +220,12 @@ Eqn_p ClausePosFirstOrderedFactorLiterals(Clause_p clause, ClausePos_p
 //
 /----------------------------------------------------------------------*/
 
-Eqn_p ClausePosNextOrderedFactorLiterals(ClausePos_p pos1, ClausePos_p
-                pos2)
+Eqn_p ClausePosNextOrderedFactorLiterals(ClausePos_p pos1, ClausePos_p pos2)
 {
    Eqn_p lit;
 
    if(pos2->side == LeftSide &&
-      (!EqnIsOriented(pos2->literal) ||
-       !EqnIsOriented(pos1->literal)))
+      (!EqnIsOriented(pos2->literal) || !EqnIsOriented(pos1->literal)))
    {
       pos2->side = RightSide;
       return pos2->literal;
@@ -244,7 +240,7 @@ Eqn_p ClausePosNextOrderedFactorLiterals(ClausePos_p pos1, ClausePos_p
       lit = ClausePosFindMaxLiteral(pos1, true);
       if(!lit)
       {
-    break;
+         break;
       }
       pos2->literal = pos1->literal->next;
       lit = ClausePosFindMaxLiteral(pos2, true);
@@ -271,8 +267,8 @@ void ComputeEqualityFactor(TB_p bank, OCB_p ocb, ClausePos_p pos1,
                            ClausePos_p pos2, VarBank_p freshvars,
                            bool* subst_is_ho, PStack_p res_clauses)
 {
-   Term_p  max_term, with_term, min_term, new_lside, new_rside;
-   Eqn_p   new_condition, new_literals;
+   Term_p max_term, with_term, min_term, new_lside, new_rside;
+   Eqn_p new_condition, new_literals;
    Subst_p subst = SubstAlloc();
 
    assert(EqnIsPositive(pos1->literal));
@@ -280,31 +276,28 @@ void ComputeEqualityFactor(TB_p bank, OCB_p ocb, ClausePos_p pos1,
    assert(EqnIsPositive(pos2->literal));
    assert(!EqnIsOriented(pos1->literal) || (pos1->side == LeftSide));
 
-   max_term  = ClausePosGetSide(pos1);
+   max_term = ClausePosGetSide(pos1);
    with_term = ClausePosGetSide(pos2);
 
-   if((!TermIsFreeVar(max_term)||EqnIsEquLit(pos2->literal))&&
-      (!TermIsFreeVar(with_term)||EqnIsEquLit(pos1->literal)))
+   if((!TermIsFreeVar(max_term) || EqnIsEquLit(pos2->literal)) &&
+      (!TermIsFreeVar(with_term) || EqnIsEquLit(pos1->literal)))
    {
       CSUIterator_p unif_iter = CSUIterInit(max_term, with_term, subst, bank);
       while(NextCSUElement(unif_iter))
       {
          min_term = ClausePosGetOtherSide(pos1);
-         if(!TOGreater(ocb, min_term, max_term, DEREF_ALWAYS, DEREF_ALWAYS)
-            &&
-            EqnListEqnIsMaximal(ocb, pos1->clause->literals,
-                     pos1->literal))
+         if(!TOGreater(ocb, min_term, max_term, DEREF_ALWAYS, DEREF_ALWAYS) &&
+            EqnListEqnIsMaximal(ocb, pos1->clause->literals, pos1->literal))
          {
             *subst_is_ho = SubstHasHOBinding(subst);
-            NormSubstEqnListExcept(pos1->clause->literals, pos2->literal,
-                                   subst, freshvars);
+            NormSubstEqnListExcept(pos1->clause->literals, pos2->literal, subst,
+                                   freshvars);
             new_lside = TBInsertNoProps(bank, min_term, DEREF_ALWAYS);
-            new_rside = TBInsertNoProps(bank,
-                        ClausePosGetOtherSide(pos2),
-                        DEREF_ALWAYS);
+            new_rside =
+               TBInsertNoProps(bank, ClausePosGetOtherSide(pos2), DEREF_ALWAYS);
             new_condition = EqnAlloc(new_lside, new_rside, bank, false);
-            new_literals = EqnListCopyOptExcept(pos1->clause->literals,
-                        pos1->literal);
+            new_literals =
+               EqnListCopyOptExcept(pos1->clause->literals, pos1->literal);
             EqnListInsertFirst(&new_literals, new_condition);
             EqnListLambdaNormalize(new_literals);
             EqnListRemoveResolved(&new_literals);
@@ -333,11 +326,11 @@ void ComputeEqualityFactor(TB_p bank, OCB_p ocb, ClausePos_p pos1,
 //
 /----------------------------------------------------------------------*/
 
-Eqn_p ClausePosFirstEqualityFactorSides(Clause_p clause, ClausePos_p
-               pos1, ClausePos_p pos2)
+Eqn_p ClausePosFirstEqualityFactorSides(Clause_p clause, ClausePos_p pos1,
+                                        ClausePos_p pos2)
 {
    Term_p side;
-   Eqn_p  lit = NULL;
+   Eqn_p lit = NULL;
 
    assert(clause);
    assert(pos1);
@@ -368,10 +361,9 @@ Eqn_p ClausePosFirstEqualityFactorSides(Clause_p clause, ClausePos_p
 //
 /----------------------------------------------------------------------*/
 
-Eqn_p ClausePosNextEqualityFactorSides(ClausePos_p pos1, ClausePos_p
-                   pos2)
+Eqn_p ClausePosNextEqualityFactorSides(ClausePos_p pos1, ClausePos_p pos2)
 {
-   Eqn_p  lit;
+   Eqn_p lit;
    Term_p side;
 
    if(pos2->side == LeftSide)
@@ -387,7 +379,7 @@ Eqn_p ClausePosNextEqualityFactorSides(ClausePos_p pos1, ClausePos_p
       side = ClausePosFindNextMaximalSide(pos1, true);
       if(side)
       {
-    lit = find_first_eq_factor_partner(pos1, pos2);
+         lit = find_first_eq_factor_partner(pos1, pos2);
       }
    }
    return lit;

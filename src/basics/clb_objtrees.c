@@ -52,13 +52,13 @@ Changes
 /----------------------------------------------------------------------*/
 
 static PObjTree_p splay_tree(PObjTree_p tree, void* key,
-           ComparisonFunctionType cmpfun)
+                             ComparisonFunctionType cmpfun)
 {
-   PObjTree_p   left, right, tmp;
+   PObjTree_p left, right, tmp;
    PTreeCell newnode;
-   int       cmpres;
+   int cmpres;
 
-   if (!tree)
+   if(!tree)
    {
       return tree;
    }
@@ -68,54 +68,54 @@ static PObjTree_p splay_tree(PObjTree_p tree, void* key,
    left = &newnode;
    right = &newnode;
 
-   for (;;)
+   for(;;)
    {
       cmpres = cmpfun(key, tree->key);
-      if (cmpres < 0)
+      if(cmpres < 0)
       {
-    if(!tree->lson)
-    {
-       break;
-    }
-    if(cmpfun(key, tree->lson->key) < 0)
-    {
-       tmp = tree->lson;
-       tree->lson = tmp->rson;
-       tmp->rson = tree;
-       tree = tmp;
-       if (!tree->lson)
-       {
-          break;
-       }
-    }
-    right->lson = tree;
-    right = tree;
-    tree = tree->lson;
+         if(!tree->lson)
+         {
+            break;
+         }
+         if(cmpfun(key, tree->lson->key) < 0)
+         {
+            tmp = tree->lson;
+            tree->lson = tmp->rson;
+            tmp->rson = tree;
+            tree = tmp;
+            if(!tree->lson)
+            {
+               break;
+            }
+         }
+         right->lson = tree;
+         right = tree;
+         tree = tree->lson;
       }
       else if(cmpres > 0)
       {
-    if (!tree->rson)
-    {
-       break;
-    }
-    if(cmpfun(key, tree->rson->key) > 0)
-    {
-       tmp = tree->rson;
-       tree->rson = tmp->lson;
-       tmp->lson = tree;
-       tree = tmp;
-       if (!tree->rson)
-       {
-          break;
-       }
-    }
-    left->rson = tree;
-    left = tree;
-    tree = tree->rson;
+         if(!tree->rson)
+         {
+            break;
+         }
+         if(cmpfun(key, tree->rson->key) > 0)
+         {
+            tmp = tree->rson;
+            tree->rson = tmp->lson;
+            tmp->lson = tree;
+            tree = tmp;
+            if(!tree->rson)
+            {
+               break;
+            }
+         }
+         left->rson = tree;
+         left = tree;
+         tree = tree->rson;
       }
       else
       {
-    break;
+         break;
       }
    }
    left->rson = tree->lson;
@@ -125,7 +125,6 @@ static PObjTree_p splay_tree(PObjTree_p tree, void* key,
 
    return tree;
 }
-
 
 
 
@@ -148,11 +147,11 @@ static PObjTree_p splay_tree(PObjTree_p tree, void* key,
 //
 /----------------------------------------------------------------------*/
 
-PObjTree_p PTreeObjInsert(PObjTree_p *root, PObjTree_p newnode,
-          ComparisonFunctionType cmpfun)
+PObjTree_p PTreeObjInsert(PObjTree_p* root, PObjTree_p newnode,
+                          ComparisonFunctionType cmpfun)
 {
    int cmpres;
-   if (!*root)
+   if(!*root)
    {
       newnode->lson = newnode->rson = NULL;
       *root = newnode;
@@ -162,7 +161,7 @@ PObjTree_p PTreeObjInsert(PObjTree_p *root, PObjTree_p newnode,
 
    cmpres = cmpfun(newnode->key, (*root)->key);
 
-   if (cmpres < 0)
+   if(cmpres < 0)
    {
       newnode->lson = (*root)->lson;
       newnode->rson = *root;
@@ -183,7 +182,6 @@ PObjTree_p PTreeObjInsert(PObjTree_p *root, PObjTree_p newnode,
 
 
 
-
 /*-----------------------------------------------------------------------
 //
 // Function: PTreeObjStore()
@@ -199,8 +197,7 @@ PObjTree_p PTreeObjInsert(PObjTree_p *root, PObjTree_p newnode,
 //
 /----------------------------------------------------------------------*/
 
-void* PTreeObjStore(PObjTree_p *root, void* key,
-          ComparisonFunctionType cmpfun)
+void* PTreeObjStore(PObjTree_p* root, void* key, ComparisonFunctionType cmpfun)
 {
    PObjTree_p handle, newnode;
 
@@ -231,15 +228,15 @@ void* PTreeObjStore(PObjTree_p *root, void* key,
 //
 /----------------------------------------------------------------------*/
 
-PObjTree_p PTreeObjFind(PObjTree_p *root, void* key, ComparisonFunctionType
-           cmpfun)
+PObjTree_p PTreeObjFind(PObjTree_p* root, void* key,
+                        ComparisonFunctionType cmpfun)
 {
    if(*root)
    {
       *root = splay_tree(*root, key, cmpfun);
-      if(cmpfun((*root)->key, key)==0)
+      if(cmpfun((*root)->key, key) == 0)
       {
-    return *root;
+         return *root;
       }
    }
    return NULL;
@@ -258,7 +255,7 @@ PObjTree_p PTreeObjFind(PObjTree_p *root, void* key, ComparisonFunctionType
 //
 /----------------------------------------------------------------------*/
 
-void* PTreeObjFindObj(PObjTree_p *root, void* key,
+void* PTreeObjFindObj(PObjTree_p* root, void* key,
                       ComparisonFunctionType cmpfun)
 {
    PObjTree_p node = PTreeObjFind(root, key, cmpfun);
@@ -285,8 +282,8 @@ void* PTreeObjFindObj(PObjTree_p *root, void* key,
 //
 /----------------------------------------------------------------------*/
 
-PObjTree_p PTreeObjFindBinary(PObjTree_p root, void* key, ComparisonFunctionType
-            cmpfun)
+PObjTree_p PTreeObjFindBinary(PObjTree_p root, void* key,
+                              ComparisonFunctionType cmpfun)
 {
    int cmpres;
 
@@ -295,15 +292,15 @@ PObjTree_p PTreeObjFindBinary(PObjTree_p root, void* key, ComparisonFunctionType
       cmpres = cmpfun(key, root->key);
       if(cmpres < 0)
       {
-    root = root->lson;
+         root = root->lson;
       }
       else if(cmpres > 0)
       {
-    root = root->rson;
+         root = root->rson;
       }
       else
       {
-    break;
+         break;
       }
    }
    return root;
@@ -326,26 +323,26 @@ PObjTree_p PTreeObjFindBinary(PObjTree_p root, void* key, ComparisonFunctionType
 //
 /----------------------------------------------------------------------*/
 
-PObjTree_p PTreeObjExtractEntry(PObjTree_p *root, void* key,
-              ComparisonFunctionType cmpfun)
+PObjTree_p PTreeObjExtractEntry(PObjTree_p* root, void* key,
+                                ComparisonFunctionType cmpfun)
 {
    PObjTree_p x, cell;
 
-   if (!(*root))
+   if(!(*root))
    {
       return NULL;
    }
    *root = splay_tree(*root, key, cmpfun);
-   if(cmpfun(key, (*root)->key)==0)
+   if(cmpfun(key, (*root)->key) == 0)
    {
-      if (!(*root)->lson)
+      if(!(*root)->lson)
       {
-    x = (*root)->rson;
+         x = (*root)->rson;
       }
       else
       {
-    x = splay_tree((*root)->lson, key, cmpfun);
-    x->rson = (*root)->rson;
+         x = splay_tree((*root)->lson, key, cmpfun);
+         x->rson = (*root)->rson;
       }
       cell = *root;
       cell->lson = cell->rson = NULL;
@@ -369,11 +366,11 @@ PObjTree_p PTreeObjExtractEntry(PObjTree_p *root, void* key,
 //
 /----------------------------------------------------------------------*/
 
-void* PTreeObjExtractObject(PObjTree_p *root, void* key,
-             ComparisonFunctionType cmpfun)
+void* PTreeObjExtractObject(PObjTree_p* root, void* key,
+                            ComparisonFunctionType cmpfun)
 {
    PObjTree_p handle;
-   void*   res = NULL;
+   void* res = NULL;
 
    handle = PTreeObjExtractEntry(root, key, cmpfun);
    if(handle)
@@ -397,8 +394,7 @@ void* PTreeObjExtractObject(PObjTree_p *root, void* key,
 //
 /----------------------------------------------------------------------*/
 
-void* PTreeObjExtractRootObject(PObjTree_p *root, ComparisonFunctionType
-            cmpfun)
+void* PTreeObjExtractRootObject(PObjTree_p* root, ComparisonFunctionType cmpfun)
 {
    if(*root)
    {
@@ -421,11 +417,11 @@ void* PTreeObjExtractRootObject(PObjTree_p *root, ComparisonFunctionType
 //
 /----------------------------------------------------------------------*/
 
-void PTreeObjMerge(PObjTree_p *root, PObjTree_p add, ComparisonFunctionType
-      cmpfun)
+void PTreeObjMerge(PObjTree_p* root, PObjTree_p add,
+                   ComparisonFunctionType cmpfun)
 {
    PStack_p stack = PStackAlloc();
-   PObjTree_p  res;
+   PObjTree_p res;
 
    PStackPushP(stack, add);
 
@@ -434,10 +430,11 @@ void PTreeObjMerge(PObjTree_p *root, PObjTree_p add, ComparisonFunctionType
       add = PStackPopP(stack);
       if(add)
       {
-    PStackPushP(stack, add->lson);
-    PStackPushP(stack, add->rson);
-    res = PTreeObjInsert(root, add, cmpfun);
-    UNUSED(res); assert(!res); /* Pointers should never be in two trees at
+         PStackPushP(stack, add->lson);
+         PStackPushP(stack, add->rson);
+         res = PTreeObjInsert(root, add, cmpfun);
+         UNUSED(res);
+         assert(!res); /* Pointers should never be in two trees at
                                      once for my intended application */
       }
    }
@@ -484,7 +481,7 @@ void PObjTreeFree(PObjTree_p root, ObjDelFun del_fun)
 long PObjTreeNodes(PObjTree_p root)
 {
    PStack_p stack = PStackAlloc();
-   long     res   = 0;
+   long res = 0;
 
    PStackPushP(stack, root);
 
@@ -493,9 +490,9 @@ long PObjTreeNodes(PObjTree_p root)
       root = PStackPopP(stack);
       if(root)
       {
-    PStackPushP(stack, root->lson);
-    PStackPushP(stack, root->rson);
-    res++;
+         PStackPushP(stack, root->lson);
+         PStackPushP(stack, root->rson);
+         res++;
       }
    }
    PStackFree(stack);
@@ -515,9 +512,7 @@ long PObjTreeNodes(PObjTree_p root)
 //
 /----------------------------------------------------------------------*/
 
-void DummyObjDelFun(void* Junk)
-{
-}
+void DummyObjDelFun(void* Junk) {}
 
 
 /*---------------------------------------------------------------------*/

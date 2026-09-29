@@ -56,7 +56,8 @@
 
 FixedDArray_p FixedDArrayAlloc(long size)
 {
-   FixedDArray_p handle = SizeMalloc(sizeof(FixedDArrayCell)+size*sizeof(long));
+   FixedDArray_p handle =
+      SizeMalloc(sizeof(FixedDArrayCell) + size * sizeof(long));
    handle->size = size;
 
    return handle;
@@ -79,7 +80,7 @@ void FixedDArrayFree(FixedDArray_p junk)
 {
    if(junk)
    {
-      SizeFree(junk, sizeof(FixedDArrayCell)+(junk->size*sizeof(long)));
+      SizeFree(junk, sizeof(FixedDArrayCell) + (junk->size * sizeof(long)));
    }
 }
 
@@ -100,7 +101,7 @@ void FixedDArrayInitialize(FixedDArray_p array, long value)
 {
    long i;
 
-   for(i=0; i<array->size; i++)
+   for(i = 0; i < array->size; i++)
    {
       array->array[i] = value;
    }
@@ -129,9 +130,9 @@ void FixedDArrayAdd(FixedDArray_p dest, FixedDArray_p s1, FixedDArray_p s2)
    assert(s1->size == dest->size);
    assert(s2->size == dest->size);
 
-   for(i=0; i<dest->size; i++)
+   for(i = 0; i < dest->size; i++)
    {
-      dest->array[i] = s1->array[i]+s2->array[i];
+      dest->array[i] = s1->array[i] + s2->array[i];
    }
 }
 
@@ -151,7 +152,7 @@ void FixedDArrayAdd(FixedDArray_p dest, FixedDArray_p s1, FixedDArray_p s2)
 /----------------------------------------------------------------------*/
 
 void FixedDArrayMulAdd(FixedDArray_p dest, FixedDArray_p s1, long f1,
-                      FixedDArray_p s2, long f2)
+                       FixedDArray_p s2, long f2)
 {
    long i;
 
@@ -159,9 +160,9 @@ void FixedDArrayMulAdd(FixedDArray_p dest, FixedDArray_p s1, long f1,
    assert(s1->size == dest->size);
    assert(s2->size == dest->size);
 
-   for(i=0; i<dest->size; i++)
+   for(i = 0; i < dest->size; i++)
    {
-      dest->array[i] = f1*s1->array[i]+f2*s2->array[i];
+      dest->array[i] = f1 * s1->array[i] + f2 * s2->array[i];
    }
 }
 
@@ -186,9 +187,9 @@ void FixedDArrayMax(FixedDArray_p dest, FixedDArray_p s1, FixedDArray_p s2)
    assert(s1->size == dest->size);
    assert(s2->size == dest->size);
 
-   for(i=0; i<dest->size; i++)
+   for(i = 0; i < dest->size; i++)
    {
-      dest->array[i] = MAX(s1->array[i],s2->array[i]);
+      dest->array[i] = MAX(s1->array[i], s2->array[i]);
    }
 }
 
@@ -213,9 +214,9 @@ void FixedDArrayMin(FixedDArray_p dest, FixedDArray_p s1, FixedDArray_p s2)
    assert(s1->size == dest->size);
    assert(s2->size == dest->size);
 
-   for(i=0; i<dest->size; i++)
+   for(i = 0; i < dest->size; i++)
    {
-      dest->array[i] = MIN(s1->array[i],s2->array[i]);
+      dest->array[i] = MIN(s1->array[i], s2->array[i]);
    }
 }
 
@@ -236,8 +237,8 @@ void FixedDArrayPrint(FILE* out, FixedDArray_p array)
 {
    long i;
 
-   fprintf(out, COMCHAR" Size %ld:", array->size);
-   for(i=0; i<array->size; i++)
+   fprintf(out, COMCHAR " Size %ld:", array->size);
+   for(i = 0; i < array->size; i++)
    {
       fprintf(out, " %4ld", array->array[i]);
    }
@@ -269,7 +270,7 @@ FixedDArray_p FixedDArrayCopy(FixedDArray_p array)
       FixedDArray_p handle = FixedDArrayAlloc(array->size);
 
       memcpy(handle, array,
-             sizeof(FixedDArrayCell)+(array->size*sizeof(long)));
+             sizeof(FixedDArrayCell) + (array->size * sizeof(long)));
       return handle;
    }
 }

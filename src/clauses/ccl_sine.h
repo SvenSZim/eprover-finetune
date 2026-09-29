@@ -38,11 +38,11 @@ Changes
 
 typedef struct d_rel_cell
 {
-   FunCode  f_code;
-   bool     activated;
+   FunCode f_code;
+   bool activated;
    PStack_p d_clauses;
    PStack_p d_formulas;
-}DRelCell, *DRel_p;
+} DRelCell, *DRel_p;
 
 
 /* Represent the complete D-Relation for all function symbols. */
@@ -50,7 +50,7 @@ typedef struct d_rel_cell
 typedef struct d_relation_cell
 {
    PDArray_p relation; /* Of DRel_p */
-}DRelationCell, *DRelation_p;
+} DRelationCell, *DRelation_p;
 
 
 /* Types of axioms */
@@ -60,108 +60,75 @@ typedef enum
    ATNoType,
    ATClause,
    ATFormula
-}AxiomType;
+} AxiomType;
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define DRelCellAlloc()    (DRelCell*)SizeMalloc(sizeof(DRelCell))
+#define DRelCellAlloc() (DRelCell*)SizeMalloc(sizeof(DRelCell))
 #define DRelCellFree(junk) SizeFree(junk, sizeof(DRelCell))
 
 DRel_p DRelAlloc(FunCode f_code);
-void   DRelFree(DRel_p rel);
+void DRelFree(DRel_p rel);
 
-#define DRelationCellAlloc()    (DRelationCell*)SizeMalloc(sizeof(DRelationCell))
+#define DRelationCellAlloc() (DRelationCell*)SizeMalloc(sizeof(DRelationCell))
 #define DRelationCellFree(junk) SizeFree(junk, sizeof(DRelationCell))
 
 DRelation_p DRelationAlloc(void);
-void        DRelationFree(DRelation_p rel);
+void DRelationFree(DRelation_p rel);
 DRel_p DRelationGetFEntry(DRelation_p rel, FunCode f_code);
 
 
-void DRelationAddClause(DRelation_p drel,
-                        GenDistrib_p generality,
-                        GeneralityMeasure gentype,
-                        double benevolence,
-                        long generosity,
-                        Clause_p clause);
+void DRelationAddClause(DRelation_p drel, GenDistrib_p generality,
+                        GeneralityMeasure gentype, double benevolence,
+                        long generosity, Clause_p clause);
 
-void DRelationAddFormula(DRelation_p drel,
-                         GenDistrib_p generality,
-                         GeneralityMeasure gentype,
-                         double benevolence,
-                         long generosity,
-                         bool trim,
-                         bool force_def,
+void DRelationAddFormula(DRelation_p drel, GenDistrib_p generality,
+                         GeneralityMeasure gentype, double benevolence,
+                         long generosity, bool trim, bool force_def,
                          WFormula_p form);
 
-void DRelationAddClauseSet(DRelation_p drel,
-                           GenDistrib_p generality,
-                           GeneralityMeasure gentype,
-                           double benevolence,
-                           long generosity,
-                           ClauseSet_p set);
+void DRelationAddClauseSet(DRelation_p drel, GenDistrib_p generality,
+                           GeneralityMeasure gentype, double benevolence,
+                           long generosity, ClauseSet_p set);
 
-void DRelationAddFormulaSet(DRelation_p drel,
-                            GenDistrib_p generality,
-                            GeneralityMeasure gentype,
-                            double benevolence,
-                            long generosity,
-                            bool trim,
-                            bool force_def,
+void DRelationAddFormulaSet(DRelation_p drel, GenDistrib_p generality,
+                            GeneralityMeasure gentype, double benevolence,
+                            long generosity, bool trim, bool force_def,
                             FormulaSet_p set);
 
-void DRelationAddClauseSets(DRelation_p drel,
-                            GenDistrib_p generality,
-                            GeneralityMeasure gentype,
-                            double benevolence,
-                            long generosity,
-                            PStack_p sets);
+void DRelationAddClauseSets(DRelation_p drel, GenDistrib_p generality,
+                            GeneralityMeasure gentype, double benevolence,
+                            long generosity, PStack_p sets);
 
-void DRelationAddFormulaSets(DRelation_p drel,
-                             GenDistrib_p generality,
-                             GeneralityMeasure gentype,
-                             double benevolence,
-                             long generosity,
-                             bool trim,
-                             bool force_def,
+void DRelationAddFormulaSets(DRelation_p drel, GenDistrib_p generality,
+                             GeneralityMeasure gentype, double benevolence,
+                             long generosity, bool trim, bool force_def,
                              PStack_p sets);
 
 void PQueueStoreClause(PQueue_p axioms, Clause_p clause);
 void PQueueStoreFormula(PQueue_p axioms, WFormula_p form);
 
-long ClauseSetFindAxSelectionSeeds(ClauseSet_p set,
-                                   PQueue_p res,
+long ClauseSetFindAxSelectionSeeds(ClauseSet_p set, PQueue_p res,
                                    bool inc_hypos);
-long FormulaSetFindAxSelectionSeeds(FormulaSet_p set,
-                                    PQueue_p res,
+long FormulaSetFindAxSelectionSeeds(FormulaSet_p set, PQueue_p res,
                                     bool inc_hypos);
 
-long SelectDefiningAxioms(DRelation_p drel,
-                          Sig_p sig,
-                          int max_recursion_depth,
-                          long max_set_size,
-                          bool trim,
-                          PQueue_p axioms,
-                          PStack_p res_clauses,
-                          PStack_p res_formulas);
+long SelectDefiningAxioms(DRelation_p drel, Sig_p sig, int max_recursion_depth,
+                          long max_set_size, bool trim, PQueue_p axioms,
+                          PStack_p res_clauses, PStack_p res_formulas);
 
 
-long SelectAxioms(GenDistrib_p      f_distrib,
-                  PStack_p          clause_sets,
-                  PStack_p          formula_sets,
-                  PStackPointer     hyp_start,
-                  AxFilter_p        ax_filter,
-                  PStack_p          res_clauses,
-                  PStack_p          res_formulas);
+long SelectAxioms(GenDistrib_p f_distrib, PStack_p clause_sets,
+                  PStack_p formula_sets, PStackPointer hyp_start,
+                  AxFilter_p ax_filter, PStack_p res_clauses,
+                  PStack_p res_formulas);
 
-long SelectThreshold(PStack_p          clause_sets,
-                     PStack_p          formula_sets,
-                     AxFilter_p        ax_filter,
-                     PStack_p          res_clauses,
-                     PStack_p          res_formulas);
+long SelectThreshold(PStack_p clause_sets, PStack_p formula_sets,
+                     AxFilter_p ax_filter, PStack_p res_clauses,
+                     PStack_p res_formulas);
 
 long SelectDefinitions(PStack_p clause_sets, PStack_p formula_sets,
                        PStack_p res_clauses, PStack_p res_formulas);

@@ -47,7 +47,7 @@ typedef enum
    FSIdentRational,    /* Rational number */
    FSIdentInterpreted, /* SemIdent */
    FSIdentObject       /* String "in double quotes" */
-}FuncSymbType;
+} FuncSymbType;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */

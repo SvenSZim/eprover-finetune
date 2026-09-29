@@ -39,7 +39,7 @@ Changes
 bool MemIsLow = false;
 
 
-Mem_p free_mem_list[MEM_ARR_SIZE] = {NULL};
+Mem_p free_mem_list[MEM_ARR_SIZE] = { NULL };
 
 #ifdef CLB_MEMORY_DEBUG
 long size_malloc_mem = 0;
@@ -77,7 +77,8 @@ long secure_realloc_f_count = 0;
 
 void MemFlushFreeList(void)
 {
-   VERBOUT("MemFlushFreeList() called - this is a dummy in the new memory handler\n");
+   VERBOUT(
+      "MemFlushFreeList() called - this is a dummy in the new memory handler\n");
 }
 
 /*-----------------------------------------------------------------------
@@ -99,25 +100,26 @@ void* SecureMalloc(int size)
 {
    void* handle;
 
-   #ifdef CLB_MEMORY_DEBUG
+#ifdef CLB_MEMORY_DEBUG
    secure_malloc_count++;
    secure_malloc_mem += size;
-   #endif
+#endif
 
    handle = (void*)malloc(size);
 
    if(!handle)
-   {    /* malloc has no memory left  */
+   { /* malloc has no memory left  */
       MemIsLow = true;
       MemFlushFreeList(); /* Return own freelist */
 
       handle = (void*)malloc(size);
 
       if(!handle)
-      {   /*  Still nothing...*/
+      { /*  Still nothing...*/
 #ifdef PRINT_SOMEERRORS_STDOUT
-    PrintRusage(stdout);
-    fprintf(stdout, COMCHAR" Failure: Resource limit exceeded (memory)\n");
+         PrintRusage(stdout);
+         fprintf(stdout,
+                 COMCHAR " Failure: Resource limit exceeded (memory)\n");
 #endif
          Error("Out of Memory", OUT_OF_MEMORY);
       }
@@ -139,7 +141,7 @@ void* SecureMalloc(int size)
 //
 //-----------------------------------------------------------------------*/
 
-void* SecureRealloc(void *ptr, int size)
+void* SecureRealloc(void* ptr, int size)
 {
    void* handle;
 
@@ -156,18 +158,19 @@ void* SecureRealloc(void *ptr, int size)
 #endif
    /* SunOS realloc() is broken, so here is a stupid workaround...*/
 
-   handle = ptr?realloc(ptr,size):malloc(size);
-   if(!handle && size!=0)
+   handle = ptr ? realloc(ptr, size) : malloc(size);
+   if(!handle && size != 0)
    {
       MemFlushFreeList();
-      handle = ptr?realloc(ptr,size):malloc(size);
+      handle = ptr ? realloc(ptr, size) : malloc(size);
       if(!handle)
-      {   /*  Still nothing...*/
+      { /*  Still nothing...*/
 #ifdef PRINT_SOMEERRORS_STDOUT
-    PrintRusage(stdout);
-    fprintf(stdout, COMCHAR" Failure: Resource limit exceeded (memory)\n");
+         PrintRusage(stdout);
+         fprintf(stdout,
+                 COMCHAR " Failure: Resource limit exceeded (memory)\n");
 #endif
-    Error("Out of Memory", OUT_OF_MEMORY);
+         Error("Out of Memory", OUT_OF_MEMORY);
       }
    }
    return handle;
@@ -189,29 +192,29 @@ void* SecureRealloc(void *ptr, int size)
 
 void* SizeMallocReal(int size)
 {
-   Mem_p   handle;
-   int    mem_index;
+   Mem_p handle;
+   int mem_index;
 
    size = MAX(size, sizeof(MemCell));
 
-   mem_index = (size+MEM_ALIGN-1)/MEM_ALIGN;
+   mem_index = (size + MEM_ALIGN - 1) / MEM_ALIGN;
 
    assert(mem_index > 0);
 
-   if(mem_index<MEM_ARR_SIZE)
+   if(mem_index < MEM_ARR_SIZE)
    {
       if(!free_mem_list[mem_index])
       {
-    if(size < MEM_CHUNKLIMIT)
-    {
-       MemAddNewChunk(mem_index);
-    }
-    else
-    {
-       free_mem_list[mem_index] = SecureMalloc(size);
-       free_mem_list[mem_index]->next = NULL;
-       assert((free_mem_list[mem_index]->test = MEM_FREE_PATTERN, true));
-    }
+         if(size < MEM_CHUNKLIMIT)
+         {
+            MemAddNewChunk(mem_index);
+         }
+         else
+         {
+            free_mem_list[mem_index] = SecureMalloc(size);
+            free_mem_list[mem_index]->next = NULL;
+            assert((free_mem_list[mem_index]->test = MEM_FREE_PATTERN, true));
+         }
       }
       assert(free_mem_list[mem_index]->test = MEM_FREE_PATTERN);
       assert((free_mem_list[mem_index]->test = MEM_RSET_PATTERN, true));
@@ -223,13 +226,13 @@ void* SizeMallocReal(int size)
    {
       handle = SecureMalloc(size);
    }
-   #ifdef CLB_MEMORY_DEBUG
-   size_malloc_mem+=size;
+#ifdef CLB_MEMORY_DEBUG
+   size_malloc_mem += size;
    size_malloc_count++;
-   #endif
-   #ifdef CLB_MEMORY_DEBUG2
+#endif
+#ifdef CLB_MEMORY_DEBUG2
    printf("\nBlock %p A: size %d\n", handle, size);
-   #endif
+#endif
    return handle;
 }
 
@@ -252,17 +255,17 @@ void* SizeMallocReal(int size)
 
 void SizeFreeReal(void* junk, int size)
 {
-   int    mem_index;
+   int mem_index;
 
-   assert(junk!=NULL);
-   #ifdef CLB_MEMORY_DEBUG2
+   assert(junk != NULL);
+#ifdef CLB_MEMORY_DEBUG2
    printf("\nBlock %p D: size %d\n", junk, size);
-   #endif
+#endif
 
    size = MAX(size, sizeof(MemCell));
-   mem_index = (size+MEM_ALIGN-1)/MEM_ALIGN;
+   mem_index = (size + MEM_ALIGN - 1) / MEM_ALIGN;
 
-   if(mem_index<MEM_ARR_SIZE)
+   if(mem_index < MEM_ARR_SIZE)
    {
       ((Mem_p)junk)->next = free_mem_list[mem_index];
       free_mem_list[mem_index] = (Mem_p)junk;
@@ -273,10 +276,10 @@ void SizeFreeReal(void* junk, int size)
    {
       FREE(junk);
    }
-   #ifdef CLB_MEMORY_DEBUG
-   size_free_mem+=size;
+#ifdef CLB_MEMORY_DEBUG
+   size_free_mem += size;
    size_free_count++;
-   #endif
+#endif
 }
 
 
@@ -299,19 +302,19 @@ void MemAddNewChunk(int mem_index)
 {
    Mem_p handle, old;
    char* block;
-   int   i, size;
+   int i, size;
 
-   old   = free_mem_list[mem_index];
-   size  = mem_index*MEM_ALIGN;
-   block = SecureMalloc(size*MEM_MULTIPLIER);
+   old = free_mem_list[mem_index];
+   size = mem_index * MEM_ALIGN;
+   block = SecureMalloc(size * MEM_MULTIPLIER);
    free_mem_list[mem_index] = (Mem_p)block;
 
-   for(i=0; i< MEM_MULTIPLIER; i++)
+   for(i = 0; i < MEM_MULTIPLIER; i++)
    {
-      handle        = (Mem_p)block;
+      handle = (Mem_p)block;
       assert(handle->test = MEM_FREE_PATTERN);
-      block        += size;
-      handle->next  = (Mem_p)block;
+      block += size;
+      handle->next = (Mem_p)block;
    }
    handle->next = old;
 }
@@ -333,8 +336,8 @@ char* SecureStrdup(const char* source)
 {
    char* handle;
 
-   handle = (char*)SecureMalloc(strlen(source)+1);
-   strcpy(handle,source);
+   handle = (char*)SecureMalloc(strlen(source) + 1);
+   strcpy(handle, source);
 
    return handle;
 }
@@ -360,15 +363,15 @@ char* SecureStrndup(const char* source, size_t n)
    size_t len;
 
    assert(source);
-   assert(n>=0);
+   assert(n >= 0);
 
    len = strlen(source);
 
    if(len > n)
    {
-      handle = SecureMalloc(n+1);
-      strncpy(handle,source, n);
-      handle[n]='\0';
+      handle = SecureMalloc(n + 1);
+      strncpy(handle, source, n);
+      handle[n] = '\0';
    }
    else
    {
@@ -393,18 +396,17 @@ char* SecureStrndup(const char* source, size_t n)
 
 long* IntArrayAlloc(int size)
 {
-   long *res;
+   long* res;
    int i;
 
-   res = SizeMalloc(size*sizeof(long));
+   res = SizeMalloc(size * sizeof(long));
 
-   for(i=0; i<size; i++)
+   for(i = 0; i < size; i++)
    {
-      res[i]=0;
+      res[i] = 0;
    }
    return res;
 }
-
 
 
 
@@ -426,30 +428,35 @@ long* IntArrayAlloc(int size)
 void MemDebugPrintStats(FILE* out)
 {
    fprintf(out,
-      "\n"COMCHAR" -------------------------------------------------\n");
+           "\n" COMCHAR " -------------------------------------------------\n");
    fprintf(out,
-      COMCHAR" Total SizeMalloc()ed memory: %ld Bytes (%ld requests)\n",
-      size_malloc_mem, size_malloc_count);
+           COMCHAR " Total SizeMalloc()ed memory: %ld Bytes (%ld requests)\n",
+           size_malloc_mem, size_malloc_count);
    fprintf(out,
-      COMCHAR" Total SizeFree()ed   memory: %ld Bytes (%ld requests)\n",
-      size_free_mem, size_free_count);
+           COMCHAR " Total SizeFree()ed   memory: %ld Bytes (%ld requests)\n",
+           size_free_mem, size_free_count);
+   fprintf(
+      out,
+      COMCHAR
+      " New requests: %6ld (%6ld by SecureMalloc(), %6ld by SecureRealloc())\n",
+      secure_malloc_count + secure_realloc_m_count, secure_malloc_count,
+      secure_realloc_m_count);
+   fprintf(out, COMCHAR " Total SecureMalloc()ed memory: %ld Bytes\n",
+           secure_malloc_mem);
+   fprintf(
+      out,
+      COMCHAR
+      " Returned:    %6ld (%6ld by FREE(),         %6ld by SecureRealloc())\n",
+      clb_free_count + secure_realloc_f_count, clb_free_count,
+      secure_realloc_f_count);
+   fprintf(
+      out,
+      COMCHAR
+      " SecureRealloc(ptr): %6ld (%6ld Allocs, %6ld Frees, %6ld Reallocs)\n",
+      secure_realloc_count, secure_realloc_m_count, secure_realloc_f_count,
+      secure_realloc_count - (secure_realloc_m_count + secure_realloc_f_count));
    fprintf(out,
-      COMCHAR" New requests: %6ld (%6ld by SecureMalloc(), %6ld by SecureRealloc())\n",
-      secure_malloc_count+secure_realloc_m_count,
-      secure_malloc_count, secure_realloc_m_count);
-   fprintf(out,
-      COMCHAR" Total SecureMalloc()ed memory: %ld Bytes\n", secure_malloc_mem);
-   fprintf(out,
-      COMCHAR" Returned:    %6ld (%6ld by FREE(),         %6ld by SecureRealloc())\n",
-      clb_free_count+secure_realloc_f_count,
-      clb_free_count , secure_realloc_f_count);
-   fprintf(out,
-      COMCHAR" SecureRealloc(ptr): %6ld (%6ld Allocs, %6ld Frees, %6ld Reallocs)\n",
-      secure_realloc_count, secure_realloc_m_count,
-      secure_realloc_f_count,
-      secure_realloc_count-(secure_realloc_m_count+secure_realloc_f_count));
-   fprintf(out,
-      COMCHAR" -------------------------------------------------\n\n");
+           COMCHAR " -------------------------------------------------\n\n");
 }
 
 #endif

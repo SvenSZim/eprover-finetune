@@ -41,53 +41,47 @@ Changes
 typedef struct structured_FOF_spec_cell
 {
    //Sig_p         sig;
-   TB_p          terms;
+   TB_p terms;
    //GCAdmin_p     gc_terms;
-   PStack_p      clause_sets;
-   PStack_p      formula_sets;
-   StrTree_p     parsed_includes;
+   PStack_p clause_sets;
+   PStack_p formula_sets;
+   StrTree_p parsed_includes;
    PStackPointer shared_ax_sp;
-   FunCode       shared_ax_f_count;
-   GenDistrib_p  f_distrib;
-}StructFOFSpecCell, *StructFOFSpec_p;
+   FunCode shared_ax_f_count;
+   GenDistrib_p f_distrib;
+} StructFOFSpecCell, *StructFOFSpec_p;
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define StructFOFSpecCellAlloc()    (StructFOFSpecCell*)SizeMalloc(sizeof(StructFOFSpecCell))
+#define StructFOFSpecCellAlloc()                                               \
+   (StructFOFSpecCell*)SizeMalloc(sizeof(StructFOFSpecCell))
 #define StructFOFSpecCellFree(junk) SizeFree(junk, sizeof(StructFOFSpecCell))
 
 StructFOFSpec_p StructFOFSpecCreate(TB_p terms);
 StructFOFSpec_p StructFOFSpecAlloc(void);
 
-void            StructFOFSpecDestroy(StructFOFSpec_p ctrl);
-void            StructFOFSpecFree(StructFOFSpec_p ctrl);
+void StructFOFSpecDestroy(StructFOFSpec_p ctrl);
+void StructFOFSpecFree(StructFOFSpec_p ctrl);
 
-long           StructFOFSpecParseAxioms(StructFOFSpec_p ctrl,
-                                       PStack_p axfiles,
-                                        IOFormat parse_format,
-                                        char* default_dir);
-#define       StructFOFSpecResetShared(ctrl) (ctrl)->shared_ax_sp = 0
+long StructFOFSpecParseAxioms(StructFOFSpec_p ctrl, PStack_p axfiles,
+                              IOFormat parse_format, char* default_dir);
+#define StructFOFSpecResetShared(ctrl) (ctrl)->shared_ax_sp = 0
 
-void           StructFOFSpecInitDistrib(StructFOFSpec_p ctrl, bool trim);
+void StructFOFSpecInitDistrib(StructFOFSpec_p ctrl, bool trim);
 
-void StructFOFSpecAddProblem(StructFOFSpec_p ctrl,
-                             ClauseSet_p clauses,
-                             FormulaSet_p formulas,
-                             bool trim);
+void StructFOFSpecAddProblem(StructFOFSpec_p ctrl, ClauseSet_p clauses,
+                             FormulaSet_p formulas, bool trim);
 
 void StructFOFSpecBacktrackToSpec(StructFOFSpec_p ctrl);
 
-long StructFOFSpecCollectFCode(StructFOFSpec_p ctrl,
-                               FunCode f_code,
+long StructFOFSpecCollectFCode(StructFOFSpec_p ctrl, FunCode f_code,
                                PStack_p res_formulas);
 
-long StructFOFSpecGetProblem(StructFOFSpec_p ctrl,
-                             AxFilter_p filter,
-                             PStack_p res_clauses,
-                             PStack_p res_formulas);
+long StructFOFSpecGetProblem(StructFOFSpec_p ctrl, AxFilter_p filter,
+                             PStack_p res_clauses, PStack_p res_formulas);
 
 long ProofStateSinE(ProofState_p state, char* filter);
 

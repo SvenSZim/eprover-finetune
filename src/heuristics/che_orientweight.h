@@ -36,14 +36,14 @@ Changes
 
 typedef struct orientweightparamcell
 {
-   OCB_p  ocb;
+   OCB_p ocb;
    double unorientable_literal_multiplier;
    double max_literal_multiplier;
    double pos_multiplier;
    double app_var_mult;
-   long   vweight;
-   long   fweight;
-}OrientWeightParamCell, *OrientWeightParam_p;
+   long vweight;
+   long fweight;
+} OrientWeightParamCell, *OrientWeightParam_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -51,34 +51,30 @@ typedef struct orientweightparamcell
 /*---------------------------------------------------------------------*/
 
 
-#define OrientWeightParamCellAlloc() (OrientWeightParamCell*) \
-        SizeMalloc(sizeof(OrientWeightParamCell))
-#define OrientWeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(OrientWeightParamCell))
+#define OrientWeightParamCellAlloc()                                           \
+   (OrientWeightParamCell*)SizeMalloc(sizeof(OrientWeightParamCell))
+#define OrientWeightParamCellFree(junk)                                        \
+   SizeFree(junk, sizeof(OrientWeightParamCell))
 
-WFCB_p ClauseOrientWeightInit(ClausePrioFun prio_fun, int fweight,
-                int vweight, OCB_p ocb, double
-                unorientable_literal_multiplier, double
-                max_literal_multiplier, double
-                pos_multiplier, double app_var_mult);
+WFCB_p ClauseOrientWeightInit(ClausePrioFun prio_fun, int fweight, int vweight,
+                              OCB_p ocb, double unorientable_literal_multiplier,
+                              double max_literal_multiplier,
+                              double pos_multiplier, double app_var_mult);
 
-WFCB_p ClauseOrientWeightParse(Scanner_p in, OCB_p ocb, ProofState_p
-            state);
+WFCB_p ClauseOrientWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double ClauseOrientWeightCompute(void* data, Clause_p clause);
 
-WFCB_p OrientLMaxWeightInit(ClausePrioFun prio_fun, int fweight,
-             int vweight, OCB_p ocb, double
-             unorientable_literal_multiplier, double
-             max_literal_multiplier, double
-             pos_multiplier, double app_var_mult);
+WFCB_p OrientLMaxWeightInit(ClausePrioFun prio_fun, int fweight, int vweight,
+                            OCB_p ocb, double unorientable_literal_multiplier,
+                            double max_literal_multiplier,
+                            double pos_multiplier, double app_var_mult);
 
-WFCB_p OrientLMaxWeightParse(Scanner_p in, OCB_p ocb, ProofState_p
-              state);
+WFCB_p OrientLMaxWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double OrientLMaxWeightCompute(void* data, Clause_p clause);
 
-void   ClauseOrientWeightExit(void* data);
+void ClauseOrientWeightExit(void* data);
 
 
 #endif
@@ -86,8 +82,6 @@ void   ClauseOrientWeightExit(void* data);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

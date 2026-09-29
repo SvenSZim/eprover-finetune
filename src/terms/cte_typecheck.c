@@ -52,11 +52,11 @@ extern bool app_encode;
 Type_p term_determine_type(Term_p term, Type_p type, TypeBank_p bank)
 {
    int term_arity = ARG_NUM(term);
-   if(type->arity-1 == term_arity)
+   if(type->arity - 1 == term_arity)
    {
       return type->args[term_arity];
    }
-   else if(type->arity-1 < term_arity)
+   else if(type->arity - 1 < term_arity)
    {
       return NULL;
    }
@@ -64,12 +64,12 @@ Type_p term_determine_type(Term_p term, Type_p type, TypeBank_p bank)
    {
       int start = term_arity;
       Type_p* args = TypeArgArrayAlloc(type->arity - start);
-      for(int i=0; i<type->arity-start; i++)
+      for(int i = 0; i < type->arity - start; i++)
       {
-         args[i] = type->args[i+start];
+         args[i] = type->args[i + start];
       }
-      return TypeBankInsertTypeShared(bank,
-                                      AllocArrowType(type->arity - start, args));
+      return TypeBankInsertTypeShared(
+         bank, AllocArrowType(type->arity - start, args));
    }
 }
 
@@ -97,12 +97,12 @@ Type_p infer_return_sort(Sig_p sig, FunCode f_code)
       res = sig->type_bank->integer_type;
    }
    else if(SigQueryProp(sig, f_code, FPIsRational) &&
-            (sig->distinct_props & FPIsRational))
+           (sig->distinct_props & FPIsRational))
    {
       res = sig->type_bank->rational_type;
    }
    else if(SigQueryProp(sig, f_code, FPIsFloat) &&
-            (sig->distinct_props & FPIsFloat))
+           (sig->distinct_props & FPIsFloat))
    {
       res = sig->type_bank->real_type;
    }
@@ -141,11 +141,11 @@ bool TypeCheckConsistent(Sig_p sig, Term_p term)
    PStack_p stack = PStackAlloc();
    PStackPushP(stack, term);
 
-   while (!PStackEmpty(stack))
+   while(!PStackEmpty(stack))
    {
       term = PStackPopP(stack);
 
-      if (!TermIsFreeVar(term))
+      if(!TermIsFreeVar(term))
       {
          /* check: same arity, same return sort, sort of arguments (pairwise)*/
          if(!SigIsPolymorphic(sig, term->f_code))
@@ -156,8 +156,8 @@ bool TypeCheckConsistent(Sig_p sig, Term_p term)
 
             if(TypeIsArrow(type))
             {
-               if((term->arity != type->arity-1)
-                  || term->type != type->args[type->arity-1])
+               if((term->arity != type->arity - 1) ||
+                  term->type != type->args[type->arity - 1])
                {
                   res = false;
                   break;
@@ -173,7 +173,7 @@ bool TypeCheckConsistent(Sig_p sig, Term_p term)
                }
             }
             /* Check subterms recursively */
-            for(int i=0; i < type->arity; i++)
+            for(int i = 0; i < type->arity; i++)
             {
                PStackPushP(stack, term->args[i]);
                if(term->args[i]->type != type->args[i])
@@ -205,15 +205,18 @@ bool TypeCheckConsistent(Sig_p sig, Term_p term)
 //
 /----------------------------------------------------------------------*/
 
-#define TI_ERROR(msg) do{ \
-   if(in)                                       \
-   {\
-      AktTokenError(in, msg, false);            \
-   }\
-   else\
-   {\
-      Error(msg, SYNTAX_ERROR);\
-   }}while(false)
+#define TI_ERROR(msg)                                                          \
+   do                                                                          \
+   {                                                                           \
+      if(in)                                                                   \
+      {                                                                        \
+         AktTokenError(in, msg, false);                                        \
+      }                                                                        \
+      else                                                                     \
+      {                                                                        \
+         Error(msg, SYNTAX_ERROR);                                             \
+      }                                                                        \
+   } while(false)
 
 
 void TypeInferSort(Sig_p sig, Term_p term, Scanner_p in)
@@ -237,15 +240,16 @@ void TypeInferSort(Sig_p sig, Term_p term, Scanner_p in)
       }
       else if(TermIsLambda(term))
       {
-         assert(term->f_code != SIG_DB_LAMBDA_CODE || TermIsDBVar(term->args[0]));
-         assert(term->f_code != SIG_NAMED_LAMBDA_CODE || TermIsFreeVar(term->args[0]));
+         assert(term->f_code != SIG_DB_LAMBDA_CODE ||
+                TermIsDBVar(term->args[0]));
+         assert(term->f_code != SIG_NAMED_LAMBDA_CODE ||
+                TermIsFreeVar(term->args[0]));
          // types have to be inferred only during parsing
          assert(term->arity == 2);
          // type of lambda is 'type of variable' -> 'type of body'
-         term->type =
-            TypeBankInsertTypeShared(sig->type_bank,
-                                     ArrowTypeFlattened(&(term->args[0]->type), 1,
-                                     term->args[1]->type));
+         term->type = TypeBankInsertTypeShared(
+            sig->type_bank,
+            ArrowTypeFlattened(&(term->args[0]->type), 1, term->args[1]->type));
       }
       else if(term->f_code == sig->eqn_code || term->f_code == sig->neqn_code)
       {
@@ -254,9 +258,10 @@ void TypeInferSort(Sig_p sig, Term_p term, Scanner_p in)
             TI_ERROR("Equality must have at least one argument");
          }
          Type_p arg_type = term->args[0]->type;
-         Type_p eq_type_args[3] = {arg_type, arg_type, sig->type_bank->bool_type};
-         type = TypeBankInsertTypeShared(sig->type_bank,
-                                         AllocArrowTypeCopyArgs(3, eq_type_args));
+         Type_p eq_type_args[3] = { arg_type, arg_type,
+                                    sig->type_bank->bool_type };
+         type = TypeBankInsertTypeShared(
+            sig->type_bank, AllocArrowTypeCopyArgs(3, eq_type_args));
       }
       else if(term->f_code == sig->qex_code || term->f_code == sig->qall_code)
       {
@@ -267,23 +272,22 @@ void TypeInferSort(Sig_p sig, Term_p term, Scanner_p in)
          if(TermIsFreeVar(term->args[0]))
          {
             Type_p arg_type = term->args[0]->type;
-            Type_p quant_type_args[3] =
-               {arg_type,
-               sig->type_bank->bool_type,
-               sig->type_bank->bool_type};
-            type = TypeBankInsertTypeShared(sig->type_bank,
-                                          AllocArrowTypeCopyArgs(3, quant_type_args));
+            Type_p quant_type_args[3] = { arg_type, sig->type_bank->bool_type,
+                                          sig->type_bank->bool_type };
+            type = TypeBankInsertTypeShared(
+               sig->type_bank, AllocArrowTypeCopyArgs(3, quant_type_args));
          }
          else
          {
-            if(!TypeIsArrow(term->args[0]->type) || !TypeIsPredicate(term->args[0]->type))
+            if(!TypeIsArrow(term->args[0]->type) ||
+               !TypeIsPredicate(term->args[0]->type))
             {
                TI_ERROR("Wrong encoding of quantifier arguments");
             }
-            Type_p quant_type_args[2] =
-               {term->args[0]->type, sig->type_bank->bool_type};
-            type = TypeBankInsertTypeShared(sig->type_bank,
-                                          AllocArrowTypeCopyArgs(2, quant_type_args));
+            Type_p quant_type_args[2] = { term->args[0]->type,
+                                          sig->type_bank->bool_type };
+            type = TypeBankInsertTypeShared(
+               sig->type_bank, AllocArrowTypeCopyArgs(2, quant_type_args));
          }
       }
       else
@@ -296,8 +300,8 @@ void TypeInferSort(Sig_p sig, Term_p term, Scanner_p in)
       {
          if(TypeIsArrow(type))
          {
-            if(problemType == PROBLEM_FO && !app_encode
-               && term->arity != type->arity-1)
+            if(problemType == PROBLEM_FO && !app_encode &&
+               term->arity != type->arity - 1)
             {
                fprintf(stderr, "Arity mismatch for ");
                TermPrint(stderr, term, sig, DEREF_NEVER);
@@ -309,11 +313,14 @@ void TypeInferSort(Sig_p sig, Term_p term, Scanner_p in)
 
             if(!TermIsPhonyApp(term))
             {
-               for(i=0; SigIsFixedType(sig, term->f_code) && i < term->arity; i++)
+               for(i = 0; SigIsFixedType(sig, term->f_code) && i < term->arity;
+                   i++)
                {
                   if(term->args[i]->type != type->args[i])
                   {
-                     fprintf(stderr, COMCHAR" Type mismatch in argument #%d of ", i+1);
+                     fprintf(stderr,
+                             COMCHAR " Type mismatch in argument #%d of ",
+                             i + 1);
 #ifdef ENABLE_LFHO
                      TermPrintDbg(stderr, term, sig, DEREF_NEVER);
 #else
@@ -331,16 +338,18 @@ void TypeInferSort(Sig_p sig, Term_p term, Scanner_p in)
             else
             {
                // probably can be unified with harder to understand code!
-               for(i=1; i < term->arity; i++)
+               for(i = 1; i < term->arity; i++)
                {
-                  assert(term->arity-1 < type->arity);
+                  assert(term->arity - 1 < type->arity);
 
-                  if(term->args[i]->type != type->args[i-1])
+                  if(term->args[i]->type != type->args[i - 1])
                   {
-                     fprintf(stderr, COMCHAR" Type mismatch in argument #%d of ", i+1);
+                     fprintf(stderr,
+                             COMCHAR " Type mismatch in argument #%d of ",
+                             i + 1);
                      TermPrint(stderr, term, sig, DEREF_NEVER);
                      fprintf(stderr, ": expected ");
-                     TypePrintTSTP(stderr, sig->type_bank, type->args[i-1]);
+                     TypePrintTSTP(stderr, sig->type_bank, type->args[i - 1]);
                      fprintf(stderr, " but got ");
                      TypePrintTSTP(stderr, sig->type_bank, term->args[i]->type);
                      fprintf(stderr, "\n");
@@ -349,9 +358,9 @@ void TypeInferSort(Sig_p sig, Term_p term, Scanner_p in)
                }
             }
             term->type = term_determine_type(term, type, sig->type_bank);
-            if(term->type==NULL)
+            if(term->type == NULL)
             {
-               fprintf(stderr, COMCHAR" too many arguments supplied for %s\n",
+               fprintf(stderr, COMCHAR " too many arguments supplied for %s\n",
                        SigFindName(sig, term->f_code));
                TI_ERROR("Type error");
             }
@@ -360,7 +369,7 @@ void TypeInferSort(Sig_p sig, Term_p term, Scanner_p in)
          {
             if(term->arity != 0)
             {
-               fprintf(stderr, COMCHAR" Type mismatch for ");
+               fprintf(stderr, COMCHAR " Type mismatch for ");
                TermPrint(stderr, term, sig, DEREF_NEVER);
                fprintf(stderr, " and type ");
                TypePrintTSTP(stderr, sig->type_bank, type);
@@ -377,8 +386,8 @@ void TypeInferSort(Sig_p sig, Term_p term, Scanner_p in)
       {
          /* Infer type */
          sort = infer_return_sort(sig, term->f_code);
-         args = term->arity ? TypeArgArrayAlloc(term->arity+1) : NULL;
-         for(i=0; i < term->arity; i++)
+         args = term->arity ? TypeArgArrayAlloc(term->arity + 1) : NULL;
+         for(i = 0; i < term->arity; i++)
          {
             args[i] = term->args[i]->type;
          }
@@ -387,9 +396,9 @@ void TypeInferSort(Sig_p sig, Term_p term, Scanner_p in)
             args[term->arity] = sort;
          }
 
-         type = term->arity ?
-            TypeBankInsertTypeShared(sig->type_bank,
-                                     AllocArrowType(term->arity+1, args))
+         type = term->arity
+            ? TypeBankInsertTypeShared(sig->type_bank,
+                                       AllocArrowType(term->arity + 1, args))
             : sort;
 
          /* Declare the inferred type */

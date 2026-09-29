@@ -39,7 +39,11 @@ Changes
 /*---------------------------------------------------------------------*/
 
 
-#define FAIL_ON(x) if(x){return 0;}
+#define FAIL_ON(x)                                                             \
+   if(x)                                                                       \
+   {                                                                           \
+      return 0;                                                                \
+   }
 
 
 /*---------------------------------------------------------------------*/
@@ -63,7 +67,7 @@ FunCode DetectCommutativity(Clause_p clause)
 {
    Eqn_p lit;
 
-    /*printf("DetectCommutativity: ");
+   /*printf("DetectCommutativity: ");
       ClausePrint(stdout,clause,true);printf("\n");*/
 
    FAIL_ON(!ClauseIsUnit(clause));
@@ -73,13 +77,15 @@ FunCode DetectCommutativity(Clause_p clause)
    FAIL_ON(!EqnIsPositive(lit));
    FAIL_ON(TermIsPhonyApp(lit->lterm) || TermIsPhonyApp(lit->rterm));
    FAIL_ON(lit->lterm->arity != 2 || lit->rterm->arity != 2);
-   
-   FAIL_ON(!TermIsFreeVar(lit->lterm->args[0]) || !TermIsFreeVar(lit->lterm->args[1]));
-   FAIL_ON(!TermIsFreeVar(lit->rterm->args[0]) || !TermIsFreeVar(lit->rterm->args[1]));
 
-   FAIL_ON((lit->lterm->arity!=2)||
-      (lit->lterm->f_code!=lit->rterm->f_code));
-   // due to weight adjustment either arguement can 
+   FAIL_ON(!TermIsFreeVar(lit->lterm->args[0]) ||
+           !TermIsFreeVar(lit->lterm->args[1]));
+   FAIL_ON(!TermIsFreeVar(lit->rterm->args[0]) ||
+           !TermIsFreeVar(lit->rterm->args[1]));
+
+   FAIL_ON((lit->lterm->arity != 2) ||
+           (lit->lterm->f_code != lit->rterm->f_code));
+   // due to weight adjustment either arguement can
    // be a pattern applied variable.
    FAIL_ON(TermIsLambda(lit->lterm->args[0]));
    FAIL_ON(TermIsLambda(lit->lterm->args[1]));
@@ -93,7 +99,8 @@ FunCode DetectCommutativity(Clause_p clause)
    assert(TermIsFreeVar(lit->rterm->args[1]));
 
    FAIL_ON(lit->lterm->args[0] == lit->lterm->args[1]);
-   FAIL_ON((lit->lterm->args[0] != lit->rterm->args[1])||(lit->lterm->args[1] != lit->rterm->args[0]));
+   FAIL_ON((lit->lterm->args[0] != lit->rterm->args[1]) ||
+           (lit->lterm->args[1] != lit->rterm->args[0]));
 
    return lit->lterm->f_code;
 }
@@ -125,32 +132,32 @@ FunCode DetectAssociativity(Clause_p clause)
 
    assert(lit);
    FAIL_ON(!EqnIsPositive(lit));
-   FAIL_ON((TermStandardWeight(lit->lterm)!=
-       (2*DEFAULT_FWEIGHT+(3*DEFAULT_VWEIGHT)))||
-      (TermStandardWeight(lit->lterm)!=
-       (2*DEFAULT_FWEIGHT+(3*DEFAULT_VWEIGHT))));
+   FAIL_ON((TermStandardWeight(lit->lterm) !=
+            (2 * DEFAULT_FWEIGHT + (3 * DEFAULT_VWEIGHT))) ||
+           (TermStandardWeight(lit->lterm) !=
+            (2 * DEFAULT_FWEIGHT + (3 * DEFAULT_VWEIGHT))));
 
    FAIL_ON(TermIsAppliedFreeVar(lit->lterm));
    FAIL_ON(TermIsLambda(lit->lterm));
    FAIL_ON(TermIsAppliedFreeVar(lit->rterm));
    FAIL_ON(TermIsLambda(lit->rterm));
 
-   FAIL_ON(lit->lterm->f_code!=lit->rterm->f_code);
-   FAIL_ON((lit->lterm->arity!=2));
+   FAIL_ON(lit->lterm->f_code != lit->rterm->f_code);
+   FAIL_ON((lit->lterm->arity != 2));
    assert(lit->rterm->arity == 2);
 
    if(TermIsFreeVar(lit->lterm->args[0]))
    {
-      rterm=lit->lterm;
-      lterm=lit->rterm;
+      rterm = lit->lterm;
+      lterm = lit->rterm;
    }
    else
    {
-      rterm=lit->rterm;
-      lterm=lit->lterm;
+      rterm = lit->rterm;
+      lterm = lit->lterm;
    }
    f = lterm->f_code;
-   FAIL_ON(f!=lterm->args[0]->f_code);
+   FAIL_ON(f != lterm->args[0]->f_code);
    FAIL_ON(lterm->args[0]->arity != 2);
    FAIL_ON(!TermIsFreeVar(lterm->args[0]->args[0]));
    FAIL_ON(!TermIsFreeVar(lterm->args[0]->args[1]));
@@ -158,14 +165,14 @@ FunCode DetectAssociativity(Clause_p clause)
    v1 = lterm->args[0]->args[0]->f_code;
    v2 = lterm->args[0]->args[1]->f_code;
    v3 = lterm->args[1]->f_code;
-   FAIL_ON((v1==v2) || (v1==v3) || (v2==v3));
+   FAIL_ON((v1 == v2) || (v1 == v3) || (v2 == v3));
    /* Now  we know that the left hand side matches. We also know that
       the top symbol of the right hand side is f */
-   FAIL_ON(f!=rterm->args[1]->f_code);
-   FAIL_ON(v1!=rterm->args[0]->f_code);
+   FAIL_ON(f != rterm->args[1]->f_code);
+   FAIL_ON(v1 != rterm->args[0]->f_code);
    FAIL_ON(rterm->args[1]->arity != 2);
-   FAIL_ON(v2!=rterm->args[1]->args[0]->f_code);
-   FAIL_ON(v3!=rterm->args[1]->args[1]->f_code);
+   FAIL_ON(v2 != rterm->args[1]->args[0]->f_code);
+   FAIL_ON(v3 != rterm->args[1]->args[1]->f_code);
 
    return f;
 }
@@ -193,8 +200,8 @@ bool ClauseScanAC(Sig_p sig, Clause_p clause)
    {
       if(!SigQueryFuncProp(sig, f, FPCommutative))
       {
-    SigSetFuncProp(sig, f, FPCommutative);
-    PStackPushP(sig->ac_axioms, clause);
+         SigSetFuncProp(sig, f, FPCommutative);
+         PStackPushP(sig->ac_axioms, clause);
       }
       return true;
    }
@@ -203,8 +210,8 @@ bool ClauseScanAC(Sig_p sig, Clause_p clause)
    {
       if(!SigQueryFuncProp(sig, f, FPAssociative))
       {
-    SigSetFuncProp(sig, f, FPAssociative);
-    PStackPushP(sig->ac_axioms, clause);
+         SigSetFuncProp(sig, f, FPAssociative);
+         PStackPushP(sig->ac_axioms, clause);
       }
    }
    return false;
@@ -229,8 +236,7 @@ bool ClauseSetScanAC(Sig_p sig, ClauseSet_p set)
    bool res = false;
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-     handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       res |= ClauseScanAC(sig, handle);
    }

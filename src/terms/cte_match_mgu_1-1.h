@@ -33,16 +33,18 @@ Changes
 /*---------------------------------------------------------------------*/
 /*                    Data type declarations                           */
 /*---------------------------------------------------------------------*/
-typedef enum which_term {
-   NoTerm    = 0,
-   LeftTerm  = 1,
+typedef enum which_term
+{
+   NoTerm = 0,
+   LeftTerm = 1,
    RightTerm = 2
 } UnifTermSide;
 
-typedef enum oracle_unif_result {
-    UNIFIABLE,
-    NOT_UNIFIABLE,
-    NOT_IN_FRAGMENT,
+typedef enum oracle_unif_result
+{
+   UNIFIABLE,
+   NOT_UNIFIABLE,
+   NOT_IN_FRAGMENT,
 } OracleUnifResult;
 
 typedef bool UnificationResult;
@@ -72,8 +74,9 @@ bool SubstComputeMatch(Term_p matcher, Term_p to_match, Subst_p subst);
 bool SubstComputeMgu(Term_p t1, Term_p t2, Subst_p subst);
 
 // HO matching and unification
-int  PartiallyMatchVar(Term_p var_matcher, Term_p to_match, Sig_p sig, bool perform_OccursCheck);
-int  SubstComputeMatchHO(Term_p matcher, Term_p to_match, Subst_p subst);
+int PartiallyMatchVar(Term_p var_matcher, Term_p to_match, Sig_p sig,
+                      bool perform_OccursCheck);
+int SubstComputeMatchHO(Term_p matcher, Term_p to_match, Subst_p subst);
 UnificationResult SubstComputeMguHO(Term_p t1, Term_p t2, Subst_p subst);
 
 
@@ -88,21 +91,18 @@ bool SubstMguComplete(Term_p t, Term_p s, Subst_p subst);
 
 // If we are working in FOL mode, we revert to normal E behavior.
 #define SubstMatchComplete(t, s, subst) (SubstComputeMatch(t, s, subst))
-#define SubstMguComplete(t, s, subst)   (SubstComputeMgu(t, s, subst))
+#define SubstMguComplete(t, s, subst) (SubstComputeMgu(t, s, subst))
 
 #endif
 
-#define VerifyMatch(matcher, to_match) \
-        TermStructEqualDeref((matcher), (to_match), \
-              DEREF_ONCE, DEREF_NEVER)
+#define VerifyMatch(matcher, to_match)                                         \
+   TermStructEqualDeref((matcher), (to_match), DEREF_ONCE, DEREF_NEVER)
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

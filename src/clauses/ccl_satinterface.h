@@ -37,23 +37,23 @@
 
 typedef struct satclausecell
 {
-   bool       has_pure_lit;
-   int        lit_no;   // lit_no is actual number of literals
-   int *      literals; // null-terminated (PicoSAT requirement),
-                        // length(literals) = lit_no+1 !
-   Clause_p   source;
-}SatClauseCell, *SatClause_p;
+   bool has_pure_lit;
+   int lit_no;    // lit_no is actual number of literals
+   int* literals; // null-terminated (PicoSAT requirement),
+                  // length(literals) = lit_no+1 !
+   Clause_p source;
+} SatClauseCell, *SatClause_p;
 
 typedef struct satclausesetcell
 {
    PDRangeArr_p renumber_index; // Used to map term->id to [0...max_lit]
-   int          max_lit;
-   PStack_p     set;            // Actual set (clauses must be freed)
-   PStack_p     exported;       // Subset of clauses exported to the solver state
-   long         core_size;      // Size of the unsat core, if any
-   long         set_size_limit; // Limit after which insertions will fail
-                                // if -1 no limit is set.
-}SatClauseSetCell, *SatClauseSet_p;
+   int max_lit;
+   PStack_p set;        // Actual set (clauses must be freed)
+   PStack_p exported;   // Subset of clauses exported to the solver state
+   long core_size;      // Size of the unsat core, if any
+   long set_size_limit; // Limit after which insertions will fail
+                        // if -1 no limit is set.
+} SatClauseSetCell, *SatClauseSet_p;
 
 
 typedef enum
@@ -67,7 +67,7 @@ typedef enum
    GMConjMaxMaxFreq,
    GMGlobalMax,
    GMGlobalMin
-}GroundingStrategy;
+} GroundingStrategy;
 
 typedef bool (*SatClauseFilter)(SatClause_p);
 typedef PicoSAT* SatSolver_p;
@@ -78,22 +78,23 @@ typedef PicoSAT* SatSolver_p;
 
 extern char* GroundingStratNames[];
 
-#define SatClauseCellAlloc()    (SatClauseCell*)SizeMalloc(sizeof(SatClauseCell))
+#define SatClauseCellAlloc() (SatClauseCell*)SizeMalloc(sizeof(SatClauseCell))
 #define SatClauseCellFree(junk) SizeFree(junk, sizeof(SatClauseCell))
 
 SatClause_p SatClauseAlloc(int lit_no);
-void        SatClauseFree(SatClause_p junk);
+void SatClauseFree(SatClause_p junk);
 
-#define SatClauseSetCellAlloc()    (SatClauseSetCell*)SizeMalloc(sizeof(SatClauseSetCell))
+#define SatClauseSetCellAlloc()                                                \
+   (SatClauseSetCell*)SizeMalloc(sizeof(SatClauseSetCell))
 #define SatClauseSetCellFree(junk) SizeFree(junk, sizeof(SatClauseSetCell))
 
 #define SatClauseSetMaxClausesSet(set, l) ((set)->set_size_limit = (l))
-#define SatClauseSetLimitReached(s) ((s)->set_size_limit ==\
-                                       (PStackGetSP((s)->set))) 
+#define SatClauseSetLimitReached(s)                                            \
+   ((s)->set_size_limit == (PStackGetSP((s)->set)))
 
 
 SatClauseSet_p SatClauseSetAlloc(void);
-void           SatClauseSetFree(SatClauseSet_p junk);
+void SatClauseSetFree(SatClauseSet_p junk);
 
 #define SatClauseSetCardinality(satset) PStackGetSP((satset)->set)
 #define SatClauseSetNonPureCardinality(satset) PStackGetSP((satset)->exported)
@@ -101,27 +102,27 @@ void           SatClauseSetFree(SatClauseSet_p junk);
 
 
 SatClause_p SatClauseCreateAndStore(Clause_p clause, SatClauseSet_p set);
-void        SatClausePrint(FILE* out, SatClause_p satclause);
+void SatClausePrint(FILE* out, SatClause_p satclause);
 
-void        SatClauseSetPrint(FILE* out, SatClauseSet_p set);
+void SatClauseSetPrint(FILE* out, SatClauseSet_p set);
 
-void        SatClauseSetExportToSolver(SatSolver_p solver, SatClauseSet_p set);
-void        SatClauseSetExportToSolverNonPure(SatSolver_p solver, SatClauseSet_p set);
+void SatClauseSetExportToSolver(SatSolver_p solver, SatClauseSet_p set);
+void SatClauseSetExportToSolverNonPure(SatSolver_p solver, SatClauseSet_p set);
 
-Subst_p     SubstPseudoGroundVarBank(VarBank_p vars);
-Subst_p     SubstGroundVarBankFirstConst(TB_p terms, bool norm_const);
-Subst_p     SubstGroundFreqBased(TB_p terms, ClauseSet_p clauses,
-                                 FunConstCmpFunType is_better, bool norm_const);
+Subst_p SubstPseudoGroundVarBank(VarBank_p vars);
+Subst_p SubstGroundVarBankFirstConst(TB_p terms, bool norm_const);
+Subst_p SubstGroundFreqBased(TB_p terms, ClauseSet_p clauses,
+                             FunConstCmpFunType is_better, bool norm_const);
 
-long        SatClauseSetImportClauseSet(SatClauseSet_p satset, ClauseSet_p set);
-long        SatClauseSetImportProofState(SatClauseSet_p satset, ProofState_p state,
-                                         GroundingStrategy strat, bool norm_const);
-long        SatClauseSetMarkPure(SatClauseSet_p satset);
-ProverResult SatClauseSetCheckUnsat(SatClauseSet_p satset, Clause_p *empty,
+long SatClauseSetImportClauseSet(SatClauseSet_p satset, ClauseSet_p set);
+long SatClauseSetImportProofState(SatClauseSet_p satset, ProofState_p state,
+                                  GroundingStrategy strat, bool norm_const);
+long SatClauseSetMarkPure(SatClauseSet_p satset);
+ProverResult SatClauseSetCheckUnsat(SatClauseSet_p satset, Clause_p* empty,
                                     SatSolver_p solver,
                                     int sat_check_decision_level);
-bool        SatClauseSetCheckAndGetCore(SatClauseSet_p satset, SatSolver_p solver,
-                                        PStack_p unsat_core);
+bool SatClauseSetCheckAndGetCore(SatClauseSet_p satset, SatSolver_p solver,
+                                 PStack_p unsat_core);
 
 
 

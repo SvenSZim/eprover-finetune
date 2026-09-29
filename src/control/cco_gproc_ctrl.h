@@ -37,25 +37,25 @@
 
 typedef struct e_gpctrl_cell
 {
-   char         *name;
-   pid_t        pid;
-   int          fileno;
-   int          exit_status;
-   rlim_t       cpu_limit;
-   int          cores;
+   char* name;
+   pid_t pid;
+   int fileno;
+   int exit_status;
+   rlim_t cpu_limit;
+   int cores;
    ProverResult result;
-   DStr_p       output;
-}EGPCtrlCell, *EGPCtrl_p;
+   DStr_p output;
+} EGPCtrlCell, *EGPCtrl_p;
 
 
 #define EGPCTRL_BUFSIZE 1024
 
 typedef struct e_gpctrl_set_cell
 {
-   int       cores_reserved;
-   NumTree_p procs;  /* Indexed by fileno() */
-   char      buffer[EGPCTRL_BUFSIZE];
-}EGPCtrlSetCell, *EGPCtrlSet_p;
+   int cores_reserved;
+   NumTree_p procs; /* Indexed by fileno() */
+   char buffer[EGPCTRL_BUFSIZE];
+} EGPCtrlSetCell, *EGPCtrlSet_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -63,35 +63,34 @@ typedef struct e_gpctrl_set_cell
 /*---------------------------------------------------------------------*/
 
 
-#define EGPCtrlCellAlloc()    (EGPCtrlCell*)SizeMalloc(sizeof(EGPCtrlCell)+0)
-#define EGPCtrlCellFree(junk) SizeFree(junk, sizeof(EGPCtrlCell)+0)
+#define EGPCtrlCellAlloc() (EGPCtrlCell*)SizeMalloc(sizeof(EGPCtrlCell) + 0)
+#define EGPCtrlCellFree(junk) SizeFree(junk, sizeof(EGPCtrlCell) + 0)
 
 EGPCtrl_p EGPCtrlAlloc(int cores);
-void      EGPCtrlFree(EGPCtrl_p junk);
+void EGPCtrlFree(EGPCtrl_p junk);
 
 EGPCtrl_p EGPCtrlCreate(char* name, int cores, rlim_t cpu_limit);
 
-void      EGPCtrlCleanup(EGPCtrl_p ctrl);
+void EGPCtrlCleanup(EGPCtrl_p ctrl);
 
-bool      EGPCtrlGetResult(EGPCtrl_p ctrl,
-                           char* buffer,
-                           long buf_size);
+bool EGPCtrlGetResult(EGPCtrl_p ctrl, char* buffer, long buf_size);
 
-#define EGPCtrlSetCellAlloc()    (EGPCtrlSetCell*)SizeMalloc(sizeof(EGPCtrlSetCell))
+#define EGPCtrlSetCellAlloc()                                                  \
+   (EGPCtrlSetCell*)SizeMalloc(sizeof(EGPCtrlSetCell))
 #define EGPCtrlSetCellFree(junk) SizeFree(junk, sizeof(EGPCtrlSetCell))
 
 EGPCtrlSet_p EGPCtrlSetAlloc(void);
-void         EGPCtrlSetFree(EGPCtrlSet_p junk, bool kill_proc);
-void         EGPCtrlSetAddProc(EGPCtrlSet_p set, EGPCtrl_p proc);
-EGPCtrl_p    EGPCtrlSetFindProc(EGPCtrlSet_p set, int fd);
-void         EGPCtrlSetDeleteProc(EGPCtrlSet_p set, EGPCtrl_p proc, bool kill_proc);
-#define      EGPCtrlSetEmpty(set) ((set)->procs==NULL)
-#define      EGPCtrlSetCardinality(set) NumTreeNodes((set)->procs)
-#define      EGPCtrlSetCoresReserved(set) ((set)->cores_reserved)
+void EGPCtrlSetFree(EGPCtrlSet_p junk, bool kill_proc);
+void EGPCtrlSetAddProc(EGPCtrlSet_p set, EGPCtrl_p proc);
+EGPCtrl_p EGPCtrlSetFindProc(EGPCtrlSet_p set, int fd);
+void EGPCtrlSetDeleteProc(EGPCtrlSet_p set, EGPCtrl_p proc, bool kill_proc);
+#define EGPCtrlSetEmpty(set) ((set)->procs == NULL)
+#define EGPCtrlSetCardinality(set) NumTreeNodes((set)->procs)
+#define EGPCtrlSetCoresReserved(set) ((set)->cores_reserved)
 
-int          EGPCtrlSetFDSet(EGPCtrlSet_p set, fd_set *rd_fds);
+int EGPCtrlSetFDSet(EGPCtrlSet_p set, fd_set* rd_fds);
 
-EGPCtrl_p    EGPCtrlSetGetResult(EGPCtrlSet_p set);
+EGPCtrl_p EGPCtrlSetGetResult(EGPCtrlSet_p set);
 
 #endif
 

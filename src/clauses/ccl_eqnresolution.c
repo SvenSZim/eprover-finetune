@@ -55,10 +55,10 @@ bool EqResOnMaximalLiteralsOnly = true;
 
 Clause_p build_resolvent(ClausePos_p pos, Subst_p subst, VarBank_p freshvars)
 {
-   NormSubstEqnListExcept(pos->clause->literals, pos->literal,
-            subst, freshvars);
-   Eqn_p new_literals = EqnListCopyOptExcept(pos->clause->literals,
-                                             pos->literal);
+   NormSubstEqnListExcept(pos->clause->literals, pos->literal, subst,
+                          freshvars);
+   Eqn_p new_literals =
+      EqnListCopyOptExcept(pos->clause->literals, pos->literal);
    EqnListLambdaNormalize(new_literals);
    EqnListRemoveResolved(&new_literals);
    EqnListRemoveDuplicates(new_literals);
@@ -90,7 +90,7 @@ Clause_p build_resolvent(ClausePos_p pos, Subst_p subst, VarBank_p freshvars)
 Clause_p ComputeEqRes(TB_p bank, ClausePos_p pos, VarBank_p freshvars,
                       bool* subst_is_ho, PStack_p res_cls)
 {
-   Subst_p  subst;
+   Subst_p subst;
    Clause_p res = NULL;
 
 
@@ -148,9 +148,9 @@ Eqn_p ClausePosFirstEqResLiteral(Clause_p clause, ClausePos_p pos)
    while(pos->literal)
    {
       if(!EqnIsPositive(pos->literal) &&
-    (!EqResOnMaximalLiteralsOnly || EqnIsMaximal(pos->literal)))
+         (!EqResOnMaximalLiteralsOnly || EqnIsMaximal(pos->literal)))
       {
-    break;
+         break;
       }
       pos->literal = pos->literal->next;
    }
@@ -177,9 +177,9 @@ Eqn_p ClausePosNextEqResLiteral(ClausePos_p pos)
    while(pos->literal)
    {
       if(!EqnIsPositive(pos->literal) &&
-    (!EqResOnMaximalLiteralsOnly || EqnIsMaximal(pos->literal)))
+         (!EqResOnMaximalLiteralsOnly || EqnIsMaximal(pos->literal)))
       {
-    break;
+         break;
       }
       pos->literal = pos->literal->next;
    }

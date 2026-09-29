@@ -36,41 +36,41 @@ Changes
 
 typedef struct csscpa_state_cell
 {
-   Sig_p             sig;
-   TB_p              terms;
-   TB_p              tmp_terms;
-   ClauseSet_p       pos_units;
-   ClauseSet_p       neg_units;
-   ClauseSet_p       non_units;
-   long              literals;
-   long              clauses;
-   long              weight;
-}CSSCPAStateCell, *CSSCPAState_p;
+   Sig_p sig;
+   TB_p terms;
+   TB_p tmp_terms;
+   ClauseSet_p pos_units;
+   ClauseSet_p neg_units;
+   ClauseSet_p non_units;
+   long literals;
+   long clauses;
+   long weight;
+} CSSCPAStateCell, *CSSCPAState_p;
 
 typedef enum
 {
-/*---Added by Geoff */
+   /*---Added by Geoff */
    contradicts,
    improved,
    rejected,
    forced,
    requested,
    unknown
-}
-ClauseStatusType;
+} ClauseStatusType;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define CSSCPAStateCellAlloc()    (CSSCPAStateCell*)SizeMalloc(sizeof(CSSCPAStateCell))
+#define CSSCPAStateCellAlloc()                                                 \
+   (CSSCPAStateCell*)SizeMalloc(sizeof(CSSCPAStateCell))
 #define CSSCPAStateCellFree(junk) SizeFree(junk, sizeof(CSSCPAStateCell))
 
 CSSCPAState_p CSSCPAStateAlloc(void);
-void          CSSCPAStateFree(CSSCPAState_p junk);
+void CSSCPAStateFree(CSSCPAState_p junk);
 
-bool CSSCPAProcessClause(CSSCPAState_p state, Clause_p clause,
-         bool accept, float weight_delta, float average_delta);
+bool CSSCPAProcessClause(CSSCPAState_p state, Clause_p clause, bool accept,
+                         float weight_delta, float average_delta);
 
 void CSSCPALoop(Scanner_p in, CSSCPAState_p state);
 

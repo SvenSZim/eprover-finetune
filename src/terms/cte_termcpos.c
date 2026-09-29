@@ -50,7 +50,7 @@ Term_p term_cpos_get_subterm(Term_p term, TermCPos* pos)
       return term;
    }
    (*pos)--;
-   for(i=0; i<term->arity; i++)
+   for(i = 0; i < term->arity; i++)
    {
       res = term_cpos_get_subterm(term->args[i], pos);
       if(res)
@@ -103,7 +103,7 @@ void TermPrintAllCPos(FILE* out, TB_p bank, Term_p term)
    PStack_p stack = PStackAlloc();
 
    TermLinearize(stack, term);
-   for(i=0; (t=TermCPosGetSubterm(term, i));  i++)
+   for(i = 0; (t = TermCPosGetSubterm(term, i)); i++)
    {
       fprintf(out, "\nPos %3ld: ", i);
       TBPrintTermFull(out, bank, t);

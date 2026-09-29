@@ -37,29 +37,29 @@ typedef enum
    SNInteger,
    SNRational,
    SNFloat
-}StrNumType;
+} StrNumType;
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-bool       ParseBool(Scanner_p in);
-intmax_t   ParseIntMax(Scanner_p in);
-long       ParseInt(Scanner_p in);
-long       ParseIntLimited(Scanner_p in, long lower, long upper);
-uintmax_t  ParseUIntMax(Scanner_p in);
-double     ParseFloat(Scanner_p in);
+bool ParseBool(Scanner_p in);
+intmax_t ParseIntMax(Scanner_p in);
+long ParseInt(Scanner_p in);
+long ParseIntLimited(Scanner_p in, long lower, long upper);
+uintmax_t ParseUIntMax(Scanner_p in);
+double ParseFloat(Scanner_p in);
 StrNumType ParseNumString(Scanner_p in);
-long       DDArrayParse(Scanner_p in, DDArray_p array, bool brackets);
-char*      ParseFilename(Scanner_p in);
-char*      ParsePlainFilename(Scanner_p in);
-char*      ParseBasicInclude(Scanner_p in);
-char*      ParseDottedId(Scanner_p in);
-void       AcceptDottedId(Scanner_p in, char* expected);
-char*      ParseContinous(Scanner_p in);
+long DDArrayParse(Scanner_p in, DDArray_p array, bool brackets);
+char* ParseFilename(Scanner_p in);
+char* ParsePlainFilename(Scanner_p in);
+char* ParseBasicInclude(Scanner_p in);
+char* ParseDottedId(Scanner_p in);
+void AcceptDottedId(Scanner_p in, char* expected);
+char* ParseContinous(Scanner_p in);
 
-void       ParseSkipParenthesizedExpr(Scanner_p in);
+void ParseSkipParenthesizedExpr(Scanner_p in);
 
 #endif
 

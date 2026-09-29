@@ -85,14 +85,15 @@ void TempFileCleanup(void)
 //
 /----------------------------------------------------------------------*/
 
-void TempFileRegister(char *name)
+void TempFileRegister(char* name)
 {
    StrTree_p res;
    IntOrP tmp;
 
    tmp.p_val = NULL;
    res = StrTreeStore(&temp_file_store, name, tmp, tmp);
-   UNUSED(res); assert(res);
+   UNUSED(res);
+   assert(res);
 }
 
 
@@ -124,7 +125,7 @@ char* TempFileName(void)
    {
       DStrAppendStr(name, "/tmp");
    }
-   if(DStrLen(name) && DStrLastChar(name)!='/')
+   if(DStrLen(name) && DStrLastChar(name) != '/')
    {
       DStrAppendChar(name, '/');
    }
@@ -132,7 +133,7 @@ char* TempFileName(void)
 
    fd = mkstemp(DStrView(name));
 
-   if(fd==-1)
+   if(fd == -1)
    {
       TmpErrno = errno;
       SysError("Could not create valid temporary file name %s (check $TMPDIR)",
@@ -169,7 +170,7 @@ char* TempFileCreate(FILE* source)
    name = TempFileName();
    out = OutOpen(name);
 
-   while((c = getc(source))!= EOF)
+   while((c = getc(source)) != EOF)
    {
       putc(c, out);
    }
@@ -194,13 +195,14 @@ void TempFileRemove(char* name)
 {
    bool res;
 
-   if(unlink(name)!=0)
+   if(unlink(name) != 0)
    {
       TmpErrno = errno;
       SysError("Could not remove temporary file", SYS_ERROR);
    }
    res = StrTreeDeleteEntry(&temp_file_store, name);
-   UNUSED(res); assert(res);
+   UNUSED(res);
+   assert(res);
 }
 
 

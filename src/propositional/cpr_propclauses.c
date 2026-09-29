@@ -55,12 +55,12 @@ Changes
 
 int p_atom_compare(const void* atom1, const void* atom2)
 {
-   const PLiteralCode *a1 = (const PLiteralCode*)atom1;
-   const PLiteralCode *a2 = (const PLiteralCode*)atom2;
+   const PLiteralCode* a1 = (const PLiteralCode*)atom1;
+   const PLiteralCode* a2 = (const PLiteralCode*)atom2;
 
    PLiteralCode abs_a1, abs_a2;
 
-   if(a1==a2)
+   if(a1 == a2)
    {
       return 0;
    }
@@ -74,7 +74,7 @@ int p_atom_compare(const void* atom1, const void* atom2)
    {
       return 1;
    }
-   if(*a1>0)
+   if(*a1 > 0)
    {
       return -1;
    }
@@ -120,37 +120,35 @@ void DPLLClauseFree(DPLLClause_p junk)
 
 DPLLClause_p DPLLClauseFromClause(PropSig_p psig, Clause_p clause)
 {
-   long         lit_no = ClauseLiteralNumber(clause);
+   long lit_no = ClauseLiteralNumber(clause);
    DPLLClause_p handle = DPLLClauseCellAlloc();
-   Eqn_p        eqn;
-   long         i;
-   PLiteralCode    atom;
+   Eqn_p eqn;
+   long i;
+   PLiteralCode atom;
 
-   handle->lit_no    = lit_no;
+   handle->lit_no = lit_no;
    handle->active_no = lit_no;
-   handle->mem_size  = lit_no*sizeof(PLiteralCode);
-   handle->literals  = SizeMalloc(handle->mem_size);
+   handle->mem_size = lit_no * sizeof(PLiteralCode);
+   handle->literals = SizeMalloc(handle->mem_size);
 
-   for(i=0,eqn=clause->literals;
-       eqn;
-       i++,eqn=eqn->next)
+   for(i = 0, eqn = clause->literals; eqn; i++, eqn = eqn->next)
    {
-      assert(i<lit_no);
+      assert(i < lit_no);
       if(!EqnIsPropositional(eqn))
       {
-    Error("Only real propositional clauses can be converted"
-          " by DPLLClauseFromClause()!",
-          SYNTAX_ERROR);
+         Error("Only real propositional clauses can be converted"
+               " by DPLLClauseFromClause()!",
+               SYNTAX_ERROR);
       }
       atom = PropSigInsertAtom(psig,
-                SigFindName(eqn->bank->sig,eqn->lterm->f_code));
+                               SigFindName(eqn->bank->sig, eqn->lterm->f_code));
       if(EqnIsNegative(eqn))
       {
-    atom = -atom;
+         atom = -atom;
       }
       handle->literals[i] = atom;
    }
-   assert(i==lit_no);
+   assert(i == lit_no);
 
 
    return handle;
@@ -176,7 +174,7 @@ DPLLClause_p DPLLClauseFromClause(PropSig_p psig, Clause_p clause)
 
 bool DPLLClauseNormalize(DPLLClause_p clause)
 {
-   unsigned long to,from;
+   unsigned long to, from;
    bool tautology = false;
 
    if(clause->lit_no <= 1)
@@ -185,23 +183,23 @@ bool DPLLClauseNormalize(DPLLClause_p clause)
    }
    assert(clause->lit_no == clause->active_no);
    qsort(clause->literals, clause->lit_no, sizeof(PLiteralCode),
-    p_atom_compare);
+         p_atom_compare);
    to = 0;
    from = 1;
-   while(from<clause->lit_no)
+   while(from < clause->lit_no)
    {
       if(clause->literals[from] != clause->literals[to])
       {
-    if(clause->literals[from] == -(clause->literals[to]))
-    {
-       tautology=true;
-    }
-    to++;
-    clause->literals[to]=clause->literals[from];
+         if(clause->literals[from] == -(clause->literals[to]))
+         {
+            tautology = true;
+         }
+         to++;
+         clause->literals[to] = clause->literals[from];
       }
       from++;
    }
-   clause->lit_no = clause->active_no = to+1;
+   clause->lit_no = clause->active_no = to + 1;
    return tautology;
 }
 
@@ -220,30 +218,30 @@ bool DPLLClauseNormalize(DPLLClause_p clause)
 
 void DPLLClausePrintLOP(FILE* out, PropSig_p psig, DPLLClause_p clause)
 {
-   char* sep ="";
+   char* sep = "";
    unsigned int i;
 
-   for(i=0; i<clause->lit_no;i++)
+   for(i = 0; i < clause->lit_no; i++)
    {
-      if(clause->literals[i]>0)
+      if(clause->literals[i] > 0)
       {
-    fprintf(out, "%s%s", sep,
-       PropSigGetAtomName(psig,clause->literals[i]));
-    sep=";";
+         fprintf(out, "%s%s", sep,
+                 PropSigGetAtomName(psig, clause->literals[i]));
+         sep = ";";
       }
    }
-   fprintf(out,"<-");
-   sep="";
-   for(i=0; i<clause->lit_no;i++)
+   fprintf(out, "<-");
+   sep = "";
+   for(i = 0; i < clause->lit_no; i++)
    {
-      if(clause->literals[i]<0)
+      if(clause->literals[i] < 0)
       {
-    fprintf(out, "%s%s", sep,
-       PropSigGetAtomName(psig,-clause->literals[i]));
-    sep=",";
+         fprintf(out, "%s%s", sep,
+                 PropSigGetAtomName(psig, -clause->literals[i]));
+         sep = ",";
       }
    }
-   fprintf(out,".");
+   fprintf(out, ".");
 }
 
 /*-----------------------------------------------------------------------
@@ -264,12 +262,12 @@ void DPLLClausePrintLOP(FILE* out, PropSig_p psig, DPLLClause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-void DPLLClausePrintDimacs(FILE* out,DPLLClause_p clause)
+void DPLLClausePrintDimacs(FILE* out, DPLLClause_p clause)
 {
    unsigned int i;
-   for(i=0; i<clause->lit_no;i++)
+   for(i = 0; i < clause->lit_no; i++)
    {
-      fprintf(out,"%ld ", clause->literals[i]);
+      fprintf(out, "%ld ", clause->literals[i]);
    }
    fprintf(out, "0\n");
 }

@@ -53,16 +53,15 @@
 //
 /----------------------------------------------------------------------*/
 
-static void parse_single_wfcb_item(HCB_p hcb, Scanner_p in,
-                                   WFCBAdmin_p wfcbs, OCB_p ocb,
-                                   ProofState_p state)
+static void parse_single_wfcb_item(HCB_p hcb, Scanner_p in, WFCBAdmin_p wfcbs,
+                                   OCB_p ocb, ProofState_p state)
 {
    WFCB_p wfcb;
-   long   steps;
-   char   *name;
+   long steps;
+   char* name;
 
    steps = AktToken(in)->numval;
-   if(steps<=0)
+   if(steps <= 0)
    {
       AktTokenError(in,
                     "Value >0 expected in heuristic evaluation"
@@ -70,11 +69,11 @@ static void parse_single_wfcb_item(HCB_p hcb, Scanner_p in,
                     false);
    }
    AcceptInpTok(in, PosInt);
-   AcceptInpTok(in, Mult|Fullstop);
+   AcceptInpTok(in, Mult | Fullstop);
 
    CheckInpTok(in, Identifier);
 
-   if(TestTok(LookToken(in,1), OpenBracket|EqualSign))
+   if(TestTok(LookToken(in, 1), OpenBracket | EqualSign))
    {
       name = WeightFunDefParse(wfcbs, in, ocb, state);
       wfcb = WFCBAdminFindWFCB(wfcbs, name);
@@ -87,8 +86,7 @@ static void parse_single_wfcb_item(HCB_p hcb, Scanner_p in,
    }
    if(!wfcb)
    {
-      AktTokenError(in, "Not a valid evaluation function specifier",
-                    false);
+      AktTokenError(in, "Not a valid evaluation function specifier", false);
    }
    HCBAddWFCB(hcb, wfcb, steps);
 }
@@ -114,7 +112,7 @@ HCBAdmin_p HCBAdminAlloc(void)
 {
    HCBAdmin_p handle = HCBAdminCellAlloc();
 
-   handle->names   = PStackAlloc();
+   handle->names = PStackAlloc();
    handle->hcb_set = PStackAlloc();
 
    return handle;
@@ -178,12 +176,11 @@ long HCBAdminAddHCB(HCBAdmin_p set, char* name, HCB_p hcb)
    assert(name);
    assert(hcb);
 
-   VERBOSE2(fprintf(stderr, "%s: Adding heuristic '%s'.\n",
-                    ProgName, name););
+   VERBOSE2(fprintf(stderr, "%s: Adding heuristic '%s'.\n", ProgName, name););
    PStackPushP(set->names, SecureStrdup(name));
    PStackPushP(set->hcb_set, hcb);
 
-   return PStackGetSP(set->hcb_set)-1;
+   return PStackGetSP(set->hcb_set) - 1;
 }
 
 
@@ -212,9 +209,9 @@ HCB_p HCBAdminFindHCB(HCBAdmin_p set, char* name)
    assert(name);
 
 
-   for(i = PStackGetSP(set->names)-1; i>=0; i--)
+   for(i = PStackGetSP(set->names) - 1; i >= 0; i--)
    {
-      if(strcmp(name, PStackElementP(set->names, i))==0)
+      if(strcmp(name, PStackElementP(set->names, i)) == 0)
       {
          res = PStackElementP(set->hcb_set, i);
          break;
@@ -239,7 +236,7 @@ HCB_p HCBAdminFindHCB(HCBAdmin_p set, char* name)
 HCB_p HeuristicParse(Scanner_p in, WFCBAdmin_p wfcbs, OCB_p ocb,
                      ProofState_p state)
 {
-   HCB_p  hcb = HCBAlloc();
+   HCB_p hcb = HCBAlloc();
 
    AcceptInpTok(in, OpenBracket);
 
@@ -267,12 +264,12 @@ HCB_p HeuristicParse(Scanner_p in, WFCBAdmin_p wfcbs, OCB_p ocb,
 //
 /----------------------------------------------------------------------*/
 
-long HeuristicDefParse(HCBAdmin_p set, Scanner_p in, WFCBAdmin_p
-                       wfcbs, OCB_p ocb, ProofState_p state)
+long HeuristicDefParse(HCBAdmin_p set, Scanner_p in, WFCBAdmin_p wfcbs,
+                       OCB_p ocb, ProofState_p state)
 {
    char* name;
    HCB_p hcb;
-   long   res;
+   long res;
 
    if(TestInpTok(in, OpenBracket))
    {
@@ -306,19 +303,18 @@ long HeuristicDefParse(HCBAdmin_p set, Scanner_p in, WFCBAdmin_p
 //
 /----------------------------------------------------------------------*/
 
-long HeuristicDefListParse(HCBAdmin_p set, Scanner_p in, WFCBAdmin_p
-                           wfcbs, OCB_p ocb, ProofState_p state)
+long HeuristicDefListParse(HCBAdmin_p set, Scanner_p in, WFCBAdmin_p wfcbs,
+                           OCB_p ocb, ProofState_p state)
 {
    long res = PStackGetSP(set->names);
 
-   while((TestInpTok(in, Identifier)&&TestTok(LookToken(in,1), EqualSign))
-         ||TestInpTok(in, OpenBracket))
+   while((TestInpTok(in, Identifier) && TestTok(LookToken(in, 1), EqualSign)) ||
+         TestInpTok(in, OpenBracket))
    {
       res = HeuristicDefParse(set, in, wfcbs, ocb, state);
    }
    return res;
 }
-
 
 
 

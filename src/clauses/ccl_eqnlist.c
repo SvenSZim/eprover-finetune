@@ -232,18 +232,18 @@ int EqnListQueryPropNumber(Eqn_p list, EqnProperties prop)
 //
 /----------------------------------------------------------------------*/
 
-bool EqnListExistsTermExcept(Eqn_p list, Eqn_p except, TermPredicateFun_p predicate)
+bool EqnListExistsTermExcept(Eqn_p list, Eqn_p except,
+                             TermPredicateFun_p predicate)
 {
    for(Eqn_p lit = list; lit; lit = lit->next)
    {
-      if (lit != except && (predicate(lit->lterm) || predicate(lit->rterm)))
+      if(lit != except && (predicate(lit->lterm) || predicate(lit->rterm)))
       {
          return true;
       }
    }
    return false;
 }
-
 
 
 
@@ -261,7 +261,7 @@ bool EqnListExistsTermExcept(Eqn_p list, Eqn_p except, TermPredicateFun_p predic
 
 int EqnListLength(Eqn_p list)
 {
-   int i=0;
+   int i = 0;
 
    while(list)
    {
@@ -289,7 +289,7 @@ Eqn_p EqnListFromArray(Eqn_p* array, int lenght)
    Eqn_p *handle, res;
 
    handle = &(res);
-   for(i=0; i<lenght; i++)
+   for(i = 0; i < lenght; i++)
    {
       *handle = array[i];
       handle = &((*handle)->next);
@@ -368,7 +368,8 @@ Eqn_p EqnListFromStack(PStack_p stack)
 //
 /----------------------------------------------------------------------*/
 
-void EqnListSplitToStacks(Eqn_p list, PStack_p pos, PStack_p neg, EqnProperties prop)
+void EqnListSplitToStacks(Eqn_p list, PStack_p pos, PStack_p neg,
+                          EqnProperties prop)
 {
    while(list)
    {
@@ -383,7 +384,6 @@ void EqnListSplitToStacks(Eqn_p list, PStack_p pos, PStack_p neg, EqnProperties 
       list = list->next;
    }
 }
-
 
 
 
@@ -424,14 +424,13 @@ Eqn_p EqnListExtractElement(EqnRef element)
 //
 /----------------------------------------------------------------------*/
 
-Eqn_p EqnListExtractByProps(EqnRef list, EqnProperties props, bool
-                            negate)
+Eqn_p EqnListExtractByProps(EqnRef list, EqnProperties props, bool negate)
 {
    Eqn_p res = NULL, tmp;
 
    while(*list)
    {
-      if(XOR(EqnQueryProp(*list, props),negate))
+      if(XOR(EqnQueryProp(*list, props), negate))
       {
          tmp = EqnListExtractFirst(list);
          EqnListInsertFirst(&res, tmp);
@@ -524,7 +523,7 @@ Eqn_p EqnListAppend(EqnRef list, Eqn_p newpart)
 
 Eqn_p EqnListFlatCopy(Eqn_p list)
 {
-   Eqn_p  newlist = NULL;
+   Eqn_p newlist = NULL;
    EqnRef insert = &newlist;
 
    while(list)
@@ -554,7 +553,7 @@ Eqn_p EqnListFlatCopy(Eqn_p list)
 
 Eqn_p EqnListCopy(Eqn_p list, TB_p bank)
 {
-   Eqn_p  newlist = NULL;
+   Eqn_p newlist = NULL;
    EqnRef insert = &newlist;
 
    while(list)
@@ -585,7 +584,7 @@ Eqn_p EqnListCopy(Eqn_p list, TB_p bank)
 
 Eqn_p EqnListCopyExcept(Eqn_p list, Eqn_p except, TB_p bank)
 {
-   Eqn_p  newlist = NULL;
+   Eqn_p newlist = NULL;
    EqnRef insert = &newlist;
 
    while(list)
@@ -618,7 +617,7 @@ Eqn_p EqnListCopyExcept(Eqn_p list, Eqn_p except, TB_p bank)
 
 Eqn_p EqnListCopyOpt(Eqn_p list)
 {
-   Eqn_p  newlist = NULL;
+   Eqn_p newlist = NULL;
    EqnRef insert = &newlist;
 
    while(list)
@@ -649,7 +648,7 @@ Eqn_p EqnListCopyOpt(Eqn_p list)
 
 Eqn_p EqnListCopyOptExcept(Eqn_p list, Eqn_p except)
 {
-   Eqn_p  newlist = NULL;
+   Eqn_p newlist = NULL;
    EqnRef insert = &newlist;
 
    while(list)
@@ -682,7 +681,7 @@ Eqn_p EqnListCopyOptExcept(Eqn_p list, Eqn_p except)
 
 Eqn_p EqnListCopyDisjoint(Eqn_p list)
 {
-   Eqn_p  newlist = NULL;
+   Eqn_p newlist = NULL;
    EqnRef insert = &newlist;
 
    while(list)
@@ -714,7 +713,7 @@ Eqn_p EqnListCopyDisjoint(Eqn_p list)
 
 Eqn_p EqnListCopyRepl(Eqn_p list, TB_p bank, Term_p old, Term_p repl)
 {
-   Eqn_p  newlist = NULL;
+   Eqn_p newlist = NULL;
    EqnRef insert = &newlist;
 
    while(list)
@@ -745,7 +744,7 @@ Eqn_p EqnListCopyRepl(Eqn_p list, TB_p bank, Term_p old, Term_p repl)
 
 Eqn_p EqnListCopyReplPlain(Eqn_p list, TB_p bank, Term_p old, Term_p repl)
 {
-   Eqn_p  newlist = NULL;
+   Eqn_p newlist = NULL;
    EqnRef insert = &newlist;
 
    while(list)
@@ -758,7 +757,6 @@ Eqn_p EqnListCopyReplPlain(Eqn_p list, TB_p bank, Term_p old, Term_p repl)
 
    return newlist;
 }
-
 
 
 
@@ -804,7 +802,7 @@ Eqn_p EqnListNegateEqns(Eqn_p list)
 int EqnListRemoveDuplicates1(Eqn_p list)
 {
    EqnRef handle;
-   int    removed = 0;
+   int removed = 0;
 
    while(list)
    {
@@ -829,7 +827,7 @@ int EqnListRemoveDuplicates1(Eqn_p list)
 int EqnListRemoveDuplicates(Eqn_p list)
 {
    EqnRef handle;
-   int    removed = 0;
+   int removed = 0;
    PObjTree_p litstore = NULL;
 
    if(list && list->next) // Nothing to do for very short clause.
@@ -971,7 +969,7 @@ Eqn_p EqnListFindNegPureVarLit(Eqn_p list)
 {
    while(list)
    {
-      if(EqnIsNegative(list)&&EqnIsPureVar(list))
+      if(EqnIsNegative(list) && EqnIsPureVar(list))
       {
          break;
       }
@@ -1062,8 +1060,8 @@ bool EqnListIsTrivial(Eqn_p list)
 
 static int comp_stack_eqns(const void* v1, const void* v2)
 {
-   const IntOrP* e1 = (const IntOrP*) v1;
-   const IntOrP* e2 = (const IntOrP*) v2;
+   const IntOrP* e1 = (const IntOrP*)v1;
+   const IntOrP* e2 = (const IntOrP*)v2;
 
    return EqnSyntaxCompare(e1->p_val, e2->p_val);
 }
@@ -1090,8 +1088,7 @@ bool EqnLongListIsTrivial(Eqn_p list)
    while(pp < PStackGetSP(pos_lits))
    {
       key = PStackElementP(pos_lits, pp);
-      np = PStackBinSearch(neg_lits, key, np,
-                           PStackGetSP(neg_lits),
+      np = PStackBinSearch(neg_lits, key, np, PStackGetSP(neg_lits),
                            EqnSyntaxCompare);
       if(np >= PStackGetSP(neg_lits))
       {
@@ -1110,8 +1107,7 @@ bool EqnLongListIsTrivial(Eqn_p list)
          {
             break;
          }
-         pp = PStackBinSearch(pos_lits, key2,
-                              pp, PStackGetSP(pos_lits),
+         pp = PStackBinSearch(pos_lits, key2, pp, PStackGetSP(pos_lits),
                               EqnSyntaxCompare);
       }
    }
@@ -1255,7 +1251,6 @@ int EqnListOrient(OCB_p ocb, Eqn_p list)
       {
          res++;
       }
-
    }
    return res;
 }
@@ -1283,7 +1278,7 @@ int EqnListMaximalLiterals1(OCB_p ocb, Eqn_p list)
    int res = 0;
 
    printf("Drin\n");
-   res = EqnListSetProp(list, EPIsMaximal|EPIsStrictlyMaximal);
+   res = EqnListSetProp(list, EPIsMaximal | EPIsStrictlyMaximal);
    for(handle = list; handle; handle = handle->next)
    {
       for(stepper = handle->next; stepper; stepper = stepper->next)
@@ -1293,21 +1288,21 @@ int EqnListMaximalLiterals1(OCB_p ocb, Eqn_p list)
             cmp = LiteralCompare(ocb, handle, stepper);
             switch(cmp)
             {
-            case to_greater:
+               case to_greater:
                   EqnDelProp(stepper, EPIsMaximal);
                   EqnDelProp(stepper, EPIsStrictlyMaximal);
                   res--;
                   break;
-            case to_lesser:
+               case to_lesser:
                   EqnDelProp(handle, EPIsMaximal);
                   EqnDelProp(handle, EPIsStrictlyMaximal);
                   res--;
                   break;
-            case to_equal:
+               case to_equal:
                   EqnDelProp(stepper, EPIsStrictlyMaximal);
                   EqnDelProp(handle, EPIsStrictlyMaximal);
                   break;
-            default:
+               default:
                   break;
             }
          }
@@ -1339,13 +1334,13 @@ int EqnListMaximalLiterals(OCB_p ocb, Eqn_p list)
       {
          cmp = LiteralCompare(ocb, cand, *stepper);
 
-         if(cmp ==  to_greater)
+         if(cmp == to_greater)
          {
             // cand survives, *stepper is dead
             EqnDelProp(*stepper, EPIsStrictlyMaximal);
             EqnListExtractElement(stepper);
          }
-         else if(cmp ==  to_lesser)
+         else if(cmp == to_lesser)
          {
             // cand is dead
             EqnDelProp(cand, EPIsStrictlyMaximal);
@@ -1378,7 +1373,6 @@ int EqnListMaximalLiterals(OCB_p ocb, Eqn_p list)
 
 
 
-
 /*-----------------------------------------------------------------------
 //
 // Function: EqnListEqnIsMaximal()
@@ -1399,9 +1393,9 @@ bool EqnListEqnIsMaximal(OCB_p ocb, Eqn_p list, Eqn_p eqn)
    bool res = true;
    CompareResult cmp;
 
-   for(handle=list; handle; handle = handle->next)
+   for(handle = list; handle; handle = handle->next)
    {
-      if(handle!=eqn && EqnIsMaximal(handle))
+      if(handle != eqn && EqnIsMaximal(handle))
       {
          cmp = LiteralCompare(ocb, handle, eqn);
 
@@ -1412,7 +1406,7 @@ bool EqnListEqnIsMaximal(OCB_p ocb, Eqn_p list, Eqn_p eqn)
          }
       }
    }
-/*   printf("\n");
+   /*   printf("\n");
      EqnPrintOriginal(stdout, eqn); printf(" is max in ");
      EqnListPrint(stdout, list, ";", normal, true);
      printf(" ResNormal: %d\n", res); */
@@ -1440,17 +1434,17 @@ bool EqnListEqnIsStrictlyMaximal(OCB_p ocb, Eqn_p list, Eqn_p eqn)
    Eqn_p handle;
    bool res = true;
 
-   for(handle=list; handle&&res; handle = handle->next)
+   for(handle = list; handle && res; handle = handle->next)
    {
-      if(handle!=eqn && EqnIsMaximal(handle))
+      if(handle != eqn && EqnIsMaximal(handle))
       {
          switch(LiteralCompare(ocb, handle, eqn))
          {
-         case to_equal:
-         case to_greater:
+            case to_equal:
+            case to_greater:
                res = false;
                break;
-         default:
+            default:
                break;
          }
       }
@@ -1502,8 +1496,8 @@ void EqnListDeleteTermProperties(Eqn_p list, TermProperties props)
 //
 /----------------------------------------------------------------------*/
 
-void EqnListPrint(FILE* out, Eqn_p list, char* sep,
-                  bool negated, bool fullterms)
+void EqnListPrint(FILE* out, Eqn_p list, char* sep, bool negated,
+                  bool fullterms)
 {
    Eqn_p handle = list;
 
@@ -1533,12 +1527,11 @@ void EqnListPrint(FILE* out, Eqn_p list, char* sep,
 //
 /----------------------------------------------------------------------*/
 
-void EqnListPrintDeref(FILE* out, Eqn_p list, char* sep,
-                       DerefType deref)
+void EqnListPrintDeref(FILE* out, Eqn_p list, char* sep, DerefType deref)
 {
    Eqn_p handle;
 
-   for(handle = list; handle; handle=handle->next)
+   for(handle = list; handle; handle = handle->next)
    {
       EqnPrintDeref(out, handle, deref);
       if(handle->next)
@@ -1593,21 +1586,17 @@ void EqnListTSTPPrint(FILE* out, Eqn_p list, char* sep, bool fullterms)
 
 Eqn_p EqnListParse(Scanner_p in, TB_p bank, TokenType sep)
 {
-   Eqn_p handle = NULL,
-      list = NULL;
+   Eqn_p handle = NULL, list = NULL;
 
-   if(((ScannerGetFormat(in) == TPTPFormat) &&
-       TestInpTok(in, Plus|Hyphen))
-      ||
+   if(((ScannerGetFormat(in) == TPTPFormat) && TestInpTok(in, Plus | Hyphen)) ||
       ((ScannerGetFormat(in) == LOPFormat) &&
-       TestInpTok(in, TermStartToken|TildeSign))
-      ||
+       TestInpTok(in, TermStartToken | TildeSign)) ||
       ((ScannerGetFormat(in) == TSTPFormat) &&
-       TestInpTok(in, TermStartToken|TildeSign)))
+       TestInpTok(in, TermStartToken | TildeSign)))
    {
       list = EqnParse(in, bank);
       handle = list;
-      while(TestInpTok(in,sep))
+      while(TestInpTok(in, sep))
       {
          NextToken(in);
          handle->next = EqnParse(in, bank);
@@ -1632,15 +1621,15 @@ Eqn_p EqnListParse(Scanner_p in, TB_p bank, TokenType sep)
 //
 /----------------------------------------------------------------------*/
 
-FunCode NormSubstEqnListExcept(Eqn_p list, Eqn_p except, Subst_p
-                               subst, VarBank_p vars)
+FunCode NormSubstEqnListExcept(Eqn_p list, Eqn_p except, Subst_p subst,
+                               VarBank_p vars)
 {
-   Eqn_p   handle;
+   Eqn_p handle;
    PStackPointer res = PStackGetSP(subst);
 
    for(handle = list; handle; handle = handle->next)
    {
-      if(handle!= except)
+      if(handle != except)
       {
          SubstNormEqn(handle, subst, vars);
       }
@@ -1669,7 +1658,7 @@ long EqnListDepth(Eqn_p list)
    while(list)
    {
       eqndepth = EqnDepth(list);
-      maxdepth = MAX(maxdepth,eqndepth);
+      maxdepth = MAX(maxdepth, eqndepth);
       list = list->next;
    }
    return maxdepth;
@@ -1692,7 +1681,7 @@ long EqnListDepth(Eqn_p list)
 //
 /----------------------------------------------------------------------*/
 
-void EqnListAddSymbolDistribution(Eqn_p list, long *dist_array)
+void EqnListAddSymbolDistribution(Eqn_p list, long* dist_array)
 {
    while(list)
    {
@@ -1716,7 +1705,7 @@ void EqnListAddSymbolDistribution(Eqn_p list, long *dist_array)
 //
 /----------------------------------------------------------------------*/
 
-void EqnListAddTypeDistribution(Eqn_p list, long *type_array)
+void EqnListAddTypeDistribution(Eqn_p list, long* type_array)
 {
    while(list)
    {
@@ -1741,7 +1730,7 @@ void EqnListAddTypeDistribution(Eqn_p list, long *type_array)
 //
 /----------------------------------------------------------------------*/
 
-void EqnListAddSymbolDistExist(Eqn_p list, long *dist_array, PStack_p exist)
+void EqnListAddSymbolDistExist(Eqn_p list, long* dist_array, PStack_p exist)
 {
    while(list)
    {
@@ -1763,7 +1752,8 @@ void EqnListAddSymbolDistExist(Eqn_p list, long *dist_array, PStack_p exist)
 //
 /----------------------------------------------------------------------*/
 
-void EqnListAddSymbolFeatures(Eqn_p list, PStack_p mod_stack, long *feature_array)
+void EqnListAddSymbolFeatures(Eqn_p list, PStack_p mod_stack,
+                              long* feature_array)
 {
    while(list)
    {
@@ -1786,8 +1776,7 @@ void EqnListAddSymbolFeatures(Eqn_p list, PStack_p mod_stack, long *feature_arra
 //
 /----------------------------------------------------------------------*/
 
-void EqnListComputeFunctionRanks(Eqn_p list, long *rank_array,
-                                 long* count)
+void EqnListComputeFunctionRanks(Eqn_p list, long* rank_array, long* count)
 {
    while(list)
    {
@@ -1809,13 +1798,13 @@ void EqnListComputeFunctionRanks(Eqn_p list, long *rank_array,
 //
 /----------------------------------------------------------------------*/
 
-long EqnListCollectVariables(Eqn_p list, PTree_p *tree)
+long EqnListCollectVariables(Eqn_p list, PTree_p* tree)
 {
    long res = 0;
 
    while(list)
    {
-      res+=EqnCollectVariables(list, tree);
+      res += EqnCollectVariables(list, tree);
       list = list->next;
    }
    return res;
@@ -1835,13 +1824,13 @@ long EqnListCollectVariables(Eqn_p list, PTree_p *tree)
 //
 /----------------------------------------------------------------------*/
 
-long EqnListCollectFCodes(Eqn_p list, NumTree_p *tree)
+long EqnListCollectFCodes(Eqn_p list, NumTree_p* tree)
 {
    long res = 0;
 
    while(list)
    {
-      res+=EqnCollectFCodes(list, tree);
+      res += EqnCollectFCodes(list, tree);
       list = list->next;
    }
    return res;
@@ -1863,15 +1852,13 @@ long EqnListCollectFCodes(Eqn_p list, NumTree_p *tree)
 //
 /----------------------------------------------------------------------*/
 
-long EqnListAddFunOccs(Eqn_p list,
-                       PDArray_p f_occur,
-                       PStack_p res_stack)
+long EqnListAddFunOccs(Eqn_p list, PDArray_p f_occur, PStack_p res_stack)
 {
    long res = 0;
 
    while(list)
    {
-      res+=EqnAddFunOccs(list, f_occur, res_stack);
+      res += EqnAddFunOccs(list, f_occur, res_stack);
       list = list->next;
    }
    return res;
@@ -1892,7 +1879,8 @@ long EqnListAddFunOccs(Eqn_p list,
 //
 /----------------------------------------------------------------------*/
 
-void EqnListSignedTermSetProp(Eqn_p list, TermProperties props, bool pos, bool neg)
+void EqnListSignedTermSetProp(Eqn_p list, TermProperties props, bool pos,
+                              bool neg)
 {
    while(list)
    {
@@ -1922,7 +1910,8 @@ void EqnListSignedTermSetProp(Eqn_p list, TermProperties props, bool pos, bool n
 //
 /----------------------------------------------------------------------*/
 
-void EqnListSignedTermDelProp(Eqn_p list, TermProperties props, bool pos, bool neg)
+void EqnListSignedTermDelProp(Eqn_p list, TermProperties props, bool pos,
+                              bool neg)
 {
    while(list)
    {
@@ -1986,7 +1975,7 @@ long EqnListCollectSubterms(Eqn_p list, PStack_p collector)
 
    while(list)
    {
-      res+= EqnCollectSubterms(list, collector);
+      res += EqnCollectSubterms(list, collector);
       list = list->next;
    }
    return res;
@@ -2005,14 +1994,14 @@ long EqnListCollectSubterms(Eqn_p list, PStack_p collector)
 //
 /----------------------------------------------------------------------*/
 
-long EqnListCollectGroundTerms(Eqn_p list, PTree_p *res, bool pos_lits,
+long EqnListCollectGroundTerms(Eqn_p list, PTree_p* res, bool pos_lits,
                                bool neg_lits, bool all_subterms)
 {
    long count = 0;
 
    while(list)
    {
-      if((EqnIsPositive(list)&&pos_lits)||(EqnIsNegative(list)&&neg_lits))
+      if((EqnIsPositive(list) && pos_lits) || (EqnIsNegative(list) && neg_lits))
       {
          count += EqnCollectGroundTerms(list, res, all_subterms);
       }
@@ -2074,8 +2063,8 @@ void EqnListLambdaNormalize(Eqn_p list)
 //
 /----------------------------------------------------------------------*/
 
-bool EqnListFindCompLitExcept(Eqn_p xs, Eqn_p exc, Eqn_p y,
-                              DerefType d_x, DerefType d_y)
+bool EqnListFindCompLitExcept(Eqn_p xs, Eqn_p exc, Eqn_p y, DerefType d_x,
+                              DerefType d_y)
 {
    bool res = false;
    for(Eqn_p x = xs; !res && x; x = x->next)

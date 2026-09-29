@@ -28,13 +28,11 @@
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-static unsigned int xstate = 123456789,
-   ystate = 987654321,
-   zstate = 43219876,
-   cstate = 6543217; /* State for KISS RNG*/
+static unsigned int xstate = 123456789, ystate = 987654321, zstate = 43219876,
+                    cstate = 6543217; /* State for KISS RNG*/
 
 
-static RandStateCell rand_state = {123456789,987654321,43219876,6543217};
+static RandStateCell rand_state = { 123456789, 987654321, 43219876, 6543217 };
 
 ProblemType problemType = PROBLEM_NOT_INIT;
 
@@ -207,10 +205,10 @@ double JKISSRandDouble(RandState_p state)
 
 char* IndentStr(int level)
 {
-   static char spaces[MAXINDENTSPACES+1];
+   static char spaces[MAXINDENTSPACES + 1];
    int i;
 
-   for(i=0; i<MIN(MAXINDENTSPACES, level); i++)
+   for(i = 0; i < MIN(MAXINDENTSPACES, level); i++)
    {
       spaces[i] = ' ';
    }
@@ -261,9 +259,9 @@ int StringIndex(char* key, char* list[])
 {
    int i;
    {
-      for(i=0; list[i]; i++)
+      for(i = 0; list[i]; i++)
       {
-         if(strcmp(key, list[i])==0)
+         if(strcmp(key, list[i]) == 0)
          {
             return i;
          }
@@ -286,11 +284,11 @@ int StringIndex(char* key, char* list[])
 //
 /----------------------------------------------------------------------*/
 
-long StringArrayCardinality(char *array[])
+long StringArrayCardinality(char* array[])
 {
    long i;
 
-   for(i=0; array[i]; i++)
+   for(i = 0; array[i]; i++)
    {
    }
    return i;
@@ -312,27 +310,27 @@ long StringArrayCardinality(char *array[])
 
 long ComputeGCD(long a, long b)
 {
-   if((a<0) || (b<0))
+   if((a < 0) || (b < 0))
    {
       return 0;
    }
    while(true)
    {
-      if(a==0)
+      if(a == 0)
       {
          return b;
       }
-      if(b==0)
+      if(b == 0)
       {
          return a;
       }
-      if(a>b)
+      if(a > b)
       {
-         a = a%b;
+         a = a % b;
       }
       else
       {
-         b = b%a;
+         b = b % a;
       }
    }
    return a;
@@ -355,15 +353,15 @@ long ComputeGCD(long a, long b)
 
 void SetProblemType(ProblemType t)
 {
-  if(problemType == PROBLEM_NOT_INIT || problemType == t)
-  {
-     problemType = t;
-  }
-  else
-  {
-     Error("Mixing of first order and higher order syntax is not allowed.",
-           SYNTAX_ERROR);
-  }
+   if(problemType == PROBLEM_NOT_INIT || problemType == t)
+   {
+      problemType = t;
+   }
+   else
+   {
+      Error("Mixing of first order and higher order syntax is not allowed.",
+            SYNTAX_ERROR);
+   }
 }
 
 

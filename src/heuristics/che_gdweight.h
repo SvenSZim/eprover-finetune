@@ -35,13 +35,13 @@ typedef struct gd_weightparamcell
 {
    double pos_multiplier;
    double app_var_mult;
-   long   vweight;
-   long   fweight;
+   long vweight;
+   long fweight;
    double goal_multiplier;
-   long   goal_const;
-   bool   goal_terms_initialized;
+   long goal_const;
+   bool goal_terms_initialized;
    ClauseSet_p axioms;
-}GDWeightParamCell, *GDWeightParam_p;
+} GDWeightParamCell, *GDWeightParam_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -49,24 +49,21 @@ typedef struct gd_weightparamcell
 /*---------------------------------------------------------------------*/
 
 
-#define GDWeightParamCellAlloc() (GDWeightParamCell*) \
-        SizeMalloc(sizeof(GDWeightParamCell))
-#define GDWeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(GDWeightParamCell))
+#define GDWeightParamCellAlloc()                                               \
+   (GDWeightParamCell*)SizeMalloc(sizeof(GDWeightParamCell))
+#define GDWeightParamCellFree(junk) SizeFree(junk, sizeof(GDWeightParamCell))
 
-WFCB_p GDClauseWeightInit(ClausePrioFun prio_fun,
-                          ClauseSet_p axioms,
-                          int fweight, int vweight,
-                          double pos_multiplier,
-                          double goal_multiplier,
-                          long goal_const, double app_var_mult);
+WFCB_p GDClauseWeightInit(ClausePrioFun prio_fun, ClauseSet_p axioms,
+                          int fweight, int vweight, double pos_multiplier,
+                          double goal_multiplier, long goal_const,
+                          double app_var_mult);
 
 
 WFCB_p GDClauseWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double GDClauseWeightCompute(void* data, Clause_p clause);
 
-void   GDClauseWeightExit(void* data);
+void GDClauseWeightExit(void* data);
 
 
 #endif

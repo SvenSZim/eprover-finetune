@@ -37,9 +37,9 @@
 
 typedef struct actermopcell
 {
-   FunCode          f_code;        /* Top symbol of term */
-   PDArray_p        args;         /* Pointer to array of arguments */
-}ACTermCell, *ACTerm_p;
+   FunCode f_code; /* Top symbol of term */
+   PDArray_p args; /* Pointer to array of arguments */
+} ACTermCell, *ACTerm_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -47,15 +47,15 @@ typedef struct actermopcell
 /*---------------------------------------------------------------------*/
 
 #define ACTermCellAlloc() (ACTermCell*)SizeMalloc(sizeof(ACTermCell))
-#define ACTermCellFree(junk)         SizeFree(junk, sizeof(ACTermCell))
+#define ACTermCellFree(junk) SizeFree(junk, sizeof(ACTermCell))
 
 
 ACTerm_p ACTermAlloc(FunCode f);
-void     ACTermFree(ACTerm_p term);
-int      ACTermCompare(ACTerm_p t1, ACTerm_p t2);
+void ACTermFree(ACTerm_p term);
+int ACTermCompare(ACTerm_p t1, ACTerm_p t2);
 ACTerm_p ACTermNormalize(Sig_p sig, Term_p term);
-void     ACTermPrint(FILE* out, ACTerm_p term, Sig_p sig);
-bool     TermACEqual(Sig_p sig, Term_p t1, Term_p t2);
+void ACTermPrint(FILE* out, ACTerm_p term, Sig_p sig);
+bool TermACEqual(Sig_p sig, Term_p t1, Term_p t2);
 
 #endif
 

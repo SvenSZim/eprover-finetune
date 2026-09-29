@@ -48,50 +48,49 @@
 //
 /----------------------------------------------------------------------*/
 
-static TSMParam_p tsm_param_init(ClausePrioFun prio_fun, int fweight,
-                                 int vweight, bool flat_clauses, double
-                                 learnweight, char* kb, ProofState_p state, long
-                                 sel_no, double set_part, double dist_part,
-                                 IndexType indextype, TSMType tsmtype, long depth,
-                                 double proofs_w, double dist_w, double p_simp_w,
-                                 double f_simp_w, double p_gen_w,
-                                 double f_gen_w)
+static TSMParam_p
+tsm_param_init(ClausePrioFun prio_fun, int fweight, int vweight,
+               bool flat_clauses, double learnweight, char* kb,
+               ProofState_p state, long sel_no, double set_part,
+               double dist_part, IndexType indextype, TSMType tsmtype,
+               long depth, double proofs_w, double dist_w, double p_simp_w,
+               double f_simp_w, double p_gen_w, double f_gen_w)
 {
    TSMParam_p local = TSMParamCellAlloc();
-   int        i;
-   double     pos_sum = 0, neg_sum = 0;
+   int i;
+   double pos_sum = 0, neg_sum = 0;
 
-   local->fweight      = fweight;
-   local->vweight      = vweight;
+   local->fweight = fweight;
+   local->vweight = vweight;
    local->flat_clauses = flat_clauses;
-   local->learnweight  = learnweight;
-   local->kb           = SecureStrdup(kb);
-   local->state        = state;
-   local->sel_no       = sel_no;
-   local->set_part     = set_part;
-   local->dist_part    = dist_part;
-   local->indextype    = indextype;
-   local->tsmtype      = tsmtype;
-   local->depth        = depth;
+   local->learnweight = learnweight;
+   local->kb = SecureStrdup(kb);
+   local->state = state;
+   local->sel_no = sel_no;
+   local->set_part = set_part;
+   local->dist_part = dist_part;
+   local->indextype = indextype;
+   local->tsmtype = tsmtype;
+   local->depth = depth;
    local->e_weights[0] = proofs_w;
    local->e_weights[1] = dist_w;
    local->e_weights[2] = p_simp_w;
    local->e_weights[3] = f_simp_w;
    local->e_weights[4] = p_gen_w;
    local->e_weights[5] = f_gen_w;
-   for(i=0; i<(ANNOTATION_DEFAULT_SIZE-1); i++)
+   for(i = 0; i < (ANNOTATION_DEFAULT_SIZE - 1); i++)
    {
       if(local->e_weights[i] > 0)
       {
-         pos_sum+=local->e_weights[i];
+         pos_sum += local->e_weights[i];
       }
       else
       {
-         neg_sum+=local->e_weights[i];
+         neg_sum += local->e_weights[i];
       }
    }
    local->eval_base = neg_sum;
-   local->eval_scale = (pos_sum-neg_sum)==0 ? 1 : pos_sum-neg_sum;
+   local->eval_scale = (pos_sum - neg_sum) == 0 ? 1 : pos_sum - neg_sum;
    local->tsmadmin = NULL;
    local->pat_subst = NULL;
 
@@ -114,25 +113,20 @@ static TSMParam_p tsm_param_init(ClausePrioFun prio_fun, int fweight,
 //
 /----------------------------------------------------------------------*/
 
-WFCB_p TSMWeightInit(ClausePrioFun prio_fun, int fweight,
-                     int vweight, bool flat_clauses, double
-                     learnweight, char* kb, ProofState_p state, long
-                     sel_no, double set_part, double dist_part,
-                     IndexType indextype, TSMType tsmtype, long depth,
-                     double proofs_w, double dist_w, double p_simp_w,
-                     double f_simp_w, double p_gen_w,
+WFCB_p TSMWeightInit(ClausePrioFun prio_fun, int fweight, int vweight,
+                     bool flat_clauses, double learnweight, char* kb,
+                     ProofState_p state, long sel_no, double set_part,
+                     double dist_part, IndexType indextype, TSMType tsmtype,
+                     long depth, double proofs_w, double dist_w,
+                     double p_simp_w, double f_simp_w, double p_gen_w,
                      double f_gen_w)
 {
-   TSMParam_p local = tsm_param_init(prio_fun, fweight, vweight,
-                                     flat_clauses, learnweight, kb,
-                                     state, sel_no, set_part,
-                                     dist_part, indextype,
-                                     (TSMType)tsmtype, depth,
-                                     proofs_w, dist_w, p_simp_w,
-                                     f_simp_w, p_gen_w, f_gen_w);
+   TSMParam_p local = tsm_param_init(
+      prio_fun, fweight, vweight, flat_clauses, learnweight, kb, state, sel_no,
+      set_part, dist_part, indextype, (TSMType)tsmtype, depth, proofs_w, dist_w,
+      p_simp_w, f_simp_w, p_gen_w, f_gen_w);
 
-   return WFCBAlloc(TSMWeightCompute, prio_fun,
-                    TSMWeightExit, local);
+   return WFCBAlloc(TSMWeightCompute, prio_fun, TSMWeightExit, local);
 }
 
 
@@ -188,13 +182,14 @@ WFCB_p TSMWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
    AcceptInpTok(in, Comma);
    sel_no = ParseInt(in);
    AcceptInpTok(in, Comma);
-   set_part =  ParseFloat(in);
-   if((set_part<0.0) || (set_part>1))
+   set_part = ParseFloat(in);
+   if((set_part < 0.0) || (set_part > 1))
    {
       AktTokenError(in,
                     "You need to specify the part of the knowledge"
                     " base to be used as a fraction between 0.0 and"
-                    " 1.0!", false);
+                    " 1.0!",
+                    false);
    }
    AcceptInpTok(in, Comma);
    dist_part = ParseFloat(in);
@@ -209,8 +204,8 @@ WFCB_p TSMWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
    AcceptInpTok(in, Comma);
    CheckInpTok(in, Name);
    indextype = GetIndexType(DStrView(AktToken(in)->literal));
-   if((indextype == (int)IndexNoIndex) ||
-      (indextype == (int)IndexEmpty) || (indextype == -1))
+   if((indextype == (int)IndexNoIndex) || (indextype == (int)IndexEmpty) ||
+      (indextype == -1))
    {
       AktTokenError(in, "No correct index type specified!", false);
    }
@@ -218,23 +213,22 @@ WFCB_p TSMWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
    AcceptInpTok(in, Comma);
    indexdepth = ParseInt(in);
    AcceptInpTok(in, Comma);
-   proofs_w =  ParseFloat(in);
+   proofs_w = ParseFloat(in);
    AcceptInpTok(in, Comma);
-   dist_w =  ParseFloat(in);
+   dist_w = ParseFloat(in);
    AcceptInpTok(in, Comma);
-   p_simp_w  =  ParseFloat(in);
+   p_simp_w = ParseFloat(in);
    AcceptInpTok(in, Comma);
-   f_simp_w =  ParseFloat(in);
+   f_simp_w = ParseFloat(in);
    AcceptInpTok(in, Comma);
-   p_gen_w =  ParseFloat(in);
+   p_gen_w = ParseFloat(in);
    AcceptInpTok(in, Comma);
-   f_gen_w =  ParseFloat(in);
+   f_gen_w = ParseFloat(in);
    AcceptInpTok(in, CloseBracket);
 
-   res = TSMWeightInit(prio_fun, fweight, vweight, flat_clauses,
-                       learnweight, kb, state, sel_no, set_part,
-                       dist_part, indextype, (TSMType)tsmtype,
-                       indexdepth, proofs_w, dist_w, p_simp_w,
+   res = TSMWeightInit(prio_fun, fweight, vweight, flat_clauses, learnweight,
+                       kb, state, sel_no, set_part, dist_part, indextype,
+                       (TSMType)tsmtype, indexdepth, proofs_w, dist_w, p_simp_w,
                        f_simp_w, p_gen_w, f_gen_w);
 
    FREE(kb);
@@ -258,19 +252,15 @@ double TSMWeightCompute(void* data, Clause_p clause)
    TSMParam_p local = data;
    Term_p clauserep;
    PStack_p listrep;
-   double   factor, res;
+   double factor, res;
 
    if(!local->tsmadmin)
    {
-      local->tsmadmin = TSMFromKB(local->flat_clauses,
-                                  local->e_weights,
-                                  local->kb,
-                                  local->state->terms->sig,
-                                  local->state->axioms,
-                                  local->sel_no, local->set_part,
-                                  local->dist_part,
-                                  local->indextype, local->tsmtype,
-                                  local->depth);
+      local->tsmadmin =
+         TSMFromKB(local->flat_clauses, local->e_weights, local->kb,
+                   local->state->terms->sig, local->state->axioms,
+                   local->sel_no, local->set_part, local->dist_part,
+                   local->indextype, local->tsmtype, local->depth);
       local->pat_subst = PatternDefaultSubstAlloc(local->state->terms->sig);
       /* TSMPrintRek(stdout, local->tsmadmin, local->tsmadmin->tsm,
          0);*/
@@ -281,12 +271,11 @@ double TSMWeightCompute(void* data, Clause_p clause)
                                                   is at 0 */
    if(PatternClauseCompute(clause, &(local->pat_subst), &listrep))
    {
-      clauserep = local->flat_clauses?
-         FlatEncodeClauseListRep(local->state->terms, listrep):
-         RecEncodeClauseListRep(local->state->terms, listrep);
+      clauserep = local->flat_clauses
+         ? FlatEncodeClauseListRep(local->state->terms, listrep)
+         : RecEncodeClauseListRep(local->state->terms, listrep);
 
-      factor = TSMEvalTerm(local->tsmadmin, clauserep,
-                           local->pat_subst);
+      factor = TSMEvalTerm(local->tsmadmin, clauserep, local->pat_subst);
 
       factor = factor - local->eval_base;
       factor = factor / local->eval_scale;
@@ -310,9 +299,8 @@ double TSMWeightCompute(void* data, Clause_p clause)
          printf("\n");*/
    }
    PStackFree(listrep);
-   res = ((local->learnweight*factor)+1)*
-      ClauseWeight(clause, 1, 1, 1, local->vweight,
-                   local->fweight, 1, false);
+   res = ((local->learnweight * factor) + 1) *
+      ClauseWeight(clause, 1, 1, 1, local->vweight, local->fweight, 1, false);
    /* printf(" Eval: %f\n", res); */
    return res;
 }
@@ -329,30 +317,25 @@ double TSMWeightCompute(void* data, Clause_p clause)
 //
 /----------------------------------------------------------------------*/
 
-WFCB_p TSMRWeightInit(ClausePrioFun prio_fun, int fweight,
-                      int vweight, double max_term_multiplier, double
-                      max_literal_multiplier, double pos_multiplier,
-                      bool flat_clauses, double
-                      learnweight, char* kb, ProofState_p state, long
-                      sel_no, double set_part, double dist_part,
+WFCB_p TSMRWeightInit(ClausePrioFun prio_fun, int fweight, int vweight,
+                      double max_term_multiplier, double max_literal_multiplier,
+                      double pos_multiplier, bool flat_clauses,
+                      double learnweight, char* kb, ProofState_p state,
+                      long sel_no, double set_part, double dist_part,
                       IndexType indextype, TSMType tsmtype, long depth,
-                      double proofs_w, double dist_w,  double p_simp_w,
+                      double proofs_w, double dist_w, double p_simp_w,
                       double f_simp_w, double p_gen_w, double f_gen_w)
 {
-   TSMParam_p local = tsm_param_init(prio_fun, fweight, vweight,
-                                     flat_clauses, learnweight, kb,
-                                     state, sel_no, set_part,
-                                     dist_part, indextype,
-                                     (TSMType)tsmtype, depth,
-                                     proofs_w, dist_w, p_simp_w,
-                                     f_simp_w, p_gen_w, f_gen_w);
+   TSMParam_p local = tsm_param_init(
+      prio_fun, fweight, vweight, flat_clauses, learnweight, kb, state, sel_no,
+      set_part, dist_part, indextype, (TSMType)tsmtype, depth, proofs_w, dist_w,
+      p_simp_w, f_simp_w, p_gen_w, f_gen_w);
 
-   local->pos_multiplier        = pos_multiplier;
-   local->max_term_multiplier   = max_term_multiplier;
-   local->max_literal_multiplier= max_literal_multiplier;
+   local->pos_multiplier = pos_multiplier;
+   local->max_term_multiplier = max_term_multiplier;
+   local->max_literal_multiplier = max_literal_multiplier;
 
-   return WFCBAlloc(TSMRWeightCompute, prio_fun,
-                    TSMWeightExit, local);
+   return WFCBAlloc(TSMRWeightCompute, prio_fun, TSMWeightExit, local);
 }
 
 
@@ -416,13 +399,14 @@ WFCB_p TSMRWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
    AcceptInpTok(in, Comma);
    sel_no = ParseInt(in);
    AcceptInpTok(in, Comma);
-   set_part =  ParseFloat(in);
-   if((set_part<0.0) || (set_part>1))
+   set_part = ParseFloat(in);
+   if((set_part < 0.0) || (set_part > 1))
    {
       AktTokenError(in,
                     "You need to specify the part of the knowledge"
                     " base to be used as a fraction between 0.0 and"
-                    " 1.0!", false);
+                    " 1.0!",
+                    false);
    }
    AcceptInpTok(in, Comma);
    dist_part = ParseFloat(in);
@@ -437,8 +421,8 @@ WFCB_p TSMRWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
    AcceptInpTok(in, Comma);
    CheckInpTok(in, Name);
    indextype = GetIndexType(DStrView(AktToken(in)->literal));
-   if((indextype == (int)IndexNoIndex) ||
-      (indextype == (int)IndexEmpty) || (indextype == -1))
+   if((indextype == (int)IndexNoIndex) || (indextype == (int)IndexEmpty) ||
+      (indextype == -1))
    {
       AktTokenError(in, "No correct index type specified!", false);
    }
@@ -446,26 +430,24 @@ WFCB_p TSMRWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state)
    AcceptInpTok(in, Comma);
    indexdepth = ParseInt(in);
    AcceptInpTok(in, Comma);
-   proofs_w =  ParseFloat(in);
+   proofs_w = ParseFloat(in);
    AcceptInpTok(in, Comma);
-   dist_w =  ParseFloat(in);
+   dist_w = ParseFloat(in);
    AcceptInpTok(in, Comma);
-   p_simp_w  =  ParseFloat(in);
+   p_simp_w = ParseFloat(in);
    AcceptInpTok(in, Comma);
-   f_simp_w =  ParseFloat(in);
+   f_simp_w = ParseFloat(in);
    AcceptInpTok(in, Comma);
-   p_gen_w =  ParseFloat(in);
+   p_gen_w = ParseFloat(in);
    AcceptInpTok(in, Comma);
-   f_gen_w =  ParseFloat(in);
+   f_gen_w = ParseFloat(in);
    AcceptInpTok(in, CloseBracket);
 
    res = TSMRWeightInit(prio_fun, fweight, vweight, max_term_multiplier,
-                        max_literal_multiplier,
-                        pos_multiplier,flat_clauses, learnweight, kb,
-                        state, sel_no, set_part,
-                        dist_part, indextype, (TSMType)tsmtype,
-                        indexdepth, proofs_w, dist_w, p_simp_w,
-                        f_simp_w, p_gen_w, f_gen_w);
+                        max_literal_multiplier, pos_multiplier, flat_clauses,
+                        learnweight, kb, state, sel_no, set_part, dist_part,
+                        indextype, (TSMType)tsmtype, indexdepth, proofs_w,
+                        dist_w, p_simp_w, f_simp_w, p_gen_w, f_gen_w);
 
    FREE(kb);
    return res;
@@ -489,19 +471,15 @@ double TSMRWeightCompute(void* data, Clause_p clause)
    TSMParam_p local = data;
    Term_p clauserep;
    PStack_p listrep;
-   double   factor, res;
+   double factor, res;
 
    if(!local->tsmadmin)
    {
-      local->tsmadmin = TSMFromKB(local->flat_clauses,
-                                  local->e_weights,
-                                  local->kb,
-                                  local->state->terms->sig,
-                                  local->state->axioms,
-                                  local->sel_no, local->set_part,
-                                  local->dist_part,
-                                  local->indextype, local->tsmtype,
-                                  local->depth);
+      local->tsmadmin =
+         TSMFromKB(local->flat_clauses, local->e_weights, local->kb,
+                   local->state->terms->sig, local->state->axioms,
+                   local->sel_no, local->set_part, local->dist_part,
+                   local->indextype, local->tsmtype, local->depth);
       local->pat_subst = PatternDefaultSubstAlloc(local->state->terms->sig);
       /* TSMPrintRek(stdout, local->tsmadmin, local->tsmadmin->tsm,
          0);*/
@@ -512,12 +490,11 @@ double TSMRWeightCompute(void* data, Clause_p clause)
                                                   is at 0 */
    if(PatternClauseCompute(clause, &(local->pat_subst), &listrep))
    {
-      clauserep = local->flat_clauses?
-         FlatEncodeClauseListRep(local->state->terms, listrep):
-         RecEncodeClauseListRep(local->state->terms, listrep);
+      clauserep = local->flat_clauses
+         ? FlatEncodeClauseListRep(local->state->terms, listrep)
+         : RecEncodeClauseListRep(local->state->terms, listrep);
 
-      factor = TSMEvalTerm(local->tsmadmin, clauserep,
-                           local->pat_subst);
+      factor = TSMEvalTerm(local->tsmadmin, clauserep, local->pat_subst);
 
       factor = factor - local->eval_base;
       factor = factor / local->eval_scale;
@@ -541,14 +518,10 @@ double TSMRWeightCompute(void* data, Clause_p clause)
          printf("\n");*/
    }
    PStackFree(listrep);
-   res = ((local->learnweight*factor)+1)*
+   res = ((local->learnweight * factor) + 1) *
       ClauseWeight(clause, local->max_term_multiplier,
-                   local->max_literal_multiplier,
-                   local->pos_multiplier,
-                   local->vweight,
-                   local->fweight,
-                   1,
-                   false);
+                   local->max_literal_multiplier, local->pos_multiplier,
+                   local->vweight, local->fweight, 1, false);
    /* printf(" Eval: %f\n", res); */
    return res;
 }

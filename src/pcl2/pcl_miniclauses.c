@@ -62,9 +62,9 @@ void MiniClauseFree(MiniClause_p clause)
 {
    if(clause->lit_terms)
    {
-      SizeFree(clause->sign, clause->literal_no*sizeof(short));
+      SizeFree(clause->sign, clause->literal_no * sizeof(short));
       clause->sign = NULL;
-      SizeFree(clause->lit_terms, 2*clause->literal_no*sizeof(Term_p));
+      SizeFree(clause->lit_terms, 2 * clause->literal_no * sizeof(Term_p));
       clause->lit_terms = NULL;
    }
    MiniClauseCellFree(clause);
@@ -84,24 +84,23 @@ void MiniClauseFree(MiniClause_p clause)
 
 void MiniClauseAddTerms(MiniClause_p clause, Clause_p term_clause)
 {
-   int   i;
+   int i;
    Eqn_p literal;
 
    assert(!clause->lit_terms);
    assert(!clause->sign);
    clause->literal_no = ClauseLiteralNumber(term_clause);
-   clause->lit_terms =
-      SizeMalloc(2*clause->literal_no*sizeof(Term_p));
-   clause->sign = SizeMalloc(clause->literal_no*sizeof(short));
+   clause->lit_terms = SizeMalloc(2 * clause->literal_no * sizeof(Term_p));
+   clause->sign = SizeMalloc(clause->literal_no * sizeof(short));
 
-   for(i=0, literal = term_clause->literals; literal; i++, literal =
-     literal->next)
+   for(i = 0, literal = term_clause->literals; literal;
+       i++, literal = literal->next)
    {
-      assert(i<clause->literal_no);
+      assert(i < clause->literal_no);
 
       clause->sign[i] = EqnIsPositive(literal);
-      clause->lit_terms[(2*i)]   = literal->lterm;
-      clause->lit_terms[(2*i)+1] = literal->rterm;
+      clause->lit_terms[(2 * i)] = literal->lterm;
+      clause->lit_terms[(2 * i) + 1] = literal->rterm;
    }
 }
 
@@ -122,26 +121,27 @@ void MiniClauseAddTerms(MiniClause_p clause, Clause_p term_clause)
 MiniClause_p ClauseToMiniClause(Clause_p clause)
 {
    MiniClause_p handle = MiniClauseCellAlloc();
-   int   i;
+   int i;
    Eqn_p literal;
 
    /* handle->properties = CPIgnoreProps; */
-   handle->lit_terms  = NULL;
-   handle->sign       = NULL;
+   handle->lit_terms = NULL;
+   handle->sign = NULL;
    handle->literal_no = ClauseLiteralNumber(clause);
 
    if(handle->literal_no)
    {
-      handle->lit_terms = SizeMalloc(2*ClauseLiteralNumber(clause)*sizeof(Term_p));
-      handle->sign = SizeMalloc(ClauseLiteralNumber(clause)*sizeof(short));
+      handle->lit_terms =
+         SizeMalloc(2 * ClauseLiteralNumber(clause) * sizeof(Term_p));
+      handle->sign = SizeMalloc(ClauseLiteralNumber(clause) * sizeof(short));
 
-      for(i=0, literal = clause->literals; literal; i++, literal =
-        literal->next)
+      for(i = 0, literal = clause->literals; literal;
+          i++, literal = literal->next)
       {
-    assert(i<handle->literal_no);
-    handle->sign[i] = EqnIsPositive(literal);
-    handle->lit_terms[(2*i)]    = literal->lterm;
-    handle->lit_terms[(2*i)+1]  = literal->rterm;
+         assert(i < handle->literal_no);
+         handle->sign[i] = EqnIsPositive(literal);
+         handle->lit_terms[(2 * i)] = literal->lterm;
+         handle->lit_terms[(2 * i) + 1] = literal->rterm;
       }
    }
    return handle;
@@ -162,15 +162,14 @@ MiniClause_p ClauseToMiniClause(Clause_p clause)
 
 Clause_p MiniClauseToClause(MiniClause_p clause, TB_p bank)
 {
-   Eqn_p    list=NULL, *eqn = &list;
+   Eqn_p list = NULL, *eqn = &list;
    Clause_p handle;
    int i;
 
-   for(i=0; i<clause->literal_no; i++)
+   for(i = 0; i < clause->literal_no; i++)
    {
-      *eqn = EqnAlloc(clause->lit_terms[(2*i)],
-            clause->lit_terms[(2*i)+1],
-            bank, clause->sign[i]);
+      *eqn = EqnAlloc(clause->lit_terms[(2 * i)],
+                      clause->lit_terms[(2 * i) + 1], bank, clause->sign[i]);
       eqn = &((*eqn)->next);
    }
    handle = ClauseAlloc(list);
@@ -231,8 +230,8 @@ Clause_p UnMinifyClause(MiniClause_p clause, TB_p bank)
 //
 /----------------------------------------------------------------------*/
 
-void MiniClausePrint(FILE* out, MiniClause_p compact, TB_p bank, bool
-           full_terms)
+void MiniClausePrint(FILE* out, MiniClause_p compact, TB_p bank,
+                     bool full_terms)
 {
    Clause_p clause;
 

@@ -30,13 +30,8 @@ Changes
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-char* UnitSimplifyNames[]=
-{
-   "NoSimplify",
-   "TopSimplify",
-   "FullSimplify",
-   NULL
-};
+char* UnitSimplifyNames[] = { "NoSimplify", "TopSimplify", "FullSimplify",
+                              NULL };
 
 /*---------------------------------------------------------------------*/
 /*                      Forward Declarations                           */
@@ -46,8 +41,6 @@ char* UnitSimplifyNames[]=
 /*---------------------------------------------------------------------*/
 /*                         Internal Functions                          */
 /*---------------------------------------------------------------------*/
-
-
 
 
 
@@ -70,11 +63,13 @@ char* UnitSimplifyNames[]=
 
 ClausePos_p FindTopSimplifyingUnit(ClauseSet_p units, Term_p t1, Term_p t2)
 {
-   Subst_p     subst = SubstAlloc();
+   Subst_p subst = SubstAlloc();
    ClausePos_p pos, res = NULL;
 
-   assert(TermStandardWeight(t1) == TermWeight(t1,DEFAULT_VWEIGHT,DEFAULT_FWEIGHT));
-   assert(TermStandardWeight(t2) == TermWeight(t2,DEFAULT_VWEIGHT,DEFAULT_FWEIGHT));
+   assert(TermStandardWeight(t1) ==
+          TermWeight(t1, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
+   assert(TermStandardWeight(t2) ==
+          TermWeight(t2, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
    assert(units && units->demod_index);
 
    PDTreeSearchInit(units->demod_index, t1, PDTREE_IGNORE_NF_DATE, false);
@@ -83,10 +78,10 @@ ClausePos_p FindTopSimplifyingUnit(ClauseSet_p units, Term_p t1, Term_p t2)
    {
       if(SubstMatchComplete(ClausePosGetOtherSide(pos), t2, subst))
       {
-        // if the problem is not HO, we match completely.
-        assert(pos->clause->set == units);
-        res = pos;
-        break;
+         // if the problem is not HO, we match completely.
+         assert(pos->clause->set == units);
+         res = pos;
+         break;
       }
    }
    PDTreeSearchExit(units->demod_index);
@@ -107,26 +102,29 @@ ClausePos_p FindTopSimplifyingUnit(ClauseSet_p units, Term_p t1, Term_p t2)
 // Side Effects    : -
 //
 /----------------------------------------------------------------------*/
-ClausePos_p FindSignedTopSimplifyingUnit(ClauseSet_p units, Term_p t1, Term_p t2, bool sign)
+ClausePos_p FindSignedTopSimplifyingUnit(ClauseSet_p units, Term_p t1,
+                                         Term_p t2, bool sign)
 {
-   Subst_p     subst = SubstAlloc();
+   Subst_p subst = SubstAlloc();
    ClausePos_p pos, res = NULL;
 
-   assert(TermStandardWeight(t1) == TermWeight(t1,DEFAULT_VWEIGHT,DEFAULT_FWEIGHT));
-   assert(TermStandardWeight(t2) == TermWeight(t2,DEFAULT_VWEIGHT,DEFAULT_FWEIGHT));
+   assert(TermStandardWeight(t1) ==
+          TermWeight(t1, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
+   assert(TermStandardWeight(t2) ==
+          TermWeight(t2, DEFAULT_VWEIGHT, DEFAULT_FWEIGHT));
    assert(units && units->demod_index);
 
    PDTreeSearchInit(units->demod_index, t1, PDTREE_IGNORE_NF_DATE, false);
 
    while((pos = PDTreeFindNextDemodulator(units->demod_index, subst)))
    {
-      if( EQUIV(EqnIsPositive(pos->literal), sign)
-          && (SubstMatchComplete(ClausePosGetOtherSide(pos), t2, subst)))
+      if(EQUIV(EqnIsPositive(pos->literal), sign) &&
+         (SubstMatchComplete(ClausePosGetOtherSide(pos), t2, subst)))
       {
-        // if the problem is not HO, we match completely.
-        assert(pos->clause->set == units);
-        res = pos;
-        break;
+         // if the problem is not HO, we match completely.
+         assert(pos->clause->set == units);
+         res = pos;
+         break;
       }
    }
    PDTreeSearchExit(units->demod_index);
@@ -149,10 +147,10 @@ ClausePos_p FindSignedTopSimplifyingUnit(ClauseSet_p units, Term_p t1, Term_p t2
 /----------------------------------------------------------------------*/
 
 ClausePos_p FindSimplifyingUnit(ClauseSet_p set, Term_p t1, Term_p t2,
-            bool positive_only)
+                                bool positive_only)
 {
-   Term_p   tmp1, tmp2 = NULL;
-   int      i;
+   Term_p tmp1, tmp2 = NULL;
+   int i;
    ClausePos_p res = NULL;
 
    if(positive_only)
@@ -163,7 +161,7 @@ ClausePos_p FindSimplifyingUnit(ClauseSet_p set, Term_p t1, Term_p t2,
    {
       res = FindTopSimplifyingUnit(set, t1, t2);
    }
-   
+
    if(!SimplifyFailed(res))
    {
       return res;
@@ -172,16 +170,16 @@ ClausePos_p FindSimplifyingUnit(ClauseSet_p set, Term_p t1, Term_p t2,
    while(SimplifyFailed(res))
    {
       if(TermIsTopLevelFreeVar(t1) || TermIsTopLevelFreeVar(t2) ||
-         TermIsLambda(t1) || TermIsLambda(t2) ||
-         t1->f_code != t2->f_code || !t1->arity)
+         TermIsLambda(t1) || TermIsLambda(t2) || t1->f_code != t2->f_code ||
+         !t1->arity)
       {
-        break;
+         break;
       }
       tmp1 = NULL; /* Used to determine if another position has
             already been found */
 
-      assert(t1!=t2);
-      for(i=0; i<t1->arity; i++)
+      assert(t1 != t2);
+      for(i = 0; i < t1->arity; i++)
       {
          if(t1->args[i] != t2->args[i])
          {
@@ -212,8 +210,6 @@ ClausePos_p FindSimplifyingUnit(ClauseSet_p set, Term_p t1, Term_p t2,
 
 
 
-
-
 /*-----------------------------------------------------------------------
 //
 // Function: ClauseSimplifyWithUnitSet()
@@ -232,7 +228,7 @@ ClausePos_p FindSimplifyingUnit(ClauseSet_p set, Term_p t1, Term_p t2,
 bool ClauseSimplifyWithUnitSet(Clause_p clause, ClauseSet_p unit_set,
                                UnitSimplifyType how)
 {
-   Eqn_p *handle;
+   Eqn_p* handle;
    ClausePos_p res;
 
    assert(clause);
@@ -244,28 +240,25 @@ bool ClauseSimplifyWithUnitSet(Clause_p clause, ClauseSet_p unit_set,
    {
       if(how == TopLevelUnitSimplify)
       {
-         res = FindTopSimplifyingUnit(unit_set,
-                                       (*handle)->lterm,
-                                       (*handle)->rterm);
+         res = FindTopSimplifyingUnit(unit_set, (*handle)->lterm,
+                                      (*handle)->rterm);
       }
       else
       {
-         res = FindSimplifyingUnit(unit_set,
-                    (*handle)->lterm,
-                    (*handle)->rterm, false);
+         res = FindSimplifyingUnit(unit_set, (*handle)->lterm, (*handle)->rterm,
+                                   false);
       }
       if(!SimplifyFailed(res))
       {
          ClausePos_p pos = res;
          assert(ClauseIsUnit(pos->clause));
-         if(EQUIV(EqnIsPositive(*handle),
-             EqnIsPositive(pos->literal)))
+         if(EQUIV(EqnIsPositive(*handle), EqnIsPositive(pos->literal)))
          {
             DocClauseQuote(GlobalOut, OutputLevel, 6, clause,
-                 "subsumed by unprocessed unit",
-                 pos->clause);
-            if(!ClauseIsUnit(clause)&&
-               ClauseStandardWeight(clause)==ClauseStandardWeight(pos->clause))
+                           "subsumed by unprocessed unit", pos->clause);
+            if(!ClauseIsUnit(clause) &&
+               ClauseStandardWeight(clause) ==
+                  ClauseStandardWeight(pos->clause))
             {
                ClauseSetProp(pos->clause, CPIsProtected);
             }
@@ -275,8 +268,8 @@ bool ClauseSimplifyWithUnitSet(Clause_p clause, ClauseSet_p unit_set,
          ClauseDelProp(clause, CPLimitedRW);
          ClauseRemoveLiteralRef(clause, handle);
          DocClauseModification(GlobalOut, OutputLevel, clause,
-                     inf_simplify_reflect, pos->clause,
-                     NULL, "cut with unprocessed unit");
+                               inf_simplify_reflect, pos->clause, NULL,
+                               "cut with unprocessed unit");
       }
       else
       {
@@ -290,10 +283,6 @@ bool ClauseSimplifyWithUnitSet(Clause_p clause, ClauseSet_p unit_set,
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
-
-
 
 
 

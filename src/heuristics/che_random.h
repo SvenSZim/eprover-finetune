@@ -31,17 +31,17 @@
 
 typedef struct
 {
-   double        fifo_counter;
-   unsigned int  rand_range;
-   double        fifo_weight;
-   double        sc_weight;
+   double fifo_counter;
+   unsigned int rand_range;
+   double fifo_weight;
+   double sc_weight;
    RandStateCell rand_state;
-}RandomWeightParamCell, *RandomWeightParam_p;
+} RandomWeightParamCell, *RandomWeightParam_p;
 
-#define RandomWeightParamCellAlloc() (RandomWeightParamCell*) \
-        SizeMalloc(sizeof(RandomWeightParamCell))
-#define RandomWeightParamCellFree(junk) \
-        SizeFree(junk, sizeof(RandomWeightParamCell))
+#define RandomWeightParamCellAlloc()                                           \
+   (RandomWeightParamCell*)SizeMalloc(sizeof(RandomWeightParamCell))
+#define RandomWeightParamCellFree(junk)                                        \
+   SizeFree(junk, sizeof(RandomWeightParamCell))
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
@@ -55,7 +55,7 @@ WFCB_p RandWeightParse(Scanner_p in, OCB_p ocb, ProofState_p state);
 
 double RandWeightCompute(void* data, Clause_p clause);
 
-void   RandWeightExit(void* data);
+void RandWeightExit(void* data);
 
 
 #endif

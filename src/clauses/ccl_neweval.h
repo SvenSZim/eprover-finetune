@@ -40,29 +40,29 @@ Changes
 
 typedef long EvalPriority;
 
-#define PrioBest     0
-#define PrioPrefer  30
-#define PrioNormal  40
-#define PrioDefer   50
+#define PrioBest 0
+#define PrioPrefer 30
+#define PrioNormal 40
+#define PrioDefer 50
 #define PrioLargestReasonable MEGA
 
 
 typedef struct simple_eval_cell
 {
-   EvalPriority      priority;   /* Technical considerations */
-   float             heuristic;  /* Heuristical evaluation   */
-   struct eval_cell* lson;       /* Successors in ordered tree */
+   EvalPriority priority;  /* Technical considerations */
+   float heuristic;        /* Heuristical evaluation   */
+   struct eval_cell* lson; /* Successors in ordered tree */
    struct eval_cell* rson;
-}SimpleEvalCell, *SimpleEval_p;
+} SimpleEvalCell, *SimpleEval_p;
 
 typedef struct eval_cell
 {
-   int               eval_no;    /* Number of simple evaluations */
-   long              eval_count; /* Evaluation cell count, used as
+   int eval_no;     /* Number of simple evaluations */
+   long eval_count; /* Evaluation cell count, used as
                 FIFO tiebreaker */
-   void*             object;     /* Evaluated object.*/
-   SimpleEvalCell    evals[];
-}EvalCell, *Eval_p;
+   void* object;    /* Evaluated object.*/
+   SimpleEvalCell evals[];
+} EvalCell, *Eval_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -79,42 +79,43 @@ typedef struct eval_cell
 
 extern long EvaluationCounter;
 
-#define EVAL_SIZE(eval_no) (sizeof(EvalCell)+((eval_no)*sizeof(SimpleEvalCell)))
-#define EvalCellAlloc(eval_no)   (EvalCell*)SizeMalloc(EVAL_SIZE(eval_no))
+#define EVAL_SIZE(eval_no)                                                     \
+   (sizeof(EvalCell) + ((eval_no) * sizeof(SimpleEvalCell)))
+#define EvalCellAlloc(eval_no) (EvalCell*)SizeMalloc(EVAL_SIZE(eval_no))
 #define EvalCellFree(junk, eval_no) SizeFree(junk, EVAL_SIZE(eval_no))
 
 #ifdef CONSTANT_MEM_ESTIMATE
-#define EVAL_MEM(eval_no) (32+(4*(eval_no)))
+#define EVAL_MEM(eval_no) (32 + (4 * (eval_no)))
 #else
-#define EVAL_MEM(eval_no) (MEMSIZE(EvalCell)+(EVAL_SIZE((eval_no))))
+#define EVAL_MEM(eval_no) (MEMSIZE(EvalCell) + (EVAL_SIZE((eval_no))))
 #endif
 
-Eval_p   EvalsAlloc(int eval_no);
-void     EvalsFree(Eval_p junk);
+Eval_p EvalsAlloc(int eval_no);
+void EvalsFree(Eval_p junk);
 
-void     EvalPrint(FILE* out, Eval_p list, int pos);
-void     EvalPrintComment(FILE* out, Eval_p list, int pos);
-void     EvalListPrint(FILE* out, Eval_p list);
-void     EvalListPrintComment(FILE* out, Eval_p list);
+void EvalPrint(FILE* out, Eval_p list, int pos);
+void EvalPrintComment(FILE* out, Eval_p list, int pos);
+void EvalListPrint(FILE* out, Eval_p list);
+void EvalListPrintComment(FILE* out, Eval_p list);
 
-void     EvalSetPriority(Eval_p list, EvalPriority priority);
-void     EvalListChangePriority(Eval_p list, EvalPriority diff);
+void EvalSetPriority(Eval_p list, EvalPriority priority);
+void EvalListChangePriority(Eval_p list, EvalPriority diff);
 
-bool     EvalGreater(Eval_p ev1, Eval_p ev2, int pos);
-long     EvalCompare(Eval_p ev1, Eval_p ev2, int pos);
+bool EvalGreater(Eval_p ev1, Eval_p ev2, int pos);
+long EvalCompare(Eval_p ev1, Eval_p ev2, int pos);
 
-Eval_p   EvalTreeInsert(Eval_p *root, Eval_p newnode, int pos);
-Eval_p   EvalTreeFind(Eval_p *root, Eval_p key, int pos);
-Eval_p   EvalTreeExtractEntry(Eval_p *root, Eval_p key, int pos);
-bool     EvalTreeDeleteEntry(Eval_p *root, Eval_p key, int pos);
-Eval_p   EvalTreeFindSmallest(Eval_p root, int pos);
+Eval_p EvalTreeInsert(Eval_p* root, Eval_p newnode, int pos);
+Eval_p EvalTreeFind(Eval_p* root, Eval_p key, int pos);
+Eval_p EvalTreeExtractEntry(Eval_p* root, Eval_p key, int pos);
+bool EvalTreeDeleteEntry(Eval_p* root, Eval_p key, int pos);
+Eval_p EvalTreeFindSmallest(Eval_p root, int pos);
 
 /* AVL_TRAVERSE_DECLARATION(EvalTree,Eval_p) */
 
 #define EvalTreeTraverseExit(stack) PStackFree(stack)
 
 PStack_p EvalTreeTraverseInit(Eval_p root, int pos);
-Eval_p   EvalTreeTraverseNext(PStack_p state, int pos);
+Eval_p EvalTreeTraverseNext(PStack_p state, int pos);
 
 void EvalTreePrintInOrder(FILE* out, Eval_p tree, int pos);
 
@@ -123,8 +124,6 @@ void EvalTreePrintInOrder(FILE* out, Eval_p tree, int pos);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

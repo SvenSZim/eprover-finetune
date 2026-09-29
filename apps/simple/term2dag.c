@@ -33,12 +33,12 @@
 
 typedef enum
 {
-   OPT_NOOPT=0,
+   OPT_NOOPT = 0,
    OPT_HELP,
    OPT_VERBOSE,
    OPT_OUTPUT,
    OPT_PRINT_REFS
-}OptionCodes;
+} OptionCodes;
 
 
 
@@ -46,31 +46,19 @@ typedef enum
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-OptCell opts[] =
-{
-   {OPT_HELP,
-    'h', "help",
-    NoArg, NULL,
-    "Print a short description of program usage and options."},
-   {OPT_VERBOSE,
-    'v', "verbose",
-    OptArg, "1",
-    "Verbose comments on the progress of the program."},
-   {OPT_OUTPUT,
-    'o', "output-file",
-    ReqArg, NULL,
-   "Redirect output into the named file."},
-   {OPT_PRINT_REFS,
-    'r', "print-reference-number",
-    OptArg, "true",
-    "Print number of references for each DAG node as a comment."},
-   {OPT_NOOPT,
-    '\0', NULL,
-    NoArg, NULL,
-    NULL}
+OptCell opts[] = {
+   { OPT_HELP, 'h', "help", NoArg, NULL,
+     "Print a short description of program usage and options." },
+   { OPT_VERBOSE, 'v', "verbose", OptArg, "1",
+     "Verbose comments on the progress of the program." },
+   { OPT_OUTPUT, 'o', "output-file", ReqArg, NULL,
+     "Redirect output into the named file." },
+   { OPT_PRINT_REFS, 'r', "print-reference-number", OptArg, "true",
+     "Print number of references for each DAG node as a comment." },
+   { OPT_NOOPT, '\0', NULL, NoArg, NULL, NULL }
 };
 
-char *outname = NULL;
+char* outname = NULL;
 bool app_encode = false;
 
 /*---------------------------------------------------------------------*/
@@ -98,7 +86,7 @@ int main(int argc, char* argv[])
 
    state = process_options(argc, argv);
 
-   if(state->argc ==  0)
+   if(state->argc == 0)
    {
       CLStateInsertArg(state, "-");
    }
@@ -107,12 +95,12 @@ int main(int argc, char* argv[])
    out = OutOpen(outname);
    bank = TBAlloc(SigAlloc(TypeBankAlloc()));
 
-   for(i=0; state->argv[i]; i++)
+   for(i = 0; state->argv[i]; i++)
    {
-      in = CreateScanner(StreamTypeFile, state->argv[i] , true, NULL, true);
+      in = CreateScanner(StreamTypeFile, state->argv[i], true, NULL, true);
       while(!TestInpTok(in, NoToken))
       {
-         term  = TBTermParse(in, bank);
+         term = TBTermParse(in, bank);
          TermCellSetProp(term, TPTopPos);
       }
       DestroyScanner(in);
@@ -125,10 +113,10 @@ int main(int argc, char* argv[])
    TBFree(bank);
    OutClose(out);
    CLStateFree(state);
-   #ifdef CLB_MEMORY_DEBUG
+#ifdef CLB_MEMORY_DEBUG
    MemFlushFreeList();
    MemDebugPrintStats(stdout);
-   #endif
+#endif
    return 0;
 }
 
@@ -151,27 +139,27 @@ CLState_p process_options(int argc, char* argv[])
 {
    Opt_p handle;
    CLState_p state;
-   char*  arg;
+   char* arg;
 
-   state = CLStateAlloc(argc,argv);
+   state = CLStateAlloc(argc, argv);
 
    while((handle = CLStateGetOpt(state, &arg, opts)))
    {
       switch(handle->option_code)
       {
-      case OPT_VERBOSE:
+         case OPT_VERBOSE:
             Verbose = CLStateGetIntArg(handle, arg);
-    break;
-      case OPT_HELP:
+            break;
+         case OPT_HELP:
             print_help(stdout);
             exit(NO_ERROR);
-      case OPT_OUTPUT:
+         case OPT_OUTPUT:
             outname = arg;
             break;
-      case OPT_PRINT_REFS:
+         case OPT_PRINT_REFS:
             TBPrintInternalInfo = CLStateGetBoolArg(handle, arg);
             break;
-      default:
+         default:
             assert(false);
             break;
       }
@@ -183,7 +171,7 @@ void print_help(FILE* out)
 {
    fprintf(out, "\n\
 \n                                              \
-term2dag "VERSION"\n                            \
+term2dag " VERSION "\n                            \
 \n                                              \
 Usage: term2dag [options] [files]\n             \
 \n                                                      \

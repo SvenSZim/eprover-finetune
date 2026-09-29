@@ -34,11 +34,13 @@
 /*                         Internal Functions                          */
 /*---------------------------------------------------------------------*/
 
-#define CALL_SETTER(h, el, idx) if (UNLIKELY((h)->setter)) (h)->setter(el, idx)
-#define PARENT(idx) (((idx)-1)/2)
+#define CALL_SETTER(h, el, idx)                                                \
+   if(UNLIKELY((h)->setter))                                                   \
+   (h)->setter(el, idx)
+#define PARENT(idx) (((idx) - 1) / 2)
 #define IS_ROOT(idx) ((idx) <= 0)
-#define LEFT(idx) (2*(idx)+1)
-#define RIGHT(idx) (LEFT(idx)+1)
+#define LEFT(idx) (2 * (idx) + 1)
+#define RIGHT(idx) (LEFT(idx) + 1)
 #define IS_LEAF(idx, size) (LEFT(idx) >= (size))
 
 /*-----------------------------------------------------------------------
@@ -187,10 +189,7 @@ MinHeap_p MinHeapAllocWithIndex(CmpFun cmp, SetIndexFun setter)
 //
 /----------------------------------------------------------------------*/
 
-long MinHeapSize(MinHeap_p h)
-{
-   return PStackGetSP(h->arr);
-}
+long MinHeapSize(MinHeap_p h) { return PStackGetSP(h->arr); }
 
 /*-----------------------------------------------------------------------
 //
@@ -260,7 +259,7 @@ IntOrP MinHeapPopMin(MinHeap_p h)
    else
    {
       SysError("Trying to get an element from an empty heap", -1);
-      return (IntOrP){.p_val = NULL};
+      return (IntOrP){ .p_val = NULL };
    }
 }
 
@@ -276,10 +275,7 @@ IntOrP MinHeapPopMin(MinHeap_p h)
 //
 /----------------------------------------------------------------------*/
 
-void MinHeapDecrKey(MinHeap_p h, long idx)
-{
-   drop_down(h, idx);
-}
+void MinHeapDecrKey(MinHeap_p h, long idx) { drop_down(h, idx); }
 
 /*-----------------------------------------------------------------------
 //
@@ -293,10 +289,7 @@ void MinHeapDecrKey(MinHeap_p h, long idx)
 //
 /----------------------------------------------------------------------*/
 
-void MinHeapIncrKey(MinHeap_p h, long idx)
-{
-   bubble_up(h, idx);
-}
+void MinHeapIncrKey(MinHeap_p h, long idx) { bubble_up(h, idx); }
 
 /*-----------------------------------------------------------------------
 //
@@ -331,7 +324,7 @@ void MinHeapFree(MinHeap_p junk)
 
 void DBGPrintHeap(FILE* out, MinHeap_p h, bool as_ptr)
 {
-   for(PStackPointer i=0; i<PStackGetSP(h->arr); i++)
+   for(PStackPointer i = 0; i < PStackGetSP(h->arr); i++)
    {
       if(as_ptr)
       {
@@ -365,9 +358,9 @@ void MinHeapUpdateElement(MinHeap_p h, long idx)
    if(idx >= 0)
    {
       // if element is in the heap
-      if(!IS_ROOT(idx)
-         && h->cmp(PStackElementRef(h->arr, idx),
-                   PStackElementRef(h->arr, PARENT(idx))) < 0)
+      if(!IS_ROOT(idx) &&
+         h->cmp(PStackElementRef(h->arr, idx),
+                PStackElementRef(h->arr, PARENT(idx))) < 0)
       {
          bubble_up(h, idx);
       }
@@ -392,7 +385,7 @@ void MinHeapUpdateElement(MinHeap_p h, long idx)
 /----------------------------------------------------------------------*/
 void MinHeapRemoveElement(MinHeap_p h, long idx)
 {
-   assert(idx >=0 && idx < PStackGetSP(h->arr));
+   assert(idx >= 0 && idx < PStackGetSP(h->arr));
    CALL_SETTER(h, PStackElementP(h->arr, idx), -1);
    IntOrP last = PStackPop(h->arr);
    if(idx != PStackGetSP(h->arr))

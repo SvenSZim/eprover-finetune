@@ -34,13 +34,13 @@
 
 typedef enum
 {
-   OPT_NOOPT=0,
+   OPT_NOOPT = 0,
    OPT_HELP,
    OPT_VERSION,
    OPT_VERBOSE,
    OPT_KB,
    OPT_NAME
-}OptionCodes;
+} OptionCodes;
 
 
 
@@ -48,45 +48,31 @@ typedef enum
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-OptCell opts[] =
-{
-   {OPT_HELP,
-    'h', "help",
-    NoArg, NULL,
-    "Print a short description of program usage and options."},
+OptCell opts[] = {
+   { OPT_HELP, 'h', "help", NoArg, NULL,
+     "Print a short description of program usage and options." },
 
-   {OPT_VERSION,
-    'V', "version",
-    NoArg, NULL,
-    "Print the version number of the program."},
+   { OPT_VERSION, 'V', "version", NoArg, NULL,
+     "Print the version number of the program." },
 
-   {OPT_VERBOSE,
-    'v', "verbose",
-    OptArg, "1",
-    "Verbose comments on the progress of the program."},
+   { OPT_VERBOSE, 'v', "verbose", OptArg, "1",
+     "Verbose comments on the progress of the program." },
 
-   {OPT_NAME,
-    'n', "name",
-    ReqArg, NULL,
-    "Give the name of the new problem. If not given, the program will "
-    "take the name of the first input file, or, if <stdin> is read, a"
-    " name of the form '__problem__i', where i is magically computed "
-    " from the existing knowledge base."},
+   { OPT_NAME, 'n', "name", ReqArg, NULL,
+     "Give the name of the new problem. If not given, the program will "
+     "take the name of the first input file, or, if <stdin> is read, a"
+     " name of the form '__problem__i', where i is magically computed "
+     " from the existing knowledge base." },
 
-   {OPT_KB,
-    'k',"knowledge-base",
-    ReqArg, NULL,
-    "Select the knowledge base. If not given, select E_KNOWLEDGE."},
+   { OPT_KB, 'k', "knowledge-base", ReqArg, NULL,
+     "Select the knowledge base. If not given, select E_KNOWLEDGE." },
 
-   {OPT_NOOPT,
-    '\0', NULL,
-    NoArg, NULL,
-    NULL}
+   { OPT_NOOPT, '\0', NULL, NoArg, NULL, NULL }
 };
 
-char* ex_name    = NULL;
-char* kb_name    = "E_KNOWLEDGE";
-bool  app_encode = false;
+char* ex_name = NULL;
+char* kb_name = "E_KNOWLEDGE";
+bool app_encode = false;
 
 /*---------------------------------------------------------------------*/
 /*                      Forward Declarations                           */
@@ -102,20 +88,20 @@ void print_help(FILE* out);
 
 int main(int argc, char* argv[])
 {
-   CLState_p       state;
-   DStr_p          name, store_file;
-   FILE            *out;
-   ExampleSet_p    proof_examples;
-   AnnoSet_p       clause_examples;
-   TB_p            annoterms;
-   TypeBank_p      typebank;
-   Sig_p           reserved_symbols;
-   Scanner_p       in;
-   KBDesc_p        kb_desc;
-   char            defaultname[40];
-   int             i;
-   PCLProt_p       prot;
-   long            proof_steps, neg_steps;
+   CLState_p state;
+   DStr_p name, store_file;
+   FILE* out;
+   ExampleSet_p proof_examples;
+   AnnoSet_p clause_examples;
+   TB_p annoterms;
+   TypeBank_p typebank;
+   Sig_p reserved_symbols;
+   Scanner_p in;
+   KBDesc_p kb_desc;
+   char defaultname[40];
+   int i;
+   PCLProt_p prot;
+   long proof_steps, neg_steps;
 
    assert(argv[0]);
 #ifdef STACK_SIZE
@@ -132,12 +118,12 @@ int main(int argc, char* argv[])
    OutputLevel = 0;
    state = process_options(argc, argv);
 
-   if(!ex_name && state->argv[0] && (strcmp(state->argv[0], "-")!= 0))
+   if(!ex_name && state->argv[0] && (strcmp(state->argv[0], "-") != 0))
    {
       ex_name = FileFindBaseName(state->argv[0]);
       /* printf("ex_name = %s\n", state->argv[0]); */
    }
-   if(state->argc ==  0)
+   if(state->argc == 0)
    {
       CLStateInsertArg(state, "-");
    }
@@ -148,14 +134,12 @@ int main(int argc, char* argv[])
       out name and parameters. */
 
    proof_examples = ExampleSetAlloc();
-   in = CreateScanner(StreamTypeFile,
-                      KBFileName(name, kb_name, "problems"),
+   in = CreateScanner(StreamTypeFile, KBFileName(name, kb_name, "problems"),
                       true, NULL, true);
    ExampleSetParse(in, proof_examples);
    DestroyScanner(in);
 
-   in = CreateScanner(StreamTypeFile,
-                      KBFileName(name, kb_name, "description"),
+   in = CreateScanner(StreamTypeFile, KBFileName(name, kb_name, "description"),
                       true, NULL, true);
    kb_desc = KBDescParse(in);
    DestroyScanner(in);
@@ -166,8 +150,7 @@ int main(int argc, char* argv[])
 
    if(!ex_name)
    {
-      sprintf(defaultname, "__problem__%ld",
-              proof_examples->count+1);
+      sprintf(defaultname, "__problem__%ld", proof_examples->count + 1);
       ex_name = defaultname;
    }
    if(ExampleSetFindName(proof_examples, ex_name))
@@ -195,7 +178,7 @@ int main(int argc, char* argv[])
 
    out = OutOpen(DStrView(store_file));
 
-   if(state->argc ==  0)
+   if(state->argc == 0)
    {
       CLStateInsertArg(state, "-");
    }
@@ -204,7 +187,7 @@ int main(int argc, char* argv[])
                                          this application! */
 
    prot = PCLProtAlloc();
-   for(i=0; state->argv[i]; i++)
+   for(i = 0; state->argv[i]; i++)
    {
       in = CreateScanner(StreamTypeFile, state->argv[i], true, NULL, true);
       ScannerSetFormat(in, TPTPFormat);
@@ -220,12 +203,12 @@ int main(int argc, char* argv[])
    PCLProtProofDistance(prot);
    PCLProtUpdateGRefs(prot);
    proof_steps = PCLProtCountProp(prot, PCLIsProofStep);
-   neg_steps = proof_steps?kb_desc->neg_proportion*proof_steps:
-      kb_desc->fail_neg_examples;
+   neg_steps = proof_steps ? kb_desc->neg_proportion * proof_steps
+                           : kb_desc->fail_neg_examples;
    PCLProtSelectExamples(prot, neg_steps);
-   fprintf(out, COMCHAR" Axioms:\n");
+   fprintf(out, COMCHAR " Axioms:\n");
    PCLProtPrintPropClauses(out, prot, PCLIsInitial, lop_format);
-   fprintf(out, ".\n\n"COMCHAR" Examples:\n");
+   fprintf(out, ".\n\n" COMCHAR " Examples:\n");
    PCLProtPrintExamples(out, prot);
    PCLProtFree(prot);
    OutClose(out);
@@ -237,15 +220,14 @@ int main(int argc, char* argv[])
 
    reserved_symbols = SigAlloc(typebank);
 
-   in = CreateScanner(StreamTypeFile,
-                      KBFileName(name, kb_name, "signature"),
+   in = CreateScanner(StreamTypeFile, KBFileName(name, kb_name, "signature"),
                       true, NULL, true);
    SigParse(in, reserved_symbols, true);
    DestroyScanner(in);
 
-   in = CreateScanner(StreamTypeFile,
-                      KBFileName(name, kb_name, "clausepatterns"),
-                      true, NULL, true);
+   in =
+      CreateScanner(StreamTypeFile, KBFileName(name, kb_name, "clausepatterns"),
+                    true, NULL, true);
 
    annoterms = TBAlloc(reserved_symbols);
    clause_examples = AnnoSetParse(in, annoterms, KB_ANNOTATION_NO);
@@ -314,30 +296,30 @@ CLState_p process_options(int argc, char* argv[])
 {
    Opt_p handle;
    CLState_p state;
-   char*  arg;
+   char* arg;
 
-   state = CLStateAlloc(argc,argv);
+   state = CLStateAlloc(argc, argv);
 
    while((handle = CLStateGetOpt(state, &arg, opts)))
    {
       switch(handle->option_code)
       {
-      case OPT_VERBOSE:
+         case OPT_VERBOSE:
             Verbose = CLStateGetIntArg(handle, arg);
             break;
-      case OPT_HELP:
+         case OPT_HELP:
             print_help(stdout);
             exit(NO_ERROR);
-      case OPT_VERSION:
+         case OPT_VERSION:
             printf("ekb_ginsert " VERSION "\n");
             exit(NO_ERROR);
-      case OPT_KB:
+         case OPT_KB:
             kb_name = arg;
             break;
-      case OPT_NAME:
+         case OPT_NAME:
             ex_name = arg;
             break;
-      default:
+         default:
             assert(false);
             break;
       }

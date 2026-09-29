@@ -36,24 +36,24 @@ Changes
 
 typedef struct pcl_propdata_cell
 {
-   long      fof_formulae;
-   long      pos_clauses;
-   long      neg_clauses;
-   long      mix_clauses;
-   long      pos_clause_literals;
-   long      neg_clause_literals;
-   long      mix_clause_literals;
-   long      pos_literals;
-   long      neg_literals;
-   long      const_count;
-   long      func_count;
-   long      pred_count;
-   long      var_count;
+   long fof_formulae;
+   long pos_clauses;
+   long neg_clauses;
+   long mix_clauses;
+   long pos_clause_literals;
+   long neg_clause_literals;
+   long mix_clause_literals;
+   long pos_literals;
+   long neg_literals;
+   long const_count;
+   long func_count;
+   long pred_count;
+   long var_count;
    PCLStep_p longest_clause;
    PCLStep_p max_symbol_clause;
    PCLStep_p max_standard_weight_clause;
    PCLStep_p max_depth_clause;
-}PCLPropDataCell, *PCLPropData_p;
+} PCLPropDataCell, *PCLPropData_p;
 
 
 
@@ -65,18 +65,15 @@ typedef int (*PCLCmpFunType)(const PCLStep_p, const PCLStep_p);
 
 PCLStep_p PCLProtFindMaxStep(PCLProt_p prot, PCLCmpFunType cmp);
 
-void      PCLProtPropAnalyse(PCLProt_p prot, PCLPropData_p data);
+void PCLProtPropAnalyse(PCLProt_p prot, PCLPropData_p data);
 
-void      PCLProtPropDataPrint(FILE* out, PCLPropData_p data);
+void PCLProtPropDataPrint(FILE* out, PCLPropData_p data);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
-
 
 
 

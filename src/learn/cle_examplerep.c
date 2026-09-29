@@ -94,7 +94,7 @@ void ExampleRepPrint(FILE* out, ExampleRep_p rep)
 //
 /----------------------------------------------------------------------*/
 
-ExampleRep_p  ExampleRepParse(Scanner_p in)
+ExampleRep_p ExampleRepParse(Scanner_p in)
 {
    ExampleRep_p handle = ExampleRepCellAlloc();
 
@@ -104,13 +104,13 @@ ExampleRep_p  ExampleRepParse(Scanner_p in)
    CheckInpTok(in, Name);
    if(TestInpTok(in, String))
    {
-      char *tmp;
+      char* tmp;
       int l;
 
       tmp = DStrCopy(AktToken(in)->literal);
       l = strlen(tmp);
-      tmp[l-1] = '\0';
-      handle->name = SecureStrdup(tmp+1);
+      tmp[l - 1] = '\0';
+      handle->name = SecureStrdup(tmp + 1);
       FREE(tmp);
    }
    else
@@ -188,7 +188,7 @@ void ExampleSetFree(ExampleSet_p junk)
 //
 /----------------------------------------------------------------------*/
 
-ExampleRep_p  ExampleSetFindName(ExampleSet_p set, char* name)
+ExampleRep_p ExampleSetFindName(ExampleSet_p set, char* name)
 {
    StrTree_p handle;
 
@@ -251,8 +251,8 @@ bool ExampleSetInsert(ExampleSet_p set, ExampleRep_p rep)
 ExampleRep_p ExampleSetExtract(ExampleSet_p set, ExampleRep_p rep)
 {
    ExampleRep_p handle;
-   NumTree_p    cell;
-   bool         res;
+   NumTree_p cell;
+   bool res;
 
    cell = NumTreeExtractEntry(&(set->ident_index), rep->ident);
    if(!cell)
@@ -262,7 +262,8 @@ ExampleRep_p ExampleSetExtract(ExampleSet_p set, ExampleRep_p rep)
    handle = cell->val1.p_val;
    NumTreeCellFree(cell);
    res = StrTreeDeleteEntry(&(set->name_index), rep->name);
-   UNUSED(res); assert(res);
+   UNUSED(res);
+   assert(res);
 
    return handle;
 }
@@ -283,7 +284,7 @@ ExampleRep_p ExampleSetExtract(ExampleSet_p set, ExampleRep_p rep)
 bool ExampleSetDeleteId(ExampleSet_p set, long ident)
 {
    ExampleRep_p handle;
-   NumTree_p    cell;
+   NumTree_p cell;
 
    cell = NumTreeFind(&(set->ident_index), ident);
    if(!cell)
@@ -311,7 +312,7 @@ bool ExampleSetDeleteId(ExampleSet_p set, long ident)
 bool ExampleSetDeleteName(ExampleSet_p set, char* name)
 {
    ExampleRep_p handle;
-   StrTree_p    cell;
+   StrTree_p cell;
 
    cell = StrTreeFind(&(set->name_index), name);
    if(!cell)
@@ -338,7 +339,7 @@ bool ExampleSetDeleteName(ExampleSet_p set, char* name)
 
 void ExampleSetPrint(FILE* out, ExampleSet_p set)
 {
-   PStack_p  stack;
+   PStack_p stack;
    NumTree_p handle;
 
    stack = NumTreeTraverseInit(set->ident_index);
@@ -365,12 +366,12 @@ void ExampleSetPrint(FILE* out, ExampleSet_p set)
 
 long ExampleSetParse(Scanner_p in, ExampleSet_p set)
 {
-   long         count = 0;
+   long count = 0;
    ExampleRep_p handle;
-   DStr_p       source_name;
-   long         line, column;
-   StreamType   type;
-   bool         res;
+   DStr_p source_name;
+   long line, column;
+   StreamType type;
+   bool res;
 
    while(TestInpTok(in, PosInt))
    {
@@ -379,13 +380,11 @@ long ExampleSetParse(Scanner_p in, ExampleSet_p set)
       source_name = DStrGetRef(AktToken(in)->source);
       type = AktToken(in)->stream_type;
       handle = ExampleRepParse(in);
-      res =  ExampleSetInsert(set, handle);
+      res = ExampleSetInsert(set, handle);
       if(!res)
       {
-         Error("%s Entry %s conficts with existing entries",
-               SYNTAX_ERROR,
-               PosRep(type, source_name, line, column),
-               handle->ident);
+         Error("%s Entry %s conficts with existing entries", SYNTAX_ERROR,
+               PosRep(type, source_name, line, column), handle->ident);
       }
       count++;
       DStrReleaseRef(source_name);
@@ -411,16 +410,15 @@ long ExampleSetParse(Scanner_p in, ExampleSet_p set)
 /----------------------------------------------------------------------*/
 
 long ExampleSetSelectByDist(PStack_p results, ExampleSet_p set,
-             Features_p target, double pred_w, double
-             func_w, double *weights, long sel_no,
-             double set_part, double dist_part)
+                            Features_p target, double pred_w, double func_w,
+                            double* weights, long sel_no, double set_part,
+                            double dist_part)
 {
-   long             set_size = NumTreeNodes(set->ident_index),
-      i, climit;
-   double           dlimit, dist, avg;
+   long set_size = NumTreeNodes(set->ident_index), i, climit;
+   double dlimit, dist, avg;
    WeightedObject_p tmp_array = WeightedObjectArrayAlloc(set_size);
-   PStack_p     stack;
-   NumTree_p    cell;
+   PStack_p stack;
+   NumTree_p cell;
    ExampleRep_p current;
 
    i = 0;
@@ -429,22 +427,22 @@ long ExampleSetSelectByDist(PStack_p results, ExampleSet_p set,
    while((cell = NumTreeTraverseNext(stack)))
    {
       current = cell->val1.p_val;
-      dist = NumFeatureDistance(target, current->features, pred_w,
-                                func_w, weights);
-      tmp_array[i].weight       = dist;
+      dist =
+         NumFeatureDistance(target, current->features, pred_w, func_w, weights);
+      tmp_array[i].weight = dist;
       tmp_array[i].object.p_val = current;
       avg += dist;
       i++;
    }
    assert(i == set_size);
    NumTreeTraverseExit(stack);
-   avg = avg /(double)set_size;
+   avg = avg / (double)set_size;
 
    WeightedObjectArraySort(tmp_array, set_size);
-   climit = MIN(sel_no, set_part*set_size);
-   dlimit = dist_part*avg;
+   climit = MIN(sel_no, set_part * set_size);
+   dlimit = dist_part * avg;
    assert(climit <= set_size);
-   for(i=0; i<climit && tmp_array[i].weight <= dlimit; i++)
+   for(i = 0; i < climit && tmp_array[i].weight <= dlimit; i++)
    {
       current = tmp_array[i].object.p_val;
       if(Verbose)

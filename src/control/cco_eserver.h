@@ -36,9 +36,9 @@ Changes
 
 typedef struct eserver_cell
 {
-   int         listening;  /* Socket for connections */
-   PQueue_p    sessions;   /* Connections - head is active */
-}EServerCell, *EServer_p;
+   int listening;     /* Socket for connections */
+   PQueue_p sessions; /* Connections - head is active */
+} EServerCell, *EServer_p;
 
 
 
@@ -53,20 +53,18 @@ XXX_p  XXXAlloc();
 void   XXXFree(XXX_p junk);
 */
 
-#define EServerCellAlloc()    (EServerCell*)SizeMalloc(sizeof(EServerCell))
+#define EServerCellAlloc() (EServerCell*)SizeMalloc(sizeof(EServerCell))
 #define EServerCellFree(junk) SizeFree(junk, sizeof(EServerCell))
 
-EServer_p  EServerAlloc(void);
-void       EServerFree(EServer_p junk);
+EServer_p EServerAlloc(void);
+void EServerFree(EServer_p junk);
 
-void       EServerReset(EServer_p server);
-bool       EServerListen(EServer_p server, int port);
+void EServerReset(EServer_p server);
+bool EServerListen(EServer_p server, int port);
 
-bool       EServerAccept(EServer_p server);
+bool EServerAccept(EServer_p server);
 
-int        EServerInitFDSet(EServer_p server,
-                            fd_set *rd_fds,
-                            fd_set *wr_fds);
+int EServerInitFDSet(EServer_p server, fd_set* rd_fds, fd_set* wr_fds);
 
 
 
@@ -75,8 +73,6 @@ int        EServerInitFDSet(EServer_p server,
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

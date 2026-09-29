@@ -40,10 +40,10 @@ Type_p TypeCheckArithBinop(Sig_p sig, Term_p t);
 Type_p TypeCheckArithConv(Sig_p sig, Term_p t);
 
 
-bool     TypeCheckConsistent(Sig_p sig, Term_p term);
-void     TypeInferSort(Sig_p sig, Term_p term, Scanner_p in);
-void     TypeDeclareIsPredicate(Sig_p sig, Term_p term);
-void     TypeDeclareIsNotPredicate(Sig_p sig, Term_p term, Scanner_p in);
+bool TypeCheckConsistent(Sig_p sig, Term_p term);
+void TypeInferSort(Sig_p sig, Term_p term, Scanner_p in);
+void TypeDeclareIsPredicate(Sig_p sig, Term_p term);
+void TypeDeclareIsNotPredicate(Sig_p sig, Term_p term, Scanner_p in);
 
 #endif
 

@@ -54,19 +54,26 @@ void default_sort_table_init(SortTable_p table)
    SortType res;
 
    res = SortTableInsert(table, "$no_type");
-   UNUSED(res); assert(res == STNoSort);
+   UNUSED(res);
+   assert(res == STNoSort);
    res = SortTableInsert(table, "$o");
-   UNUSED(res); assert(res == STBool);
+   UNUSED(res);
+   assert(res == STBool);
    res = SortTableInsert(table, "$i");
-   UNUSED(res); assert(res == STIndividuals);
+   UNUSED(res);
+   assert(res == STIndividuals);
    res = SortTableInsert(table, "$tType");
-   UNUSED(res); assert(res == STKind);
+   UNUSED(res);
+   assert(res == STKind);
    res = SortTableInsert(table, "$int");
-   UNUSED(res); assert(res == STInteger);
+   UNUSED(res);
+   assert(res == STInteger);
    res = SortTableInsert(table, "$rat");
-   UNUSED(res); assert(res == STRational);
+   UNUSED(res);
+   assert(res == STRational);
    res = SortTableInsert(table, "$real");
-   UNUSED(res); assert(res == STReal);
+   UNUSED(res);
+   assert(res == STReal);
 }
 
 
@@ -90,8 +97,8 @@ SortTable_p SortTableAlloc(void)
 {
    SortTable_p table = SortTableCellAlloc();
 
-   table->sort_index   = NULL;
-   table->back_index   = PStackAlloc();
+   table->sort_index = NULL;
+   table->back_index = PStackAlloc();
    table->default_type = STIndividuals;
 
    return table;
@@ -114,7 +121,7 @@ void SortTableFree(SortTable_p junk)
    assert(junk);
 
    PStackFree(junk->back_index);
-   if (junk->sort_index)
+   if(junk->sort_index)
    {
       StrTreeFree(junk->sort_index);
    }
@@ -201,12 +208,12 @@ char* SortTableGetRep(SortTable_p table, SortType sort)
 // Side Effects    : Output
 //
 /----------------------------------------------------------------------*/
-void SortPrintTSTP(FILE *out, SortTable_p table, SortType sort)
+void SortPrintTSTP(FILE* out, SortTable_p table, SortType sort)
 {
-    char *name;
+   char* name;
 
-    name = SortTableGetRep(table, sort);
-    fputs(name, out);
+   name = SortTableGetRep(table, sort);
+   fputs(name, out);
 }
 
 /*-----------------------------------------------------------------------
@@ -255,12 +262,12 @@ SortType SortParseTSTP(Scanner_p in, SortTable_p table)
 void SortTablePrint(FILE* out, SortTable_p table)
 {
    PStackPointer i;
-   StrTree_p     cell;
-   PStack_p      stack;
+   StrTree_p cell;
+   PStack_p stack;
 
    fprintf(out, "Sort table in order of sort creation:\n");
    fprintf(out, "=====================================\n");
-   for(i=0; i<PStackGetSP(table->back_index); i++)
+   for(i = 0; i < PStackGetSP(table->back_index); i++)
    {
       fprintf(out, "Type %4ld: %s\n", i, SortTableGetRep(table, i));
    }
@@ -269,7 +276,7 @@ void SortTablePrint(FILE* out, SortTable_p table)
 
 
    stack = StrTreeTraverseInit(table->sort_index);
-   while((cell=StrTreeTraverseNext(stack)))
+   while((cell = StrTreeTraverseNext(stack)))
    {
       fprintf(out, "Type %4ld: %s\n", cell->val1.i_val, cell->key);
    }

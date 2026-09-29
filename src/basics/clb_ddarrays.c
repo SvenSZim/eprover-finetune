@@ -66,10 +66,10 @@ DDArray_p DDArrayAlloc(long init_size, long grow)
    assert(init_size > 0);
    assert(grow > 0);
 
-   handle->size  = init_size;
-   handle->grow  = grow;
-   handle->array = SizeMalloc(handle->size*sizeof(double));
-   for(i=0; i<handle->size; i++)
+   handle->size = init_size;
+   handle->grow = grow;
+   handle->array = SizeMalloc(handle->size * sizeof(double));
+   for(i = 0; i < handle->size; i++)
    {
       handle->array[i] = 0.0;
    }
@@ -94,7 +94,7 @@ void DDArrayFree(DDArray_p junk)
    assert(junk->size > 0);
    assert(junk->array);
 
-   SizeFree(junk->array, junk->size*sizeof(double));
+   SizeFree(junk->array, junk->size * sizeof(double));
    DDArrayCellFree(junk);
 }
 
@@ -112,16 +112,16 @@ void DDArrayFree(DDArray_p junk)
 
 void DDArayEnlarge(DDArray_p array, long idx)
 {
-   double *tmp;
-   long   old_size, i;
+   double* tmp;
+   long old_size, i;
 
    old_size = array->size;
-   tmp      = array->array;
-   array->size = ((idx/array->grow)+1)*array->grow;
+   tmp = array->array;
+   array->size = ((idx / array->grow) + 1) * array->grow;
    array->array = SizeMalloc(array->size * sizeof(double));
-   memcpy(array->array, tmp, old_size*sizeof(double));
+   memcpy(array->array, tmp, old_size * sizeof(double));
    SizeFree(tmp, old_size * sizeof(double));
-   for(i=old_size; i<array->size; i++)
+   for(i = old_size; i < array->size; i++)
    {
       array->array[i] = 0.0;
    }
@@ -143,12 +143,12 @@ void DDArrayDebugPrint(FILE* out, DDArray_p array, long size)
 {
    long i;
 
-   for(i = 0; i<size; i++)
+   for(i = 0; i < size; i++)
    {
       fprintf(out, " %5.3f ", DDArrayElement(array, i));
-      if(((i+1) % 10)==0)
+      if(((i + 1) % 10) == 0)
       {
-    fprintf(out, "\n");
+         fprintf(out, "\n");
       }
    }
    fprintf(out, "\n");
@@ -176,11 +176,11 @@ void DDArrayAdd(DDArray_p collect, DDArray_p data, long limit)
    assert(collect);
    assert(data);
 
-   for(i=0; i<limit; i++)
+   for(i = 0; i < limit; i++)
    {
       old = DDArrayElement(collect, i);
       new = DDArrayElement(data, i);
-      DDArrayAssign(collect, i, old+new);
+      DDArrayAssign(collect, i, old + new);
    }
 }
 
@@ -201,82 +201,81 @@ void DDArrayAdd(DDArray_p collect, DDArray_p data, long limit)
 double DDArraySelectPart(DDArray_p array, double part, long size)
 {
    double pivot, tmp, *arr;
-   long i,j, start, end, rank1, rank2;
+   long i, j, start, end, rank1, rank2;
 
    assert((0 <= part) && (part <= 1));
-   assert(size>0);
+   assert(size > 0);
 
-   tmp = (size-1)*part; /* -1 due to C's indexing */
+   tmp = (size - 1) * part; /* -1 due to C's indexing */
 
    rank1 = ((long)tmp);
-   rank2 = ((long)(tmp+0.5));
+   rank2 = ((long)(tmp + 0.5));
 
-   start   = 0;
-   end     = size-1;
+   start = 0;
+   end = size - 1;
 
    /* printf(COMCHAR" Rank1,2: %ld, %ld\n", rank1, rank2); */
 
    assert(array->size >= size);
-   arr  = array->array;
-   while(start!=end)
+   arr = array->array;
+   while(start != end)
    {
       /* Pick a good pseudo-pivot to make worst case-behaviour less
     likely */
 
-      pivot = (arr[start]+arr[(start+end)/2]+arr[end])/3.0;
+      pivot = (arr[start] + arr[(start + end) / 2] + arr[end]) / 3.0;
 
       /* printf("Pivot: %f\n", pivot); */
-      i=start;
-      j=end;
+      i = start;
+      j = end;
 
       while(i != j)
       {
-    /* printf("%ld, %ld\n", i, j); */
-    while((i<j) && (arr[i] <= pivot))
-    {
-       i++;
-    }
-    while((j>i) && (arr[j] > pivot))
-    {
-       j--;
-    }
-    tmp    = arr[i];
-    arr[i] = arr[j];
-    arr[j] = tmp;
+         /* printf("%ld, %ld\n", i, j); */
+         while((i < j) && (arr[i] <= pivot))
+         {
+            i++;
+         }
+         while((j > i) && (arr[j] > pivot))
+         {
+            j--;
+         }
+         tmp = arr[i];
+         arr[i] = arr[j];
+         arr[j] = tmp;
       }
       /* printf("Hier - i= %ld\n",i);
       DDArrayDebugPrint(stdout, array, size); */
       if(i > rank1)
       {
-    end = i-1;
+         end = i - 1;
       }
       else
       {
-    start = i;
+         start = i;
       }
    }
 
-   if(rank2!=rank1)
+   if(rank2 != rank1)
    {
       /* Now find the second value. We know that all values with index
     > rank1 are >= arr[rank1] and that all values >
     arr[rank1] have index > rank1 -> we only need to search for
     the minimum of the second part of the array */
-      assert(rank1!=size-1); /* Should be impossible, otherwise part =
+      assert(rank1 != size - 1); /* Should be impossible, otherwise part =
               1.0 and rank1==rank2 */
-      tmp = arr[start+1];
-      for(i=start+1; i<size; i++)
+      tmp = arr[start + 1];
+      for(i = start + 1; i < size; i++)
       {
-    tmp = MIN(tmp, arr[i]);
+         tmp = MIN(tmp, arr[i]);
       }
    }
    else
    {
       tmp = arr[start];
    }
-   return (arr[start]+tmp)/2;
+   return (arr[start] + tmp) / 2;
 }
-
 
 
 

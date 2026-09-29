@@ -42,19 +42,20 @@ typedef struct memcell
 {
    struct memcell* next;
 #ifndef NDEBUG
-   unsigned long   test;
+   unsigned long test;
 #endif
-}MemCell, *Mem_p;
+} MemCell, *Mem_p;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define MEM_ARR_SIZE     8192
-#define MEM_ALIGN        16
-#define MEM_CHUNKLIMIT   (4096/MEM_ALIGN) /* Objects smaller than this are
+#define MEM_ARR_SIZE 8192
+#define MEM_ALIGN 16
+#define MEM_CHUNKLIMIT                                                         \
+   (4096 / MEM_ALIGN) /* Objects smaller than this are
                    allocated in sets of MEM_MULTIPLIER */
-#define MEM_MULTIPLIER   1024
+#define MEM_MULTIPLIER 1024
 #define MEM_FREE_PATTERN 0xFAFBFAFA
 #define MEM_RSET_PATTERN 0x00000000
 
@@ -64,9 +65,10 @@ typedef struct memcell
    a very rough but machine-independent estimate is used. */
 
 #ifdef CONSTANT_MEM_ESTIMATE
-#define MEMSIZE(type) "There is a bug in the code! Everything has to work with constants."
+#define MEMSIZE(type)                                                          \
+   "There is a bug in the code! Everything has to work with constants."
 #else
-#define MEMSIZE(type) (sizeof(type)+sizeof(void*))
+#define MEMSIZE(type) (sizeof(type) + sizeof(void*))
 #endif
 
 
@@ -74,28 +76,32 @@ extern bool MemIsLow;
 extern Mem_p free_mem_list[];
 
 void* SizeMallocReal(int size);
-void  SizeFreeReal(void* junk, int size);
+void SizeFreeReal(void* junk, int size);
 
 #ifndef NDEBUG
-#define SizeFree(junk, size) SizeFreeReal(junk, size); junk=NULL
-#define SizeMalloc(size)     SizeMallocReal(size)
-#define ENSURE_NULL(junk)    junk=NULL
+#define SizeFree(junk, size)                                                   \
+   SizeFreeReal(junk, size);                                                   \
+   junk = NULL
+#define SizeMalloc(size) SizeMallocReal(size)
+#define ENSURE_NULL(junk) junk = NULL
 #else
 #define SizeFree(junk, size) SizeFreeReal(junk, size);
-#define SizeMalloc(size)     SizeMallocReal(size)
-#define ENSURE_NULL(junk)    /* Only defined in debug mode */
+#define SizeMalloc(size) SizeMallocReal(size)
+#define ENSURE_NULL(junk) /* Only defined in debug mode */
 #endif
 
-void  MemFlushFreeList(void);
+void MemFlushFreeList(void);
 void* SecureMalloc(int size);
-void* SecureRealloc(void *ptr, int size);
-void  MemAddNewChunk(int mem_index);
+void* SecureRealloc(void* ptr, int size);
+void MemAddNewChunk(int mem_index);
 char* SecureStrdup(const char* source);
 char* SecureStrndup(const char* source, size_t n);
-#define FREE(junk) assert(junk);free(junk)
+#define FREE(junk)                                                             \
+   assert(junk);                                                               \
+   free(junk)
 
 long* IntArrayAlloc(int size);
-#define IntArrayFree(array, size) SizeFree(array, size*sizeof(long))
+#define IntArrayFree(array, size) SizeFree(array, size * sizeof(long))
 
 #ifdef CLB_MEMORY_DEBUG
 void MemDebugPrintStats(FILE* out);
@@ -110,7 +116,11 @@ extern long secure_realloc_count;
 extern long secure_realloc_m_count;
 extern long secure_realloc_f_count;
 #undef FREE
-#define FREE(junk) assert(junk); clb_free_count++; free(junk); junk=NULL
+#define FREE(junk)                                                             \
+   assert(junk);                                                               \
+   clb_free_count++;                                                           \
+   free(junk);                                                                 \
+   junk = NULL
 #endif
 
 /*-------------------------------------------------------------------------

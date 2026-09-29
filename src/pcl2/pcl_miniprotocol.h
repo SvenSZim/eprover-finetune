@@ -33,55 +33,47 @@ Changes
 
 typedef struct pclminiprotcell
 {
-   TB_p      terms;
-   long      max_ident;
+   TB_p terms;
+   long max_ident;
    PDArray_p steps; /* indexed by simple-ids */
-}PCLMiniProtCell, *PCLMiniProt_p;
+} PCLMiniProtCell, *PCLMiniProt_p;
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define PCLMiniProtCellAlloc() (PCLMiniProtCell*)SizeMalloc(sizeof(PCLMiniProtCell))
-#define PCLMiniProtCellFree(junk)         SizeFree(junk, sizeof(PCLMiniProtCell))
+#define PCLMiniProtCellAlloc()                                                 \
+   (PCLMiniProtCell*)SizeMalloc(sizeof(PCLMiniProtCell))
+#define PCLMiniProtCellFree(junk) SizeFree(junk, sizeof(PCLMiniProtCell))
 
 PCLMiniProt_p PCLMiniProtAlloc(void);
-void          PCLMiniProtFree(PCLMiniProt_p junk);
+void PCLMiniProtFree(PCLMiniProt_p junk);
 
-bool          PCLMiniProtInsertStep(PCLMiniProt_p prot, PCLMiniStep_p
-                step);
+bool PCLMiniProtInsertStep(PCLMiniProt_p prot, PCLMiniStep_p step);
 PCLMiniStep_p PCLMiniProtFindStep(PCLMiniProt_p prot, unsigned long id);
-PCLMiniStep_p PCLMiniProtExtractStep(PCLMiniProt_p prot, PCLMiniStep_p
-                 step);
-bool          PCLMiniProtDeleteStep(PCLMiniProt_p prot, PCLMiniStep_p
-                step);
+PCLMiniStep_p PCLMiniProtExtractStep(PCLMiniProt_p prot, PCLMiniStep_p step);
+bool PCLMiniProtDeleteStep(PCLMiniProt_p prot, PCLMiniStep_p step);
 
 
-long      PCLMiniProtParse(Scanner_p in, PCLMiniProt_p prot);
-void      PCLMiniProtPrint(FILE* out, PCLMiniProt_p prot,
-            OutputFormatType format);
+long PCLMiniProtParse(Scanner_p in, PCLMiniProt_p prot);
+void PCLMiniProtPrint(FILE* out, PCLMiniProt_p prot, OutputFormatType format);
 
-void      PCLMiniExprCollectPreconds(PCLMiniProt_p prot, PCLExpr_p expr,
-                 PTree_p *tree);
+void PCLMiniExprCollectPreconds(PCLMiniProt_p prot, PCLExpr_p expr,
+                                PTree_p* tree);
 
-bool      PCLMiniProtMarkProofClauses(PCLMiniProt_p prot, bool fast);
-void      PCLMiniProtSetClauseProp(PCLMiniProt_p prot, PCLStepProperties props);
-void      PCLMiniProtDelClauseProp(PCLMiniProt_p prot, PCLStepProperties props);
+bool PCLMiniProtMarkProofClauses(PCLMiniProt_p prot, bool fast);
+void PCLMiniProtSetClauseProp(PCLMiniProt_p prot, PCLStepProperties props);
+void PCLMiniProtDelClauseProp(PCLMiniProt_p prot, PCLStepProperties props);
 
-void      PCLMiniProtPrintProofClauses(FILE* out, PCLMiniProt_p prot,
-                   OutputFormatType format);
+void PCLMiniProtPrintProofClauses(FILE* out, PCLMiniProt_p prot,
+                                  OutputFormatType format);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
-
-
-
 
 
 

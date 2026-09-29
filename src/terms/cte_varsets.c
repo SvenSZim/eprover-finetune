@@ -48,10 +48,7 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-static void varset_free_fun(void* junk)
-{
-   VarSetFree((VarSet_p)junk);
-}
+static void varset_free_fun(void* junk) { VarSetFree((VarSet_p)junk); }
 
 
 /*-----------------------------------------------------------------------
@@ -138,7 +135,6 @@ void VarSetFree(VarSet_p set)
    VarSetReset(set);
    VarSetCellFree(set);
 }
-
 
 
 
@@ -307,11 +303,11 @@ void VarSetStoreFree(VarSetStore_p store)
 //
 /----------------------------------------------------------------------*/
 
-VarSet_p VarSetStoreFindVarSet(VarSetStore_p *store, Term_p key)
+VarSet_p VarSetStoreFindVarSet(VarSetStore_p* store, Term_p key)
 {
    VarSet_p dummy = VarSetAlloc(key), res;
 
-   res =  PTreeObjFindObj(store, key, varset_cmp_fun);
+   res = PTreeObjFindObj(store, key, varset_cmp_fun);
 
    VarSetFree(dummy);
 
@@ -333,7 +329,7 @@ VarSet_p VarSetStoreFindVarSet(VarSetStore_p *store, Term_p key)
 //
 /----------------------------------------------------------------------*/
 
-VarSet_p VarSetStoreGetVarSet(VarSetStore_p *store, Term_p key)
+VarSet_p VarSetStoreGetVarSet(VarSetStore_p* store, Term_p key)
 {
    VarSet_p dummy = VarSetAlloc(key), res;
 

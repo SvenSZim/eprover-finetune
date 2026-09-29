@@ -36,39 +36,43 @@
 /*---------------------------------------------------------------------*/
 
 typedef PStackCell SubstCell;
-typedef PStack_p   Subst_p;
+typedef PStack_p Subst_p;
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define SubstAlloc()    PStackAlloc()
+#define SubstAlloc() PStackAlloc()
 #define SubstFree(junk) PStackFree(junk)
 
-#define SubstDelete(junk) SubstBacktrack(junk);SubstFree(junk)
-#define SubstDeleteSkolem(junk) SubstBacktrackSkolem(junk);SubstFree(junk)
+#define SubstDelete(junk)                                                      \
+   SubstBacktrack(junk);                                                       \
+   SubstFree(junk)
+#define SubstDeleteSkolem(junk)                                                \
+   SubstBacktrackSkolem(junk);                                                 \
+   SubstFree(junk)
 #define SubstIsEmpty(subst) PStackEmpty(subst)
 
-static inline PStackPointer SubstAddBinding(Subst_p subst, Term_p var, Term_p bind);
-bool          SubstBacktrackSingle(Subst_p subst);
-int           SubstBacktrackToPos(Subst_p subst, PStackPointer pos);
-int           SubstBacktrack(Subst_p subst);
+static inline PStackPointer SubstAddBinding(Subst_p subst, Term_p var,
+                                            Term_p bind);
+bool SubstBacktrackSingle(Subst_p subst);
+int SubstBacktrackToPos(Subst_p subst, PStackPointer pos);
+int SubstBacktrack(Subst_p subst);
 
-PStackPointer SubstNormTerm(Term_p term, Subst_p subst, VarBank_p vars, Sig_p sig);
+PStackPointer SubstNormTerm(Term_p term, Subst_p subst, VarBank_p vars,
+                            Sig_p sig);
 
-bool          SubstBindingPrint(FILE* out, Term_p var, Sig_p sig, DerefType deref);
-long          SubstPrint(FILE* out, Subst_p subst, Sig_p sig, DerefType deref);
-bool          SubstIsRenaming(Subst_p subt);
-bool          SubstHasHOBinding(Subst_p subt);
+bool SubstBindingPrint(FILE* out, Term_p var, Sig_p sig, DerefType deref);
+long SubstPrint(FILE* out, Subst_p subst, Sig_p sig, DerefType deref);
+bool SubstIsRenaming(Subst_p subt);
+bool SubstHasHOBinding(Subst_p subt);
 
-PStackPointer SubstBindAppVar(Subst_p subst, Term_p var,
-                              Term_p term, int up_to,
+PStackPointer SubstBindAppVar(Subst_p subst, Term_p var, Term_p term, int up_to,
                               TB_p bank);
 
-void          SubstBacktrackSkolem(Subst_p subst);
-void          SubstSkolemizeTerm(Term_p term, Subst_p subst, Sig_p sig);
-void          SubstCompleteInstance(Subst_p subst, Term_p term,
-                                    Term_p default_binding);
+void SubstBacktrackSkolem(Subst_p subst);
+void SubstSkolemizeTerm(Term_p term, Subst_p subst, Sig_p sig);
+void SubstCompleteInstance(Subst_p subst, Term_p term, Term_p default_binding);
 
 
 /*-----------------------------------------------------------------------

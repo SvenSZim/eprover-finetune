@@ -82,11 +82,10 @@ int ClauseContextualSimplifyReflect(ClauseSet_p set, Clause_p clause)
          {
             ClauseSetProp(clause, CPIsSOS);
          }
-         ClauseDelProp(clause, CPInitial|CPLimitedRW);
+         ClauseDelProp(clause, CPInitial | CPLimitedRW);
          ClauseRemoveLiteral(clause, handle);
          assert(clause->weight == ClauseStandardWeight(clause));
-         DocClauseModificationDefault(clause,
-                                      inf_context_simplify_reflect,
+         DocClauseModificationDefault(clause, inf_context_simplify_reflect,
                                       subsumer);
          res++;
          ClausePushDerivation(clause, DCContextSR, subsumer);
@@ -117,7 +116,7 @@ int ClauseContextualSimplifyReflect(ClauseSet_p set, Clause_p clause)
 /----------------------------------------------------------------------*/
 
 long ClauseSetFindContextSRClauses(ClauseSet_p set, Clause_p clause,
-               PStack_p res)
+                                   PStack_p res)
 {
    Eqn_p handle;
    long old_sp = PStackGetSP(res);

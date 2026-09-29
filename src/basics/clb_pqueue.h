@@ -32,17 +32,18 @@ Changes
 /*                    Data type declarations                           */
 /*---------------------------------------------------------------------*/
 
-#define PQUEUE_DEFAULT_SIZE 128 /* Queues grow exponentially (and never
+#define PQUEUE_DEFAULT_SIZE                                                    \
+   128 /* Queues grow exponentially (and never
                                    shrink unless explicitly freed) -
                                    take care */
 
 typedef struct pqueuecell
 {
-   long   size;   /* Of allocateted memory */
-   long   head;   /* Where the next element will be put */
-   long   tail;   /* Where the next element will come from */
-   IntOrP *queue; /* Memory */
-}PQueueCell, *PQueue_p;
+   long size;     /* Of allocateted memory */
+   long head;     /* Where the next element will be put */
+   long tail;     /* Where the next element will come from */
+   IntOrP* queue; /* Memory */
+} PQueueCell, *PQueue_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -50,42 +51,42 @@ typedef struct pqueuecell
 /*---------------------------------------------------------------------*/
 
 #define PQueueCellAlloc() (PQueueCell*)SizeMalloc(sizeof(PQueueCell))
-#define PQueueCellFree(junk)         SizeFree(junk, sizeof(PQueueCell))
+#define PQueueCellFree(junk) SizeFree(junk, sizeof(PQueueCell))
 
 static inline PQueue_p PQueueAlloc(void);
-static inline void     PQueueFree(PQueue_p junk);
-void     PQueueGrow(PQueue_p queue);
-#define  PQueueEmpty(queue) ((queue)->head == (queue)->tail)
-static inline void     PQueueReset(PQueue_p queue);
+static inline void PQueueFree(PQueue_p junk);
+void PQueueGrow(PQueue_p queue);
+#define PQueueEmpty(queue) ((queue)->head == (queue)->tail)
+static inline void PQueueReset(PQueue_p queue);
 
-static inline void     PQueueStoreInt(PQueue_p queue, long val);
-static inline void     PQueueStoreP(PQueue_p queue, void* val);
+static inline void PQueueStoreInt(PQueue_p queue, long val);
+static inline void PQueueStoreP(PQueue_p queue, void* val);
 
-static inline void     PQueueBuryInt(PQueue_p queue, long val);
-static inline void     PQueueBuryP(PQueue_p queue, void* val);
+static inline void PQueueBuryInt(PQueue_p queue, long val);
+static inline void PQueueBuryP(PQueue_p queue, void* val);
 
-static inline IntOrP   PQueueGetNext(PQueue_p queue);
-#define  PQueueGetNextInt(Queue) (PQueueGetNext(Queue).i_val)
-#define  PQueueGetNextP(Queue)   (PQueueGetNext(Queue).p_val)
+static inline IntOrP PQueueGetNext(PQueue_p queue);
+#define PQueueGetNextInt(Queue) (PQueueGetNext(Queue).i_val)
+#define PQueueGetNextP(Queue) (PQueueGetNext(Queue).p_val)
 
-static inline IntOrP   PQueueGetLast(PQueue_p queue);
-#define  PQueueGetLastInt(Queue) (PQueueGetLast(Queue).i_val)
-#define  PQueueGetLastP(Queue)   (PQueueGetLast(Queue).p_val)
+static inline IntOrP PQueueGetLast(PQueue_p queue);
+#define PQueueGetLastInt(Queue) (PQueueGetLast(Queue).i_val)
+#define PQueueGetLastP(Queue) (PQueueGetLast(Queue).p_val)
 
-static inline IntOrP   PQueueLook(PQueue_p queue);
-#define  PQueueLookInt(Queue) (PQueueLook(Queue).i_val)
-#define  PQueueLookP(Queue)   (PQueueLook(Queue).p_val)
-static inline IntOrP   PQueueLookLast(PQueue_p queue);
-#define  PQueueLookLastInt(Queue) (PQueueLookLast(Queue).i_val)
-#define  PQueueLookLastP(Queue)   (PQueueLookLast(Queue).p_val)
-long     PQueueCardinality(PQueue_p queue);
+static inline IntOrP PQueueLook(PQueue_p queue);
+#define PQueueLookInt(Queue) (PQueueLook(Queue).i_val)
+#define PQueueLookP(Queue) (PQueueLook(Queue).p_val)
+static inline IntOrP PQueueLookLast(PQueue_p queue);
+#define PQueueLookLastInt(Queue) (PQueueLookLast(Queue).i_val)
+#define PQueueLookLastP(Queue) (PQueueLookLast(Queue).p_val)
+long PQueueCardinality(PQueue_p queue);
 
-IntOrP   PQueueElement(PQueue_p queue, long index);
-#define  PQueueElementInt(Queue, index) (PQueueElement(Queue,index).i_val)
-#define  PQueueElementP(Queue, index) (PQueueElement(Queue,index).p_val)
+IntOrP PQueueElement(PQueue_p queue, long index);
+#define PQueueElementInt(Queue, index) (PQueueElement(Queue, index).i_val)
+#define PQueueElementP(Queue, index) (PQueueElement(Queue, index).p_val)
 
-long     PQueueTailIndex(PQueue_p queue);
-long     PQueueIncIndex(PQueue_p queue, long index);
+long PQueueTailIndex(PQueue_p queue);
+long PQueueIncIndex(PQueue_p queue, long index);
 
 /*---------------------------------------------------------------------*/
 /*                       Inline-Functions                              */
@@ -135,7 +136,7 @@ static inline void pqueue_store(PQueue_p queue, IntOrP val)
 
 static inline void pqueue_bury(PQueue_p queue, IntOrP val)
 {
-   queue->tail = queue->tail? (queue->tail-1):queue->size-1;
+   queue->tail = queue->tail ? (queue->tail - 1) : queue->size - 1;
    queue->queue[queue->tail] = val;
 
    if(queue->head == queue->tail)
@@ -161,10 +162,10 @@ static inline PQueue_p PQueueAlloc(void)
 {
    PQueue_p handle = PQueueCellAlloc();
 
-   handle->size  = PQUEUE_DEFAULT_SIZE;
-   handle->head  = 0;
-   handle->tail  = 0;
-   handle->queue = SizeMalloc(PQUEUE_DEFAULT_SIZE*sizeof(IntOrP));
+   handle->size = PQUEUE_DEFAULT_SIZE;
+   handle->head = 0;
+   handle->tail = 0;
+   handle->queue = SizeMalloc(PQUEUE_DEFAULT_SIZE * sizeof(IntOrP));
 
    return handle;
 }
@@ -184,7 +185,7 @@ static inline PQueue_p PQueueAlloc(void)
 
 static inline void PQueueFree(PQueue_p junk)
 {
-   SizeFree(junk->queue, junk->size*sizeof(IntOrP));
+   SizeFree(junk->queue, junk->size * sizeof(IntOrP));
    PQueueCellFree(junk);
 }
 
@@ -336,7 +337,7 @@ static inline IntOrP PQueueGetLast(PQueue_p queue)
 
    assert(!PQueueEmpty(queue));
 
-   queue->head = queue->head ? (queue->head-1):queue->size-1;
+   queue->head = queue->head ? (queue->head - 1) : queue->size - 1;
    res = queue->queue[queue->head];
 
    return res;
@@ -381,11 +382,11 @@ static inline IntOrP PQueueLook(PQueue_p queue)
 static inline IntOrP PQueueLookLast(PQueue_p queue)
 {
    IntOrP res;
-   long   index;
+   long index;
 
    assert(!PQueueEmpty(queue));
 
-   index = queue->head? (queue->head-1):queue->size-1;
+   index = queue->head ? (queue->head - 1) : queue->size - 1;
    res = queue->queue[index];
 
    return res;
@@ -397,8 +398,6 @@ static inline IntOrP PQueueLookLast(PQueue_p queue)
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

@@ -34,20 +34,18 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
 
-int  ClauseCountExtSymbols(Clause_p clause, Sig_p sig, long
-            min_arity);
+int ClauseCountExtSymbols(Clause_p clause, Sig_p sig, long min_arity);
 
 FunCode TermAddVarDistribution(Term_p term, PDArray_p dist_array);
 FunCode EqnAddVarDistribution(Eqn_p eqn, PDArray_p dist_array);
 FunCode EqnListAddVarDistribution(Eqn_p list, PDArray_p dist_array);
-#define ClauseAddVarDistribution(clause, dist_array)\
-        EqnListAddVarDistribution((clause)->literals, (dist_array))
+#define ClauseAddVarDistribution(clause, dist_array)                           \
+   EqnListAddVarDistribution((clause)->literals, (dist_array))
 
 long ClauseCountVariableSet(Clause_p clause);
 long ClauseCountSingletonSet(Clause_p clause);
@@ -55,8 +53,8 @@ long ClauseCountSingletonSet(Clause_p clause);
 long ClauseCountMaximalTerms(Clause_p clause);
 long ClauseCountMaximalLiterals(Clause_p clause);
 long ClauseCountUnorientableLiterals(Clause_p clause);
-long ClauseTPTPDepthInfoAdd(Clause_p clause, long* depthmax, long*
-             depthsum, long* count);
+long ClauseTPTPDepthInfoAdd(Clause_p clause, long* depthmax, long* depthsum,
+                            long* count);
 
 void ClauseInfoPrint(FILE* out, Clause_p clause);
 void ClauseLinePrint(FILE* out, Clause_p clause, bool printinfo);
@@ -68,20 +66,6 @@ void ClausePropInfoPrint(FILE* out, Clause_p clause);
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

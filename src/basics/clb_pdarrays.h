@@ -38,11 +38,11 @@
 
 typedef struct pdarraycell
 {
-   bool   integer;
-   long   size;
-   long   grow;
-   IntOrP *array;
-}PDArrayCell, *PDArray_p;
+   bool integer;
+   long size;
+   long grow;
+   IntOrP* array;
+} PDArrayCell, *PDArray_p;
 
 #define GROW_EXPONENTIAL 0
 
@@ -58,44 +58,42 @@ typedef struct pdarraycell
 #else
 #define PDARRAYCELL_MEM MEMSIZE(PDArrayCell)
 #endif
-#define PDArrayStorage(arr) (PDARRAYCELL_MEM+INTORP_MEM+((arr)->size*INTORP_MEM))
+#define PDArrayStorage(arr)                                                    \
+   (PDARRAYCELL_MEM + INTORP_MEM + ((arr)->size * INTORP_MEM))
 
 PDArray_p PDArrayAlloc(long init_size, long grow);
 PDArray_p PDIntArrayAlloc(long init_size, long grow);
-void      PDArrayFree(PDArray_p junk);
-#define   PDArraySize(array) ((array)->size)
+void PDArrayFree(PDArray_p junk);
+#define PDArraySize(array) ((array)->size)
 
 PDArray_p PDArrayCopy(PDArray_p array);
 
-void      PDArrayEnlarge(PDArray_p array, long idx);
-static inline IntOrP*   PDArrayElementRef(PDArray_p array, long idx);
+void PDArrayEnlarge(PDArray_p array, long idx);
+static inline IntOrP* PDArrayElementRef(PDArray_p array, long idx);
 
-void      PDArrayElementDeleteP(PDArray_p array, long idx);
-void      PDArrayElementDeleteInt(PDArray_p array, long idx);
+void PDArrayElementDeleteP(PDArray_p array, long idx);
+void PDArrayElementDeleteInt(PDArray_p array, long idx);
 
-#define   PDArrayElementClear(arr, idx) ((arr)->array[(idx)].p_val = NULL)
-#define   PDArrayAssign(array, idx, value)              \
+#define PDArrayElementClear(arr, idx) ((arr)->array[(idx)].p_val = NULL)
+#define PDArrayAssign(array, idx, value)                                       \
    *PDArrayElementRef((array), (idx)) = (value)
-#define   PDArrayAssignP(array, idx, value)                     \
+#define PDArrayAssignP(array, idx, value)                                      \
    PDArrayElementRef((array), (idx))->p_val = (value)
-#define   PDArrayAssignInt(array, idx, value)                   \
+#define PDArrayAssignInt(array, idx, value)                                    \
    PDArrayElementRef((array), (idx))->i_val = (value)
 
-#define   PDArrayElement(array, idx)            \
-   *PDArrayElementRef((array), (idx))
-#define   PDArrayElementP(array, idx)           \
-   (PDArrayElementRef((array), (idx))->p_val)
-#define   PDArrayElementInt(array, idx)         \
-   (PDArrayElementRef((array), (idx))->i_val)
+#define PDArrayElement(array, idx) *PDArrayElementRef((array), (idx))
+#define PDArrayElementP(array, idx) (PDArrayElementRef((array), (idx))->p_val)
+#define PDArrayElementInt(array, idx) (PDArrayElementRef((array), (idx))->i_val)
 
-long      PDArrayMembers(PDArray_p array);
-long      PDArrayFirstUnused(PDArray_p array);
-long      PDArrayStore(PDArray_p array, IntOrP value);
-long      PDArrayStoreP(PDArray_p array, void* value);
-long      PDArrayStoreInt(PDArray_p array, long value);
-void      PDArrayAdd(PDArray_p collect, PDArray_p data, long limit);
+long PDArrayMembers(PDArray_p array);
+long PDArrayFirstUnused(PDArray_p array);
+long PDArrayStore(PDArray_p array, IntOrP value);
+long PDArrayStoreP(PDArray_p array, void* value);
+long PDArrayStoreInt(PDArray_p array, long value);
+void PDArrayAdd(PDArray_p collect, PDArray_p data, long limit);
 
-long      PDArrayElementIncInt(PDArray_p array, long idx, long value);
+long PDArrayElementIncInt(PDArray_p array, long idx, long value);
 
 /*---------------------------------------------------------------------*/
 /*                     Inline functions                                */

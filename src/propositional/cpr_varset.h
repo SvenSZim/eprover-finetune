@@ -34,10 +34,10 @@ Changes
 
 typedef struct atomset_cell
 {
-   PLiteralCode        atom;
-   struct atomset_cell *prev;
-   struct atomset_cell *succ;
-}AtomSetCell, *AtomSet_p;
+   PLiteralCode atom;
+   struct atomset_cell* prev;
+   struct atomset_cell* succ;
+} AtomSetCell, *AtomSet_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -45,21 +45,19 @@ typedef struct atomset_cell
 /*---------------------------------------------------------------------*/
 
 #define AtomSetCellAlloc() (AtomSetCell*)SizeMalloc(sizeof(AtomSetCell))
-#define AtomSetCellFree(junk)            SizeFree(junk, sizeof(AtomSetCell))
+#define AtomSetCellFree(junk) SizeFree(junk, sizeof(AtomSetCell))
 
-AtomSet_p    AtomSetAlloc(void);
-void         AtomSetFree(AtomSet_p set);
-#define      AtomSetEmpty(set) ((set)->prev == (set))
+AtomSet_p AtomSetAlloc(void);
+void AtomSetFree(AtomSet_p set);
+#define AtomSetEmpty(set) ((set)->prev == (set))
 PLiteralCode AtomSetExtract(AtomSet_p var);
-void         AtomSetInsert(AtomSet_p set, PLiteralCode atom);
+void AtomSetInsert(AtomSet_p set, PLiteralCode atom);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

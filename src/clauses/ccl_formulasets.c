@@ -64,7 +64,7 @@ FormulaSet_p FormulaSetAlloc(void)
    FormulaSet_p set = FormulaSetCellAlloc();
 
    set->members = 0;
-   set->anchor  = WFormulaCellAlloc();
+   set->anchor = WFormulaCellAlloc();
    set->anchor->succ = set->anchor;
    set->anchor->pred = set->anchor;
    set->identifier = DStrAlloc();
@@ -136,7 +136,7 @@ long FormulaSetStackCardinality(PStack_p stack)
    PStackPointer i;
    long res = 0;
 
-   for(i=0; i<PStackGetSP(stack); i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
       handle = PStackElementP(stack, i);
       res += FormulaSetCardinality(handle);
@@ -164,7 +164,7 @@ void FormulaSetGCMarkCells(FormulaSet_p set)
 
    handle = set->anchor->succ;
 
-   while(handle!=set->anchor)
+   while(handle != set->anchor)
    {
       WFormulaGCMarkCells(handle);
       handle = handle->succ;
@@ -189,7 +189,7 @@ void FormulaSetMarkPolarity(FormulaSet_p set)
 
    handle = set->anchor->succ;
 
-   while(handle!=set->anchor)
+   while(handle != set->anchor)
    {
       WFormulaMarkPolarity(handle);
       handle = handle->succ;
@@ -371,7 +371,7 @@ bool FormulaSetIsUntyped(FormulaSet_p set)
 
    handle = set->anchor->succ;
 
-   while(handle!=set->anchor)
+   while(handle != set->anchor)
    {
       if(!WFormulaIsUntyped(handle))
       {
@@ -401,7 +401,7 @@ void FormulaSetPrint(FILE* out, FormulaSet_p set, bool fullterms)
 
    handle = set->anchor->succ;
 
-   while(handle!=set->anchor)
+   while(handle != set->anchor)
    {
       WFormulaPrint(out, handle, fullterms);
       fputc('\n', out);
@@ -433,7 +433,7 @@ void FormulaSetPrettyPrintTSTP(FILE* out, FormulaSet_p set, bool fullterms)
       assert(set->anchor->succ != set->anchor);
       SigPrintTypeDeclsTSTP(out, set->anchor->succ->terms->sig);
    }
-   while(handle!=set->anchor)
+   while(handle != set->anchor)
    {
       WFormulaTSTPPrintFlex(out, handle, fullterms, true, true);
       fputc('\n', out);
@@ -460,7 +460,7 @@ void FormulaSetAppEncode(FILE* out, FormulaSet_p set)
    WFormula_p handle;
 
    handle = set->anchor->succ;
-   while(handle!=set->anchor)
+   while(handle != set->anchor)
    {
       PreloadTypes(handle->terms, handle->tformula);
       handle = handle->succ;
@@ -473,7 +473,7 @@ void FormulaSetAppEncode(FILE* out, FormulaSet_p set)
 
       SigPrintAppEncodedDecls(out, handle->terms->sig);
 
-      while(handle!=set->anchor)
+      while(handle != set->anchor)
       {
          if(!TFormulaIsPropTrue(handle->terms->sig, handle->tformula))
          {
@@ -506,7 +506,7 @@ bool FormulaSetHasInterpretedSymbol(FormulaSet_p set)
 
    handle = set->anchor->succ;
 
-   while(handle!=set->anchor)
+   while(handle != set->anchor)
    {
       if(WFormHasInterpretedSymbol(handle))
       {
@@ -533,15 +533,13 @@ bool FormulaSetHasInterpretedSymbol(FormulaSet_p set)
 //
 /----------------------------------------------------------------------*/
 
-long FormulaSetSplitConjectures(FormulaSet_p set,
-                                PList_p conjectures, PList_p rest)
+long FormulaSetSplitConjectures(FormulaSet_p set, PList_p conjectures,
+                                PList_p rest)
 {
    WFormula_p handle;
-   long     res = 0;
+   long res = 0;
 
-   for(handle = set->anchor->succ;
-       handle!=set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(FormulaIsConjecture(handle))
       {
@@ -571,17 +569,16 @@ long FormulaSetSplitConjectures(FormulaSet_p set,
 
 long long FormulaSetStandardWeight(FormulaSet_p set)
 {
-   WFormula_p  handle;
+   WFormula_p handle;
    long long res = 0;
 
-   for(handle = set->anchor->succ;
-       handle!=set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
-      res += FormulaQueryProp(handle, CPIsLambdaDef) ? 0 : WFormulaStandardWeight(handle);
+      res += FormulaQueryProp(handle, CPIsLambdaDef)
+         ? 0
+         : WFormulaStandardWeight(handle);
    }
    return res;
-
 }
 
 /*-----------------------------------------------------------------------
@@ -602,9 +599,7 @@ long FormulaSetCountConjectures(FormulaSet_p set, long* hypos)
    long ret = 0;
    WFormula_p handle;
 
-   for(handle = set->anchor->succ;
-       handle != set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(FormulaIsConjecture(handle))
       {
@@ -635,9 +630,7 @@ int FormulaConjectureOrder(FormulaSet_p set)
    int ord = 0;
    WFormula_p handle;
 
-   for(handle = set->anchor->succ;
-       handle != set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(FormulaIsConjecture(handle) || FormulaIsHypothesis(handle))
       {
@@ -665,10 +658,11 @@ void FormulaStackCondSetType(PStack_p stack, FormulaProperties type)
    PStackPointer i;
    WFormula_p handle;
 
-   for(i=0; i<PStackGetSP(stack); i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
-      handle = PStackElementP(stack,i);
-      if(FormulaQueryType(handle)!=CPTypeConjecture || type==CPTypeConjecture)
+      handle = PStackElementP(stack, i);
+      if(FormulaQueryType(handle) != CPTypeConjecture ||
+         type == CPTypeConjecture)
       {
          FormulaSetType(handle, type);
       }
@@ -689,15 +683,12 @@ void FormulaStackCondSetType(PStack_p stack, FormulaProperties type)
 //
 /----------------------------------------------------------------------*/
 
-long FormulaSetCollectFCode(FormulaSet_p set, FunCode f_code,
-                            PStack_p result)
+long FormulaSetCollectFCode(FormulaSet_p set, FunCode f_code, PStack_p result)
 {
    long ret = 0;
    WFormula_p handle;
 
-   for(handle = set->anchor->succ;
-       handle != set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       if(TermHasFCode(handle->tformula, f_code))
       {
@@ -723,43 +714,44 @@ long FormulaSetCollectFCode(FormulaSet_p set, FunCode f_code,
 
 void FormulaSetDefinitionStatistics(FormulaSet_p orig, FormulaSet_p arch,
                                     TB_p bank, int* num_defs,
-                                    double* percentage_form_defs,
-                                    int* num_lams, bool* has_app_var_lits)
+                                    double* percentage_form_defs, int* num_lams,
+                                    bool* has_app_var_lits)
 {
    WFormula_p handle;
    int defs = 0;
    int form_defs = 0;
    int _num_lams = 0;
    Sig_p sig = bank->sig;
-   FormulaSet_p sets[2] = {orig, arch};
+   FormulaSet_p sets[2] = { orig, arch };
    bool _has_av_lits = false;
 
-   for(int i=0; i<2; i++)
+   for(int i = 0; i < 2; i++)
    {
       FormulaSet_p set = sets[i];
-      for(handle = set->anchor->succ;
-          handle != set->anchor;
+      for(handle = set->anchor->succ; handle != set->anchor;
           handle = handle->succ)
       {
-         _has_av_lits = _has_av_lits || FormulaHasAppVarLit(bank->sig, handle->tformula);
-         _num_lams += FormulaCountNonTopLevelLambdas(bank->sig, handle->tformula);
+         _has_av_lits =
+            _has_av_lits || FormulaHasAppVarLit(bank->sig, handle->tformula);
+         _num_lams +=
+            FormulaCountNonTopLevelLambdas(bank->sig, handle->tformula);
 
          if(FormulaQueryProp(handle, CPIsLambdaDef))
          {
             Term_p tform = handle->tformula;
             Term_p head = NULL;
-            while (tform->f_code == sig->qall_code && tform->arity == 2)
+            while(tform->f_code == sig->qall_code && tform->arity == 2)
             {
                tform = tform->args[1];
             }
 
-            if (tform->f_code == sig->eqn_code)
+            if(tform->f_code == sig->eqn_code)
             {
                head = tform->args[0];
             }
-            else if (tform->f_code == sig->equiv_code &&
-                     tform->args[0]->f_code == sig->eqn_code &&
-                     tform->args[0]->args[1] == bank->true_term)
+            else if(tform->f_code == sig->equiv_code &&
+                    tform->args[0]->f_code == sig->eqn_code &&
+                    tform->args[0]->args[1] == bank->true_term)
             {
                head = tform->args[0]->args[0];
             }
@@ -776,7 +768,7 @@ void FormulaSetDefinitionStatistics(FormulaSet_p orig, FormulaSet_p arch,
       }
    }
    *num_defs = defs;
-   *percentage_form_defs = defs ? (((double)form_defs)/defs) : 0.0;
+   *percentage_form_defs = defs ? (((double)form_defs) / defs) : 0.0;
    *num_lams = _num_lams;
    *has_app_var_lits = _has_av_lits;
 }

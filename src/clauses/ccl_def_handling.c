@@ -62,9 +62,9 @@ DefStore_p DefStoreAlloc(TB_p terms)
 {
    DefStore_p store = DefStoreCellAlloc();
 
-   store->terms       = terms;
+   store->terms = terms;
    store->def_clauses = ClauseSetAlloc();
-   store->def_assocs  = NULL;
+   store->def_assocs = NULL;
    store->def_archive = FormulaSetAlloc();
 
    return store;
@@ -106,18 +106,16 @@ void DefStoreFree(DefStore_p junk)
 //
 /----------------------------------------------------------------------*/
 
-Eqn_p GenDefLit(TB_p bank, FunCode pred, bool positive,
-                PStack_p split_vars)
+Eqn_p GenDefLit(TB_p bank, FunCode pred, bool positive, PStack_p split_vars)
 {
    Term_p lside;
-   Eqn_p  res;
+   Eqn_p res;
 
    assert(bank);
    assert(pred > 0);
    assert((split_vars &&
-           (SigFindArity(bank->sig, pred) == PStackGetSP(split_vars)))
-          ||
-          (!split_vars && (SigFindArity(bank->sig, pred)==0)));
+           (SigFindArity(bank->sig, pred) == PStackGetSP(split_vars))) ||
+          (!split_vars && (SigFindArity(bank->sig, pred) == 0)));
 
    if(!split_vars || PStackEmpty(split_vars))
    {
@@ -164,14 +162,14 @@ Eqn_p GenDefLit(TB_p bank, FunCode pred, bool positive,
 Clause_p GetClauseDefinition(Eqn_p litlist, FunCode def_pred, WFormula_p parent)
 {
    Clause_p res;
-   Eqn_p    def_lit;
+   Eqn_p def_lit;
 
    assert(litlist);
    assert(def_pred > 0);
 
    def_lit = GenDefLit(litlist->bank, def_pred, true, NULL);
    def_lit->next = litlist;
-   res           = ClauseAlloc(def_lit);
+   res = ClauseAlloc(def_lit);
 
    ClausePushDerivation(res, DCSplitEquiv, parent);
 
@@ -197,8 +195,8 @@ Clause_p GetClauseDefinition(Eqn_p litlist, FunCode def_pred, WFormula_p parent)
 WFormula_p GetFormulaDefinition(Eqn_p litlist, FunCode def_pred)
 {
    WFormula_p res;
-   Eqn_p      def_lit;
-   Clause_p   def_clause;
+   Eqn_p def_lit;
+   Clause_p def_clause;
    TFormula_p def, lit;
 
    assert(litlist);
@@ -213,9 +211,10 @@ WFormula_p GetFormulaDefinition(Eqn_p litlist, FunCode def_pred)
    EqnFree(def_lit);
 
    def = TFormulaClauseClosedEncode(litlist->bank, def_clause);
-   def = TFormulaFCodeAlloc(litlist->bank, litlist->bank->sig->equiv_code, lit, def);
+   def = TFormulaFCodeAlloc(litlist->bank, litlist->bank->sig->equiv_code, lit,
+                            def);
    res = WTFormulaAlloc(litlist->bank, def);
-   FormulaSetType(res,CPTypeDefinition);
+   FormulaSetType(res, CPTypeDefinition);
    ClauseFree(def_clause);
 
    DocIntroSplitDefDefault(res);
@@ -245,22 +244,22 @@ WFormula_p GetFormulaDefinition(Eqn_p litlist, FunCode def_pred)
 //
 /----------------------------------------------------------------------*/
 
-FunCode GetDefinitions(DefStore_p store, Eqn_p litlist,
-                       WFormula_p* res_form, Clause_p* res_clause,
-                       bool fresh)
+FunCode GetDefinitions(DefStore_p store, Eqn_p litlist, WFormula_p* res_form,
+                       Clause_p* res_clause, bool fresh)
 {
-   Clause_p   def_clause;
-   FunCode    def_pred = 0;
+   Clause_p def_clause;
+   FunCode def_pred = 0;
 
    assert(litlist);
 
-   *res_form   = NULL;
+   *res_form = NULL;
    *res_clause = NULL;
 
    if(fresh)
    {
-      def_pred    = SigGetNewPredicateCode(store->terms->sig, 0);
-      SigDeclareType(store->terms->sig, def_pred, store->terms->sig->type_bank->bool_type);
+      def_pred = SigGetNewPredicateCode(store->terms->sig, 0);
+      SigDeclareType(store->terms->sig, def_pred,
+                     store->terms->sig->type_bank->bool_type);
 
       *res_form = GetFormulaDefinition(litlist, def_pred);
       FormulaSetInsert(store->def_archive, *res_form);
@@ -274,12 +273,10 @@ FunCode GetDefinitions(DefStore_p store, Eqn_p litlist,
       def_clause->weight = ClauseStandardWeight(def_clause);
       ClauseSubsumeOrderSortLits(def_clause);
 
-      variant = ClauseSetFindVariantClause(store->def_clauses,
-                                           def_clause);
+      variant = ClauseSetFindVariantClause(store->def_clauses, def_clause);
       if(variant)
       {
-         NumTree_p assoc = NumTreeFind(&(store->def_assocs),
-                                       variant->ident);
+         NumTree_p assoc = NumTreeFind(&(store->def_assocs), variant->ident);
          assert(assoc);
          *res_clause = NULL; /* Clause already exists */
          *res_form = assoc->val2.p_val;
@@ -292,20 +289,18 @@ FunCode GetDefinitions(DefStore_p store, Eqn_p litlist,
          IntOrP def_pred_store, def_form_store;
 
          def_pred = SigGetNewPredicateCode(store->terms->sig, 0);
-         SigDeclareType(store->terms->sig, def_pred, store->terms->sig->type_bank->bool_type);
+         SigDeclareType(store->terms->sig, def_pred,
+                        store->terms->sig->type_bank->bool_type);
          *res_form = GetFormulaDefinition(litlist, def_pred);
          FormulaSetInsert(store->def_archive, *res_form);
          *res_clause = GetClauseDefinition(litlist, def_pred, *res_form);
 
          def_pred_store.i_val = def_pred;
          def_form_store.p_val = *res_form;
-         NumTreeStore(&(store->def_assocs),
-                      def_clause->ident,
-                      def_pred_store,
+         NumTreeStore(&(store->def_assocs), def_clause->ident, def_pred_store,
                       def_form_store);
          assert(def_clause->weight == ClauseStandardWeight(def_clause));
-         ClauseSetIndexedInsertClause(store->def_clauses,
-                                      def_clause);
+         ClauseSetIndexedInsertClause(store->def_clauses, def_clause);
       }
    }
    return def_pred;

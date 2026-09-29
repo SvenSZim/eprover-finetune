@@ -27,20 +27,8 @@
 /*                        Global Variables                             */
 /*---------------------------------------------------------------------*/
 
-char* TONames[]=
-{
-   "NoOrdering",
-   "Optimize",
-   "KBO",
-   "KBO6",
-   "LPO",
-   "LPOCopy",
-   "LPO4",
-   "LPO4Copy",
-   "RPO",
-   "Empty",
-   NULL
-};
+char* TONames[] = { "NoOrdering", "Optimize", "KBO", "KBO6",  "LPO", "LPOCopy",
+                    "LPO4",       "LPO4Copy", "RPO", "Empty", NULL };
 
 
 /*---------------------------------------------------------------------*/
@@ -64,10 +52,7 @@ char* TONames[]=
 //
 /----------------------------------------------------------------------*/
 
-void free_val(void* key, void* val)
-{
-   SizeFree(val, sizeof(long));
-}
+void free_val(void* key, void* val) { SizeFree(val, sizeof(long)); }
 
 /*-----------------------------------------------------------------------
 //
@@ -86,34 +71,34 @@ void free_val(void* key, void* val)
 bool ocb_trans_compute(OCB_p ocb, FunCode f1, FunCode f2, FunCode f3)
 {
    CompareResult rel12, rel23;
-   bool          res = true;
+   bool res = true;
 
    rel12 = OCBFunCompare(ocb, f1, f2);
    rel23 = OCBFunCompare(ocb, f2, f3);
 
    switch(rel12)
    {
-   case to_uncomparable:
+      case to_uncomparable:
          break;
-   case to_equal:
+      case to_equal:
          if(rel23 != to_uncomparable)
          {
             res = OCBPrecedenceAddTuple(ocb, f1, f3, rel23);
          }
          break;
-   case to_greater:
+      case to_greater:
          if(rel23 == to_equal || rel23 == to_greater)
          {
             res = OCBPrecedenceAddTuple(ocb, f1, f3, to_greater);
          }
          break;
-   case to_lesser:
+      case to_lesser:
          if(rel23 == to_equal || rel23 == to_lesser)
          {
             res = OCBPrecedenceAddTuple(ocb, f1, f3, to_lesser);
          }
          break;
-   default:
+      default:
          assert(false);
          break;
    }
@@ -138,14 +123,12 @@ static void alloc_precedence(OCB_p handle, bool prec_by_weight)
    if(prec_by_weight)
    {
       handle->precedence = NULL;
-      handle->prec_weights =
-         SizeMalloc(sizeof(long)*(handle->sig_size+1));
+      handle->prec_weights = SizeMalloc(sizeof(long) * (handle->sig_size + 1));
    }
    else
    {
-      handle->precedence = SizeMalloc(sizeof(CompareResult)
-                                      *handle->sig_size
-                                      *handle->sig_size);
+      handle->precedence = SizeMalloc(sizeof(CompareResult) * handle->sig_size *
+                                      handle->sig_size);
       handle->prec_weights = NULL;
    }
 }
@@ -168,76 +151,78 @@ static void alloc_precedence(OCB_p handle, bool prec_by_weight)
 //
 /----------------------------------------------------------------------*/
 
-OCB_p OCBAlloc(TermOrdering type, bool prec_by_weight, Sig_p sig, HoOrderKind ho_order_kind)
+OCB_p OCBAlloc(TermOrdering type, bool prec_by_weight, Sig_p sig,
+               HoOrderKind ho_order_kind)
 {
    OCB_p handle;
-   int   i,j;
+   int i, j;
 
    handle = OCBCellAlloc();
 
-   handle->type  = type;
-   handle->sig   = sig;
-   handle->min_constants  = PDIntArrayAlloc(16,0);
+   handle->type = type;
+   handle->sig = sig;
+   handle->min_constants = PDIntArrayAlloc(16, 0);
    handle->ho_order_kind = ho_order_kind;
-   handle->weights    = NULL;
+   handle->weights = NULL;
    handle->sig_size = sig->f_count;
    handle->statestack = PStackAlloc();
    handle->var_weight = 1;
-   handle->lit_cmp    = LCNormal;
+   handle->lit_cmp = LCNormal;
    handle->rewrite_strong_rhs_inst = false;
-   handle->wb      = 0;
+   handle->wb = 0;
    handle->pos_bal = 0;
    handle->neg_bal = 0;
    handle->max_var = 0;
    handle->vb_size = ho_order_kind == LAMBDA_ORDER ? 1 : 64;
-   handle->vb      = handle->vb_size? SizeMalloc(handle->vb_size*sizeof(int)):NULL;
+   handle->vb =
+      handle->vb_size ? SizeMalloc(handle->vb_size * sizeof(int)) : NULL;
    handle->db_weight = DEFAULT_DB_WEIGHT;
    handle->lam_weight = DEFAULT_LAMBDA_WEIGHT;
-   handle->ho_vb   = NULL;
-   for(size_t i=0; i<handle->vb_size; i++)
+   handle->ho_vb = NULL;
+   for(size_t i = 0; i < handle->vb_size; i++)
    {
       handle->vb[i] = 0;
    }
 
    switch(type)
    {
-   case KBO:
-   case KBO6:
-         handle->weights = SizeMalloc(sizeof(long)*(handle->sig_size+1));
+      case KBO:
+      case KBO6:
+         handle->weights = SizeMalloc(sizeof(long) * (handle->sig_size + 1));
          alloc_precedence(handle, prec_by_weight);
          break;
-   case LPO:
-   case LPOCopy:
-   case LPO4:
-   case LPO4Copy:
+      case LPO:
+      case LPOCopy:
+      case LPO4:
+      case LPO4Copy:
          alloc_precedence(handle, prec_by_weight);
          break;
-   case RPO:
+      case RPO:
          alloc_precedence(handle, prec_by_weight);
          break;
-   case EMPTY:
+      case EMPTY:
          break;
-   default:
+      default:
          assert(false);
          break;
    }
 
    if(handle->weights)
    {
-      for(size_t i=0; i<=handle->sig_size; i++)
+      for(size_t i = 0; i <= handle->sig_size; i++)
       {
-         *OCBFunWeightPos(handle,i) = 1;
+         *OCBFunWeightPos(handle, i) = 1;
       }
    }
 
    if(handle->precedence)
    {
-      for(i=1; i<=handle->sig_size; i++)
+      for(i = 1; i <= handle->sig_size; i++)
       {
-         for(j=1; j<=handle->sig_size; j++)
+         for(j = 1; j <= handle->sig_size; j++)
          {
-            *OCBFunComparePos(handle, i,j) =
-               ((i==j) ? to_equal : to_uncomparable);
+            *OCBFunComparePos(handle, i, j) =
+               ((i == j) ? to_equal : to_uncomparable);
          }
       }
    }
@@ -265,42 +250,34 @@ void OCBFree(OCB_p junk)
 
    if(junk->weights)
    {
-      assert(junk->type == KBO || junk->type==KBO6);
-      SizeFree(junk->weights, sizeof(long)*(junk->sig_size+1));
+      assert(junk->type == KBO || junk->type == KBO6);
+      SizeFree(junk->weights, sizeof(long) * (junk->sig_size + 1));
       junk->weights = NULL;
    }
    if(junk->precedence)
    {
       assert(!junk->prec_weights);
-      assert(junk->type == KBO ||
-             junk->type == KBO6 ||
-             junk->type == LPO ||
-             junk->type == LPOCopy ||
-             junk->type == LPO4 ||
-             junk->type == LPO4Copy ||
-             junk->type == RPO);
-      SizeFree(junk->precedence, sizeof(CompareResult)
-               * junk->sig_size * junk->sig_size);
+      assert(junk->type == KBO || junk->type == KBO6 || junk->type == LPO ||
+             junk->type == LPOCopy || junk->type == LPO4 ||
+             junk->type == LPO4Copy || junk->type == RPO);
+      SizeFree(junk->precedence,
+               sizeof(CompareResult) * junk->sig_size * junk->sig_size);
       junk->precedence = NULL;
    }
    if(junk->prec_weights)
    {
       assert(!junk->precedence);
-      assert(junk->type == KBO ||
-             junk->type == KBO6 ||
-             junk->type == LPO ||
-             junk->type == LPOCopy ||
-             junk->type == LPO4 ||
-             junk->type == LPO4Copy ||
-             junk->type == RPO);
-      SizeFree(junk->prec_weights, sizeof(long)*(junk->sig_size+1));
+      assert(junk->type == KBO || junk->type == KBO6 || junk->type == LPO ||
+             junk->type == LPOCopy || junk->type == LPO4 ||
+             junk->type == LPO4Copy || junk->type == RPO);
+      SizeFree(junk->prec_weights, sizeof(long) * (junk->sig_size + 1));
       junk->prec_weights = NULL;
    }
    PDArrayFree(junk->min_constants);
    assert(junk);
    if(junk->vb)
    {
-      SizeFree(junk->vb, junk->vb_size*sizeof(int));
+      SizeFree(junk->vb, junk->vb_size * sizeof(int));
    }
    PStackFree(junk->statestack);
    PObjMapFreeWDeleter(junk->ho_vb, free_val);
@@ -323,31 +300,32 @@ void OCBFree(OCB_p junk)
 
 void OCBDebugPrint(FILE* out, OCB_p ocb)
 {
-   long i,j;
+   long i, j;
 
-   fprintf(out, COMCHAR" ==============OCB-Debug-Information============\n");
-   fprintf(out, COMCHAR" ===============================================\n");
+   fprintf(out, COMCHAR " ==============OCB-Debug-Information============\n");
+   fprintf(out, COMCHAR " ===============================================\n");
    if(ocb->sig)
    {
       SigPrint(out, ocb->sig);
    }
    else
    {
-      fprintf(out, COMCHAR" No sig!\n");
+      fprintf(out, COMCHAR " No sig!\n");
    }
-   fprintf(out, COMCHAR" -----------------------------------------------\n");
+   fprintf(out, COMCHAR " -----------------------------------------------\n");
    if(ocb->weights)
    {
-      fprintf(out, COMCHAR" Weights:");
-      for(i=1; i<=ocb->sig_size;i++)
+      fprintf(out, COMCHAR " Weights:");
+      for(i = 1; i <= ocb->sig_size; i++)
       {
-         if(!((i-1)%8))
+         if(!((i - 1) % 8))
          {
-            fprintf(out, "\n"COMCHAR" ");
+            fprintf(out, "\n" COMCHAR " ");
          }
          if(ocb->sig)
          {
-            fprintf(out, " (%s = %ld) ", SigFindName(ocb->sig,i), OCBFunWeight(ocb, i));
+            fprintf(out, " (%s = %ld) ", SigFindName(ocb->sig, i),
+                    OCBFunWeight(ocb, i));
          }
          else
          {
@@ -358,22 +336,22 @@ void OCBDebugPrint(FILE* out, OCB_p ocb)
    }
    else
    {
-      fprintf(out, COMCHAR" No weights!\n");
+      fprintf(out, COMCHAR " No weights!\n");
    }
-   fprintf(out, COMCHAR" -----------------------------------------------\n");
+   fprintf(out, COMCHAR " -----------------------------------------------\n");
    if(ocb->precedence)
    {
-      fprintf(out, COMCHAR" Precedence Matrix:\n"COMCHAR"       ");
-      for(j=1; j<=ocb->sig_size; j++)
+      fprintf(out, COMCHAR " Precedence Matrix:\n" COMCHAR "       ");
+      for(j = 1; j <= ocb->sig_size; j++)
       {
          fprintf(out, " %2ld ", j);
       }
       fprintf(out, "\n");
-      for(i=1; i<=ocb->sig_size; i++)
+      for(i = 1; i <= ocb->sig_size; i++)
       {
-         fprintf(out, COMCHAR" %2ld  | ", i);
+         fprintf(out, COMCHAR " %2ld  | ", i);
          fflush(stdout);
-         for(j=1; j<=ocb->sig_size; j++)
+         for(j = 1; j <= ocb->sig_size; j++)
          {
             char* symb;
 
@@ -386,9 +364,9 @@ void OCBDebugPrint(FILE* out, OCB_p ocb)
    }
    else
    {
-      fprintf(out, COMCHAR" No precedence!\n");
+      fprintf(out, COMCHAR " No precedence!\n");
    }
-   fprintf(out, COMCHAR" ===============================================\n");
+   fprintf(out, COMCHAR " ===============================================\n");
 }
 
 
@@ -411,22 +389,22 @@ void OCBDebugPrint(FILE* out, OCB_p ocb)
 PStackPointer OCBPrecedenceAddTuple(OCB_p ocb, FunCode f1, FunCode f2,
                                     CompareResult relation)
 {
-   FunCode       i;
+   FunCode i;
    PStackPointer res = 0, old;
 
    assert(ocb);
    assert(ocb->precedence);
-   assert(f1<=ocb->sig_size);
-   assert(f2<=ocb->sig_size);
-   assert(relation!=to_uncomparable);
+   assert(f1 <= ocb->sig_size);
+   assert(f2 <= ocb->sig_size);
+   assert(relation != to_uncomparable);
 
    old = PStackGetSP(ocb->statestack);
 
-   if(OCBFunCompare(ocb, f1, f2)==relation)
+   if(OCBFunCompare(ocb, f1, f2) == relation)
    {
       res = old;
    }
-   else if(OCBFunCompare(ocb, f1, f2)!=to_uncomparable)
+   else if(OCBFunCompare(ocb, f1, f2) != to_uncomparable)
    {
       res = 0;
    }
@@ -437,7 +415,7 @@ PStackPointer OCBPrecedenceAddTuple(OCB_p ocb, FunCode f1, FunCode f2,
       *OCBFunComparePos(ocb, f1, f2) = relation;
       *OCBFunComparePos(ocb, f2, f1) = POInverseRelation(relation);
 
-      for(i=1; i<=ocb->sig_size; i++)
+      for(i = 1; i <= ocb->sig_size; i++)
       {
          res = ocb_trans_compute(ocb, f1, f2, i);
          if(!res)
@@ -476,9 +454,9 @@ PStackPointer OCBPrecedenceAddTuple(OCB_p ocb, FunCode f1, FunCode f2,
 
 bool OCBPrecedenceBacktrack(OCB_p ocb, PStackPointer state)
 {
-   FunCode f1,f2;
+   FunCode f1, f2;
 
-   while(state!=PStackGetSP(ocb->statestack))
+   while(state != PStackGetSP(ocb->statestack))
    {
       assert(!PStackEmpty(ocb->statestack));
       f2 = PStackPopInt(ocb->statestack);
@@ -558,7 +536,7 @@ void OCBCondSetMinConst(OCB_p ocb, Type_p type, FunCode cand)
 
 FunCode OCBFindMinConst(OCB_p ocb, Type_p type)
 {
-   FunCode i, cand=0;
+   FunCode i, cand = 0;
    assert(type);
 
    assert(ocb && ocb->sig);
@@ -566,12 +544,11 @@ FunCode OCBFindMinConst(OCB_p ocb, Type_p type)
    cand = OCBMinConst(ocb, type);
    if(!cand)
    {
-      for(i=ocb->sig->internal_symbols+1; i<=ocb->sig->f_count; i++)
+      for(i = ocb->sig->internal_symbols + 1; i <= ocb->sig->f_count; i++)
       {
-         if(SigIsFunConst(ocb->sig, i) &&
-            !SigIsSpecial(ocb->sig, i) &&
-            (SigGetType(ocb->sig,i) == type) &&
-            (!cand || (OCBFunCompare(ocb, i, cand)==to_greater)))
+         if(SigIsFunConst(ocb->sig, i) && !SigIsSpecial(ocb->sig, i) &&
+            (SigGetType(ocb->sig, i) == type) &&
+            (!cand || (OCBFunCompare(ocb, i, cand) == to_greater)))
          {
             cand = i;
          }
@@ -603,11 +580,11 @@ FunCode OCBFindMinConst(OCB_p ocb, Type_p type)
 
 FunCode OCBTermMaxFunCode(OCB_p ocb, Term_p term)
 {
-   int       i;
-   FunCode   res = 0, tmp ;
+   int i;
+   FunCode res = 0, tmp;
    DerefType deref = DEREF_ONCE;
 
-   assert(ocb->precedence||ocb->prec_weights);
+   assert(ocb->precedence || ocb->prec_weights);
 
    // it follows all bindings once, so there is no need
    // to change anything -- normal deref behaves the same ways
@@ -619,7 +596,7 @@ FunCode OCBTermMaxFunCode(OCB_p ocb, Term_p term)
    }
    res = term->f_code;
 
-   for(i=1; i<term->arity; i++)
+   for(i = 1; i < term->arity; i++)
    {
       tmp = OCBTermMaxFunCode(ocb, term->args[i]);
       if(OCBFunCompare(ocb, tmp, res) == to_greater)
@@ -649,22 +626,22 @@ FunCode OCBTermMaxFunCode(OCB_p ocb, Term_p term)
 CompareResult OCBFunCompareMatrix(OCB_p ocb, FunCode f1, FunCode f2)
 {
    assert(ocb->precedence);
-   assert(f1!=f2);
+   assert(f1 != f2);
 
-   if(f1<=ocb->sig_size)
+   if(f1 <= ocb->sig_size)
    {
-      if(f2<=ocb->sig_size)
+      if(f2 <= ocb->sig_size)
       {
          return *(OCBFunComparePos(ocb, f1, f2));
       }
       return to_greater;
    }
-   if(f2<=ocb->sig_size)
+   if(f2 <= ocb->sig_size)
    {
       return to_lesser;
    }
-   assert((f1>ocb->sig_size) && (f1>ocb->sig_size));
-   return Q_TO_PART(f2-f1);
+   assert((f1 > ocb->sig_size) && (f1 > ocb->sig_size));
+   return Q_TO_PART(f2 - f1);
 }
 
 /*-----------------------------------------------------------------------

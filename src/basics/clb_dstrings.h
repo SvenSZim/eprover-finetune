@@ -43,10 +43,10 @@ Author: Stephan Schulz
 typedef struct dstrcell
 {
    char* string;
-   long  len;
-   long  mem;
-   long  refs;
-}DStrCell, *DStr_p;
+   long len;
+   long mem;
+   long refs;
+} DStrCell, *DStr_p;
 
 #define DSTRGROW 64
 
@@ -57,33 +57,36 @@ typedef struct dstrcell
 extern char NullStr[];
 
 #define DStrCellAlloc() (DStrCell*)SizeMalloc(sizeof(DStrCell))
-#define DStrCellFree(junk)         SizeFree(junk, sizeof(DStrCell))
+#define DStrCellFree(junk) SizeFree(junk, sizeof(DStrCell))
 
 DStr_p DStrAlloc(void);
-void   DStrFree(DStr_p junk);
+void DStrFree(DStr_p junk);
 
-char*   DStrAppendStr(DStr_p strdes, const char* newpart);
-char*   DStrAppendChar(DStr_p strdes, char newch);
-char*   DStrAppendBuffer(DStr_p strdes, char* buf, int len);
-char*   DStrAppendInt(DStr_p strdes, long newpart);
-char*   DStrAppendStrArray(DStr_p strdes, char* array[], char*
-                           separator);
-#define DStrAppendDStr(strdes, str)             \
-        DStrAppendStr((strdes), DStrView(str))
-char    DStrDeleteLastChar(DStr_p strdes);
-#define DStrLastChar(strdes) (DStrLen(strdes)?DStrView(strdes)[DStrLen(strdes)-1]:'\0')
-char*   DStrView(DStr_p strdes);
-char*   DStrAddress(DStr_p strdes, int index);
-char*   DStrCopy(DStr_p strdes);
-char*   DStrCopyCore(DStr_p strdes);
-char*   DStrSet(DStr_p strdes, char* string);
-long    DStrLen(DStr_p strdes);
-void    DStrReset(DStr_p strdes);
-void    DStrMinimize(DStr_p strdes);
-char*   DStrFGetS(DStr_p strdes, FILE* fp);
+char* DStrAppendStr(DStr_p strdes, const char* newpart);
+char* DStrAppendChar(DStr_p strdes, char newch);
+char* DStrAppendBuffer(DStr_p strdes, char* buf, int len);
+char* DStrAppendInt(DStr_p strdes, long newpart);
+char* DStrAppendStrArray(DStr_p strdes, char* array[], char* separator);
+#define DStrAppendDStr(strdes, str) DStrAppendStr((strdes), DStrView(str))
+char DStrDeleteLastChar(DStr_p strdes);
+#define DStrLastChar(strdes)                                                   \
+   (DStrLen(strdes) ? DStrView(strdes)[DStrLen(strdes) - 1] : '\0')
+char* DStrView(DStr_p strdes);
+char* DStrAddress(DStr_p strdes, int index);
+char* DStrCopy(DStr_p strdes);
+char* DStrCopyCore(DStr_p strdes);
+char* DStrSet(DStr_p strdes, char* string);
+long DStrLen(DStr_p strdes);
+void DStrReset(DStr_p strdes);
+void DStrMinimize(DStr_p strdes);
+char* DStrFGetS(DStr_p strdes, FILE* fp);
 
-#define DStrGetRef(strdes)     (((strdes)?((strdes)->refs++):0),strdes)
-#define DStrReleaseRef(strdes) if(strdes){DStrFree(strdes);}
+#define DStrGetRef(strdes) (((strdes) ? ((strdes)->refs++) : 0), strdes)
+#define DStrReleaseRef(strdes)                                                 \
+   if(strdes)                                                                  \
+   {                                                                           \
+      DStrFree(strdes);                                                        \
+   }
 
 #endif
 

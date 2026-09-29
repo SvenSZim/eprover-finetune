@@ -66,7 +66,7 @@ bool unif_all_pairs(PStack_p pairs, Subst_p subst)
       unifies = SubstMguComplete(s, t, subst);
    }
 
-   if (!unifies)
+   if(!unifies)
    {
       SubstBacktrackToPos(subst, pos);
    }
@@ -91,7 +91,7 @@ PTree_p collect_free_vars(Term_p t, TB_p bank, int idx_to_skip)
 
    PTree_p res = NULL;
    TFormulaCollectFreeVars(bank, t, &res);
-   if (TermIsFreeVar(t->args[idx_to_skip]))
+   if(TermIsFreeVar(t->args[idx_to_skip]))
    {
       bool removed = PTreeDeleteEntry(&res, t->args[idx_to_skip]);
       UNUSED(removed); // stiffle the warning in non-debug version
@@ -114,12 +114,12 @@ PTree_p collect_free_vars(Term_p t, TB_p bank, int idx_to_skip)
 //
 /----------------------------------------------------------------------*/
 
-int ClauseCanonCompareRef(const void *clause1ref, const void* clause2ref)
+int ClauseCanonCompareRef(const void* clause1ref, const void* clause2ref)
 {
    const Clause_p* c1 = clause1ref;
    const Clause_p* c2 = clause2ref;
 
-   return CMP(ClauseStructWeightLexCompare(*c1, *c2),0);
+   return CMP(ClauseStructWeightLexCompare(*c1, *c2), 0);
 }
 
 
@@ -141,7 +141,7 @@ int ClauseCanonCompareRef(const void *clause1ref, const void* clause2ref)
 //
 /----------------------------------------------------------------------*/
 
-void ClauseRemoveLiteralRef(Clause_p clause, Eqn_p *lit)
+void ClauseRemoveLiteralRef(Clause_p clause, Eqn_p* lit)
 {
    Eqn_p handle = *lit;
 
@@ -180,7 +180,7 @@ void ClauseRemoveLiteral(Clause_p clause, Eqn_p lit)
 {
    EqnRef handle = &(clause->literals);
 
-   while(*handle!=lit)
+   while(*handle != lit)
    {
       assert(*handle);
       handle = &((*handle)->next);
@@ -233,9 +233,9 @@ void ClauseFlipLiteralSign(Clause_p clause, Eqn_p lit)
 int ClauseRemoveSuperfluousLiterals(Clause_p clause)
 {
    Eqn_p handle;
-   int   removed = 0;
+   int removed = 0;
 
-   assert(!ClauseIsAnyPropSet(clause, CPIsDIndexed|CPIsSIndexed));
+   assert(!ClauseIsAnyPropSet(clause, CPIsDIndexed | CPIsSIndexed));
 
    removed += EqnListRemoveResolved(&(clause->literals));
    removed += EqnListRemoveDuplicates(clause->literals);
@@ -245,7 +245,7 @@ int ClauseRemoveSuperfluousLiterals(Clause_p clause)
       clause->neg_lit_no = 0;
       clause->pos_lit_no = 0;
       handle = clause->literals;
-      ClauseDelProp(clause, CPInitial|CPLimitedRW);
+      ClauseDelProp(clause, CPInitial | CPLimitedRW);
 
       while(handle)
       {
@@ -262,7 +262,7 @@ int ClauseRemoveSuperfluousLiterals(Clause_p clause)
 
       if(clause->set)
       {
-         clause->set->literals-=removed;
+         clause->set->literals -= removed;
       }
    }
    if(removed)
@@ -291,8 +291,7 @@ long ClauseSetRemoveSuperfluousLiterals(ClauseSet_p set)
    Clause_p handle;
    long res = 0;
 
-   for(handle = set->anchor->succ; handle!=set->anchor; handle =
-          handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       res += ClauseRemoveSuperfluousLiterals(handle);
    }
@@ -318,8 +317,7 @@ void ClauseSetCanonize(ClauseSet_p set)
 {
    Clause_p handle;
 
-   for(handle = set->anchor->succ; handle!= set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClauseRemoveSuperfluousLiterals(handle);
       ClauseCanonize(handle);
@@ -344,26 +342,26 @@ void ClauseSetCanonize(ClauseSet_p set)
 
 int ClauseRemoveACResolved(Clause_p clause)
 {
-   int   removed = 0;
+   int removed = 0;
    Sig_p sig;
 
-   if(clause->neg_lit_no==0)
+   if(clause->neg_lit_no == 0)
    {
       return 0;
    }
    sig = clause->literals->bank->sig;
    removed += EqnListRemoveACResolved(&(clause->literals));
-   clause->neg_lit_no -= removed ;
+   clause->neg_lit_no -= removed;
    if(removed)
    {
-      ClauseDelProp(clause, CPInitial|CPLimitedRW);
-      DocClauseModification(GlobalOut, OutputLevel, clause,
-                            inf_ac_resolution, NULL, sig, NULL);
+      ClauseDelProp(clause, CPInitial | CPLimitedRW);
+      DocClauseModification(GlobalOut, OutputLevel, clause, inf_ac_resolution,
+                            NULL, sig, NULL);
       ClausePushACResDerivation(clause, sig);
    }
    if(clause->set)
    {
-      clause->set->literals-=removed;
+      clause->set->literals -= removed;
    }
    return removed;
 }
@@ -384,13 +382,13 @@ int ClauseRemoveACResolved(Clause_p clause)
 
 bool ClauseUnitSimplifyTest(Clause_p clause, Clause_p simplifier)
 {
-   bool positive,tmp;
+   bool positive, tmp;
    EqnRef handle;
-   Eqn_p  simpl;
+   Eqn_p simpl;
 
    assert(ClauseIsUnit(simplifier));
    simpl = simplifier->literals;
-   assert(EqnIsNegative(simpl)||!EqnIsOriented(simpl));
+   assert(EqnIsNegative(simpl) || !EqnIsOriented(simpl));
 
    positive = EqnIsPositive(simpl);
 
@@ -404,7 +402,7 @@ bool ClauseUnitSimplifyTest(Clause_p clause, Clause_p simplifier)
    while(*handle)
    {
       tmp = EqnIsPositive(*handle);
-      if(XOR(positive,tmp)&&EqnSubsumeP(simpl,*handle))
+      if(XOR(positive, tmp) && EqnSubsumeP(simpl, *handle))
       {
          return true;
       }
@@ -469,7 +467,7 @@ Clause_p ClauseArchiveCopy(ClauseSet_p archive, Clause_p clause)
 
    archclause->info = clause->info;
    archclause->derivation = clause->derivation;
-   clause->info       = NULL;
+   clause->info = NULL;
    clause->derivation = NULL;
    ClausePushDerivation(clause, DCCnfQuote, archclause);
    ClauseSetInsert(archive, archclause);
@@ -499,8 +497,7 @@ void ClauseSetArchiveCopy(ClauseSet_p archive, ClauseSet_p set)
    assert(archive);
    assert(set);
 
-   for(handle = set->anchor->succ; handle!= set->anchor;
-       handle = handle->succ)
+   for(handle = set->anchor->succ; handle != set->anchor; handle = handle->succ)
    {
       ClauseArchiveCopy(archive, handle);
    }
@@ -549,7 +546,7 @@ bool ClauseIsOrphaned(Clause_p clause)
    if(DCOpHasCnfArg1(op))
    {
       parent = PStackElementP(clause->derivation, 1);
-      if(ClauseQueryProp(parent,CPIsDead))
+      if(ClauseQueryProp(parent, CPIsDead))
       {
          return true;
       }
@@ -558,18 +555,18 @@ bool ClauseIsOrphaned(Clause_p clause)
    if(DCOpHasCnfArg2(op))
    {
       parent = PStackElementP(clause->derivation, 2);
-      if(ClauseQueryProp(parent,CPIsDead))
+      if(ClauseQueryProp(parent, CPIsDead))
       {
          return true;
       }
       i++;
    }
-   while(i<PStackGetSP(clause->derivation) &&
-         ((op = PStackElementInt(clause->derivation, i))==DCCnfAddArg))
+   while(i < PStackGetSP(clause->derivation) &&
+         ((op = PStackElementInt(clause->derivation, i)) == DCCnfAddArg))
    {
       i++;
       parent = PStackElementP(clause->derivation, i);
-      if(ClauseQueryProp(parent,CPIsDead))
+      if(ClauseQueryProp(parent, CPIsDead))
       {
          return true;
       }
@@ -604,18 +601,16 @@ long ClauseSetDeleteOrphans(ClauseSet_p set)
    {
       if(ClauseIsOrphaned(handle))
       {
-         ClauseSetProp(handle,CPDeleteClause);
+         ClauseSetProp(handle, CPDeleteClause);
       }
       else
       {
-         ClauseDelProp(handle,CPDeleteClause);
+         ClauseDelProp(handle, CPDeleteClause);
       }
       handle = handle->succ;
    }
    return ClauseSetDeleteMarkedEntries(set);
 }
-
-
 
 
 
@@ -636,7 +631,7 @@ void PStackClausePrint(FILE* out, PStack_p stack, char* extra)
    PStackPointer i;
    Clause_p clause;
 
-   for(i=0; i<PStackGetSP(stack); i++)
+   for(i = 0; i < PStackGetSP(stack); i++)
    {
       clause = PStackElementP(stack, i);
       ClausePrint(out, clause, true);
@@ -670,14 +665,14 @@ bool ClauseEliminateNakedBooleanVariables(Clause_p clause)
       return false;
    }
 
-   PStack_p all_lits       = ClauseToStack(clause);
-   Eqn_p    lit            = NULL;
-   Term_p   var            = NULL;
-   bool     eliminated_var = false;
-   Eqn_p    res            = NULL;
-   Subst_p  subst          = SubstAlloc();
-   const TB_p   bank       = clause->literals->bank;
-   const Term_p true_term  = bank->true_term;
+   PStack_p all_lits = ClauseToStack(clause);
+   Eqn_p lit = NULL;
+   Term_p var = NULL;
+   bool eliminated_var = false;
+   Eqn_p res = NULL;
+   Subst_p subst = SubstAlloc();
+   const TB_p bank = clause->literals->bank;
+   const Term_p true_term = bank->true_term;
    const Term_p false_term = bank->false_term;
 
    while(!PStackEmpty(all_lits))
@@ -707,7 +702,8 @@ bool ClauseEliminateNakedBooleanVariables(Clause_p clause)
                   SubstAddBinding(subst, var, false_term);
                }
                EqnDelProp(lit, EPIsPositive);
-               lit->lterm = true_term; // now lit becomes false and will be deleted
+               lit->lterm =
+                  true_term; // now lit becomes false and will be deleted
                eliminated_var = true;
             }
          }
@@ -777,70 +773,75 @@ Clause_p ClauseRecognizeInjectivity(TB_p terms, Clause_p clause)
 
    if(clause->pos_lit_no == 1 && clause->neg_lit_no == 1)
    {
-      Eqn_p pos_lit = EqnIsPositive(clause->literals) ?
-                        clause->literals : clause->literals->next;
-      Eqn_p neg_lit = EqnIsNegative(clause->literals) ?
-                        clause->literals : clause->literals->next;
+      Eqn_p pos_lit = EqnIsPositive(clause->literals) ? clause->literals
+                                                      : clause->literals->next;
+      Eqn_p neg_lit = EqnIsNegative(clause->literals) ? clause->literals
+                                                      : clause->literals->next;
       assert(EqnIsPositive(pos_lit));
       assert(EqnIsNegative(neg_lit));
 
-      if (EqnIsEquLit(pos_lit) && EqnIsEquLit(neg_lit) &&
-          TermIsFreeVar(pos_lit->lterm) && TermIsFreeVar(pos_lit->rterm) &&
-          pos_lit->lterm != pos_lit->rterm &&
-          !TermIsTopLevelAnyVar(neg_lit->lterm) && !TermIsTopLevelAnyVar(neg_lit->rterm)
-          && neg_lit->lterm->f_code == neg_lit->rterm->f_code
-          && neg_lit->lterm->f_code > terms->sig->internal_symbols
-          && !TypeIsArrow(neg_lit->lterm->type)
-          && !SigQueryFuncProp(neg_lit->bank->sig, neg_lit->lterm->f_code, FPIsInjDefSkolem)
-          && TermStandardWeight(neg_lit->lterm) == TermStandardWeight(neg_lit->rterm)
-          && TermStandardWeight(neg_lit->lterm)
-               == (DEFAULT_FWEIGHT + neg_lit->lterm->arity*DEFAULT_VWEIGHT)
-          && neg_lit->lterm->arity > 0)
+      if(EqnIsEquLit(pos_lit) && EqnIsEquLit(neg_lit) &&
+         TermIsFreeVar(pos_lit->lterm) && TermIsFreeVar(pos_lit->rterm) &&
+         pos_lit->lterm != pos_lit->rterm &&
+         !TermIsTopLevelAnyVar(neg_lit->lterm) &&
+         !TermIsTopLevelAnyVar(neg_lit->rterm) &&
+         neg_lit->lterm->f_code == neg_lit->rterm->f_code &&
+         neg_lit->lterm->f_code > terms->sig->internal_symbols &&
+         !TypeIsArrow(neg_lit->lterm->type) &&
+         !SigQueryFuncProp(neg_lit->bank->sig, neg_lit->lterm->f_code,
+                           FPIsInjDefSkolem) &&
+         TermStandardWeight(neg_lit->lterm) ==
+            TermStandardWeight(neg_lit->rterm) &&
+         TermStandardWeight(neg_lit->lterm) ==
+            (DEFAULT_FWEIGHT + neg_lit->lterm->arity * DEFAULT_VWEIGHT) &&
+         neg_lit->lterm->arity > 0)
       {
          assert(neg_lit->lterm->arity == neg_lit->rterm->arity);
 
-         int idx_var_occ = -1; // index where X or Y appears in f s1 ... X ... sn
-         for (int i=0; idx_var_occ == -1 && i<neg_lit->lterm->arity; i++)
+         int idx_var_occ =
+            -1; // index where X or Y appears in f s1 ... X ... sn
+         for(int i = 0; idx_var_occ == -1 && i < neg_lit->lterm->arity; i++)
          {
-            if (neg_lit->lterm->args[i] == pos_lit->lterm &&
-                neg_lit->rterm->args[i] == pos_lit->rterm)
+            if(neg_lit->lterm->args[i] == pos_lit->lterm &&
+               neg_lit->rterm->args[i] == pos_lit->rterm)
             {
                idx_var_occ = i;
             }
-            else if (neg_lit->lterm->args[i] == pos_lit->rterm &&
-                     neg_lit->rterm->args[i] == pos_lit->lterm)
+            else if(neg_lit->lterm->args[i] == pos_lit->rterm &&
+                    neg_lit->rterm->args[i] == pos_lit->lterm)
             {
                idx_var_occ = i;
             }
          }
 
-         if (idx_var_occ != -1)
+         if(idx_var_occ != -1)
          {
             bool rule_applicable = true;
 
             // TPCheckFlag means that the variable appears as X_i = X_i
             // TPOpFlag means that the varaible appears as X_i = Y_i
-            TermDelProp(neg_lit->lterm, DEREF_NEVER, TPOpFlag|TPCheckFlag);
-            TermDelProp(neg_lit->rterm, DEREF_NEVER, TPOpFlag|TPCheckFlag);
+            TermDelProp(neg_lit->lterm, DEREF_NEVER, TPOpFlag | TPCheckFlag);
+            TermDelProp(neg_lit->rterm, DEREF_NEVER, TPOpFlag | TPCheckFlag);
 
             PStack_p skolem_vars = PStackAlloc();
 
-            for(int i=0; rule_applicable && i<neg_lit->lterm->arity; i++)
+            for(int i = 0; rule_applicable && i < neg_lit->lterm->arity; i++)
             {
-               Term_p lvar = neg_lit->lterm->args[i], rvar = neg_lit->rterm->args[i];
+               Term_p lvar = neg_lit->lterm->args[i],
+                      rvar = neg_lit->rterm->args[i];
 
                assert(TermIsFreeVar(lvar));
                assert(TermIsFreeVar(rvar));
 
-               if (lvar == rvar)
+               if(lvar == rvar)
                {
-                  if (TermCellQueryProp(lvar, TPCheckFlag) ||
-                      TermCellQueryProp(rvar, TPCheckFlag))
+                  if(TermCellQueryProp(lvar, TPCheckFlag) ||
+                     TermCellQueryProp(rvar, TPCheckFlag))
                   {
                      /* Variable can appear again only if it is equal to its rhs-pair */
                      rule_applicable = false;
                   }
-                  else if (!TermCellQueryProp(lvar, TPOpFlag))
+                  else if(!TermCellQueryProp(lvar, TPOpFlag))
                   {
                      /* We are seeing the variable for the first time */
                      TermCellSetProp(lvar, TPOpFlag);
@@ -849,8 +850,8 @@ Clause_p ClauseRecognizeInjectivity(TB_p terms, Clause_p clause)
                }
                else
                {
-                  if (TermCellIsAnyPropSet(lvar, TPCheckFlag|TPOpFlag) ||
-                      TermCellIsAnyPropSet(rvar, TPCheckFlag|TPOpFlag))
+                  if(TermCellIsAnyPropSet(lvar, TPCheckFlag | TPOpFlag) ||
+                     TermCellIsAnyPropSet(rvar, TPCheckFlag | TPOpFlag))
                   {
                      /* Variable that is different from tis rhs-pair cannot appear again  */
                      rule_applicable = false;
@@ -864,10 +865,10 @@ Clause_p ClauseRecognizeInjectivity(TB_p terms, Clause_p clause)
             }
 
             // reset term properties again
-            TermDelProp(neg_lit->lterm, DEREF_NEVER, TPOpFlag|TPCheckFlag);
-            TermDelProp(neg_lit->rterm, DEREF_NEVER, TPOpFlag|TPCheckFlag);
+            TermDelProp(neg_lit->lterm, DEREF_NEVER, TPOpFlag | TPCheckFlag);
+            TermDelProp(neg_lit->rterm, DEREF_NEVER, TPOpFlag | TPCheckFlag);
 
-            if (rule_applicable)
+            if(rule_applicable)
             {
                // substitution did not bind X or Y
                assert(!pos_lit->lterm->binding);
@@ -878,14 +879,15 @@ Clause_p ClauseRecognizeInjectivity(TB_p terms, Clause_p clause)
 
                int vars_num = PStackGetSP(skolem_vars);
 
-               Term_p inv_skolem_term; // let the compiler check if it is initialized
+               Term_p
+                  inv_skolem_term; // let the compiler check if it is initialized
 
-               if (vars_num)
+               if(vars_num)
                {
-                  Type_p* arg_tys = TypeArgArrayAlloc(vars_num+1);
-                  Term_p* args = TermArgTmpArrayAlloc(vars_num+1);
+                  Type_p* arg_tys = TypeArgArrayAlloc(vars_num + 1);
+                  Term_p* args = TermArgTmpArrayAlloc(vars_num + 1);
 
-                  for(int i=0; i<vars_num; i++)
+                  for(int i = 0; i < vars_num; i++)
                   {
                      args[i] = PStackElementP(skolem_vars, i);
                      arg_tys[i] = args[i]->type;
@@ -893,27 +895,30 @@ Clause_p ClauseRecognizeInjectivity(TB_p terms, Clause_p clause)
                   args[vars_num] = inverse_arg;
                   arg_tys[vars_num] = inverse_arg->type;
 
-                  FunCode new_inv_skolem_sym =
-                     SigGetNewTypedSkolem(terms->sig, arg_tys, vars_num+1, pos_lit->lterm->type);
-                  SigSetFuncProp(terms->sig, new_inv_skolem_sym, FPIsInjDefSkolem);
+                  FunCode new_inv_skolem_sym = SigGetNewTypedSkolem(
+                     terms->sig, arg_tys, vars_num + 1, pos_lit->lterm->type);
+                  SigSetFuncProp(terms->sig, new_inv_skolem_sym,
+                                 FPIsInjDefSkolem);
 
-                  inv_skolem_term = TermTopAlloc(new_inv_skolem_sym, vars_num+1);
-                  for(int i=0; i<vars_num+1; i++)
+                  inv_skolem_term =
+                     TermTopAlloc(new_inv_skolem_sym, vars_num + 1);
+                  for(int i = 0; i < vars_num + 1; i++)
                   {
                      inv_skolem_term->args[i] = args[i];
                   }
                   inv_skolem_term->type = pos_lit->lterm->type;
                   inv_skolem_term = TBTermTopInsert(terms, inv_skolem_term);
 
-                  TypeArgArrayFree(arg_tys, vars_num+1);
-                  TermArgTmpArrayFree(args, vars_num+1);
+                  TypeArgArrayFree(arg_tys, vars_num + 1);
+                  TermArgTmpArrayFree(args, vars_num + 1);
                }
                else
                {
-                  Type_p args[1] = {neg_lit->lterm->type};
-                  FunCode new_inv_skolem_sym =
-                     SigGetNewTypedSkolem(terms->sig, args, 1, pos_lit->lterm->type);
-                  SigSetFuncProp(terms->sig, new_inv_skolem_sym, FPIsInjDefSkolem);
+                  Type_p args[1] = { neg_lit->lterm->type };
+                  FunCode new_inv_skolem_sym = SigGetNewTypedSkolem(
+                     terms->sig, args, 1, pos_lit->lterm->type);
+                  SigSetFuncProp(terms->sig, new_inv_skolem_sym,
+                                 FPIsInjDefSkolem);
                   inv_skolem_term = TermTopAlloc(new_inv_skolem_sym, 1);
                   inv_skolem_term->args[0] = inverse_arg;
                   inv_skolem_term->type = pos_lit->lterm->type;
@@ -923,8 +928,8 @@ Clause_p ClauseRecognizeInjectivity(TB_p terms, Clause_p clause)
 
                Eqn_p eqn = EqnAlloc(inv_skolem_term, inverse_var, terms, true);
                res = ClauseAlloc(eqn);
-               res->proof_depth = clause->proof_depth+1;
-               res->proof_size  = clause->proof_size+1;
+               res->proof_depth = clause->proof_depth + 1;
+               res->proof_size = clause->proof_size + 1;
                ClauseSetTPTPType(res, ClauseQueryTPTPType(clause));
                ClauseSetProp(res, ClauseGiveProps(clause, CPIsSOS));
                ClauseSetProp(res, CPIsPureInjectivity);
@@ -972,7 +977,7 @@ bool ClauseSetInjectivityIsDefined(ClauseSet_p all_defs, Clause_p inj_def)
       assert(iter->pos_lit_no == 1 && iter->neg_lit_no == 0);
 
       Term_p cand_lhs = iter->literals->lterm, cand_rhs = iter->literals->rterm;
-      if (cand_lhs->arity == lhs->arity)
+      if(cand_lhs->arity == lhs->arity)
       {
          PStack_p unif_stack = PStackAlloc();
          Subst_p subst = SubstAlloc();
@@ -980,13 +985,13 @@ bool ClauseSetInjectivityIsDefined(ClauseSet_p all_defs, Clause_p inj_def)
          PStackPushP(unif_stack, rhs);
          PStackPushP(unif_stack, cand_rhs);
 
-         for(int i=0; i<cand_lhs->arity; i++)
+         for(int i = 0; i < cand_lhs->arity; i++)
          {
             PStackPushP(unif_stack, lhs->args[i]);
             PStackPushP(unif_stack, cand_lhs->args[i]);
          }
 
-         if (unif_all_pairs(unif_stack, subst) && SubstIsRenaming(subst))
+         if(unif_all_pairs(unif_stack, subst) && SubstIsRenaming(subst))
          {
             res = true;
          }
@@ -1015,10 +1020,11 @@ bool ClauseSetInjectivityIsDefined(ClauseSet_p all_defs, Clause_p inj_def)
 //
 /----------------------------------------------------------------------*/
 
-long ClauseSetReplaceInjectivityDefs(ClauseSet_p set, ClauseSet_p archive, TB_p terms)
+long ClauseSetReplaceInjectivityDefs(ClauseSet_p set, ClauseSet_p archive,
+                                     TB_p terms)
 {
    Clause_p handle, next;
-   ClauseSet_p tmp  = ClauseSetAlloc();
+   ClauseSet_p tmp = ClauseSetAlloc();
    long count = 0;
 
    assert(set);
@@ -1034,7 +1040,7 @@ long ClauseSetReplaceInjectivityDefs(ClauseSet_p set, ClauseSet_p archive, TB_p 
 
       if(repl)
       {
-         if (ClauseQueryProp(repl, CPIsPureInjectivity) &&
+         if(ClauseQueryProp(repl, CPIsPureInjectivity) &&
             !ClauseSetInjectivityIsDefined(tmp, repl))
          {
             ClauseSetMoveClause(archive, handle);

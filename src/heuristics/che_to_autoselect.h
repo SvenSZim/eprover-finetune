@@ -34,40 +34,37 @@ Changes
 /*---------------------------------------------------------------------*/
 
 typedef double (*OrderEvaluationFun)(OCB_p ocb, ProofState_p state,
-                 HeuristicParms_p parms);
+                                     HeuristicParms_p parms);
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-#define OrderParmsCellAlloc() \
+#define OrderParmsCellAlloc()                                                  \
    (OrderParmsCell*)SizeMalloc(sizeof(OrderParmsCell))
-#define OrderParmsCellFree(junk) \
-   SizeFree(junk, sizeof(OrderParmsCell))
+#define OrderParmsCellFree(junk) SizeFree(junk, sizeof(OrderParmsCell))
 
 /* For now, we will fix the evaluation parameters by #defines's in the
    .c file....if somebody wants to tinker with it, he or she is
    welcome to do it. Not me, and not now!  */
 
-double OrderEvaluate(OCB_p ocb, ProofState_p state, HeuristicParms_p
-           params);
+double OrderEvaluate(OCB_p ocb, ProofState_p state, HeuristicParms_p params);
 
-bool   OrderNextType(OrderParms_p ordering);
-bool   OrderNextWeightGen(OrderParms_p ordering);
-bool   OrderNextPrecGen(OrderParms_p ordering);
-bool   OrderNextConstWeight(OrderParms_p ordering);
+bool OrderNextType(OrderParms_p ordering);
+bool OrderNextWeightGen(OrderParms_p ordering);
+bool OrderNextPrecGen(OrderParms_p ordering);
+bool OrderNextConstWeight(OrderParms_p ordering);
 
-bool   OrderNextOrdering(OrderParms_p ordering, OrderParms_p mask);
+bool OrderNextOrdering(OrderParms_p ordering, OrderParms_p mask);
 
-OCB_p  OrderFindOptimal(OrderParms_p mask, OrderEvaluationFun
-         eval_fun, ProofState_p state, HeuristicParms_p
-         params);
+OCB_p OrderFindOptimal(OrderParms_p mask, OrderEvaluationFun eval_fun,
+                       ProofState_p state, HeuristicParms_p params);
 
-OCB_p  TOSelectOrdering(ProofState_p state, HeuristicParms_p params,
-         SpecFeature_p specs);
-OCB_p  TOCreateOrdering(ProofState_p state, OrderParms_p params, char*
-         pre_precedence, char* pre_weights);
+OCB_p TOSelectOrdering(ProofState_p state, HeuristicParms_p params,
+                       SpecFeature_p specs);
+OCB_p TOCreateOrdering(ProofState_p state, OrderParms_p params,
+                       char* pre_precedence, char* pre_weights);
 
 #endif
 

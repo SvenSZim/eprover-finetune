@@ -35,7 +35,7 @@ typedef struct hcbadmincell
 {
    PStack_p names;
    PStack_p hcb_set;
-}HCBAdminCell, *HCBAdmin_p;
+} HCBAdminCell, *HCBAdmin_p;
 
 
 /*---------------------------------------------------------------------*/
@@ -43,20 +43,19 @@ typedef struct hcbadmincell
 /*---------------------------------------------------------------------*/
 
 #define HCBAdminCellAlloc() (HCBAdminCell*)SizeMalloc(sizeof(HCBAdminCell))
-#define HCBAdminCellFree(junk)         SizeFree(junk, sizeof(HCBAdminCell))
+#define HCBAdminCellFree(junk) SizeFree(junk, sizeof(HCBAdminCell))
 
 HCBAdmin_p HCBAdminAlloc(void);
-void       HCBAdminFree(HCBAdmin_p junk);
-long       HCBAdminAddHCB(HCBAdmin_p set, char* name, HCB_p hcb);
-HCB_p      HCBAdminFindHCB(HCBAdmin_p set, char* name);
+void HCBAdminFree(HCBAdmin_p junk);
+long HCBAdminAddHCB(HCBAdmin_p set, char* name, HCB_p hcb);
+HCB_p HCBAdminFindHCB(HCBAdmin_p set, char* name);
 
-HCB_p      HeuristicParse(Scanner_p in, WFCBAdmin_p wfcbs, OCB_p ocb,
-                          ProofState_p state);
-long       HeuristicDefParse(HCBAdmin_p set, Scanner_p in, WFCBAdmin_p
-                             wfcbs, OCB_p ocb, ProofState_p state);
-long       HeuristicDefListParse(HCBAdmin_p set, Scanner_p in,
-                                 WFCBAdmin_p wfcbs, OCB_p ocb,
-                                 ProofState_p state);
+HCB_p HeuristicParse(Scanner_p in, WFCBAdmin_p wfcbs, OCB_p ocb,
+                     ProofState_p state);
+long HeuristicDefParse(HCBAdmin_p set, Scanner_p in, WFCBAdmin_p wfcbs,
+                       OCB_p ocb, ProofState_p state);
+long HeuristicDefListParse(HCBAdmin_p set, Scanner_p in, WFCBAdmin_p wfcbs,
+                           OCB_p ocb, ProofState_p state);
 
 #endif
 

@@ -61,7 +61,7 @@ static StrTree_p perma_anchor = NULL;
 char* PermaString(char* str)
 {
    StrTree_p handle, old;
-   char *res;
+   char* res;
 
    if(!str)
    {
@@ -75,17 +75,17 @@ char* PermaString(char* str)
 
    old = StrTreeInsert(&perma_anchor, handle);
 
-      if(!old)
+   if(!old)
    {
       res = handle->key;
-      assert(res!=str);
+      assert(res != str);
    }
    else
    {
       FREE(handle->key);
       StrTreeCellFree(handle);
       res = old->key;
-      assert(res!=str);
+      assert(res != str);
    }
    return res;
 }
@@ -128,7 +128,7 @@ char* PermaStringStore(char* str)
 //
 /----------------------------------------------------------------------*/
 
-void  PermaStringsFree(void)
+void PermaStringsFree(void)
 {
    StrTreeFree(perma_anchor);
    perma_anchor = NULL;

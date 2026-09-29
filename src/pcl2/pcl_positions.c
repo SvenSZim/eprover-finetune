@@ -62,10 +62,10 @@ PCL2Pos_p PCL2PosAlloc(void)
 {
    PCL2Pos_p handle = PCL2PosCellAlloc();
 
-   handle->literal    = -1;
-   handle->side       = NoSide;
+   handle->literal = -1;
+   handle->side = NoSide;
    handle->termposlen = 0;
-   handle->termpos    = NULL;
+   handle->termpos = NULL;
 
    return handle;
 }
@@ -110,7 +110,7 @@ void PCL2PosFree(PCL2Pos_p pos)
 PCL2Pos_p PCL2PosParse(Scanner_p in)
 {
    PCL2Pos_p handle = PCL2PosAlloc();
-   long      i;
+   long i;
 
    handle->literal = AktToken(in)->numval;
    AcceptInpTok(in, PosInt);
@@ -120,26 +120,26 @@ PCL2Pos_p PCL2PosParse(Scanner_p in)
       CheckInpId(in, "L|R");
       if(TestInpId(in, "L"))
       {
-    handle->side = LeftSide;
+         handle->side = LeftSide;
       }
       else
       {
-    handle->side = RightSide;
+         handle->side = RightSide;
       }
       NextToken(in);
 
       if(TestInpTok(in, Fullstop))
       {
-    handle->termpos = PDArrayAlloc(5,10);
+         handle->termpos = PDArrayAlloc(5, 10);
       }
-      i=0;
+      i = 0;
       while(TestInpTok(in, Fullstop))
       {
-    NextToken(in);
-    PDArrayAssignInt(handle->termpos,i++,AktToken(in)->numval);
-    AcceptInpTok(in, PosInt);
+         NextToken(in);
+         PDArrayAssignInt(handle->termpos, i++, AktToken(in)->numval);
+         AcceptInpTok(in, PosInt);
       }
-      handle->termposlen=i;
+      handle->termposlen = i;
    }
    return handle;
 }
@@ -164,16 +164,16 @@ void PCL2PosPrint(FILE* out, PCL2Pos_p pos)
    assert(pos);
 
    fprintf(out, "%ld", pos->literal);
-   if(pos->side!=NoSide)
+   if(pos->side != NoSide)
    {
-      assert((pos->side==LeftSide) || (pos->side==RightSide));
-      fprintf(out, ".%c", (pos->side==LeftSide)?'L':'R');
+      assert((pos->side == LeftSide) || (pos->side == RightSide));
+      fprintf(out, ".%c", (pos->side == LeftSide) ? 'L' : 'R');
 
-      i=0;
-      while(i<pos->termposlen)
+      i = 0;
+      while(i < pos->termposlen)
       {
-    assert(pos->termpos);
-    fprintf(out, "%ld", PDArrayElementInt(pos->termpos,i++));
+         assert(pos->termpos);
+         fprintf(out, "%ld", PDArrayElementInt(pos->termpos, i++));
       }
    }
 }

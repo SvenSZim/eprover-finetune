@@ -58,8 +58,7 @@ Changes
 //
 /----------------------------------------------------------------------*/
 
-double TSMTermClassify(TSMAdmin_p admin, Term_p term, PatternSubst_p
-             subst)
+double TSMTermClassify(TSMAdmin_p admin, Term_p term, PatternSubst_p subst)
 {
    double eval = TSMEvalTerm(admin, term, subst);
 
@@ -104,10 +103,10 @@ bool TSMClassifiedTermCheck(TSMAdmin_p admin, FlatAnnoTerm_p term)
 
 long TSMClassifySet(TSMAdmin_p admin, FlatAnnoSet_p set)
 {
-   NumTree_p      handle;
-   PStack_p       stack;
+   NumTree_p handle;
+   PStack_p stack;
    FlatAnnoTerm_p term;
-   long           res = 0;
+   long res = 0;
 
    stack = NumTreeTraverseInit(set->set);
 
@@ -116,15 +115,14 @@ long TSMClassifySet(TSMAdmin_p admin, FlatAnnoSet_p set)
       term = handle->val1.p_val;
       if(TSMClassifiedTermCheck(admin, term))
       {
-    printf("OKOK ");
-    res+=term->sources;
+         printf("OKOK ");
+         res += term->sources;
       }
       else
       {
-    printf("FAIL ");
+         printf("FAIL ");
       }
-      TermPrint(stdout, term->term, admin->index_bank->sig,
-      DEREF_NEVER);
+      TermPrint(stdout, term->term, admin->index_bank->sig, DEREF_NEVER);
       printf("\n");
    }
    NumTreeTraverseExit(stack);

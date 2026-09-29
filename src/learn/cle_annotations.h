@@ -65,29 +65,25 @@ typedef NumTree_p Annotation_p;
 /*---------------------------------------------------------------------*/
 
 Annotation_p AnnotationAlloc(void);
-void         AnnotationFree(Annotation_p junk);
-#define      AnnotationValues(anno) ((anno)->val1.p_val)
-#define      AnnotationCount(anno)\
-             DDArrayElement(((anno)->val1.p_val), 0)
-#define      AnnotationLength(anno) ((anno)->val2.i_val)
-void         AnnotationTreeFree(Annotation_p tree);
+void AnnotationFree(Annotation_p junk);
+#define AnnotationValues(anno) ((anno)->val1.p_val)
+#define AnnotationCount(anno) DDArrayElement(((anno)->val1.p_val), 0)
+#define AnnotationLength(anno) ((anno)->val2.i_val)
+void AnnotationTreeFree(Annotation_p tree);
 Annotation_p AnnotationParse(Scanner_p in, long expected);
-long         AnnotationListParse(Scanner_p in, Annotation_p *tree,
-             long expected);
-void         AnnotationPrint(FILE* out, Annotation_p anno);
-void         AnnotationListPrint(FILE* out, Annotation_p tree);
-void         AnnotationCombine(Annotation_p res, Annotation_p new_anno);
-long         AnnotationMerge(Annotation_p *tree, Annotation_p collect,
-              PStack_p sources);
-double       AnnotationEval(Annotation_p anno, double weights[]);
+long AnnotationListParse(Scanner_p in, Annotation_p* tree, long expected);
+void AnnotationPrint(FILE* out, Annotation_p anno);
+void AnnotationListPrint(FILE* out, Annotation_p tree);
+void AnnotationCombine(Annotation_p res, Annotation_p new_anno);
+long AnnotationMerge(Annotation_p* tree, Annotation_p collect,
+                     PStack_p sources);
+double AnnotationEval(Annotation_p anno, double weights[]);
 
 #endif
 
 /*---------------------------------------------------------------------*/
 /*                        End of File                                  */
 /*---------------------------------------------------------------------*/
-
-
 
 
 

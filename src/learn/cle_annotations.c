@@ -59,8 +59,7 @@ Annotation_p AnnotationAlloc(void)
    Annotation_p handle = NumTreeCellAllocEmpty();
 
    handle->val1.p_val =
-      DDArrayAlloc(ANNOTATION_DEFAULT_SIZE,
-         ANNOTATION_DEFAULT_SIZE);
+      DDArrayAlloc(ANNOTATION_DEFAULT_SIZE, ANNOTATION_DEFAULT_SIZE);
    handle->val2.p_val = NULL;
 
    return handle;
@@ -130,10 +129,10 @@ void AnnotationTreeFree(Annotation_p tree)
 Annotation_p AnnotationParse(Scanner_p in, long expected)
 {
    Annotation_p handle = AnnotationAlloc();
-   long         count = 0;
-   double       value;
+   long count = 0;
+   double value;
 
-   assert(expected >=0 );
+   assert(expected >= 0);
    handle->key = AktToken(in)->numval;
    AcceptInpTok(in, PosInt);
    AcceptInpTok(in, Colon);
@@ -143,9 +142,7 @@ Annotation_p AnnotationParse(Scanner_p in, long expected)
    {
       if(count == expected)
       {
-         AktTokenError(in,
-                       "Annotation has more elements than expected",
-                       false);
+         AktTokenError(in, "Annotation has more elements than expected", false);
       }
       value = ParseFloat(in);
       DDArrayAssign(handle->val1.p_val, count, value);
@@ -157,9 +154,7 @@ Annotation_p AnnotationParse(Scanner_p in, long expected)
    }
    if(count < expected)
    {
-      AktTokenError(in,
-                    "Annotation has fewer elements than expected",
-                    false);
+      AktTokenError(in, "Annotation has fewer elements than expected", false);
    }
    AcceptInpTok(in, CloseBracket);
    AnnotationLength(handle) = count;
@@ -181,13 +176,12 @@ Annotation_p AnnotationParse(Scanner_p in, long expected)
 //
 /----------------------------------------------------------------------*/
 
-long AnnotationListParse(Scanner_p in, Annotation_p *tree, long
-                         expected)
+long AnnotationListParse(Scanner_p in, Annotation_p* tree, long expected)
 {
-   DStr_p     source_name;
-   long       line, column;
+   DStr_p source_name;
+   long line, column;
    StreamType type;
-   long i=0;
+   long i = 0;
    Annotation_p handle;
 
    while(TestInpTok(in, PosInt))
@@ -202,8 +196,7 @@ long AnnotationListParse(Scanner_p in, Annotation_p *tree, long
       {
          AnnotationFree(handle);
          Error("%s Only one annotation for each proof example allowed",
-               SYNTAX_ERROR,
-               PosRep(type, source_name, line, column));
+               SYNTAX_ERROR, PosRep(type, source_name, line, column));
       }
       DStrReleaseRef(source_name);
       i++;
@@ -234,7 +227,7 @@ void AnnotationPrint(FILE* out, Annotation_p anno)
    char* sep = "";
 
    fprintf(out, "%ld:(", anno->key);
-   for(i=0; i< anno->val2.i_val; i++)
+   for(i = 0; i < anno->val2.i_val; i++)
    {
       fputs(sep, out);
       fprintf(out, "%f", DDArrayElement(anno->val1.p_val, i));
@@ -296,17 +289,17 @@ void AnnotationCombine(Annotation_p res, Annotation_p new_anno)
    neww = AnnotationCount(new_anno);
 
    /* Res can be newly allocated... */
-   length =  AnnotationLength(new_anno);
-   assert(AnnotationLength(res)<=length);
+   length = AnnotationLength(new_anno);
+   assert(AnnotationLength(res) <= length);
 
-   for(i=1;i<=length;i++)
+   for(i = 1; i <= length; i++)
    {
-      resval = DDArrayElement(AnnotationValues(res),i);
-      newval = DDArrayElement(AnnotationValues(new_anno),i);
-      resval = (resval*resw+newval*neww)/(resw+neww);
-      DDArrayAssign(AnnotationValues(res),i,resval);
+      resval = DDArrayElement(AnnotationValues(res), i);
+      newval = DDArrayElement(AnnotationValues(new_anno), i);
+      resval = (resval * resw + newval * neww) / (resw + neww);
+      DDArrayAssign(AnnotationValues(res), i, resval);
    }
-   AnnotationCount(res) = resw+neww;
+   AnnotationCount(res) = resw + neww;
    AnnotationLength(res) = length;
    /* printf("Combined: ");AnnotationPrint(stdout, res);printf("\n"); */
 }
@@ -327,12 +320,11 @@ void AnnotationCombine(Annotation_p res, Annotation_p new_anno)
 //
 /----------------------------------------------------------------------*/
 
-long AnnotationMerge(Annotation_p *tree, Annotation_p collect,
-           PStack_p sources)
+long AnnotationMerge(Annotation_p* tree, Annotation_p collect, PStack_p sources)
 {
    PStackPointer i;
-   long          count = 0;
-   Annotation_p  handle;
+   long count = 0;
+   Annotation_p handle;
 
    if(sources == ANNOTATIONS_MERGE_ALL)
    {
@@ -340,21 +332,21 @@ long AnnotationMerge(Annotation_p *tree, Annotation_p collect,
 
       while((handle = NumTreeTraverseNext(stack)))
       {
-    AnnotationCombine(collect, handle);
-    count++;
+         AnnotationCombine(collect, handle);
+         count++;
       }
       NumTreeTraverseExit(stack);
    }
    else
    {
-      for(i=0; i< PStackGetSP(sources); i++)
+      for(i = 0; i < PStackGetSP(sources); i++)
       {
-    handle = NumTreeFind(tree, PStackElementInt(sources, i));
-    if(handle)
-    {
-       AnnotationCombine(collect, handle);
-       count++;
-    }
+         handle = NumTreeFind(tree, PStackElementInt(sources, i));
+         if(handle)
+         {
+            AnnotationCombine(collect, handle);
+            count++;
+         }
       }
    }
    return count;
@@ -378,15 +370,15 @@ long AnnotationMerge(Annotation_p *tree, Annotation_p collect,
 double AnnotationEval(Annotation_p anno, double weights[])
 {
    DDArray_p array;
-   long      elements, i;
-   double    res = 0;
+   long elements, i;
+   double res = 0;
 
-   array    = AnnotationValues(anno);
-   elements = AnnotationLength(anno)-1;
+   array = AnnotationValues(anno);
+   elements = AnnotationLength(anno) - 1;
 
-   for(i=0; i < elements; i++)
+   for(i = 0; i < elements; i++)
    {
-      res += DDArrayElement(array, i+1)*weights[i];
+      res += DDArrayElement(array, i + 1) * weights[i];
    }
    /* printf(COMCHAR" ");AnnotationPrint(stdout, anno); printf(" --> %f\n", res); */
    return res;

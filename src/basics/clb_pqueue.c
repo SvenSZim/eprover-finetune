@@ -58,24 +58,24 @@ Changes
 
 void PQueueGrow(PQueue_p queue)
 {
-   long   new_size, i;
-   IntOrP *new_mem;
+   long new_size, i;
+   IntOrP* new_mem;
 
-   new_size = queue->size*2;
-   new_mem  = SizeMalloc(new_size*sizeof(IntOrP));
+   new_size = queue->size * 2;
+   new_mem = SizeMalloc(new_size * sizeof(IntOrP));
 
-   for(i=0; i<queue->head; i++)
+   for(i = 0; i < queue->head; i++)
    {
       new_mem[i] = queue->queue[i];
    }
-   for(i=queue->head; i<queue->size; i++)
+   for(i = queue->head; i < queue->size; i++)
    {
-      new_mem[i+queue->size] = queue->queue[i];
+      new_mem[i + queue->size] = queue->queue[i];
    }
-   queue->tail+= queue->size;
-   SizeFree(queue->queue, queue->size*sizeof(IntOrP));
+   queue->tail += queue->size;
+   SizeFree(queue->queue, queue->size * sizeof(IntOrP));
    queue->queue = new_mem;
-   queue->size  = new_size;
+   queue->size = new_size;
 }
 
 
@@ -94,9 +94,9 @@ void PQueueGrow(PQueue_p queue)
 long PQueueCardinality(PQueue_p queue)
 {
    long res;
-   if(queue->head>=queue->tail)
+   if(queue->head >= queue->tail)
    {
-      res = queue->head-queue->tail;
+      res = queue->head - queue->tail;
    }
    else
    {
@@ -118,10 +118,7 @@ long PQueueCardinality(PQueue_p queue)
 //
 /----------------------------------------------------------------------*/
 
-IntOrP PQueueElement(PQueue_p queue, long index)
-{
-   return queue->queue[index];
-}
+IntOrP PQueueElement(PQueue_p queue, long index) { return queue->queue[index]; }
 
 
 /*-----------------------------------------------------------------------
@@ -161,7 +158,7 @@ long PQueueTailIndex(PQueue_p queue)
 
 long PQueueIncIndex(PQueue_p queue, long index)
 {
-   index = (index+1) % queue->size;
+   index = (index + 1) % queue->size;
    if(index == queue->head)
    {
       return -1;

@@ -34,25 +34,24 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
 
-FILE* InputOpen(char *name, bool fail);
-void  InputClose(FILE* file);
-long  FileLoad(char* name, DStr_p dest);
-long  ConcatFiles(char* target, char** sources);
-long  CopyFile(char* target, char* source);
-void  FileRemove(char* name);
-void  FilePrint(FILE* out, char* name);
-#define FileNameIsAbsolute(name) ((name)[0]=='/')
+FILE* InputOpen(char* name, bool fail);
+void InputClose(FILE* file);
+long FileLoad(char* name, DStr_p dest);
+long ConcatFiles(char* target, char** sources);
+long CopyFile(char* target, char* source);
+void FileRemove(char* name);
+void FilePrint(FILE* out, char* name);
+#define FileNameIsAbsolute(name) ((name)[0] == '/')
 char* FileNameDirName(char* name);
-char* FileFindBaseName(char *file);
+char* FileFindBaseName(char* file);
 char* FileNameBaseName(char* name);
 char* FileNameStrip(char* name);
-bool  FileExists(char* name);
+bool FileExists(char* name);
 
 
 #endif

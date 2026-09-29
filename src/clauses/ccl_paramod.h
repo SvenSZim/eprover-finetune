@@ -35,44 +35,44 @@
 
 typedef enum
 {
-   ParamodPlain = 0,            /* Use standard paramodulation */
-   ParamodSim,                  /* Always use simultaneous paramod */
-   ParamodOrientedSim,          /* Use simultaneous if rw-literal is
+   ParamodPlain = 0,        /* Use standard paramodulation */
+   ParamodSim,              /* Always use simultaneous paramod */
+   ParamodOrientedSim,      /* Use simultaneous if rw-literal is
                                    oriented */
-   ParamodSuperSim,             /* Always use super-simultaneous paramod */
-   ParamodOrientedSuperSim,     /* Use super-simultaneous if rw-literal is
+   ParamodSuperSim,         /* Always use super-simultaneous paramod */
+   ParamodOrientedSuperSim, /* Use super-simultaneous if rw-literal is
                                    oriented */
-   ParamodDecreasingSim,        /* Use sim if rw-literal instance is
+   ParamodDecreasingSim,    /* Use sim if rw-literal instance is
                                    orientable */
-   ParamodSizeDecreasingSim     /* Use sim if instantiated RHS is
+   ParamodSizeDecreasingSim /* Use sim if instantiated RHS is
                                    smaller */
-}ParamodulationType;
+} ParamodulationType;
 
 typedef struct
 {
-   TB_p        bank;
-   OCB_p       ocb;
-   VarBank_p   freshvars;
-   Clause_p    new_orig;
-   Clause_p    from;
-   CompactPos  from_cpos;
+   TB_p bank;
+   OCB_p ocb;
+   VarBank_p freshvars;
+   Clause_p new_orig;
+   Clause_p from;
+   CompactPos from_cpos;
    ClausePos_p from_pos;
-   Clause_p    into;
-   CompactPos  into_cpos;
+   Clause_p into;
+   CompactPos into_cpos;
    ClausePos_p into_pos;
-   bool        subst_is_ho;
-}ParamodInfoCell, *ParamodInfo_p;
+   bool subst_is_ho;
+} ParamodInfoCell, *ParamodInfo_p;
 
 
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-char*              ParamodStr(ParamodulationType pm_type);
-ParamodulationType ParamodType(char *pm_str);
+char* ParamodStr(ParamodulationType pm_type);
+ParamodulationType ParamodType(char* pm_str);
 
 
-void     ParamodInfoPrint(FILE* out, ParamodInfo_p info);
+void ParamodInfoPrint(FILE* out, ParamodInfo_p info);
 
 Clause_p ClausePlainParamodConstruct(ParamodInfo_p ol_desc);
 Clause_p ClauseSimParamodConstruct(ParamodInfo_p ol_desc);
@@ -81,48 +81,42 @@ Clause_p ClauseParamodConstruct(ParamodInfo_p ol_desc,
                                 ParamodulationType pm_type);
 
 
-Term_p ComputeOverlap(TB_p bank, OCB_p ocb, ClausePos_p from, Term_p
-            into, TermPos_p pos,  Subst_p subst, VarBank_p
-            freshvars);
+Term_p ComputeOverlap(TB_p bank, OCB_p ocb, ClausePos_p from, Term_p into,
+                      TermPos_p pos, Subst_p subst, VarBank_p freshvars);
 
-Eqn_p  EqnOrderedParamod(TB_p bank, OCB_p ocb, ClausePos_p from,
-          ClausePos_p into, Subst_p subst, VarBank_p
-          freshvars);
+Eqn_p EqnOrderedParamod(TB_p bank, OCB_p ocb, ClausePos_p from,
+                        ClausePos_p into, Subst_p subst, VarBank_p freshvars);
 
-Clause_p ClauseOrderedParamod(TB_p bank, OCB_p ocb, ClausePos_p
-               from,ClausePos_p into, VarBank_p
-               freshvars);
+Clause_p ClauseOrderedParamod(TB_p bank, OCB_p ocb, ClausePos_p from,
+                              ClausePos_p into, VarBank_p freshvars);
 
-Clause_p ClauseOrderedSimParamod(TB_p bank, OCB_p ocb, ClausePos_p
-                                 from,ClausePos_p into, VarBank_p
-                                 freshvars);
+Clause_p ClauseOrderedSimParamod(TB_p bank, OCB_p ocb, ClausePos_p from,
+                                 ClausePos_p into, VarBank_p freshvars);
 
-Clause_p ClauseOrderedSuperSimParamod(TB_p bank, OCB_p ocb, ClausePos_p
-                                      from,ClausePos_p into, VarBank_p
-                                      freshvars);
+Clause_p ClauseOrderedSuperSimParamod(TB_p bank, OCB_p ocb, ClausePos_p from,
+                                      ClausePos_p into, VarBank_p freshvars);
 
 
-Term_p   ClausePosFirstParamodInto(Clause_p clause, ClausePos_p pos,
-                                   ClausePos_p from_pos, bool no_top,
-                                   ParamodulationType pm_type);
-Term_p   ClausePosNextParamodInto(ClausePos_p pos, ClausePos_p
-                                  from_pos, bool no_top);
+Term_p ClausePosFirstParamodInto(Clause_p clause, ClausePos_p pos,
+                                 ClausePos_p from_pos, bool no_top,
+                                 ParamodulationType pm_type);
+Term_p ClausePosNextParamodInto(ClausePos_p pos, ClausePos_p from_pos,
+                                bool no_top);
 
-Term_p   ClausePosFirstParamodFromSide(Clause_p from, ClausePos_p
-                                       from_pos);
-Term_p   ClausePosNextParamodFromSide(ClausePos_p from_pos);
+Term_p ClausePosFirstParamodFromSide(Clause_p from, ClausePos_p from_pos);
+Term_p ClausePosNextParamodFromSide(ClausePos_p from_pos);
 
-Term_p   ClausePosFirstParamodPair(Clause_p from, ClausePos_p
-                                   from_pos, Clause_p into,
-                                   ClausePos_p into_pos, bool no_top,
-                                   ParamodulationType pm_type);
-Term_p   ClausePosNextParamodPair(ClausePos_p from_pos, ClausePos_p
-                                  into_pos, bool no_top, ParamodulationType pm_type);
+Term_p ClausePosFirstParamodPair(Clause_p from, ClausePos_p from_pos,
+                                 Clause_p into, ClausePos_p into_pos,
+                                 bool no_top, ParamodulationType pm_type);
+Term_p ClausePosNextParamodPair(ClausePos_p from_pos, ClausePos_p into_pos,
+                                bool no_top, ParamodulationType pm_type);
 
 #ifdef ENABLE_LFHO
-bool    CheckHOUnificationConstraints(UnificationResult res, UnifTermSide exp_side, Term_p from, Term_p to);
+bool CheckHOUnificationConstraints(UnificationResult res, UnifTermSide exp_side,
+                                   Term_p from, Term_p to);
 #else
-#define CheckHOUnificationConstraints(a,b,c,d) (true)
+#define CheckHOUnificationConstraints(a, b, c, d) (true)
 #endif
 
 #endif

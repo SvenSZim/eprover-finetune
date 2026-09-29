@@ -35,31 +35,48 @@ Changes
 
 
 
-
 /*---------------------------------------------------------------------*/
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
 extern int Verbose;
 
-#define VERBOSE(arg) {if(Verbose){arg}}
-#define VERBOUT(arg) VERBOSE(\
-        fprintf(stderr, "%s: %s", ProgName, (arg)); fflush(stderr);)
-#define VERBOUTARG(arg1,arg2) VERBOSE(\
-        fprintf(stderr, "%s: %s%s\n", ProgName, (arg1), (arg2));\
-   fflush(stderr);)
+#define VERBOSE(arg)                                                           \
+   {                                                                           \
+      if(Verbose)                                                              \
+      {                                                                        \
+         arg                                                                   \
+      }                                                                        \
+   }
+#define VERBOUT(arg)                                                           \
+   VERBOSE(fprintf(stderr, "%s: %s", ProgName, (arg)); fflush(stderr);)
+#define VERBOUTARG(arg1, arg2)                                                 \
+   VERBOSE(fprintf(stderr, "%s: %s%s\n", ProgName, (arg1), (arg2));            \
+           fflush(stderr);)
 
-#define VERBOSE2(arg) {if(Verbose>=2){arg}}
-#define VERBOUT2(arg) VERBOSE2(\
-        fprintf(stderr, "%s: %s", ProgName, (arg)); fflush(stderr);)
+#define VERBOSE2(arg)                                                          \
+   {                                                                           \
+      if(Verbose >= 2)                                                         \
+      {                                                                        \
+         arg                                                                   \
+      }                                                                        \
+   }
+#define VERBOUT2(arg)                                                          \
+   VERBOSE2(fprintf(stderr, "%s: %s", ProgName, (arg)); fflush(stderr);)
 
-#define VERBOUTARG2(arg1,arg2) VERBOSE2(\
-        fprintf(stderr, "%s: %s%s\n", ProgName, (arg1), (arg2));\
-   fflush(stderr);)
+#define VERBOUTARG2(arg1, arg2)                                                \
+   VERBOSE2(fprintf(stderr, "%s: %s%s\n", ProgName, (arg1), (arg2));           \
+            fflush(stderr);)
 
-#define VERBOSE10(arg) {if(Verbose>=10){arg}}
-#define VERBOUT10(arg) VERBOSE10(\
-        fprintf(stderr, "%s: %s", ProgName, (arg)); fflush(stderr);)
+#define VERBOSE10(arg)                                                         \
+   {                                                                           \
+      if(Verbose >= 10)                                                        \
+      {                                                                        \
+         arg                                                                   \
+      }                                                                        \
+   }
+#define VERBOUT10(arg)                                                         \
+   VERBOSE10(fprintf(stderr, "%s: %s", ProgName, (arg)); fflush(stderr);)
 
 
 #endif

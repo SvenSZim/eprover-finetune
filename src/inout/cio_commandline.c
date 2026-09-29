@@ -57,53 +57,53 @@
 
 static char* print_start_of_str(FILE* out, char* str, int len)
 {
-   int   i = 0;
+   int i = 0;
    char* search = str;
    char* blank = NULL;
 
-   while(*search && i<len) /* Search last blank before
+   while(*search && i < len) /* Search last blank before
                EOString/newline or len characters. */
    {
       if(*search == ' ')
       {
-    blank = search;
+         blank = search;
       }
       else if(*search == '\n')
       {
-    blank = search;
-    i=len;
-    break;
+         blank = search;
+         i = len;
+         break;
       }
       search++;
       i++;
    }
-   if(i<len) /* Print remaining string */
+   if(i < len) /* Print remaining string */
    {
       while(*str)
       {
-    putc(*str, out);
-    str++;
+         putc(*str, out);
+         str++;
       }
       putc('\n', out);
       return 0;
    }
-   else if(blank)  /* Print string up to space */
+   else if(blank) /* Print string up to space */
    {
-      while(str!=blank)
+      while(str != blank)
       {
-    putc(*str, out);
-    str++;
+         putc(*str, out);
+         str++;
       }
       putc('\n', out);
       str++;
-      return *str?str:NULL;
+      return *str ? str : NULL;
    }
    else /* Now have to do a hard break! */
    {
-      while(str!=search)
+      while(str != search)
       {
-    putc(*str, out);
-    str++;
+         putc(*str, out);
+         str++;
       }
       putc('\n', out);
       return str;
@@ -132,9 +132,9 @@ static bool shift_array_left(char* array[])
    {
       return false;
    }
-   for(i=0; array[i+1]; i++)
+   for(i = 0; array[i + 1]; i++)
    {
-      array[i] = array[i+1];
+      array[i] = array[i + 1];
    }
    array[i] = NULL;
 
@@ -156,25 +156,25 @@ static bool shift_array_left(char* array[])
 
 static Opt_p find_long_opt(char* option, OptCell options[])
 {
-   int   i;
+   int i;
    unsigned int len;
 
-   option+=2; /* Jump -- */
+   option += 2; /* Jump -- */
    len = 0;
    while(option[len])
    {
-      if(option[len]=='=')
+      if(option[len] == '=')
       {
-    break;
+         break;
       }
       len++;
    }
-   for(i=0; options[i].option_code; i++)
+   for(i = 0; options[i].option_code; i++)
    {
-      if((strncmp(options[i].longopt, option, len)==0) &&
-    (strlen(options[i].longopt)==len))
+      if((strncmp(options[i].longopt, option, len) == 0) &&
+         (strlen(options[i].longopt) == len))
       {
-    return &(options[i]);
+         return &(options[i]);
       }
    }
    return NULL;
@@ -197,11 +197,11 @@ static Opt_p find_short_opt(char option, OptCell options[])
 {
    int i;
 
-   for(i=0; options[i].option_code; i++)
+   for(i = 0; options[i].option_code; i++)
    {
       if(option == options[i].shortopt)
       {
-    return &(options[i]);
+         return &(options[i]);
       }
    }
    return NULL;
@@ -222,8 +222,7 @@ static Opt_p find_short_opt(char option, OptCell options[])
 //
 /----------------------------------------------------------------------*/
 
-static Opt_p process_long_option(CLState_p state, char** arg,
-           OptCell options[])
+static Opt_p process_long_option(CLState_p state, char** arg, OptCell options[])
 {
    Opt_p handle;
    char* eq_sign;
@@ -233,7 +232,7 @@ static Opt_p process_long_option(CLState_p state, char** arg,
    {
       DStrAppendStr(err, "Unknown Option: ");
       DStrAppendStr(err, state->argv[state->argi]);
-      DStrAppendStr(err," (Use -h for a list of valid options)");
+      DStrAppendStr(err, " (Use -h for a list of valid options)");
       Error(DStrView(err), USAGE_ERROR);
    }
 
@@ -241,38 +240,38 @@ static Opt_p process_long_option(CLState_p state, char** arg,
 
    switch(handle->type)
    {
-   case NoArg:
-      if(eq_sign)
-      {
-    DStrAppendStr(err, state->argv[state->argi]);
-    DStrAppendStr(err, " does not accept an argument!");
-    Error(DStrView(err), USAGE_ERROR);
-      }
-      *arg = NULL;
-      break;
-   case OptArg:
-      if(eq_sign)
-      {
-    *arg = eq_sign+1;
-      }
-      else
-      {
-    assert(handle->arg_default);
-    *arg = handle->arg_default;
-      }
-      break;
-   case ReqArg:
-      if(!eq_sign)
-      {
-    DStrAppendStr(err, state->argv[state->argi]);
-    DStrAppendStr(err, " requires an argument!");
-    Error(DStrView(err), USAGE_ERROR);
-      }
-      *arg = eq_sign+1;
-      break;
-   default:
-      assert(false);
-      break;
+      case NoArg:
+         if(eq_sign)
+         {
+            DStrAppendStr(err, state->argv[state->argi]);
+            DStrAppendStr(err, " does not accept an argument!");
+            Error(DStrView(err), USAGE_ERROR);
+         }
+         *arg = NULL;
+         break;
+      case OptArg:
+         if(eq_sign)
+         {
+            *arg = eq_sign + 1;
+         }
+         else
+         {
+            assert(handle->arg_default);
+            *arg = handle->arg_default;
+         }
+         break;
+      case ReqArg:
+         if(!eq_sign)
+         {
+            DStrAppendStr(err, state->argv[state->argi]);
+            DStrAppendStr(err, " requires an argument!");
+            Error(DStrView(err), USAGE_ERROR);
+         }
+         *arg = eq_sign + 1;
+         break;
+      default:
+         assert(false);
+         break;
    }
    shift_array_left(&(state->argv[state->argi]));
    state->argc--;
@@ -297,11 +296,11 @@ static Opt_p process_long_option(CLState_p state, char** arg,
 /----------------------------------------------------------------------*/
 
 static Opt_p process_short_option(CLState_p state, char** arg,
-            OptCell options[])
+                                  OptCell options[])
 {
-   Opt_p  handle;
+   Opt_p handle;
    DStr_p err = DStrAlloc();
-   char*  optstr = state->argv[state->argi];
+   char* optstr = state->argv[state->argi];
 
    if(!(handle = find_short_opt(optstr[state->sc_opt_c], options)))
    {
@@ -310,59 +309,60 @@ static Opt_p process_short_option(CLState_p state, char** arg,
       DStrAppendStr(err, " (processing ");
       DStrAppendStr(err, optstr);
       DStrAppendStr(err, ")");
-      DStrAppendStr(err," (Use -h for a list of valid options)");
+      DStrAppendStr(err, " (Use -h for a list of valid options)");
       Error(DStrView(err), USAGE_ERROR);
    }
    *arg = NULL;
    switch(handle->type)
    {
-   case OptArg:
-    assert(handle->arg_default);
-    *arg = handle->arg_default;
-    /* Fall-through intentional! */
-   case NoArg:
-    state->sc_opt_c++;
-    if(!optstr[state->sc_opt_c])
-    {
-       state->sc_opt_c = 0;
-       shift_array_left(&(state->argv[state->argi]));
-       state->argc--;
-    }
-    break;
-   case ReqArg:
-    if(state->sc_opt_c!=1)
-    {
-       DStrAppendStr(err, optstr);
-       DStrAppendStr(err, ": POSIX forbids the aggregation of"
-           " options which take arguments (but you"
-           " probably only forgot the second hyphen for"
-           " a long GNU-style option)");
-       Error(DStrView(err), USAGE_ERROR);
-    }
-    if(optstr[state->sc_opt_c+1])
-    {
-       *arg=&optstr[state->sc_opt_c+1];
-    }
-    else
-    {
-       shift_array_left(&(state->argv[state->argi]));
-       state->argc--;
-       if(!state->argv[state->argi])
-       {
-          DStrAppendChar(err, '-');
-          DStrAppendChar(err, optstr[state->sc_opt_c]);
-          DStrAppendStr(err, " requires an argument");
-          Error(DStrView(err), USAGE_ERROR);
-       }
-       *arg = state->argv[state->argi];
-    }
-    state->sc_opt_c = 0;
-    shift_array_left(&(state->argv[state->argi]));
-    state->argc--;
-    break;
-   default:
-    assert(false);
-    break;
+      case OptArg:
+         assert(handle->arg_default);
+         *arg = handle->arg_default;
+         /* Fall-through intentional! */
+      case NoArg:
+         state->sc_opt_c++;
+         if(!optstr[state->sc_opt_c])
+         {
+            state->sc_opt_c = 0;
+            shift_array_left(&(state->argv[state->argi]));
+            state->argc--;
+         }
+         break;
+      case ReqArg:
+         if(state->sc_opt_c != 1)
+         {
+            DStrAppendStr(err, optstr);
+            DStrAppendStr(err,
+                          ": POSIX forbids the aggregation of"
+                          " options which take arguments (but you"
+                          " probably only forgot the second hyphen for"
+                          " a long GNU-style option)");
+            Error(DStrView(err), USAGE_ERROR);
+         }
+         if(optstr[state->sc_opt_c + 1])
+         {
+            *arg = &optstr[state->sc_opt_c + 1];
+         }
+         else
+         {
+            shift_array_left(&(state->argv[state->argi]));
+            state->argc--;
+            if(!state->argv[state->argi])
+            {
+               DStrAppendChar(err, '-');
+               DStrAppendChar(err, optstr[state->sc_opt_c]);
+               DStrAppendStr(err, " requires an argument");
+               Error(DStrView(err), USAGE_ERROR);
+            }
+            *arg = state->argv[state->argi];
+         }
+         state->sc_opt_c = 0;
+         shift_array_left(&(state->argv[state->argi]));
+         state->argc--;
+         break;
+      default:
+         assert(false);
+         break;
    }
    DStrFree(err);
    return handle;
@@ -428,10 +428,10 @@ CLState_p CLStateAlloc(int argc, char* argv[])
    handle->sc_opt_c = 0;
    handle->argi = 0;
    handle->argc = argc;
-   handle->argsize = argc+2; /* Allocate one entry extra for
+   handle->argsize = argc + 2; /* Allocate one entry extra for
             default inserting of "-" */
    handle->argv = SecureMalloc(handle->argsize * sizeof(char*));
-   for(i=0; i<argc; i++)
+   for(i = 0; i < argc; i++)
    {
       handle->argv[i] = argv[i];
    }
@@ -479,11 +479,10 @@ void CLStateFree(CLState_p junk)
 
 int CLStateInsertArg(CLState_p state, char* arg)
 {
-   if(state->argsize == state->argc+2)
+   if(state->argsize == state->argc + 2)
    {
       state->argsize++;
-      state->argv = SecureRealloc(state->argv, state->argsize *
-               sizeof(char*));
+      state->argv = SecureRealloc(state->argv, state->argsize * sizeof(char*));
    }
    state->argv[state->argc] = arg;
    state->argc++;
@@ -510,10 +509,10 @@ Opt_p CLStateGetOpt(CLState_p state, char** arg, OptCell options[])
 {
    while(state->argv[state->argi])
    {
-      if((state->argv[state->argi][0]=='-') &&
-    (state->argv[state->argi][1]!='\0'))
+      if((state->argv[state->argi][0] == '-') &&
+         (state->argv[state->argi][1] != '\0'))
       {
-    break;
+         break;
       }
       state->argi++;
    }
@@ -521,17 +520,17 @@ Opt_p CLStateGetOpt(CLState_p state, char** arg, OptCell options[])
    {
       return NULL;
    }
-   if(strcmp(state->argv[state->argi], "--")==0)
+   if(strcmp(state->argv[state->argi], "--") == 0)
    {
       shift_array_left(&(state->argv[state->argi]));
       state->argc--;
       while(state->argv[state->argi])
       {
-    state->argi++;
+         state->argi++;
       }
       return NULL;
    }
-   if(strncmp(state->argv[state->argi], "--", 2)==0)
+   if(strncmp(state->argv[state->argi], "--", 2) == 0)
    {
       return process_long_option(state, arg, options);
    }
@@ -559,7 +558,7 @@ Opt_p CLStateGetOpt(CLState_p state, char** arg, OptCell options[])
 double CLStateGetFloatArg(Opt_p option, char* arg)
 {
    double ret;
-   char*  eoarg;
+   char* eoarg;
 
    errno = 0;
 
@@ -575,11 +574,11 @@ double CLStateGetFloatArg(Opt_p option, char* arg)
       DStrAppendChar(err, '\'');
       if(TmpErrno)
       {
-    SysError(DStrView(err), USAGE_ERROR);
+         SysError(DStrView(err), USAGE_ERROR);
       }
       else
       {
-    Error(DStrView(err), USAGE_ERROR);
+         Error(DStrView(err), USAGE_ERROR);
       }
       DStrFree(err);
    }
@@ -646,7 +645,7 @@ long CLStateGetIntArg(Opt_p option, char* arg)
 long CLStateGetIntArgCheckRange(Opt_p option, char* arg, long lower, long upper)
 {
    long ret = CLStateGetIntArg(option, arg);
-   if(ret<lower || ret > upper)
+   if(ret < lower || ret > upper)
    {
       DStr_p err = DStrAlloc();
       DStrAppendStr(err, "Option ");
@@ -681,11 +680,11 @@ bool CLStateGetBoolArg(Opt_p option, char* arg)
 {
    DStr_p err;
 
-   if(strcmp(arg, "true")==0)
+   if(strcmp(arg, "true") == 0)
    {
       return true;
    }
-   else if(strcmp(arg, "false")==0)
+   else if(strcmp(arg, "false") == 0)
    {
       return false;
    }
@@ -697,7 +696,7 @@ bool CLStateGetBoolArg(Opt_p option, char* arg)
    DStrAppendChar(err, '\'');
    Error(DStrView(err), USAGE_ERROR);
    DStrFree(err); /* Symmetry */
-   return false; /* Just to stiffle warings */
+   return false;  /* Just to stiffle warings */
 }
 
 
@@ -716,23 +715,23 @@ bool CLStateGetBoolArg(Opt_p option, char* arg)
 
 void PrintOption(FILE* out, Opt_p option)
 {
-   char*  l_argdesc = "";
-   char*  desc;
+   char* l_argdesc = "";
+   char* desc;
    DStr_p optdesc = DStrAlloc();
 
    switch(option->type)
    {
-   case NoArg:
-      break;
-   case OptArg:
-      l_argdesc = "[=<arg>]";
-      break;
-   case ReqArg:
-      l_argdesc = "=<arg>";
-      break;
-   default:
-      assert(false);
-      break;
+      case NoArg:
+         break;
+      case OptArg:
+         l_argdesc = "[=<arg>]";
+         break;
+      case ReqArg:
+         l_argdesc = "=<arg>";
+         break;
+      default:
+         assert(false);
+         break;
    }
 
    assert(option->longopt || option->shortopt);
@@ -740,7 +739,7 @@ void PrintOption(FILE* out, Opt_p option)
    if(option->shortopt)
    {
       fprintf(out, "   -%c%s\n", option->shortopt,
-         option->type == ReqArg ? " <arg>" : "");
+              option->type == ReqArg ? " <arg>" : "");
    }
    if(option->longopt)
    {
@@ -749,21 +748,21 @@ void PrintOption(FILE* out, Opt_p option)
 
    DStrAppendStr(optdesc, option->desc);
 
-   if(option->type ==OptArg)
+   if(option->type == OptArg)
    {
       assert(option->longopt);
 
       if(option->shortopt)
       {
-    DStrAppendStr(optdesc,
-             " The short form or the long form without"
-             " the optional argument is equivalent to --");
+         DStrAppendStr(optdesc,
+                       " The short form or the long form without"
+                       " the optional argument is equivalent to --");
       }
       else
       {
-    DStrAppendStr(optdesc,
-             " The option without"
-             " the optional argument is equivalent to --");
+         DStrAppendStr(optdesc,
+                       " The option without"
+                       " the optional argument is equivalent to --");
       }
 
       DStrAppendStr(optdesc, option->longopt);
@@ -776,7 +775,7 @@ void PrintOption(FILE* out, Opt_p option)
    while(desc)
    {
       fprintf(out, "    ");
-      desc = print_start_of_str(out, desc, FORMAT_WIDTH-4);
+      desc = print_start_of_str(out, desc, FORMAT_WIDTH - 4);
    }
    fprintf(out, "\n");
    DStrFree(optdesc);
@@ -805,7 +804,7 @@ void PrintOptions(FILE* out, OptCell option[], char* header)
       fprintf(out, "%s", header);
    }
 
-   for(i=0; option[i].option_code; i++)
+   for(i = 0; option[i].option_code; i++)
    {
       PrintOption(out, &option[i]);
    }

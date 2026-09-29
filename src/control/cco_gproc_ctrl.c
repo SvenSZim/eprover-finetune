@@ -62,14 +62,14 @@ EGPCtrl_p EGPCtrlAlloc(int cores)
 {
    EGPCtrl_p ctrl = EGPCtrlCellAlloc();
 
-   ctrl->name        = NULL;
-   ctrl->pid         = 0;
-   ctrl->fileno      = -1;
+   ctrl->name = NULL;
+   ctrl->pid = 0;
+   ctrl->fileno = -1;
    ctrl->exit_status = 0;
-   ctrl->cpu_limit   = 0;
-   ctrl->cores       = cores;
-   ctrl->result      = PRNoResult;
-   ctrl->output      = DStrAlloc();
+   ctrl->cpu_limit = 0;
+   ctrl->cores = cores;
+   ctrl->result = PRNoResult;
+   ctrl->output = DStrAlloc();
 
    //printf("Allocating: %p\n", ctrl);
    return ctrl;
@@ -148,26 +148,27 @@ void EGPCtrlCleanup(EGPCtrl_p ctrl)
 //
 /----------------------------------------------------------------------*/
 
-EGPCtrl_p EGPCtrlCreate(char *name, int cores, rlim_t cpu_limit)
+EGPCtrl_p EGPCtrlCreate(char* name, int cores, rlim_t cpu_limit)
 {
    EGPCtrl_p res = NULL;
-   int       pipefd[2];
-   pid_t     childpid;
+   int pipefd[2];
+   pid_t childpid;
 
-   if (pipe(pipefd) <0)
+   if(pipe(pipefd) < 0)
    {
       SysError("pipe failed", SYS_ERROR);
       exit(EXIT_FAILURE);
    }
-   fprintf(GlobalOut, COMCHAR" Starting %s with %jus (%d) cores\n", name, (uintmax_t)cpu_limit, cores);
+   fprintf(GlobalOut, COMCHAR " Starting %s with %jus (%d) cores\n", name,
+           (uintmax_t)cpu_limit, cores);
 
-   if((childpid = fork()) <0 )
+   if((childpid = fork()) < 0)
    {
       SysError("fork failed", SYS_ERROR);
    }
 
    if(childpid == 0)
-   {  // child process
+   { // child process
       signal(SIGTERM, SIG_DFL);
       dup2(pipefd[1], STDOUT_FILENO);
       close(pipefd[0]);
@@ -180,14 +181,14 @@ EGPCtrl_p EGPCtrlCreate(char *name, int cores, rlim_t cpu_limit)
       }
    }
    else
-   {  /// parent
+   { /// parent
       close(pipefd[1]);
       VERBOUTARG("Started subprocess ", name);
-      res            = EGPCtrlAlloc(cores);
-      res->pid       = childpid;
-      res->fileno    = pipefd[0];
+      res = EGPCtrlAlloc(cores);
+      res->pid = childpid;
+      res->fileno = pipefd[0];
       res->cpu_limit = cpu_limit;
-      res->name      = SecureStrdup(name);
+      res->name = SecureStrdup(name);
    }
    return res;
 }
@@ -207,12 +208,12 @@ EGPCtrl_p EGPCtrlCreate(char *name, int cores, rlim_t cpu_limit)
 //
 /----------------------------------------------------------------------*/
 
-bool EGPCtrlGetResult(EGPCtrl_p ctrl, char *buffer, long buf_size)
+bool EGPCtrlGetResult(EGPCtrl_p ctrl, char* buffer, long buf_size)
 {
    int len, raw_status;
    int respid = -1;
 
-   len = read(ctrl->fileno, buffer, (size_t)(buf_size-1));
+   len = read(ctrl->fileno, buffer, (size_t)(buf_size - 1));
    if(len == -1)
    {
       SysError("read() failed", SYS_ERROR);
@@ -264,13 +265,12 @@ bool EGPCtrlGetResult(EGPCtrl_p ctrl, char *buffer, long buf_size)
       {
          ctrl->exit_status = -1; //Aborted or killed (timeout)
       }
-      fprintf(GlobalOut, COMCHAR" %s with pid %d completed with status %d\n",
+      fprintf(GlobalOut, COMCHAR " %s with pid %d completed with status %d\n",
               ctrl->name, ctrl->pid, ctrl->exit_status);
       ctrl->pid = 0;
       return true;
    }
 }
-
 
 
 
@@ -291,7 +291,7 @@ EGPCtrlSet_p EGPCtrlSetAlloc(void)
    EGPCtrlSet_p handle = EGPCtrlSetCellAlloc();
 
    handle->cores_reserved = 0;
-   handle->procs          = NULL;
+   handle->procs = NULL;
 
    return handle;
 }
@@ -412,7 +412,7 @@ void EGPCtrlSetDeleteProc(EGPCtrlSet_p set, EGPCtrl_p proc, bool kill_proc)
 //
 /----------------------------------------------------------------------*/
 
-int EGPCtrlSetFDSet(EGPCtrlSet_p set, fd_set *rd_fds)
+int EGPCtrlSetFDSet(EGPCtrlSet_p set, fd_set* rd_fds)
 {
    PStack_p trav_stack;
    int maxfd = 0;
@@ -448,7 +448,7 @@ EGPCtrl_p EGPCtrlSetGetResult(EGPCtrlSet_p set)
 {
    bool eof;
    fd_set readfds, writefds, errorfds;
-   int maxfd = 0,i;
+   int maxfd = 0, i;
    EGPCtrl_p handle, res = NULL;
    struct timeval waittime;
    int sel_success;
@@ -456,17 +456,17 @@ EGPCtrl_p EGPCtrlSetGetResult(EGPCtrlSet_p set)
    FD_ZERO(&readfds);
    FD_ZERO(&writefds);
    FD_ZERO(&errorfds);
-   waittime.tv_sec  = 0;
+   waittime.tv_sec = 0;
    waittime.tv_usec = 500000;
 
    maxfd = EGPCtrlSetFDSet(set, &readfds);
 
    //ELog("Before select (TERM: %d)\n", SigTermCaught);
-   sel_success = select(maxfd+1, &readfds, &writefds, &errorfds, &waittime);
+   sel_success = select(maxfd + 1, &readfds, &writefds, &errorfds, &waittime);
    //ELog("After select (TERM: %d)\n", SigTermCaught);
-   if(sel_success !=-1)
+   if(sel_success != -1)
    {
-      for(i=0; i<= maxfd && !res; i++)
+      for(i = 0; i <= maxfd && !res; i++)
       {
          //ELog("Loop %d\n", i);
          if(FD_ISSET(i, &readfds))
@@ -478,22 +478,22 @@ EGPCtrl_p EGPCtrlSetGetResult(EGPCtrlSet_p set)
             {
                switch(handle->result)
                {
-               case PRNoResult:
+                  case PRNoResult:
                      /* No result (yet) -> should not really happen! */
                      assert(false);
                      break;
-               case PRSatisfiable:
-               case PRCounterSatisfiable:
-               case PRTheorem:
-               case PRUnsatisfiable:
+                  case PRSatisfiable:
+                  case PRCounterSatisfiable:
+                  case PRTheorem:
+                  case PRUnsatisfiable:
                      res = handle;
                      //printf("res: %p\n", res);
                      break;
-               case PRFailure:
+                  case PRFailure:
                      /* Process terminates, but no result determined -> Remove it*/
                      EGPCtrlSetDeleteProc(set, handle, true);
                      break;
-               default:
+                  default:
                      assert(false && "Impossible ProverResult");
                }
             }

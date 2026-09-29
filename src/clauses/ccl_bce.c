@@ -22,8 +22,8 @@
 #include "ccl_bce.h"
 #include <clb_min_heap.h>
 
-#define OCC_CNT(n) ((n) ? PStackGetSP( (PStack_p) ((n)->val1.p_val)) : 0)
-#define IS_BLOCKED(n) ((n) && PStackGetSP((PStack_p) ((n)->val1.p_val)) == 0)
+#define OCC_CNT(n) ((n) ? PStackGetSP((PStack_p)((n)->val1.p_val)) : 0)
+#define IS_BLOCKED(n) ((n) && PStackGetSP((PStack_p)((n)->val1.p_val)) == 0)
 
 /*---------------------------------------------------------------------*/
 /*                    Data type declarations                           */
@@ -32,7 +32,7 @@
 typedef struct
 {
    Clause_p orig_cl; // original clause that is potentially removed
-   Clause_p parent; // renamed clause used for resulutons -- for efficiency
+   Clause_p parent;  // renamed clause used for resulutons -- for efficiency
    Eqn_p lit;
    PStack_p candidates; // NB: Can be null;
    PStackPointer processed_cands;
@@ -98,9 +98,9 @@ int compare_taks(IntOrP* ip_a, IntOrP* ip_b)
    BCE_task_p a = (BCE_task_p)(ip_a->p_val);
    BCE_task_p b = (BCE_task_p)(ip_b->p_val);
    // order by the number of remaining candidates
-   PStackPointer a_total = a->candidates ? PStackGetSP(a->candidates): 0;
-   PStackPointer b_total = b->candidates ? PStackGetSP(b->candidates): 0;
-   return CMP(a_total-a->processed_cands, b_total-b->processed_cands);
+   PStackPointer a_total = a->candidates ? PStackGetSP(a->candidates) : 0;
+   PStackPointer b_total = b->candidates ? PStackGetSP(b->candidates) : 0;
+   return CMP(a_total - a->processed_cands, b_total - b->processed_cands);
 }
 
 /*-----------------------------------------------------------------------
@@ -120,10 +120,10 @@ int compare_taks(IntOrP* ip_a, IntOrP* ip_b)
 NumTree_p make_sym_map(ClauseSet_p set, int occ_limit, bool* eq_found)
 {
    NumTree_p res = NULL;
-   IntOrP dummy = {.p_val = NULL};
-   for(Clause_p cl = set->anchor->succ; cl!=set->anchor; cl = cl->succ)
+   IntOrP dummy = { .p_val = NULL };
+   for(Clause_p cl = set->anchor->succ; cl != set->anchor; cl = cl->succ)
    {
-      for(Eqn_p lit=cl->literals; lit; lit = lit->next)
+      for(Eqn_p lit = cl->literals; lit; lit = lit->next)
       {
          if(!EqnIsEquLit(lit))
          {
@@ -134,7 +134,7 @@ NumTree_p make_sym_map(ClauseSet_p set, int occ_limit, bool* eq_found)
             NumTree_p fc_cls = NumTreeFind(&res, fc);
             if(!IS_BLOCKED(fc_cls))
             {
-               if( occ_limit > 0 && // limiting enabled
+               if(occ_limit > 0 && // limiting enabled
                   ((OCC_CNT(fc_cls) + OCC_CNT(other_fc_cls)) >= occ_limit))
                {
                   // removing all elements  -- essentially blocking tracking of symbol
@@ -144,7 +144,8 @@ NumTree_p make_sym_map(ClauseSet_p set, int occ_limit, bool* eq_found)
                   }
                   else
                   {
-                     NumTreeStore(&res, fc, ((IntOrP){.p_val = PStackAlloc()}), dummy);
+                     NumTreeStore(&res, fc,
+                                  ((IntOrP){ .p_val = PStackAlloc() }), dummy);
                   }
 
                   if(other_fc_cls)
@@ -153,14 +154,15 @@ NumTree_p make_sym_map(ClauseSet_p set, int occ_limit, bool* eq_found)
                   }
                   else
                   {
-                     NumTreeStore(&res, -fc, ((IntOrP){.p_val = PStackAlloc()}), dummy);
+                     NumTreeStore(&res, -fc,
+                                  ((IntOrP){ .p_val = PStackAlloc() }), dummy);
                   }
                }
                else
                {
                   if(!fc_cls)
                   {
-                     IntOrP new = {.p_val = PStackAlloc()};
+                     IntOrP new = { .p_val = PStackAlloc() };
                      PStackPushP(new.p_val, cl);
                      NumTreeStore(&res, fc, new, dummy);
                   }
@@ -195,15 +197,16 @@ NumTree_p make_sym_map(ClauseSet_p set, int occ_limit, bool* eq_found)
 //
 /----------------------------------------------------------------------*/
 
-MinHeap_p make_bce_queue(ClauseSet_p set, NumTree_p* sym_map, PStack_p fresh_clauses)
+MinHeap_p make_bce_queue(ClauseSet_p set, NumTree_p* sym_map,
+                         PStack_p fresh_clauses)
 {
    MinHeap_p res = MinHeapAlloc(compare_taks);
-   for(Clause_p cl = set->anchor->succ; cl!=set->anchor; cl = cl->succ)
+   for(Clause_p cl = set->anchor->succ; cl != set->anchor; cl = cl->succ)
    {
       assert(cl->set);
       Clause_p f_cl = ClauseCopyDisjoint(cl);
       PStackPushP(fresh_clauses, f_cl);
-      for(Eqn_p lit=f_cl->literals; lit; lit = lit->next)
+      for(Eqn_p lit = f_cl->literals; lit; lit = lit->next)
       {
          if(!EqnIsEquLit(lit))
          {
@@ -211,8 +214,8 @@ MinHeap_p make_bce_queue(ClauseSet_p set, NumTree_p* sym_map, PStack_p fresh_cla
             NumTree_p cands_node = NumTreeFind(sym_map, -fc);
             if(!IS_BLOCKED(cands_node))
             {
-               BCE_task_p t = make_task(cl, f_cl, lit,
-                                        cands_node ? cands_node->val1.p_val : NULL);
+               BCE_task_p t = make_task(
+                  cl, f_cl, lit, cands_node ? cands_node->val1.p_val : NULL);
                MinHeapAddP(res, t);
             }
          }
@@ -234,8 +237,8 @@ MinHeap_p make_bce_queue(ClauseSet_p set, NumTree_p* sym_map, PStack_p fresh_cla
 //
 /----------------------------------------------------------------------*/
 
-void split_partner_literals(Eqn_p lit, Clause_p partner,
-                            PStack_p unif, PStack_p non_unif)
+void split_partner_literals(Eqn_p lit, Clause_p partner, PStack_p unif,
+                            PStack_p non_unif)
 {
    Subst_p subst = SubstAlloc();
    for(Eqn_p part_lit = partner->literals; part_lit; part_lit = part_lit->next)
@@ -251,7 +254,6 @@ void split_partner_literals(Eqn_p lit, Clause_p partner,
       {
          PStackPushP(non_unif, part_lit);
       }
-
    }
    SubstDelete(subst);
 }
@@ -278,15 +280,14 @@ bool check_l_resolvents_neq(Clause_p cl, Eqn_p lit, PStack_p unif,
 #ifndef NDEBUG
    bool unif_res =
 #endif
-      SubstMguComplete(lit->lterm, part_lit->lterm, subst)
-   ;
+      SubstMguComplete(lit->lterm, part_lit->lterm, subst);
    assert(unif_res);
    bool res = false;
 
    while(true)
    {
       bool comp_found = false;
-      for(PStackPointer i=0; !comp_found && i<PStackGetSP(non_unif); i++)
+      for(PStackPointer i = 0; !comp_found && i < PStackGetSP(non_unif); i++)
       {
          comp_found = EqnListFindCompLitExcept(cl->literals, lit,
                                                PStackElementP(non_unif, i),
@@ -308,13 +309,13 @@ bool check_l_resolvents_neq(Clause_p cl, Eqn_p lit, PStack_p unif,
       }
 
       PStackPointer prev_try = PStackGetSP(processed);
-      for(PStackPointer i=0; i<PStackGetSP(unif); i++)
+      for(PStackPointer i = 0; i < PStackGetSP(unif); i++)
       {
          if(!PStackFindInt(processed, i))
          {
             if(EqnListFindCompLitExcept(cl->literals, lit,
-                                        PStackElementP(unif, i),
-                                        DEREF_ALWAYS, DEREF_ALWAYS))
+                                        PStackElementP(unif, i), DEREF_ALWAYS,
+                                        DEREF_ALWAYS))
             {
                PStackPushInt(processed, i);
             }
@@ -330,7 +331,8 @@ bool check_l_resolvents_neq(Clause_p cl, Eqn_p lit, PStack_p unif,
       bool unifiable = true;
       for(; unifiable && prev_try < PStackGetSP(processed); prev_try++)
       {
-         Eqn_p o_lit = PStackElementP(unif, PStackElementInt(processed, prev_try));
+         Eqn_p o_lit =
+            PStackElementP(unif, PStackElementInt(processed, prev_try));
          unifiable = SubstMguComplete(lit->lterm, o_lit->lterm, subst);
       }
 
@@ -371,12 +373,12 @@ bool check_blockedness_neq(BCE_task_p task, Clause_p partner, TB_p _)
 
    PStack_p processed = PStackAlloc();
    res = true;
-   for(PStackPointer i=0; res && i<PStackGetSP(unifiable); i++)
+   for(PStackPointer i = 0; res && i < PStackGetSP(unifiable); i++)
    {
       PStackReset(processed);
       PStackPushInt(processed, i);
-      res = check_l_resolvents_neq(task->parent, lit, unifiable,
-                                    nonunifiable, processed);
+      res = check_l_resolvents_neq(task->parent, lit, unifiable, nonunifiable,
+                                   processed);
    }
 
    PStackFree(processed);
@@ -411,8 +413,7 @@ bool check_blockedness_eq(BCE_task_p task, Clause_p partner, TB_p tmp_bank)
 
    for(Eqn_p p_lit = partner->literals; p_lit; p_lit = p_lit->next)
    {
-      if(EqnIsPositive(lit) != EqnIsPositive(p_lit) &&
-         !EqnIsEquLit(p_lit) &&
+      if(EqnIsPositive(lit) != EqnIsPositive(p_lit) && !EqnIsEquLit(p_lit) &&
          lit->lterm->f_code == p_lit->lterm->f_code)
       {
          PStackPushP(same_head, p_lit);
@@ -429,14 +430,14 @@ bool check_blockedness_eq(BCE_task_p task, Clause_p partner, TB_p tmp_bank)
    {
       Eqn_p p_lit = PStackPopP(same_head);
       Eqn_p cond = NULL;
-      for(int i=0; i<p_lit->lterm->arity; i++)
+      for(int i = 0; i < p_lit->lterm->arity; i++)
       {
          Eqn_p neq = EqnAlloc(p_lit->lterm->args[i], lit->lterm->args[i],
                               p_lit->bank, false);
          EqnListInsertFirst(&cond, neq);
       }
-      Eqn_p orig_cl = EqnListCopyExcept(task->parent->literals,
-                                        task->lit, task->lit->bank);
+      Eqn_p orig_cl =
+         EqnListCopyExcept(task->parent->literals, task->lit, task->lit->bank);
       cond = EqnListAppend(&cond, orig_cl);
       cond = EqnListAppend(&cond, EqnListCopy(others, bank));
       Clause_p tmp_cl = ClauseAlloc(cond);
@@ -462,14 +463,15 @@ bool check_blockedness_eq(BCE_task_p task, Clause_p partner, TB_p tmp_bank)
 //
 /----------------------------------------------------------------------*/
 
-void check_candidates(BCE_task_p t, ClauseSet_p archive,
-                      BlockednessChecker f, TB_p tmp_bank)
+void check_candidates(BCE_task_p t, ClauseSet_p archive, BlockednessChecker f,
+                      TB_p tmp_bank)
 {
    assert(!t->candidates || !PStackEmpty(t->candidates));
 
    if(t->candidates)
    {
-      for(;t->processed_cands < PStackGetSP(t->candidates); t->processed_cands++)
+      for(; t->processed_cands < PStackGetSP(t->candidates);
+          t->processed_cands++)
       {
          Clause_p cand = PStackElementP(t->candidates, t->processed_cands);
          if(cand != t->orig_cl && cand->set != archive && !f(t, cand, tmp_bank))
@@ -510,7 +512,7 @@ void resume_task(MinHeap_p task_queue, BCE_task_p task)
 //
 /----------------------------------------------------------------------*/
 
-void free_blocker(void *key, void* val)
+void free_blocker(void* key, void* val)
 {
    PStack_p blocked_tasks = (PStack_p)val;
    while(!PStackEmpty(blocked_tasks))
@@ -542,7 +544,8 @@ long do_eliminate_clauses(MinHeap_p task_queue, ClauseSet_p archive,
             ClauseSetMoveClause(archive, min_task->orig_cl);
             eliminated++;
 
-            PStack_p blocked = PObjMapExtract(&blocker_map, min_task->orig_cl, PCmpFun);
+            PStack_p blocked =
+               PObjMapExtract(&blocker_map, min_task->orig_cl, PCmpFun);
             if(blocked)
             {
                while(!PStackEmpty(blocked))
@@ -558,8 +561,10 @@ long do_eliminate_clauses(MinHeap_p task_queue, ClauseSet_p archive,
             // because of the last checked candidate, clause is not blocked.
             // remember that checking of candidates needs to be continued
             // once the clause which prevented blocking is removed
-            Clause_p offending_cl = PStackElementP(min_task->candidates, min_task->processed_cands);
-            PStack_p* blocked = (PStack_p*)PObjMapGetRef(&blocker_map, offending_cl, PCmpFun, NULL);
+            Clause_p offending_cl =
+               PStackElementP(min_task->candidates, min_task->processed_cands);
+            PStack_p* blocked = (PStack_p*)PObjMapGetRef(
+               &blocker_map, offending_cl, PCmpFun, NULL);
             if(!*blocked)
             {
                *blocked = PStackAlloc();
@@ -615,7 +620,7 @@ void EliminateBlockedClauses(ClauseSet_p passive, ClauseSet_p archive,
 
    PStack_p iter = NumTreeTraverseInit(sym_occs);
    NumTree_p n = NULL;
-   while( (n = NumTreeTraverseNext(iter)) )
+   while((n = NumTreeTraverseNext(iter)))
    {
       PStack_p cls = n->val1.p_val;
       PStackFree(cls);

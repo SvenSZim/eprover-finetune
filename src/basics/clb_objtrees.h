@@ -34,7 +34,7 @@ Changes
 /*                    Data type declarations                           */
 /*---------------------------------------------------------------------*/
 
-typedef void (*ObjDelFun)(void *junk);
+typedef void (*ObjDelFun)(void* junk);
 
 typedef PTree_p PObjTree_p;
 
@@ -42,30 +42,29 @@ typedef PTree_p PObjTree_p;
 /*                Exported Functions and Variables                     */
 /*---------------------------------------------------------------------*/
 
-PObjTree_p PTreeObjInsert(PObjTree_p *root, PObjTree_p newnode,
+PObjTree_p PTreeObjInsert(PObjTree_p* root, PObjTree_p newnode,
                           ComparisonFunctionType cmpfun);
-void*      PTreeObjStore(PObjTree_p *root, void* key,
-                         ComparisonFunctionType cmpfun);
-PObjTree_p PTreeObjFind(PObjTree_p *root, void* key,
+void* PTreeObjStore(PObjTree_p* root, void* key, ComparisonFunctionType cmpfun);
+PObjTree_p PTreeObjFind(PObjTree_p* root, void* key,
                         ComparisonFunctionType cmpfun);
-void*      PTreeObjFindObj(PObjTree_p *root, void* key,
-                           ComparisonFunctionType cmpfun);
+void* PTreeObjFindObj(PObjTree_p* root, void* key,
+                      ComparisonFunctionType cmpfun);
 PObjTree_p PTreeObjFindBinary(PObjTree_p root, void* key,
                               ComparisonFunctionType cmpfun);
-PObjTree_p PTreeObjExtractEntry(PObjTree_p *root, void* key,
+PObjTree_p PTreeObjExtractEntry(PObjTree_p* root, void* key,
                                 ComparisonFunctionType cmpfun);
-void*      PTreeObjExtractObject(PObjTree_p *root, void* key,
-                                 ComparisonFunctionType cmpfun);
-void*      PTreeObjExtractRootObject(PObjTree_p *root,
-                                     ComparisonFunctionType cmpfun);
-void       PTreeObjMerge(PObjTree_p *root, PObjTree_p add,
-                         ComparisonFunctionType cmpfun);
+void* PTreeObjExtractObject(PObjTree_p* root, void* key,
+                            ComparisonFunctionType cmpfun);
+void* PTreeObjExtractRootObject(PObjTree_p* root,
+                                ComparisonFunctionType cmpfun);
+void PTreeObjMerge(PObjTree_p* root, PObjTree_p add,
+                   ComparisonFunctionType cmpfun);
 
-void       PObjTreeFree(PObjTree_p root, ObjDelFun del_fun);
+void PObjTreeFree(PObjTree_p root, ObjDelFun del_fun);
 
-long       PObjTreeNodes(PObjTree_p root);
+long PObjTreeNodes(PObjTree_p root);
 
-void       DummyObjDelFun(void* Junk);
+void DummyObjDelFun(void* Junk);
 
 
 #endif

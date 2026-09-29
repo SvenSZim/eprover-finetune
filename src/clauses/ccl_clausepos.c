@@ -64,14 +64,13 @@ void ClausePosPrint(FILE* out, ClausePos_p pos)
    long i = 0;
    Eqn_p handle;
 
-   for(handle=pos->clause->literals;
-       handle!=pos->literal;
-       handle=handle->next)
+   for(handle = pos->clause->literals; handle != pos->literal;
+       handle = handle->next)
    {
       i++;
    }
    fprintf(out, "%ld.%ld.%c.", pos->clause->ident, i,
-           pos->side==RightSide?'R':'L');
+           pos->side == RightSide ? 'R' : 'L');
    TermPosPrint(out, pos->pos);
 }
 
@@ -96,7 +95,7 @@ Eqn_p ClausePosFindPosLiteral(ClausePos_p pos, bool maximal)
 
    for(handle = pos->literal; handle; handle = handle->next)
    {
-      if(EqnIsPositive(handle) && (EqnIsMaximal(handle)|| !maximal))
+      if(EqnIsPositive(handle) && (EqnIsMaximal(handle) || !maximal))
       {
          break;
       }
@@ -126,8 +125,7 @@ Eqn_p ClausePosFindMaxLiteral(ClausePos_p pos, bool positive)
 
    for(handle = pos->literal; handle; handle = handle->next)
    {
-      if(EqnIsMaximal(handle) &&
-    (!positive || EqnIsPositive(handle)))
+      if(EqnIsMaximal(handle) && (!positive || EqnIsPositive(handle)))
       {
          break;
       }
@@ -187,8 +185,7 @@ Term_p ClausePosFindNextMaximalSide(ClausePos_p pos, bool positive)
    if(pos->literal)
    {
       PStackReset(pos->pos);
-      if(pos->side == LeftSide
-         && !EqnIsOriented(pos->literal))
+      if(pos->side == LeftSide && !EqnIsOriented(pos->literal))
       {
          pos->side = RightSide;
          res = ClausePosGetSide(pos);
@@ -289,9 +286,9 @@ Term_p ClausePosFindNextMaximalSubterm(ClausePos_p pos)
 bool TermComputeRWSequence(PStack_p stack, Term_p from, Term_p to,
                            int inject_op)
 {
-   bool     res = false;
+   bool res = false;
    Clause_p demod;
-   Term_p   tmp;
+   Term_p tmp;
 
    while(from != to)
    {
@@ -304,11 +301,9 @@ bool TermComputeRWSequence(PStack_p stack, Term_p from, Term_p to,
          assert(from->f_code == tmp->f_code);
          assert(from->arity);
 
-         for(i=0; i<from->arity; i++)
+         for(i = 0; i < from->arity; i++)
          {
-            TermComputeRWSequence(stack,
-                                  from->args[i],
-                                  tmp->args[i],
+            TermComputeRWSequence(stack, from->args[i], tmp->args[i],
                                   inject_op);
          }
       }
@@ -326,7 +321,6 @@ bool TermComputeRWSequence(PStack_p stack, Term_p from, Term_p to,
    }
    return res;
 }
-
 
 
 

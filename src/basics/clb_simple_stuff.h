@@ -39,7 +39,7 @@ typedef struct
 {
    double weight;
    IntOrP object;
-}WeightedObjectCell, *WeightedObject_p;
+} WeightedObjectCell, *WeightedObject_p;
 
 typedef struct
 {
@@ -47,7 +47,7 @@ typedef struct
    unsigned int ystate;
    unsigned int zstate;
    unsigned int cstate;
-}RandStateCell, *RandState_p;
+} RandStateCell, *RandState_p;
 
 
 typedef enum
@@ -59,9 +59,10 @@ typedef enum
    PRCounterSatisfiable,
    PRFailure,
    PRGaveUp
-}ProverResult;
+} ProverResult;
 
-typedef enum {
+typedef enum
+{
    PROBLEM_NOT_INIT = -1,
    PROBLEM_FO,
    PROBLEM_HO
@@ -79,38 +80,38 @@ extern ProblemType problemType;
 
 int StrDistance(const char* a, const char* b);
 
-#define WeightedObjectArrayAlloc(number) \
-        SecureMalloc(number * sizeof(WeightedObjectCell))
+#define WeightedObjectArrayAlloc(number)                                       \
+   SecureMalloc(number * sizeof(WeightedObjectCell))
 #define WeightedObjectArrayFree(array) FREE(array)
 
-int     WeightedObjectCompareFun(WeightedObject_p o1, WeightedObject_p o2);
+int WeightedObjectCompareFun(WeightedObject_p o1, WeightedObject_p o2);
 
-#define WeightedObjectArraySort(array, size) \
-        qsort(array, size, sizeof(WeightedObjectCell),\
+#define WeightedObjectArraySort(array, size)                                   \
+   qsort(array, size, sizeof(WeightedObjectCell),                              \
          (ComparisonFunctionType)WeightedObjectCompareFun)
 
-void     JKISSSeed(RandState_p state, int seed1, int seed2, int seed3);
+void JKISSSeed(RandState_p state, int seed1, int seed2, int seed3);
 unsigned JKISSRand(RandState_p state);
-double   JKISSRandDouble(RandState_p state);
+double JKISSRandDouble(RandState_p state);
 
-char*  IndentStr(int level);
-bool   StringStartsWith(const char* pattern, const char* prefix);
+char* IndentStr(int level);
+bool StringStartsWith(const char* pattern, const char* prefix);
 
-int    StringIndex(char* key, char* list[]);
-long   StringArrayCardinality(char *array[]);
+int StringIndex(char* key, char* list[]);
+long StringArrayCardinality(char* array[]);
 
-long   ComputeGCD(long a, long b);
+long ComputeGCD(long a, long b);
 
-void   SetProblemType(ProblemType t);
+void SetProblemType(ProblemType t);
 
-#define DBG_PRINT(out, prefix, main, suffix) \
-   fprintf(out, "%s", prefix);\
-   main;\
+#define DBG_PRINT(out, prefix, main, suffix)                                   \
+   fprintf(out, "%s", prefix);                                                 \
+   main;                                                                       \
    fprintf(out, "%s", suffix)
 
-#define DBG_TPRINT(out, prefix, term, suffix) \
-   fprintf(out, "%s", prefix);\
-   TermPrintDbg(out, term, TermGetBank(term)->sig, DEREF_NEVER);\
+#define DBG_TPRINT(out, prefix, term, suffix)                                  \
+   fprintf(out, "%s", prefix);                                                 \
+   TermPrintDbg(out, term, TermGetBank(term)->sig, DEREF_NEVER);               \
    fprintf(out, "%s", suffix)
 
 
