@@ -1,0 +1,69 @@
+# Configuration for tools/port_upstream.py -- see tools/UPSTREAM_SYNC.md
+
+upstream_ref = "upstream/master"   # pristine mirror of eprover/eprover
+port_branch  = "upstream-port"     # upstream history translated to our layout
+
+# Upstream commit the fork was based on. The port branch starts here, so the
+# merge-base with our master is this commit.
+base = "3b7afc70fe77d3118bb95144c4735ca45f5f31cf"
+
+# Paths that are not carried over. A pattern ending in "/" is a directory
+# prefix; anything else is an fnmatch glob over the whole path ("*" also
+# matches "/"). These must mirror what we deleted from the fork (checked by
+# `port_upstream.py check-base`).
+drop = [
+  "*.pyc",
+  "*__pycache__/*",
+  "etc/STAREXEC2.2/",
+  "etc/STAREXEC3.0/",
+  "etc/starexec_*",
+  "PYTHON/EXAMPLE_CFG/",
+  "PYTHON/e_ltb_runner.py",
+  "PYTHON/e_ltb_runner22.py",
+  "PYTHON/e_ltb_runnerj5.py",
+  "PYTHON/emaster.py",
+  "PYTHON/eserver.py",
+  "PYTHON/enetcat.py",
+  "PYTHON/prunner.py",
+  "PYTHON/udp_dump.py",
+  "PYTHON/bsub_eprover.py",
+  "PYTHON/e_buffy.py",
+  "PYTHON/fix_prot.py",
+  "PYTHON/pylib_emaster.py",
+  "PYTHON/pylib_emconf.py",
+  "PYTHON/pylib_e_multi.py",
+  "PYTHON/pylib_eserver.py",
+  "PYTHON/pylib_tcp.py",
+  "development_tools/*.awk",
+  "development_tools/*.sh",
+]
+
+# Prefix renames applied after `drop`, as [old, new] pairs (longest prefix
+# wins). Empty until the directory restructure happens.
+rename = [
+]
+
+# Upstream commits touching these paths are ported as usual but get a
+# `Port-Watch:` trailer and are listed in the sync report, because the change
+# needs a human to mirror it in our build system.
+watch = [
+  "Makefile*",
+  "*/Makefile*",
+  "configure",
+]
+# ... except these (Makefile.vars is toggled for experiments in many commits).
+watch_ignore = [
+  "Makefile.vars",
+]
+
+# Paths that cannot be translated mechanically (files we split up). The tool
+# stops before a commit touching one of these; see UPSTREAM_SYNC.md.
+halt_on = [
+]
+
+# Optional formatter applied to every carried-over blob matching `globs`.
+# `command` reads the file on stdin and writes it to stdout; "{path}" is
+# replaced by the (new) path. Leave `command` empty to disable.
+[format]
+globs   = ["*.c", "*.h"]
+command = []          # e.g. ["clang-format", "--assume-filename={path}"]
