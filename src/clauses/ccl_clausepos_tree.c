@@ -138,6 +138,15 @@ int CmpClauseTPosCells(const void* soc1, const void* soc2)
    const ClauseTPos_p c1 = (const ClauseTPos_p)soc1;
    const ClauseTPos_p c2 = (const ClauseTPos_p)soc2;
 
+#ifdef CLAUSE_PERM_IDENT
+   /* Order by the running creation number, not by the address (which depends
+      on malloc's history). */
+   if(c1->clause->perm_ident != c2->clause->perm_ident)
+   {
+      return (c1->clause->perm_ident > c2->clause->perm_ident) -
+         (c1->clause->perm_ident < c2->clause->perm_ident);
+   }
+#endif
    return PCmp(c1->clause, c2->clause);
 }
 

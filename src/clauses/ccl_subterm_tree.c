@@ -191,6 +191,16 @@ int CmpSubtermCells(const void* soc1, const void* soc2)
    const SubtermOcc_p s1 = (const SubtermOcc_p)soc1;
    const SubtermOcc_p s2 = (const SubtermOcc_p)soc2;
 
+   /* Order by the deterministic term id, not by the address (which depends on
+      malloc's history); the address only breaks ties between distinct terms
+      with the same id (possible for de Bruijn variables). */
+   long id1 = TermIsFreeVar(s1->term) ? s1->term->f_code : s1->term->entry_no;
+   long id2 = TermIsFreeVar(s2->term) ? s2->term->f_code : s2->term->entry_no;
+
+   if(id1 != id2)
+   {
+      return (id1 > id2) - (id1 < id2);
+   }
    return PCmp(s1->term, s2->term);
 }
 
