@@ -7,11 +7,18 @@ file golden.json. Clause counts are deterministic, so any unintended change to
 search behaviour (e.g. from a refactoring) shows up as a diff.
 
     tests/regression/run.py             # compare against golden.json
+    tests/regression/run.py --status-only   # ignore clause counts (see below)
     tests/regression/run.py --record    # (re)write golden.json
     tests/regression/run.py -k SMOKE    # only entries whose id contains SMOKE
+
+Clause counts depend on the memory layout of the binary (E orders some data
+by pointer address), so they only reproduce for the same compiler, flags and
+source layout. Use --status-only on other toolchains (e.g. CI) and re-record
+golden.json when you change toolchain.
 """
 import argparse
 import json
+import os
 import re
 import shlex
 import subprocess
@@ -38,6 +45,13 @@ CONFIGS = {
 EXACT_COUNTS = {"fixed"}
 SAFETY_CPU_LIMIT = 60
 NO_ASLR = ["setarch", "-R"]
+
+
+def default_binary():
+    for cand in (ROOT / "build" / "dev" / "bin" / "eprover", ROOT / "PROVER" / "eprover"):
+        if cand.exists():
+            return str(cand)
+    return str(ROOT / "build" / "dev" / "bin" / "eprover")
 
 
 def parse_problems(path):
@@ -84,7 +98,10 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--record", action="store_true", help="write golden.json")
-    ap.add_argument("--binary", default=str(ROOT / "PROVER" / "eprover"))
+    ap.add_argument("--binary", default=os.environ.get("EPROVER") or default_binary(),
+                    help="default: $EPROVER, else build/dev/bin/eprover")
+    ap.add_argument("--status-only", action="store_true",
+                    help="compare only the SZS status, not the clause counts")
     ap.add_argument("-j", "--jobs", type=int, default=4)
     ap.add_argument("-k", default="", help="substring filter on entry ids")
     ap.add_argument("--problems", default=str(HERE / "problems.txt"))
@@ -92,7 +109,7 @@ def main():
     a = ap.parse_args()
 
     if not Path(a.binary).exists():
-        sys.exit(f"eprover binary not found: {a.binary} (run ./configure && make)")
+        sys.exit(f"eprover binary not found: {a.binary} (cmake --preset dev && cmake --build --preset dev)")
     entries = [(f"{p}::{c}", p, c) for p, c in parse_problems(Path(a.problems))]
     entries = [e for e in entries if a.k in e[0]]
 
@@ -111,6 +128,8 @@ def main():
     bad = 0
     for key, res in actual.items():
         exp = golden.get(key)
+        if a.status_only and exp is not None:
+            exp, res = {"status": exp["status"]}, {"status": res["status"]}
         if exp is None:
             print(f"NEW   {key}: {res}")
             bad += 1

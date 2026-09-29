@@ -12,10 +12,12 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build (first-order)
         run: |
-          ./configure
-          make -j"$(nproc)"
+          cmake --preset dev
+          cmake --build --preset dev -j"$(nproc)"
+      # Clause counts depend on the toolchain (see tests/regression/README.md),
+      # so CI compares statuses only. Exact counts are for local refactoring.
       - name: Regression suite
-        run: tests/regression/run.py -j"$(nproc)"
+        run: tests/regression/run.py -j"$(nproc)" --status-only
 
   build-ho:
     runs-on: ubuntu-24.04
@@ -23,8 +25,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build (higher-order)
         run: |
-          ./configure --enable-ho
-          make -j"$(nproc)"
+          cmake --preset ho
+          cmake --build --preset ho -j"$(nproc)"
       # TODO: add the EXAMPLE_PROBLEMS/LFHOL problems to the regression suite
 
   sanitizers:
@@ -39,7 +41,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build with ASan + UBSan
         run: |
-          ./configure
-          make -j"$(nproc)" OPTFLAGS="-O1 -g -fno-omit-frame-pointer -fno-common -fsanitize=address,undefined -fno-sanitize-recover=undefined"
+          cmake --preset asan
+          cmake --build --preset asan -j"$(nproc)"
       - name: Regression suite
-        run: tests/regression/run.py -j"$(nproc)" --cpu-limit 180
+        run: tests/regression/run.py -j"$(nproc)" --status-only --binary build/asan/bin/eprover --cpu-limit 180

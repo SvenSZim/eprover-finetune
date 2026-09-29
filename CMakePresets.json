@@ -1,0 +1,26 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {"major": 3, "minor": 21, "patch": 0},
+  "configurePresets": [
+    {"name": "dev", "displayName": "First-order, assertions on (old ./configure default)",
+     "binaryDir": "${sourceDir}/build/dev"},
+    {"name": "ho", "displayName": "Higher-order (eprover-ho)", "inherits": "dev",
+     "binaryDir": "${sourceDir}/build/ho",
+     "cacheVariables": {"E_ENABLE_HO": "ON"}},
+    {"name": "fast", "displayName": "No assertions (old `make default_config`)", "inherits": "dev",
+     "binaryDir": "${sourceDir}/build/fast",
+     "cacheVariables": {"E_ASSERTIONS": "OFF", "E_MEMORY_DEBUG": "OFF", "E_OPT_FLAGS": "-O3;-fno-common;-fomit-frame-pointer"}},
+    {"name": "asan", "displayName": "ASan + UBSan", "inherits": "dev",
+     "binaryDir": "${sourceDir}/build/asan",
+     "cacheVariables": {"E_SANITIZE": "address,undefined", "E_OPT_FLAGS": "-O1;-g;-fno-common"}}
+  ],
+  "buildPresets": [
+    {"name": "dev", "configurePreset": "dev"},
+    {"name": "ho", "configurePreset": "ho"},
+    {"name": "fast", "configurePreset": "fast"},
+    {"name": "asan", "configurePreset": "asan"}
+  ],
+  "testPresets": [
+    {"name": "dev", "configurePreset": "dev", "output": {"outputOnFailure": true}}
+  ]
+}

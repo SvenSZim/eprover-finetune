@@ -278,7 +278,7 @@ class Porter:
             halting = [t for t in touched if not self.rules.dropped(t) and self.rules.halting(t)]
             if halting:
                 self._halt(u, halting, done)
-            watch = sorted({t for t in touched if not self.rules.dropped(t) and self.rules.watched(t)})
+            watch = sorted({t for t in touched if self.rules.watched(t)})
             notes = [f"Port-Watch: {', '.join(watch)}"] if watch else []
             c = self.make_commit(info, tree, parents, u, notes)
             pm[u] = c

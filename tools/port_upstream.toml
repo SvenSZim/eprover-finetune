@@ -36,6 +36,18 @@ drop = [
   "PYTHON/pylib_tcp.py",
   "development_tools/*.awk",
   "development_tools/*.sh",
+  # old build system, replaced by CMake (still reported through `watch`)
+  "Makefile",
+  "Makefile.vars",
+  "Makefile.services",
+  "configure",
+  "BASICS/Makefile", "CLAUSES/Makefile", "CONTRIB/Makefile", "CONTROL/Makefile",
+  "DOC/Makefile", "EXTERNAL/Makefile", "HEURISTICS/Makefile", "INOUT/Makefile",
+  "LEARN/Makefile", "ORDERINGS/Makefile", "PCL2/Makefile", "PROPOSITIONAL/Makefile",
+  "PROVER/Makefile", "PYTHON/Makefile", "SIMPLE_APPS/Makefile", "TERMS/Makefile",
+  "development_tools/Makefile", "development_tools/configure_tools",
+  "development_tools/e_install",
+  "etc/Makefile.flat.template*",
 ]
 
 # Prefix renames applied after `drop`, as [old, new] pairs (longest prefix
@@ -43,13 +55,14 @@ drop = [
 rename = [
 ]
 
-# Upstream commits touching these paths are ported as usual but get a
-# `Port-Watch:` trailer and are listed in the sync report, because the change
-# needs a human to mirror it in our build system.
+# Upstream commits touching these paths (even dropped ones, such as the old
+# Makefiles) get a `Port-Watch:` trailer and are listed in the sync report,
+# because the change needs a human to mirror it in CMakeLists.txt.
 watch = [
   "Makefile*",
   "*/Makefile*",
   "configure",
+  "*/makefile.in",
 ]
 # ... except these (Makefile.vars is toggled for experiments in many commits).
 watch_ignore = [

@@ -7,29 +7,18 @@ README!
 Short Installation Instructions for the Impatient
 =================================================
 
-This assumes that you have GNU tar, sh and gawk in your search path!
-
-Simple installation of the first-order version (will install
-executables):
+E is built with CMake (>= 3.16) and a C compiler; nothing else is needed.
 
 ```sh
-  tar -xzf E.tgz
-  cd E
-  ./configure --bindir=/path/to/EXECDIR
-  make
-  make install
-  /path/to/EXECDIR/eprover -h | more
+  cmake --preset dev                  # configure into build/dev
+  cmake --build --preset dev -j       # compile everything
+  build/dev/bin/eprover -h | more
 ```
 
-Simplest installation (in-place):
+Install the executables (and the PicoSAT binary) somewhere:
 
 ```sh
-  tar -xzf E.tgz
-  cd E
-  ./configure
-  make rebuild
-  cd PROVER
-  ./eprover -h | more
+  cmake --install build/dev --prefix /path/to/PREFIX    # binaries in PREFIX/bin
 ```
 
 Read the rest of this file and the fine (if incomplete) manual if
@@ -37,15 +26,22 @@ anything fails. There should be a copy of the manual in
 `DOC/eprover.pdf`.
 
 E 3.2 supports (monomorphic) higher-order logic. To build a binary
-that supports higher-order reasoning, use the following:
-
+that supports higher-order reasoning, use the `ho` preset (the binary
+is called `eprover-ho`):
 
 ```sh
-  ./configure --enable-ho
-  make rebuild
-  cd PROVER
-  eprover-ho -h | more
+  cmake --preset ho && cmake --build --preset ho -j
+  build/ho/bin/eprover-ho -h | more
 ```
+
+Other presets: `fast` (assertions off, as the old `make default_config`) and
+`asan` (AddressSanitizer + UBSan). Individual options (`E_ENABLE_HO`,
+`E_UNIX_COMMENTS`, `E_ASSERTIONS`, `E_MEMORY_DEBUG`, `E_SANITIZE`,
+`E_OPT_FLAGS`, ...) are documented at the top of `CMakeLists.txt` and can be
+set with `-D`, e.g. `cmake --preset dev -DE_UNIX_COMMENTS=ON`.
+
+The build writes `compile_commands.json` to the build directory; `.clangd`
+points clangd at `build/dev`. Run the regression tests with `ctest --preset dev`.
 
 
 The recommended command for running E on the file problem.p is
@@ -125,106 +121,47 @@ or
 ```
 (if you have GNU tar)
 
-This should create a directory named E. After unpacking, optionally
-edit `E/Makefile.vars` to your liking. In particular, if building for
-HPUX, comment out the suitable CFLAGS definition (for most systems,
-the default definition should be ok). Then change to the E directory:
+This should create a directory named E. Then:
 
 ```sh
    cd E
+   cmake --preset dev
+   cmake --build --preset dev -j
 ```
 
-Determine if you want to run E from its own build directory or wether
-you want to install the executables in some other directory
-EXECDIR. In the first case, run
+builds the libraries and all included programs in `build/dev`; run them from
+there (`build/dev/bin/eprover`) or install them into a prefix:
 
 ```sh
-   ./configure
+   cmake --install build/dev --prefix PREFIX
 ```
 
-otherwise
+You need write permission in PREFIX, so if you install E outside your own home
+directory, you may need to become root or use sudo.
+
+Changed options are picked up on the next `cmake` run; to start from scratch,
+delete the build directory.
+
+To translate the LaTeX documentation (requires LaTeX2e, pdflatex, and the
+packages theorem, amssymb and epsfig, which are included in most current LaTeX
+distributions), run
 
 ```sh
-   ./configure --bindir=EXECDIR
+   cmake --build build/dev --target docs
 ```
 
-or, if you also want to install the man-pages into MANDIR,
+The manual should also be included as a pre-compiled PDF. For an unusual
+compiler or operating system, pass `-DCMAKE_C_COMPILER=...` and
+`-DE_OPT_FLAGS=...`. If you have any problems, look into `DOC/PORTING`.
+
+After building, try
 
 ```sh
-   ./configure --bindir=EXECDIR --man-prefix=MANDIR
+   build/dev/bin/eprover EXAMPLE_PROBLEMS/TPTP/BOO006-1.p
 ```
 
-To enable higher-order-support, add the option `--enable-ho`, e.g.
-
-```sh
-   ./configure --enable-ho
-```
-
-Then type
-
-```sh
-   make
-```
-
-to compile the libraries and all included programs under the E
-directory. If you want to install E in a particular EXECDIR, type
-
-```sh
-   make install
-```
-
-You must have write permission in the EXECDIR, so if you install E
-outside your own home directory, you may need to become root or use
-sudo.
-
-If you have changed the configuration, you need to rebuild all object
-and binary files. Run
-
-```sh
-   make rebuild
-```
-
-instead of plain make.
-
-
-Type
-
-```sh
-   make documentation
-```
-
-to translate the LaTeX documentation (this requires LaTeX2e, pdflatex,
-and the packages theorem, amssymb and epsfig, which are included in
-most current LaTeX distributions). The manual should also be included
-as a pre-compiled PDF.
-
-For some operating systems, especially if you do not have the GNU gcc
-compiler installed, you may need to edit Makefile.vars manually to
-select tools and options. If you have any problems, look into
-E/DOC/PORTING.
-
-If you get into trouble,
-
-```sh
-   make rebuild
-```
-
-will rebuild E completely to your current configuration.
-
-After installation, go to E/PROVER and type
-
-```sh
-   ./eprover BOO001-1+rm_eq_rstfp.lop
-```
-
-to see the prover in action. Type
-
-```sh
-   ./eprover LUSK6.lop
-```
-
-for a harder example. `./eprover -h` will give you some information and
-a list of options.
+to see the prover in action. `build/dev/bin/eprover -h` gives you some
+information and a list of options.
 
 For impatient people who do not want to read anything:
 

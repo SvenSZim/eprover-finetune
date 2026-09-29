@@ -69,3 +69,5 @@ CONTRIB/picosat-965/*
 setup.sh
 build.sh
 
+build/
+compile_commands.json

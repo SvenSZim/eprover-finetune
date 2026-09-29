@@ -59,12 +59,13 @@ Expected results of `sync`:
 
 * `ported N commit(s)` -- done.
 * A **"Needs manual attention"** list: upstream commits that touched build
-  files (`watch` in the config; `Makefile.vars` is ignored). They are ported
-  as they are, but the commit message carries a `Port-Watch:` trailer. The old
-  Makefiles are still present on `upstream-port` and merge normally as long as
-  we keep using them; once the CMake build exists, add the Makefiles to `drop`
-  and mirror such changes in `CMakeLists.txt` by hand (`git log --grep
-  Port-Watch upstream-port`).
+  files (`watch` in the config: the Makefiles, `configure`, ...). The old
+  build system is in `drop` (we build with CMake), so such a change is *not*
+  carried over, but the commit message on `upstream-port` gets a `Port-Watch:`
+  trailer and it is listed here. Mirror it by hand in `CMakeLists.txt` (new
+  source file in a directory: nothing to do, sources are globbed; new
+  program, library, define or link dependency: edit `CMakeLists.txt`).
+  Find them again with `git log --grep Port-Watch upstream-port`.
 * **HALTED** (exit code 2): the next commit touches a file listed in `halt_on`
   (see "Manual ports").
 
@@ -126,6 +127,10 @@ translated with rules that the branch tip does not follow.
   Turning it on is a rules change: use `migrate`.
 * `Makefile`-family changes are *not* translated to CMake; that is the manual
   step above.
+* The regression suite's clause counts only reproduce for the same toolchain
+  (see `tests/regression/README.md`); after merging upstream changes compare
+  with `--status-only` unless you compare against a baseline built from the
+  merge-base with the same compiler.
 * Upstream force-pushes/rebases would leave orphan translated commits on the
   port branch; the tool assumes `upstream/master` only moves forward.
 * Requires Python >= 3.11 (`tomllib`) and git; no other dependencies.
