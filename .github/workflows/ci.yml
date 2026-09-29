@@ -6,6 +6,15 @@ on:
   pull_request:
 
 jobs:
+  format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned clang-format
+        run: pip install clang-format==23.1.1
+      - name: Check formatting
+        run: tools/format.sh --check
+
   build-and-test:
     runs-on: ubuntu-24.04
     steps:

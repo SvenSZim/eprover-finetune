@@ -115,9 +115,14 @@ watch_ignore = [
 halt_on = [
 ]
 
-# Optional formatter applied to every carried-over blob matching `globs`.
-# `command` reads the file on stdin and writes it to stdout; "{path}" is
-# replaced by the (new) path. Leave `command` empty to disable.
+# Formatter applied to every carried-over blob whose *new* path matches `globs`
+# (so vendored code in third_party/ is untouched). `command` reads the file on
+# stdin and writes it to stdout; "{path}" is the new path and "{root}" the
+# repository root. Keep in sync with tools/format.sh, and use `migrate` after
+# changing anything here or in .clang-format: the output must be byte-identical
+# to what tools/format.sh produces, otherwise merges conflict.
 [format]
-globs   = ["*.c", "*.h"]
-command = []          # e.g. ["clang-format", "--assume-filename={path}"]
+globs   = ["src/*.c", "src/*.h", "apps/*.c", "apps/*.h"]
+command = ["clang-format", "--style=file:{root}/.clang-format", "--assume-filename={path}"]
+version = "23.1.1"
+passes  = 2

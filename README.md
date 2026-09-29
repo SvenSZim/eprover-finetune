@@ -40,6 +40,11 @@ Other presets: `fast` (assertions off, as the old `make default_config`) and
 `E_OPT_FLAGS`, ...) are documented at the top of `CMakeLists.txt` and can be
 set with `-D`, e.g. `cmake --preset dev -DE_UNIX_COMMENTS=ON`.
 
+Code style: `tools/format.sh` formats the sources with the pinned clang-format
+(`pip install clang-format==23.1.1`); CI runs `tools/format.sh --check`. To make
+`git blame` skip the mechanical formatting commits:
+`git config blame.ignoreRevsFile .git-blame-ignore-revs`.
+
 The build writes `compile_commands.json` to the build directory; `.clangd`
 points clangd at `build/dev`. Run the regression tests with `ctest --preset dev`.
 

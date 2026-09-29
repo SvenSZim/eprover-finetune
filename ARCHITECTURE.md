@@ -38,6 +38,7 @@ clauses are weighted and which literals are selected) and is driven from
 * Test: `ctest --preset dev`, or `tests/regression/run.py` (see
   `tests/regression/README.md`; exact clause counts are only comparable for the
   same toolchain, use `--status-only` otherwise).
+* Style: `tools/format.sh` (pinned clang-format; CI checks it).
 * Upstream: this is a fork of `eprover/eprover`; `tools/UPSTREAM_SYNC.md`
   explains how upstream changes are translated into this layout and merged.
 

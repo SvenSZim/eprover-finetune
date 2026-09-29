@@ -113,14 +113,22 @@ Rules must describe the current layout of `master`. To change the layout:
 4. `tools/port_upstream.py migrate` -- adds one commit to `upstream-port` that
    applies the new rules to the newest ported upstream commit. Future `sync`s
    use the new rules. Old history on the branch is not rewritten.
-5. `git merge upstream-port` into master (the migration commit changes the same
-   files the same way as master did, so it merges cleanly).
+5. **Immediately** `git merge upstream-port` into master, before any further
+   upstream sync. The migration commit changes the files exactly as master did,
+   so it merges cleanly, and afterwards the merge-base of master and
+   `upstream-port` is a commit that already has the new layout/formatting. If
+   you skip this, the next upstream edit is merged against the *old* fork point
+   and every line that master reformatted or moved conflicts.
 
 Do not edit the rules and then run `sync` without `migrate`: new commits would be
 translated with rules that the branch tip does not follow.
 
 ## Self-checks
 
+* End-to-end test (done for the current layout): merge `upstream-port` into a
+  scratch branch, add a fake upstream commit with an unformatted edit inside a
+  function, `sync`, merge again. The edit arrived formatted and the merge was
+  clean.
 * `verify [--limit N]` recomputes each ported commit's tree from scratch from
   upstream and compares it with the port branch (only commits after the last
   migration; earlier ones used older rules). It has passed on 784 real upstream
@@ -134,8 +142,12 @@ translated with rules that the branch tip does not follow.
 
 ## Things to know
 
-* The formatter (`[format]` in the config) is off until `.clang-format` exists.
-  Turning it on is a rules change: use `migrate`.
+* The translated blobs under `src/` and `apps/` are formatted with
+  `clang-format` (`[format]` in the config: pinned version, two passes), so the
+  result is byte-identical to `tools/format.sh` on our side. The tool refuses to
+  run with another clang-format version (`pip install clang-format==23.1.1`).
+  Changing `.clang-format` or the pinned version is a rules change: re-run
+  `tools/format.sh`, commit, then `migrate` and merge (below).
 * `Makefile`-family changes are *not* translated to CMake; that is the manual
   step above.
 * The regression suite's clause counts only reproduce for the same toolchain

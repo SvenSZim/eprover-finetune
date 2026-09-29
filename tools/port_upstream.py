@@ -66,6 +66,8 @@ class Rules:
         fmt = cfg.get("format", {})
         self.fmt_globs = fmt.get("globs", [])
         self.fmt_cmd = fmt.get("command", [])
+        self.fmt_passes = fmt.get("passes", 1)
+        self.fmt_version = fmt.get("version", "")
 
     @staticmethod
     def _match(pat, path):
@@ -102,6 +104,21 @@ class Porter:
         self.base = git.out("rev-parse", "--verify", cfg["base"] + "^{commit}").strip()
         self.branch = cfg["port_branch"]
         self._blob_cache = {}
+        self._check_formatter()
+
+    def _check_formatter(self):
+        r = self.rules
+        if not r.fmt_cmd or not r.fmt_version:
+            return
+        try:
+            out = subprocess.run([r.fmt_cmd[0], "--version"], capture_output=True, text=True).stdout
+        except FileNotFoundError:
+            out = ""
+        m = re.search(r"version (\S+)", out)
+        if not m or m.group(1) != r.fmt_version:
+            sys.exit(f"formatter {r.fmt_cmd[0]} version {r.fmt_version} required, found "
+                     f"{m.group(1) if m else 'none'} (pip install clang-format=={r.fmt_version}; "
+                     "set `command` in the config or put it on PATH)")
 
     # -- blobs / trees -----------------------------------------------------
     def blob(self, sha, newpath):
@@ -109,13 +126,16 @@ class Porter:
             return sha
         key = (sha, newpath)
         if key not in self._blob_cache:
-            src = self.git.run("cat-file", "blob", sha).stdout
-            cmd = [c.replace("{path}", newpath) for c in self.rules.fmt_cmd]
-            p = subprocess.run(cmd, input=src, capture_output=True)
-            if p.returncode:
-                sys.exit(f"formatter failed on {newpath}: {p.stderr.decode(errors='replace')}")
+            data = self.git.run("cat-file", "blob", sha).stdout
+            cmd = [c.replace("{path}", newpath).replace("{root}", str(self.git.cwd))
+                   for c in self.rules.fmt_cmd]
+            for _ in range(self.rules.fmt_passes):   # some macros need two passes
+                p = subprocess.run(cmd, input=data, capture_output=True, cwd=self.git.cwd)
+                if p.returncode:
+                    sys.exit(f"formatter failed on {newpath}: {p.stderr.decode(errors='replace')}")
+                data = p.stdout
             self._blob_cache[key] = self.git.run("hash-object", "-w", "--stdin",
-                                                 input=p.stdout).stdout.decode().strip()
+                                                 input=data).stdout.decode().strip()
         return self._blob_cache[key]
 
     def _write_tree(self, index_lines, from_tree=None):
