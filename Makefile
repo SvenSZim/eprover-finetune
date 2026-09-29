@@ -13,7 +13,7 @@
 #
 #------------------------------------------------------------------------
 
-.PHONY: all depend remove_links clean cleandist default_config debug_config distrib fulldistrib top links tags rebuild install config remake documentation E man starexec starexec-src
+.PHONY: all depend remove_links clean cleandist default_config debug_config distrib fulldistrib top links tags rebuild install config remake documentation E man
 
 include Makefile.vars
 
@@ -88,49 +88,6 @@ fulldistrib: man documentation cleandist default_config
 	@echo "Warning: You are building a full archive!"
 	@echo "Did you remember to increase the dev version number and commit to git?"
 	@cd ..; $(TAR) cf - $(PROJECT)|$(GZIP) - -c > $(PROJECT)_FULL.tgz
-
-# Build StarExec package. This is not supposed to be super-portable
-# StarExec runs all binaries from its local bin/, so we cheat
-
-starexec:
-	echo $(STAREXECPATH)
-	rm -rf $(STAREXECPATH)
-	find . -name ".#*"  -exec rm {} \;
-	make clean
-	./configure --bindir="."
-	make
-	./configure --prefix=$(STAREXECPATH)
-	make install
-
-	make clean
-	./configure --bindir="." --enable-ho
-	make
-	./configure --prefix=$(STAREXECPATH) --enable-ho
-	make install
-
-	cp etc/STAREXEC3.0/starexec_run* $(STAREXECPATH)/bin
-	$(eval E_VERSION=`$$(STAREXECPATH)/bin/eprover --version | cut -d' ' -f1-2| sed -e 's/ /-/'`)
-	cd $(STAREXECPATH); zip -r $(E_VERSION).zip bin man
-
-starexec-src:
-	echo $(STAREXECPATH)
-	rm -rf $(STAREXECPATH)
-	mkdir $(STAREXECPATH)
-	find . -name ".#*"  -exec rm {} \;
-	make distrib
-	cp ../E.tgz $(STAREXECPATH)
-	make clean
-	./configure --bindir="."
-	make
-	./configure --prefix=$(STAREXECPATH)
-	make install
-
-	cp etc/STAREXEC3.0/starexec_run* $(STAREXECPATH)/bin
-	cp etc/starexec_build $(STAREXECPATH)
-	$(eval E_VERSION=`$$(STAREXECPATH)/bin/eprover --version | cut -d' ' -f1-2| sed -e 's/ /-/'`)
-	cd $(STAREXECPATH); zip -r $(E_VERSION)_src.zip bin man E.tgz starexec_build
-
-
 
 # Make all library parts
 top: E
