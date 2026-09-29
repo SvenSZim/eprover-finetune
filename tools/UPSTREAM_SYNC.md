@@ -69,6 +69,17 @@ Expected results of `sync`:
 * **HALTED** (exit code 2): the next commit touches a file listed in `halt_on`
   (see "Manual ports").
 
+## Current layout
+
+The mapping (`rename` in `port_upstream.toml`) is: `BASICS` ... `CONTROL` ->
+`src/<lowercase>/`, `PROVER` -> `apps/`, `SIMPLE_APPS`/`EXTERNAL` ->
+`apps/simple/`/`apps/external/`, `CONTRIB` -> `third_party/`, `EXAMPLE_PROBLEMS` ->
+`tests/problems/`, `DOC` -> `docs/`, `development_tools`/`PYTHON` ->
+`tools/development`/`tools/python`. The old Makefiles and `configure` are
+dropped (reported via `Port-Watch`). The restructure was verified end to end
+with a simulated upstream commit that edited, added and moved files across
+these directories: the merge was clean and every change landed in the new location.
+
 ## Manual ports (files we split up)
 
 If we split a file (e.g. `che_litselection.c` into several) the tool cannot
