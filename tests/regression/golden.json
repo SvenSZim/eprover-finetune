@@ -118,9 +118,6 @@
   "processed": 3000,
   "status": "ResourceOut"
  },
- "tests/problems/TPTP/LCL365-1.p::auto": {
-  "status": "Unsatisfiable"
- },
  "tests/problems/TPTP/LCL365-1.p::fixed": {
   "generated": 24437,
   "processed": 3000,
@@ -179,9 +176,6 @@
   "generated": 24755,
   "processed": 3000,
   "status": "ResourceOut"
- },
- "tests/problems/TPTP/SWW194+1.p::auto": {
-  "status": "Theorem"
  },
  "tests/problems/TPTP/SWW194+1.p::fixed": {
   "generated": 11445,

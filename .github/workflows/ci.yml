@@ -9,7 +9,7 @@ jobs:
   format:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Install pinned clang-format
         run: pip install clang-format==23.1.1
       - name: Check formatting
@@ -18,7 +18,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Build (first-order)
         run: |
           cmake --preset dev
@@ -27,14 +27,14 @@ jobs:
       # (see tests/regression/README.md). If a new compiler ever disagrees
       # because of floating point, fall back to --status-only.
       - name: Regression suite
-        run: tests/regression/run.py -j"$(nproc)"
+        run: tests/regression/run.py -j"$(nproc)" --cpu-limit 240
       - name: Determinism (ASLR, file names, uninitialised memory)
         run: tests/regression/determinism.py
 
   build-ho:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Build (higher-order)
         run: |
           cmake --preset ho
@@ -47,7 +47,7 @@ jobs:
       ASAN_OPTIONS: detect_leaks=0
       UBSAN_OPTIONS: print_stacktrace=1
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Build with ASan + UBSan
         run: |
           cmake --preset asan
@@ -55,4 +55,4 @@ jobs:
       # The asan preset uses the system malloc (no arena) so that ASan sees every
       # allocation; its search order can therefore differ: statuses only.
       - name: Regression suite
-        run: tests/regression/run.py -j"$(nproc)" --status-only --binary build/asan/bin/eprover --cpu-limit 180
+        run: tests/regression/run.py -j"$(nproc)" --status-only --binary build/asan/bin/eprover --cpu-limit 600

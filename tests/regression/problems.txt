@@ -17,7 +17,7 @@ tests/problems/TPTP/CSR036+2.p auto,fixed
 tests/problems/TPTP/GEO288+1.p fixed
 tests/problems/TPTP/GRP237-1.p auto,fixed
 tests/problems/TPTP/HEN011-2.p fixed
-tests/problems/TPTP/LCL365-1.p auto,fixed
+tests/problems/TPTP/LCL365-1.p fixed
 tests/problems/TPTP/MGT063+1.p fixed
 tests/problems/TPTP/PLA012-1.p fixed
 tests/problems/TPTP/PUZ028-6.p auto,fixed
@@ -28,5 +28,5 @@ tests/problems/TPTP/SWB008+1.p fixed
 tests/problems/TPTP/SWB030+3.p fixed
 tests/problems/TPTP/SWC078-1.p fixed
 tests/problems/TPTP/SWV851-1.p fixed
-tests/problems/TPTP/SWW194+1.p auto,fixed
+tests/problems/TPTP/SWW194+1.p fixed
 tests/problems/TPTP/SYN190-1.p auto,fixed
