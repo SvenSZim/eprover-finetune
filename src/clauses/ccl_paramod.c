@@ -996,13 +996,13 @@ Clause_p ClauseOrderedSuperSimParamod(TB_p bank, OCB_p ocb, ClausePos_p from,
 //
 /----------------------------------------------------------------------*/
 
-#define IS_NO_PARAMOD_POS                                                                      \
-   (TermIsFreeVar(                                                                             \
-       res) || /* No paramod into variables */ /* Only overlap positive root positions once */ \
-    (EqnIsPositive(pos->literal) && no_top &&                                                  \
-     TermPosIsTopPos(                                                                          \
-        pos->pos)) || /* Don't overlap variable into predicate position */                     \
-    (TermIsFreeVar(ClausePosGetSide(from_pos)) && problemType == PROBLEM_FO &&                 \
+#define IS_NO_PARAMOD_POS                                                           \
+   (TermIsFreeVar(res) ||                                                           \
+    /* No paramod into variables */ /* Only overlap positive root positions once */ \
+    (EqnIsPositive(pos->literal) && no_top &&                                       \
+     TermPosIsTopPos(                                                               \
+        pos->pos)) || /* Don't overlap variable into predicate position */          \
+    (TermIsFreeVar(ClausePosGetSide(from_pos)) && problemType == PROBLEM_FO &&      \
      !EqnIsEquLit(pos->literal) && TermPosIsTopPos(pos->pos)))
 
 /*-----------------------------------------------------------------------

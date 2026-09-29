@@ -62,13 +62,13 @@ Contents
 
 #define E_FOOTER                                                               \
    STS_COPYRIGHT                                                               \
-      ", " STS_MAIL ",\n\
+   ", " STS_MAIL ",\n\
 " CTR_COPYRIGHT "\n\
 \n\
 This program is a part of the distribution of the equational theorem\n\
 prover E. You can find the latest version of the E distribution\n\
 as well as additional information at\n" E_URL "\n\n"                           \
-      "This program is free software; you can redistribute it and/or modify\n\
+   "This program is free software; you can redistribute it and/or modify\n\
 it under the terms of the GNU General Public License as published by\n\
 the Free Software Foundation; either version 2 of the License, or\n\
 (at your option) any later version.\n\
