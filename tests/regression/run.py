@@ -71,10 +71,14 @@ def parse_problems(path):
 def run_one(binary, problem, config, cpu_limit):
     # E's search order depends on pointer addresses somewhere (results differ
     # between runs under ASLR), so pin the address space layout.
-    cmd = [*NO_ASLR, str(binary), *CONFIGS[config], f"--cpu-limit={cpu_limit}",
-           "--print-statistics", problem]
+    # Run from the problem's own directory with just the file name: the name
+    # is heap-allocated, so its length would otherwise (slightly) change the
+    # search, making the golden counts depend on where the problem lives.
+    pdir, pname = os.path.split(ROOT / problem)
+    cmd = [*NO_ASLR, str(Path(binary).resolve()), *CONFIGS[config], f"--cpu-limit={cpu_limit}",
+           "--print-statistics", pname]
     try:
-        p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+        p = subprocess.run(cmd, cwd=pdir, capture_output=True, text=True,
                            timeout=cpu_limit * 3 + 10)
     except subprocess.TimeoutExpired:
         return {"status": "Hang"}
@@ -105,6 +109,7 @@ def main():
     ap.add_argument("-j", "--jobs", type=int, default=4)
     ap.add_argument("-k", default="", help="substring filter on entry ids")
     ap.add_argument("--problems", default=str(HERE / "problems.txt"))
+    ap.add_argument("--golden", default=str(GOLDEN), help="golden results file")
     ap.add_argument("--cpu-limit", type=int, default=SAFETY_CPU_LIMIT)
     a = ap.parse_args()
 
@@ -118,13 +123,13 @@ def main():
     actual = {e[0]: r for e, r in zip(entries, results)}
 
     if a.record:
-        old = json.loads(GOLDEN.read_text()) if GOLDEN.exists() else {}
+        old = json.loads(Path(a.golden).read_text()) if Path(a.golden).exists() else {}
         old.update(actual)
-        GOLDEN.write_text(json.dumps(old, indent=1, sort_keys=True) + "\n")
-        print(f"recorded {len(actual)} entries in {GOLDEN.relative_to(ROOT)}")
+        Path(a.golden).write_text(json.dumps(old, indent=1, sort_keys=True) + "\n")
+        print(f"recorded {len(actual)} entries in {a.golden}")
         return
 
-    golden = json.loads(GOLDEN.read_text()) if GOLDEN.exists() else {}
+    golden = json.loads(Path(a.golden).read_text()) if Path(a.golden).exists() else {}
     bad = 0
     for key, res in actual.items():
         exp = golden.get(key)

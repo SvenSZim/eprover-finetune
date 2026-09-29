@@ -1,199 +1,199 @@
 {
- "EXAMPLE_PROBLEMS/SMOKETEST/ALL_RULES.p::auto": {
+ "tests/problems/SMOKETEST/ALL_RULES.p::auto": {
   "status": "Theorem"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/ALL_RULES.p::fixed": {
+ "tests/problems/SMOKETEST/ALL_RULES.p::fixed": {
   "generated": 14,
   "processed": 20,
   "status": "Theorem"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/BOO020-1.p::auto": {
+ "tests/problems/SMOKETEST/BOO020-1.p::auto": {
   "status": "Unsatisfiable"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/BOO020-1.p::fixed": {
+ "tests/problems/SMOKETEST/BOO020-1.p::fixed": {
   "generated": 435605,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/CNFTest.p::auto": {
+ "tests/problems/SMOKETEST/CNFTest.p::auto": {
   "status": "Satisfiable"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/CNFTest.p::fixed": {
+ "tests/problems/SMOKETEST/CNFTest.p::fixed": {
   "generated": 0,
   "processed": 1,
   "status": "Satisfiable"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/GROUP1st.p::fixed": {
+ "tests/problems/SMOKETEST/GROUP1st.p::fixed": {
   "generated": 165,
   "processed": 39,
   "status": "Satisfiable"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/LUSK3.p::auto": {
+ "tests/problems/SMOKETEST/LUSK3.p::auto": {
   "status": "Theorem"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/LUSK3.p::fixed": {
+ "tests/problems/SMOKETEST/LUSK3.p::fixed": {
   "generated": 6026,
   "processed": 202,
   "status": "Theorem"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/LUSK6.lop::auto": {
+ "tests/problems/SMOKETEST/LUSK6.lop::auto": {
   "status": "Unsatisfiable"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/LUSK6.lop::fixed": {
+ "tests/problems/SMOKETEST/LUSK6.lop::fixed": {
   "generated": 162912,
   "processed": 2652,
   "status": "Unsatisfiable"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/LUSK6ext.lop::fixed": {
+ "tests/problems/SMOKETEST/LUSK6ext.lop::fixed": {
   "generated": 151940,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/ans_test06.p::fixed": {
+ "tests/problems/SMOKETEST/ans_test06.p::fixed": {
   "generated": 2,
   "processed": 5,
   "status": "NoStatus(rc=0)"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/socrates.p::auto": {
+ "tests/problems/SMOKETEST/socrates.p::auto": {
   "status": "Theorem"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/socrates.p::fixed": {
+ "tests/problems/SMOKETEST/socrates.p::fixed": {
   "generated": 1,
   "processed": 3,
   "status": "Theorem"
  },
- "EXAMPLE_PROBLEMS/SMOKETEST/tffex01.p::fixed": {
+ "tests/problems/SMOKETEST/tffex01.p::fixed": {
   "status": "NoStatus(rc=3)"
  },
- "EXAMPLE_PROBLEMS/TPTP/BOO006-1.p::auto": {
+ "tests/problems/TPTP/BOO006-1.p::auto": {
   "status": "Unsatisfiable"
  },
- "EXAMPLE_PROBLEMS/TPTP/BOO006-1.p::fixed": {
+ "tests/problems/TPTP/BOO006-1.p::fixed": {
   "generated": 1187,
   "processed": 327,
   "status": "Unsatisfiable"
  },
- "EXAMPLE_PROBLEMS/TPTP/BOO010-2.p::auto": {
+ "tests/problems/TPTP/BOO010-2.p::auto": {
   "status": "Unsatisfiable"
  },
- "EXAMPLE_PROBLEMS/TPTP/BOO010-2.p::fixed": {
+ "tests/problems/TPTP/BOO010-2.p::fixed": {
   "generated": 999,
   "processed": 100,
   "status": "Unsatisfiable"
  },
- "EXAMPLE_PROBLEMS/TPTP/CAT004-4.p::fixed": {
+ "tests/problems/TPTP/CAT004-4.p::fixed": {
   "status": "NoStatus(rc=6)"
  },
- "EXAMPLE_PROBLEMS/TPTP/COL042-8.p::auto": {
+ "tests/problems/TPTP/COL042-8.p::auto": {
   "status": "Unsatisfiable"
  },
- "EXAMPLE_PROBLEMS/TPTP/COL042-8.p::fixed": {
+ "tests/problems/TPTP/COL042-8.p::fixed": {
   "generated": 77318,
   "processed": 976,
   "status": "Unsatisfiable"
  },
- "EXAMPLE_PROBLEMS/TPTP/CSR036+2.p::auto": {
+ "tests/problems/TPTP/CSR036+2.p::auto": {
   "status": "Theorem"
  },
- "EXAMPLE_PROBLEMS/TPTP/CSR036+2.p::fixed": {
+ "tests/problems/TPTP/CSR036+2.p::fixed": {
   "generated": 4439,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/GEO288+1.p::fixed": {
+ "tests/problems/TPTP/GEO288+1.p::fixed": {
   "generated": 6930,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/GRP237-1.p::auto": {
+ "tests/problems/TPTP/GRP237-1.p::auto": {
   "status": "Unsatisfiable"
  },
- "EXAMPLE_PROBLEMS/TPTP/GRP237-1.p::fixed": {
+ "tests/problems/TPTP/GRP237-1.p::fixed": {
   "generated": 17302,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/HEN011-2.p::fixed": {
+ "tests/problems/TPTP/HEN011-2.p::fixed": {
   "generated": 10038,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/LCL365-1.p::auto": {
+ "tests/problems/TPTP/LCL365-1.p::auto": {
   "status": "Unsatisfiable"
  },
- "EXAMPLE_PROBLEMS/TPTP/LCL365-1.p::fixed": {
+ "tests/problems/TPTP/LCL365-1.p::fixed": {
   "generated": 24437,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/MGT063+1.p::fixed": {
+ "tests/problems/TPTP/MGT063+1.p::fixed": {
   "generated": 11861,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/PLA012-1.p::fixed": {
+ "tests/problems/TPTP/PLA012-1.p::fixed": {
   "status": "NoStatus(rc=6)"
  },
- "EXAMPLE_PROBLEMS/TPTP/PUZ028-6.p::auto": {
+ "tests/problems/TPTP/PUZ028-6.p::auto": {
   "status": "Unsatisfiable"
  },
- "EXAMPLE_PROBLEMS/TPTP/PUZ028-6.p::fixed": {
+ "tests/problems/TPTP/PUZ028-6.p::fixed": {
   "generated": 27725,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/SET183-6.p::auto": {
+ "tests/problems/TPTP/SET183-6.p::auto": {
   "status": "Unsatisfiable"
  },
- "EXAMPLE_PROBLEMS/TPTP/SET183-6.p::fixed": {
-  "generated": 25084,
+ "tests/problems/TPTP/SET183-6.p::fixed": {
+  "generated": 24981,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/SET844-1.p::fixed": {
+ "tests/problems/TPTP/SET844-1.p::fixed": {
   "generated": 8546,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/SEU027+1.p::fixed": {
+ "tests/problems/TPTP/SEU027+1.p::fixed": {
   "generated": 16433,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/SWB008+1.p::fixed": {
+ "tests/problems/TPTP/SWB008+1.p::fixed": {
   "generated": 35117,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/SWB030+3.p::fixed": {
+ "tests/problems/TPTP/SWB030+3.p::fixed": {
   "generated": 11913,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/SWC078-1.p::fixed": {
+ "tests/problems/TPTP/SWC078-1.p::fixed": {
   "generated": 14189,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/SWV851-1.p::fixed": {
+ "tests/problems/TPTP/SWV851-1.p::fixed": {
   "generated": 24737,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/SWW194+1.p::auto": {
+ "tests/problems/TPTP/SWW194+1.p::auto": {
   "status": "Theorem"
  },
- "EXAMPLE_PROBLEMS/TPTP/SWW194+1.p::fixed": {
+ "tests/problems/TPTP/SWW194+1.p::fixed": {
   "generated": 11445,
   "processed": 3000,
   "status": "ResourceOut"
  },
- "EXAMPLE_PROBLEMS/TPTP/SYN190-1.p::auto": {
+ "tests/problems/TPTP/SYN190-1.p::auto": {
   "status": "Unsatisfiable"
  },
- "EXAMPLE_PROBLEMS/TPTP/SYN190-1.p::fixed": {
-  "generated": 3052,
-  "processed": 1822,
+ "tests/problems/TPTP/SYN190-1.p::fixed": {
+  "generated": 3065,
+  "processed": 1821,
   "status": "Unsatisfiable"
  }
 }

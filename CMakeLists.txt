@@ -70,28 +70,30 @@ function(e_pin_file_macro)
 endfunction()
 
 # -------------------------------------------------------------- libraries --
-# One static library per source directory, named as before (BASICS.a, ...).
-# All *.c files of the directory are used except the listed dead ones.
+# One static library per directory src/<name>, with the target name in upper
+# case as before (BASICS, TERMS, ... -> libBASICS.a). All *.c files of the
+# directory are used except the listed dead ones.
 function(e_library name)
   cmake_parse_arguments(A "" "" "EXCLUDE" ${ARGN})
-  file(GLOB srcs CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${name}/*.c)
+  string(TOLOWER ${name} dir)
+  file(GLOB srcs CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/${dir}/*.c)
   foreach(x IN LISTS A_EXCLUDE)
-    list(REMOVE_ITEM srcs ${CMAKE_CURRENT_SOURCE_DIR}/${name}/${x}.c)
+    list(REMOVE_ITEM srcs ${CMAKE_CURRENT_SOURCE_DIR}/src/${dir}/${x}.c)
   endforeach()
   add_library(${name} STATIC ${srcs})
   e_pin_file_macro(${srcs})
   set_target_properties(${name} PROPERTIES OUTPUT_NAME ${name})
-  target_include_directories(${name} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/${name})
+  target_include_directories(${name} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src/${dir})
 endfunction()
 
 # Headers are included by bare name across directories (formerly via the
 # include/ symlink farm), so every directory is on every target's include path.
-set(E_SOURCE_DIRS BASICS INOUT TERMS ORDERINGS CLAUSES PROPOSITIONAL LEARN PCL2
-                  HEURISTICS CONTROL PROVER)
-set(PICOSAT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/CONTRIB/picosat-965)
-include_directories(${PICOSAT_DIR})
-foreach(d IN LISTS E_SOURCE_DIRS)
-  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/${d})
+set(E_LIBRARIES basics inout terms orderings clauses propositional learn pcl2
+                heuristics control)
+set(PICOSAT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/third_party/picosat-965)
+include_directories(${PICOSAT_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/apps)
+foreach(d IN LISTS E_LIBRARIES)
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/${d})
 endforeach()
 
 e_library(BASICS     EXCLUDE clb_newmem)           # USE_NEWMEM experiment
@@ -125,7 +127,7 @@ target_include_directories(picosat PRIVATE ${CMAKE_BINARY_DIR}/picosat_config)
 
 # --------------------------------------------------------------- programs --
 # e_program(<binary> <source dir> <libs in link order...>)
-# Link sets are copied from the old PROVER/Makefile.
+# Link sets are copied from the old PROVER/Makefile (sources are in apps/).
 function(e_program bin dir)
   add_executable(${bin} ${CMAKE_CURRENT_SOURCE_DIR}/${dir}/${ARGV2})
   e_pin_file_macro(${CMAKE_CURRENT_SOURCE_DIR}/${dir}/${ARGV2})
@@ -135,31 +137,31 @@ function(e_program bin dir)
 endfunction()
 
 set(CORE CLAUSES ORDERINGS TERMS INOUT BASICS CONTRIB)
-e_program(${E_PROVER_NAME} PROVER eprover.c CONTROL HEURISTICS LEARN ${CORE})
+e_program(${E_PROVER_NAME} apps eprover.c CONTROL HEURISTICS LEARN ${CORE})
 foreach(p e_ltb_runner e_stratpar e_deduction_server e_axfilter e_client classify_problem)
-  e_program(${p} PROVER ${p}.c CONTROL HEURISTICS ${CORE})
+  e_program(${p} apps ${p}.c CONTROL HEURISTICS ${CORE})
 endforeach()
-e_program(e_server     PROVER e_server.c     CONTROL HEURISTICS CLAUSES ORDERINGS TERMS INOUT BASICS)
-e_program(epatternize  PROVER epatternize.c  CONTROL HEURISTICS LEARN ${CORE})
-e_program(eground      PROVER eground.c      HEURISTICS ${CORE})
-e_program(enormalizer  PROVER enormalizer.c  HEURISTICS ${CORE})
-e_program(edpll        PROVER edpll.c        PROPOSITIONAL ${CORE})
-e_program(direct_examples PROVER direct_examples.c PCL2 ${CORE})
-e_program(checkproof   PROVER checkproof.c   PCL2 ${CORE})
+e_program(e_server apps e_server.c     CONTROL HEURISTICS CLAUSES ORDERINGS TERMS INOUT BASICS)
+e_program(epatternize apps epatternize.c  CONTROL HEURISTICS LEARN ${CORE})
+e_program(eground apps eground.c      HEURISTICS ${CORE})
+e_program(enormalizer apps enormalizer.c  HEURISTICS ${CORE})
+e_program(edpll apps edpll.c        PROPOSITIONAL ${CORE})
+e_program(direct_examples apps direct_examples.c PCL2 ${CORE})
+e_program(checkproof apps checkproof.c   PCL2 ${CORE})
 foreach(p epclanalyse epcllemma epclextract)
-  e_program(${p} PROVER ${p}.c PCL2 HEURISTICS ${CORE})
+  e_program(${p} apps ${p}.c PCL2 HEURISTICS ${CORE})
 endforeach()
 foreach(p ekb_create ekb_insert ekb_delete)
-  e_program(${p} PROVER ${p}.c LEARN ${CORE})
+  e_program(${p} apps ${p}.c LEARN ${CORE})
 endforeach()
-e_program(ekb_ginsert  PROVER ekb_ginsert.c  PCL2 LEARN ${CORE})
+e_program(ekb_ginsert apps ekb_ginsert.c  PCL2 LEARN ${CORE})
 install(TARGETS picosat RUNTIME DESTINATION bin)
 
 if(E_BUILD_EXTRA_APPS)
-  e_program(term2dag        SIMPLE_APPS term2dag.c TERMS CLAUSES ORDERINGS TERMS INOUT BASICS)
-  e_program(ex_commandline  SIMPLE_APPS ex_commandline.c INOUT BASICS)
-  add_executable(CSSCPA_filter EXTERNAL/CSSCPA_filter.c EXTERNAL/cex_csscpa.c)
-  target_include_directories(CSSCPA_filter PRIVATE EXTERNAL)
+  e_program(term2dag        apps/simple term2dag.c TERMS CLAUSES ORDERINGS TERMS INOUT BASICS)
+  e_program(ex_commandline  apps/simple ex_commandline.c INOUT BASICS)
+  add_executable(CSSCPA_filter apps/external/CSSCPA_filter.c apps/external/cex_csscpa.c)
+  target_include_directories(CSSCPA_filter PRIVATE apps/external)
   target_link_libraries(CSSCPA_filter ${CORE} ${MATH_LIB})
 endif()
 
@@ -175,16 +177,16 @@ if(E_BUILD_TESTS)
 endif()
 
 # Man pages are generated with help2man from the binaries (not checked in).
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/DOC/man)
-  install(DIRECTORY DOC/man/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.1")
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/docs/man)
+  install(DIRECTORY docs/man/ DESTINATION share/man/man1 FILES_MATCHING PATTERN "*.1")
 endif()
 
-# Manual (replaces DOC/Makefile): cmake --build <dir> --target docs
+# Manual (replaces docs/Makefile): cmake --build <dir> --target docs
 find_program(PDFLATEX pdflatex)
 if(PDFLATEX)
   add_custom_target(docs
     COMMAND ${PDFLATEX} -interaction=nonstopmode eprover.tex
     COMMAND ${PDFLATEX} -interaction=nonstopmode eprover.tex
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/DOC
-    COMMENT "Building DOC/eprover.pdf")
+    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/docs
+    COMMENT "Building docs/eprover.pdf")
 endif()

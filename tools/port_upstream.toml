@@ -51,8 +51,49 @@ drop = [
 ]
 
 # Prefix renames applied after `drop`, as [old, new] pairs (longest prefix
-# wins). Empty until the directory restructure happens.
+# wins). This is the directory restructure (see tools/UPSTREAM_SYNC.md).
 rename = [
+  # libraries
+  ["BASICS/", "src/basics/"],
+  ["INOUT/", "src/inout/"],
+  ["TERMS/", "src/terms/"],
+  ["ORDERINGS/", "src/orderings/"],
+  ["CLAUSES/", "src/clauses/"],
+  ["PROPOSITIONAL/", "src/propositional/"],
+  ["LEARN/", "src/learn/"],
+  ["PCL2/", "src/pcl2/"],
+  ["HEURISTICS/", "src/heuristics/"],
+  ["CONTROL/", "src/control/"],
+  ["CONTRIB/", "third_party/"],
+  ["PROVER/", "apps/"],
+  ["SIMPLE_APPS/", "apps/simple/"],
+  ["EXTERNAL/", "apps/external/"],
+  ["EXAMPLE_PROBLEMS/", "tests/problems/"],
+  ["DOC/", "docs/"],
+  ["development_tools/", "tools/development/"],
+  ["PYTHON/", "tools/python/"],
+  ["SKELETONS/", "tools/skeletons/"],
+  # sample problems that lived next to the programs (longest prefix wins)
+  ["PROVER/ALL_RULES.lop", "tests/problems/prover/ALL_RULES.lop"],
+  ["PROVER/BOO001-1+rm_eq_rstfp.lop", "tests/problems/prover/BOO001-1+rm_eq_rstfp.lop"],
+  ["PROVER/BatchSampleLTBHOL.txt", "tests/problems/prover/BatchSampleLTBHOL.txt"],
+  ["PROVER/COL003-1+rm_eq_rstfp.lop", "tests/problems/prover/COL003-1+rm_eq_rstfp.lop"],
+  ["PROVER/GROUP.lop", "tests/problems/prover/GROUP.lop"],
+  ["PROVER/GRP001-1_natural.lop", "tests/problems/prover/GRP001-1_natural.lop"],
+  ["PROVER/HUMBLE.lop", "tests/problems/prover/HUMBLE.lop"],
+  ["PROVER/INVCOM.lop", "tests/problems/prover/INVCOM.lop"],
+  ["PROVER/LAT3a.lop", "tests/problems/prover/LAT3a.lop"],
+  ["PROVER/LAT4.lop", "tests/problems/prover/LAT4.lop"],
+  ["PROVER/LUSK3.lop", "tests/problems/prover/LUSK3.lop"],
+  ["PROVER/LUSK6.lop", "tests/problems/prover/LUSK6.lop"],
+  ["PROVER/LUSK6ext.lop", "tests/problems/prover/LUSK6ext.lop"],
+  ["PROVER/MSC006-1.lop", "tests/problems/prover/MSC006-1.lop"],
+  ["PROVER/NUM030-1+rm_eq_rstfp.lop", "tests/problems/prover/NUM030-1+rm_eq_rstfp.lop"],
+  ["PROVER/PLA002-2+rm_eq_rstfp.lop", "tests/problems/prover/PLA002-2+rm_eq_rstfp.lop"],
+  ["PROVER/PUZ031-1+rm_eq_rstfp.lop", "tests/problems/prover/PUZ031-1+rm_eq_rstfp.lop"],
+  ["PROVER/RNG019-6+rm_eq_rstfp.tptp", "tests/problems/prover/RNG019-6+rm_eq_rstfp.tptp"],
+  ["PROVER/SET103-6+rm_eq_rstfp.lop", "tests/problems/prover/SET103-6+rm_eq_rstfp.lop"],
+  ["PROVER/SET366+4+rm_eq_rstfp.tptp", "tests/problems/prover/SET366+4+rm_eq_rstfp.tptp"],
 ]
 
 # Upstream commits touching these paths (even dropped ones, such as the old

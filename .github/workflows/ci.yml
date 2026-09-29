@@ -27,11 +27,11 @@ jobs:
         run: |
           cmake --preset ho
           cmake --build --preset ho -j"$(nproc)"
-      # TODO: add the EXAMPLE_PROBLEMS/LFHOL problems to the regression suite
+      # TODO: add the tests/problems/LFHOL problems to the regression suite
 
   sanitizers:
     runs-on: ubuntu-24.04
-    # Known failure: invalid free in SigFree() (TERMS/cte_signature.c) at exit.
+    # Known failure: invalid free in SigFree() (src/terms/cte_signature.c) at exit.
     # Make this blocking by removing continue-on-error once it is fixed.
     continue-on-error: true
     env:

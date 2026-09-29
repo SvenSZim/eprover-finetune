@@ -23,5 +23,11 @@ compares exact processed/generated clause counts; `auto` compares status only.
   Makefiles implicitly did, so it reproduces the old build exactly. On other
   toolchains use `--status-only`, or re-record `golden.json` for that toolchain.
 
-Only FO problems are included; the HO examples in `EXAMPLE_PROBLEMS/LFHOL`
+* The problem file name is heap-allocated, so even *its length* shifts the search
+  slightly (`EXAMPLE_PROBLEMS/...` vs `x/...` gave 4439 vs 4437 generated
+  clauses on one problem). `run.py` therefore runs each problem from its own
+  directory with just the file name, which makes the golden counts independent
+  of the directory layout.
+
+Only FO problems are included; the HO examples in `tests/problems/LFHOL`
 need the HO build (`cmake --preset ho`) and should get their own entries.

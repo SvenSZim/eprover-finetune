@@ -1,5 +1,5 @@
 **NOTE**: The CASC ReadMe file with information for the CADE ATP
-System Competition is in `DOC/Readme`.
+System Competition is in `docs/Readme`.
 **NOTE**: The ultimate source is now README.md. Don't edit the plain
 README!
 
@@ -23,7 +23,7 @@ Install the executables (and the PicoSAT binary) somewhere:
 
 Read the rest of this file and the fine (if incomplete) manual if
 anything fails. There should be a copy of the manual in
-`DOC/eprover.pdf`.
+`docs/eprover.pdf`.
 
 E 3.2 supports (monomorphic) higher-order logic. To build a binary
 that supports higher-order reasoning, use the `ho` preset (the binary
@@ -94,7 +94,7 @@ for the conjecture and tell you so ;-).
 
 E has been created and is currently maintained by Stephan Schulz,
 <schulz@eprover.org>, now with the help of several contributors (see
-`DOC/CONTRIBUTORS`). It is developed and distributed under the GNU
+`docs/CONTRIBUTORS`). It is developed and distributed under the GNU
 General Public License.
 
 The E homepage can be found at <https://www.eprover.org>
@@ -152,12 +152,12 @@ distributions), run
 
 The manual should also be included as a pre-compiled PDF. For an unusual
 compiler or operating system, pass `-DCMAKE_C_COMPILER=...` and
-`-DE_OPT_FLAGS=...`. If you have any problems, look into `DOC/PORTING`.
+`-DE_OPT_FLAGS=...`. If you have any problems, look into `docs/PORTING`.
 
 After building, try
 
 ```sh
-   build/dev/bin/eprover EXAMPLE_PROBLEMS/TPTP/BOO006-1.p
+   build/dev/bin/eprover tests/problems/TPTP/BOO006-1.p
 ```
 
 to see the prover in action. `build/dev/bin/eprover -h` gives you some
