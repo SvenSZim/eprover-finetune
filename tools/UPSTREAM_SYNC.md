@@ -120,6 +120,14 @@ Rules must describe the current layout of `master`. To change the layout:
    you skip this, the next upstream edit is merged against the *old* fork point
    and every line that master reformatted or moved conflicts.
 
+If the first merge could not be done immediately and master already carries
+edits to the reformatted/moved files, `git merge` conflicts on every hunk that
+master both reformatted and edited. In that case verify with `check-base --ref
+master` that the differences are only your own edits (no `D` lines, nothing
+missing from master), and record the history with `git merge -s ours
+upstream-port` (master's tree is kept as is). This is what was done for the
+initial layout/format migration; from then on the port tip is the merge base.
+
 Do not edit the rules and then run `sync` without `migrate`: new commits would be
 translated with rules that the branch tip does not follow.
 
