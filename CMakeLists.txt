@@ -161,6 +161,8 @@ if(E_BUILD_EXTRA_APPS)
   e_program(term2dag        apps/simple term2dag.c TERMS CLAUSES ORDERINGS TERMS INOUT BASICS)
   e_program(ex_commandline  apps/simple ex_commandline.c INOUT BASICS)
   add_executable(CSSCPA_filter apps/external/CSSCPA_filter.c apps/external/cex_csscpa.c)
+  e_pin_file_macro(${CMAKE_CURRENT_SOURCE_DIR}/apps/external/CSSCPA_filter.c
+                   ${CMAKE_CURRENT_SOURCE_DIR}/apps/external/cex_csscpa.c)
   target_include_directories(CSSCPA_filter PRIVATE apps/external)
   target_link_libraries(CSSCPA_filter ${CORE} ${MATH_LIB})
 endif()

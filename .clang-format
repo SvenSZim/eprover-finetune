@@ -1,0 +1,25 @@
+# E code style: 3-space indent, Allman braces, no space before "(", pointer
+# star attached to the type. Tuned to the existing code so that formatting
+# touches as few lines as possible. The clang-format version is pinned in
+# tools/format.sh; changing anything here means re-running it on all sources.
+BasedOnStyle: LLVM
+Language: Cpp
+IndentWidth: 3
+TabWidth: 3
+UseTab: Never
+ColumnLimit: 80
+ContinuationIndentWidth: 3
+BreakBeforeBraces: Allman
+SpaceBeforeParens: Never
+PointerAlignment: Left
+IndentCaseLabels: true
+Cpp11BracedListStyle: false
+AlignOperands: DontAlign
+ReflowComments: false
+SortIncludes: Never
+MaxEmptyLinesToKeep: 3
+KeepEmptyLines:
+  AtEndOfFile: true
+  AtStartOfBlock: true
+  AtStartOfFile: true
+BreakStringLiterals: false
