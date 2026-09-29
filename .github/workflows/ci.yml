@@ -40,9 +40,6 @@ jobs:
 
   sanitizers:
     runs-on: ubuntu-24.04
-    # Known failure: invalid free in SigFree() (src/terms/cte_signature.c) at exit.
-    # Make this blocking by removing continue-on-error once it is fixed.
-    continue-on-error: true
     env:
       ASAN_OPTIONS: detect_leaks=0
       UBSAN_OPTIONS: print_stacktrace=1

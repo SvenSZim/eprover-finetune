@@ -787,6 +787,15 @@ static TFormula_p miniscope_qall(TB_p terms, TFormula_p form, Term_p var,
 //
 /----------------------------------------------------------------------*/
 
+/* Wrapping addition. tform_find_miniscopeable() returns LONG_MAX as the size
+   of ground subformulas and then adds to it, which overflows; the (wrapped)
+   result is what the code has always computed, so keep it, but without the
+   undefined behaviour of signed overflow. */
+static inline long wrapping_add(long a, long b)
+{
+   return (long)((unsigned long)a + (unsigned long)b);
+}
+
 long tform_find_miniscopeable(Sig_p sig, TFormula_p form, long limit,
                               PTree_p* candidates, bool* exq)
 {
@@ -806,8 +815,9 @@ long tform_find_miniscopeable(Sig_p sig, TFormula_p form, long limit,
    }
    if(TFormulaIsQuantified(sig, form))
    {
-      size = 1 +
-         tform_find_miniscopeable(sig, form->args[1], limit, &lcands, &lexq);
+      size = wrapping_add(
+         1,
+         tform_find_miniscopeable(sig, form->args[1], limit, &lcands, &lexq));
       if(form->f_code == sig->qex_code)
       {
          *exq = true;
@@ -832,16 +842,18 @@ long tform_find_miniscopeable(Sig_p sig, TFormula_p form, long limit,
       size = 1;
       if(TFormulaHasSubForm1(sig, form))
       {
-         size += size +
-            tform_find_miniscopeable(sig, form->args[0], limit, &lcands, &lexq);
+         size = wrapping_add(wrapping_add(size, size),
+                             tform_find_miniscopeable(sig, form->args[0], limit,
+                                                      &lcands, &lexq));
          PTreeMerge(candidates, lcands);
          lcands = NULL;
          *exq |= lexq;
       }
       if(TFormulaHasSubForm2(sig, form))
       {
-         size += size +
-            tform_find_miniscopeable(sig, form->args[1], limit, &lcands, &lexq);
+         size = wrapping_add(wrapping_add(size, size),
+                             tform_find_miniscopeable(sig, form->args[1], limit,
+                                                      &lcands, &lexq));
          PTreeMerge(candidates, lcands);
          *exq |= lexq;
       }

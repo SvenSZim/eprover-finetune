@@ -313,9 +313,11 @@ void SigFree(Sig_p junk)
    assert(junk->f_info);
    FunCode i;
 
-   /* names are shared with junk->f_index and are free()ed by the
-      StrTreeFree() call below! */
-   for(i = 0; i <= junk->f_count; i++)
+   /* Index 0 is not a valid function code and never initialized (symbols
+      start at 1); reading f_info[0].pname would free garbage.
+      The (non-printing) names are shared with junk->f_index and are free()ed
+      by the StrTreeFree() call below! */
+   for(i = 1; i <= junk->f_count; i++)
    {
       if(junk->f_info[i].pname)
       {
