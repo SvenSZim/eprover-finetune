@@ -1,3 +1,4 @@
 # Mechanical reformatting; use with: git config blame.ignoreRevsFile .git-blame-ignore-revs
-# clang-format of all C sources
+# clang-format of all C sources (two passes)
 5261879012152ae3368313d93b74afb0a795a858
+9df023f58f33bf04348b9231822dfcde728f858a
