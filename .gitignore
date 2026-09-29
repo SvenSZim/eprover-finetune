@@ -21,6 +21,8 @@ PROVER/epclanalyse
 PROVER/epclextract
 PROVER/epcllemma
 PROVER/eprover
+PROVER/eprover-ho
+PROVER/epatternize
 PROVER/termprops
 PROVER/tsm_classify
 SIMPLE_APPS/ex_commandline

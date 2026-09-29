@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+"""Deterministic regression suite for eprover.
+
+For every (problem, config) pair listed in problems.txt this runs eprover and
+compares status, processed clauses and generated clauses against the golden
+file golden.json. Clause counts are deterministic, so any unintended change to
+search behaviour (e.g. from a refactoring) shows up as a diff.
+
+    tests/regression/run.py             # compare against golden.json
+    tests/regression/run.py --record    # (re)write golden.json
+    tests/regression/run.py -k SMOKE    # only entries whose id contains SMOKE
+"""
+import argparse
+import json
+import re
+import shlex
+import subprocess
+import sys
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parent.parent
+GOLDEN = HERE / "golden.json"
+
+# Named prover configurations. Only step-count-based limits are used so that
+# results do not depend on machine speed (cpu-limit is just a safety net).
+CONFIGS = {
+    "auto": ["--auto", "--proof-object"],
+    "fixed": ["-tKBO6", "-WSelectMaxLComplexAvoidPosPred", "--proof-object",
+              "-H(4*ConjectureRelativeSymbolWeight(ConstPrio,0.1,100,100,100,100,1.5,1.5,1.5),"
+              "1*FIFOWeight(PreferProcessed))",
+              "--processed-clauses-limit=3000"],
+}
+# --auto picks strategies from a time-dependent schedule and can hit its
+# per-strategy cutoffs at slightly different points, so clause counts are only
+# compared for configs listed here; the others compare the status only.
+EXACT_COUNTS = {"fixed"}
+SAFETY_CPU_LIMIT = 60
+NO_ASLR = ["setarch", "-R"]
+
+
+def parse_problems(path):
+    """Lines: `<problem path rel. to repo root> [config,config,...]`."""
+    entries = []
+    for line in path.read_text().splitlines():
+        line = line.split("#", 1)[0].strip()
+        if not line:
+            continue
+        parts = line.split()
+        cfgs = parts[1].split(",") if len(parts) > 1 else ["auto"]
+        for c in cfgs:
+            entries.append((parts[0], c))
+    return entries
+
+
+def run_one(binary, problem, config, cpu_limit):
+    # E's search order depends on pointer addresses somewhere (results differ
+    # between runs under ASLR), so pin the address space layout.
+    cmd = [*NO_ASLR, str(binary), *CONFIGS[config], f"--cpu-limit={cpu_limit}",
+           "--print-statistics", problem]
+    try:
+        p = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True,
+                           timeout=cpu_limit * 3 + 10)
+    except subprocess.TimeoutExpired:
+        return {"status": "Hang"}
+    out = p.stdout
+    status = re.search(r"^# SZS status (\w+)|^% SZS status (\w+)", out, re.M)
+    res = {"status": (status.group(1) or status.group(2)) if status else f"NoStatus(rc={p.returncode})"}
+    for key, name in (("processed", "Processed clauses"),
+                      ("generated", "Generated clauses")):
+        m = re.search(rf"^[#%] {name}\s*:\s*(\d+)", out, re.M)
+        if m:
+            res[key] = int(m.group(1))
+    if config not in EXACT_COUNTS:
+        res.pop("processed", None)
+        res.pop("generated", None)
+    if res["status"] == "Unsatisfiable" and "SZS output start" not in out:
+        res["status"] = "Unsatisfiable(no-proof-object)"
+    return res
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--record", action="store_true", help="write golden.json")
+    ap.add_argument("--binary", default=str(ROOT / "PROVER" / "eprover"))
+    ap.add_argument("-j", "--jobs", type=int, default=4)
+    ap.add_argument("-k", default="", help="substring filter on entry ids")
+    ap.add_argument("--problems", default=str(HERE / "problems.txt"))
+    ap.add_argument("--cpu-limit", type=int, default=SAFETY_CPU_LIMIT)
+    a = ap.parse_args()
+
+    if not Path(a.binary).exists():
+        sys.exit(f"eprover binary not found: {a.binary} (run ./configure && make)")
+    entries = [(f"{p}::{c}", p, c) for p, c in parse_problems(Path(a.problems))]
+    entries = [e for e in entries if a.k in e[0]]
+
+    with ThreadPoolExecutor(a.jobs) as ex:
+        results = list(ex.map(lambda e: run_one(a.binary, e[1], e[2], a.cpu_limit), entries))
+    actual = {e[0]: r for e, r in zip(entries, results)}
+
+    if a.record:
+        old = json.loads(GOLDEN.read_text()) if GOLDEN.exists() else {}
+        old.update(actual)
+        GOLDEN.write_text(json.dumps(old, indent=1, sort_keys=True) + "\n")
+        print(f"recorded {len(actual)} entries in {GOLDEN.relative_to(ROOT)}")
+        return
+
+    golden = json.loads(GOLDEN.read_text()) if GOLDEN.exists() else {}
+    bad = 0
+    for key, res in actual.items():
+        exp = golden.get(key)
+        if exp is None:
+            print(f"NEW   {key}: {res}")
+            bad += 1
+        elif exp != res:
+            print(f"DIFF  {key}\n        expected {exp}\n        got      {res}")
+            bad += 1
+    print(f"{len(actual) - bad}/{len(actual)} match")
+    sys.exit(1 if bad else 0)
+
+
+if __name__ == "__main__":
+    main()

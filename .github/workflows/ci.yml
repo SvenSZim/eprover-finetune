@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build (first-order)
+        run: |
+          ./configure
+          make -j"$(nproc)"
+      - name: Regression suite
+        run: tests/regression/run.py -j"$(nproc)"
+
+  build-ho:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build (higher-order)
+        run: |
+          ./configure --enable-ho
+          make -j"$(nproc)"
+      # TODO: add the EXAMPLE_PROBLEMS/LFHOL problems to the regression suite
+
+  sanitizers:
+    runs-on: ubuntu-24.04
+    # Known failure: invalid free in SigFree() (TERMS/cte_signature.c) at exit.
+    # Make this blocking by removing continue-on-error once it is fixed.
+    continue-on-error: true
+    env:
+      ASAN_OPTIONS: detect_leaks=0
+      UBSAN_OPTIONS: print_stacktrace=1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build with ASan + UBSan
+        run: |
+          ./configure
+          make -j"$(nproc)" OPTFLAGS="-O1 -g -fno-omit-frame-pointer -fno-common -fsanitize=address,undefined -fno-sanitize-recover=undefined"
+      - name: Regression suite
+        run: tests/regression/run.py -j"$(nproc)" --cpu-limit 180
