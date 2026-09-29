@@ -150,10 +150,10 @@ translated with rules that the branch tip does not follow.
   `tools/format.sh`, commit, then `migrate` and merge (below).
 * `Makefile`-family changes are *not* translated to CMake; that is the manual
   step above.
-* The regression suite's clause counts only reproduce for the same toolchain
-  (see `tests/regression/README.md`); after merging upstream changes compare
-  with `--status-only` unless you compare against a baseline built from the
-  merge-base with the same compiler.
+* After merging upstream changes, expect `tests/regression/golden.json` counts
+  to change if upstream changed the prover's behaviour: check that the
+  differences are explained by the upstream commits, then re-record. The counts
+  no longer depend on toolchain or memory layout (`tests/regression/README.md`).
 * Upstream force-pushes/rebases would leave orphan translated commits on the
   port branch; the tool assumes `upstream/master` only moves forward.
 * Requires Python >= 3.11 (`tomllib`) and git; no other dependencies.

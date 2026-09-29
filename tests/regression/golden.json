@@ -11,7 +11,7 @@
   "status": "Unsatisfiable"
  },
  "tests/problems/SMOKETEST/BOO020-1.p::fixed": {
-  "generated": 435605,
+  "generated": 435599,
   "processed": 3000,
   "status": "ResourceOut"
  },
@@ -40,8 +40,8 @@
   "status": "Unsatisfiable"
  },
  "tests/problems/SMOKETEST/LUSK6.lop::fixed": {
-  "generated": 162912,
-  "processed": 2652,
+  "generated": 164492,
+  "processed": 2651,
   "status": "Unsatisfiable"
  },
  "tests/problems/SMOKETEST/LUSK6ext.lop::fixed": {
@@ -96,7 +96,7 @@
   "status": "Theorem"
  },
  "tests/problems/TPTP/CSR036+2.p::fixed": {
-  "generated": 4439,
+  "generated": 4437,
   "processed": 3000,
   "status": "ResourceOut"
  },
@@ -114,7 +114,7 @@
   "status": "ResourceOut"
  },
  "tests/problems/TPTP/HEN011-2.p::fixed": {
-  "generated": 10038,
+  "generated": 10037,
   "processed": 3000,
   "status": "ResourceOut"
  },
@@ -138,7 +138,7 @@
   "status": "Unsatisfiable"
  },
  "tests/problems/TPTP/PUZ028-6.p::fixed": {
-  "generated": 27725,
+  "generated": 27641,
   "processed": 3000,
   "status": "ResourceOut"
  },
@@ -156,7 +156,7 @@
   "status": "ResourceOut"
  },
  "tests/problems/TPTP/SEU027+1.p::fixed": {
-  "generated": 16433,
+  "generated": 16464,
   "processed": 3000,
   "status": "ResourceOut"
  },
@@ -171,12 +171,12 @@
   "status": "ResourceOut"
  },
  "tests/problems/TPTP/SWC078-1.p::fixed": {
-  "generated": 14189,
+  "generated": 14184,
   "processed": 3000,
   "status": "ResourceOut"
  },
  "tests/problems/TPTP/SWV851-1.p::fixed": {
-  "generated": 24737,
+  "generated": 24755,
   "processed": 3000,
   "status": "ResourceOut"
  },
@@ -192,8 +192,8 @@
   "status": "Unsatisfiable"
  },
  "tests/problems/TPTP/SYN190-1.p::fixed": {
-  "generated": 3065,
-  "processed": 1821,
+  "generated": 3025,
+  "processed": 1811,
   "status": "Unsatisfiable"
  }
 }

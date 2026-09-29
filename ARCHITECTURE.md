@@ -44,9 +44,12 @@ clauses are weighted and which literals are selected) and is driven from
 
 ## Things to know before changing code
 
-* E's search depends on the memory layout of the binary (some data is ordered
-  by pointer address). Do not add unnecessary strings, and see
-  `tests/regression/README.md`, before concluding that a heuristic change
-  altered behaviour.
+* E orders some data by pointer address. To keep the search reproducible, its
+  small objects come from a private arena (`src/basics/clb_memory.c`), hashes
+  use ids instead of addresses, and the paramodulation index orders by term id
+  and clause creation number. New code should not derive behaviour from
+  addresses (no hashing of pointers, no sorting by address where the order can
+  matter); `tests/regression/determinism.py` catches regressions. See
+  `tests/regression/README.md`.
 * Prefer not to touch source files that upstream also changes unless needed;
   it keeps the upstream merge conflict-free.

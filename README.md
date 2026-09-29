@@ -36,7 +36,7 @@ is called `eprover-ho`):
 
 Other presets: `fast` (assertions off, as the old `make default_config`) and
 `asan` (AddressSanitizer + UBSan). Individual options (`E_ENABLE_HO`,
-`E_UNIX_COMMENTS`, `E_ASSERTIONS`, `E_MEMORY_DEBUG`, `E_SANITIZE`,
+`E_UNIX_COMMENTS`, `E_ASSERTIONS`, `E_MEMORY_DEBUG`, `E_DETERMINISTIC_MEMORY`, `E_SANITIZE`,
 `E_OPT_FLAGS`, ...) are documented at the top of `CMakeLists.txt` and can be
 set with `-D`, e.g. `cmake --preset dev -DE_UNIX_COMMENTS=ON`.
 

@@ -23,10 +23,13 @@ jobs:
         run: |
           cmake --preset dev
           cmake --build --preset dev -j"$(nproc)"
-      # Clause counts depend on the toolchain (see tests/regression/README.md),
-      # so CI compares statuses only. Exact counts are for local refactoring.
+      # Exact clause counts: the search does not depend on the memory layout
+      # (see tests/regression/README.md). If a new compiler ever disagrees
+      # because of floating point, fall back to --status-only.
       - name: Regression suite
-        run: tests/regression/run.py -j"$(nproc)" --status-only
+        run: tests/regression/run.py -j"$(nproc)"
+      - name: Determinism (ASLR, file names, uninitialised memory)
+        run: tests/regression/determinism.py
 
   build-ho:
     runs-on: ubuntu-24.04
@@ -49,5 +52,7 @@ jobs:
         run: |
           cmake --preset asan
           cmake --build --preset asan -j"$(nproc)"
+      # The asan preset uses the system malloc (no arena) so that ASan sees every
+      # allocation; its search order can therefore differ: statuses only.
       - name: Regression suite
         run: tests/regression/run.py -j"$(nproc)" --status-only --binary build/asan/bin/eprover --cpu-limit 180

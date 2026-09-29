@@ -11,10 +11,10 @@ search behaviour (e.g. from a refactoring) shows up as a diff.
     tests/regression/run.py --record    # (re)write golden.json
     tests/regression/run.py -k SMOKE    # only entries whose id contains SMOKE
 
-Clause counts depend on the memory layout of the binary (E orders some data
-by pointer address), so they only reproduce for the same compiler, flags and
-source layout. Use --status-only on other toolchains (e.g. CI) and re-record
-golden.json when you change toolchain.
+The search is independent of the memory layout (see tests/regression/README.md
+and determinism.py), so the clause counts reproduce across compilers, flags,
+ASLR and file locations. If a new toolchain still disagrees (e.g. because of
+floating-point differences in heuristic weights), use --status-only.
 """
 import argparse
 import json
@@ -44,7 +44,6 @@ CONFIGS = {
 # compared for configs listed here; the others compare the status only.
 EXACT_COUNTS = {"fixed"}
 SAFETY_CPU_LIMIT = 60
-NO_ASLR = ["setarch", "-R"]
 
 
 def default_binary():
@@ -69,13 +68,10 @@ def parse_problems(path):
 
 
 def run_one(binary, problem, config, cpu_limit):
-    # E's search order depends on pointer addresses somewhere (results differ
-    # between runs under ASLR), so pin the address space layout.
-    # Run from the problem's own directory with just the file name: the name
-    # is heap-allocated, so its length would otherwise (slightly) change the
-    # search, making the golden counts depend on where the problem lives.
+    # Run from the problem's own directory with just the file name (keeps the
+    # output independent of where the repository lives).
     pdir, pname = os.path.split(ROOT / problem)
-    cmd = [*NO_ASLR, str(Path(binary).resolve()), *CONFIGS[config], f"--cpu-limit={cpu_limit}",
+    cmd = [str(Path(binary).resolve()), *CONFIGS[config], f"--cpu-limit={cpu_limit}",
            "--print-statistics", pname]
     try:
         p = subprocess.run(cmd, cwd=pdir, capture_output=True, text=True,
