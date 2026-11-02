@@ -50,3 +50,6 @@ compile_commands.json
 
 __pycache__/
 *.pyc
+
+# CSV exception for ProblemOverview
+!docs/ProblemOverview/*.csv
